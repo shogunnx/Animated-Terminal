@@ -45,76 +45,58 @@ export default function RoomPage() {
     setSelectedItem(item);
     setItemData("Loading Nexus Data...");
 
-    try {
-      let data = null;
+    // Turn room hotspots into real Nexus queries via chat-mind
+    const promptByAction = {
+      memories: `You are accessing a Time Patrol bedroom terminal. Give a short "memory trace" about: ${item.label}.`,
+      personality: `Show personality file snippet for ${id}. Keep it short and in-universe.`,
+      lore: `Give lore file snippet related to: ${item.label}. Keep it concise and immersive.`,
+      raid_logs: `Provide a raid log excerpt related to ${id} and ${item.label}.`,
+      evolution: `Explain ${id}'s evolution / power progression in a short in-universe log.`,
+    };
 
-      switch (item.action) {
-        case "memories":
-          data = await nexusClient.getMemories(id);
-          break;
+    const prompt =
+      promptByAction[item.action] ||
+      `Scan this object and return an in-universe Nexus readout: ${item.label}.`;
 
-        case "personality":
-        case "logs":
-          data = await nexusClient.getCharacterStatus(id);
-          break;
+    const res = await nexusClient.chatMind(id, prompt, { localHistory: null });
 
-        case "raid_logs":
-          // if your Nexus has a raids endpoint later, swap this
-          data = await nexusClient.getLatestVideos();
-          break;
-
-        case "evolution":
-        case "lore":
-        default:
-          // fallback to local JSON later if you want
-          data = await nexusClient.getCharacterStatus(id);
-          break;
-      }
-
-      if (!data) {
-        setItemData(
-          `[NEXUS OFFLINE OR BLOCKED]\n` +
-          `Item: ${item.label}\n` +
-          `Action: ${item.action}\n\n` +
-          `Check: CORS/proxy, endpoint path, auth, or env var.`
-        );
-        return;
-      }
-
-      setItemData(
-        `[NEXUS DATA RETRIEVED]\n` +
-        `Object: ${item.label}\n` +
-        `Action: ${item.action}\n\n` +
-        `${typeof data === "string" ? data : JSON.stringify(data, null, 2)}`
-      );
-    } catch (err) {
-      setItemData(`[ERROR]\n${String(err)}`);
+    if (!res?.reply) {
+      setItemData("NEXUS NOT CONNECTED: endpoint mismatch or proxy not installed. (See Status Panel)");
+      return;
     }
+
+    const extra =
+      res.used_memories?.length
+        ? `\n\n[MEMORY HITS]\n- ${res.used_memories.join("\n- ")}`
+        : "";
+
+    setItemData(`[NEXUS DATA RETRIEVED]\nObject: ${item.label}\n\n${res.reply}${extra}`);
   };
 
   const handleChat = async (e) => {
     e.preventDefault();
-    const msg = chatMessage.trim();
-    if (!msg) return;
+    if (!chatMessage.trim()) return;
 
-    setChatHistory((prev) => [...prev, { role: "user", content: msg }]);
+    const newHistory = [...chatHistory, { role: "user", content: chatMessage }];
+    setChatHistory(newHistory);
     setChatMessage("");
 
-    const res = await nexusClient.sendChat(id, msg);
+    const res = await nexusClient.chatMind(id, chatMessage, {
+      localHistory: newHistory, // Nexus supports this field
+    });
 
-    if (!res) {
+    if (!res?.reply) {
       setChatHistory((prev) => [
         ...prev,
-        { role: "assistant", content: `[${id}]: (Nexus not reachable from this site. Likely CORS/proxy.)` }
+        { role: "assistant", content: "[NEXUS OFFLINE] No response. (Proxy/CORS/endpoint)" },
       ]);
       return;
     }
 
-    // Try common shapes: {reply}, {message}, {output}, etc.
-    const reply =
-      res.reply ?? res.message ?? res.output ?? res.text ?? JSON.stringify(res);
-
-    setChatHistory((prev) => [...prev, { role: "assistant", content: reply }]);
+    setChatHistory((prev) => [
+      ...prev,
+      { role: "assistant", content: res.reply },
+    ]);
   };
 
   const loadHistory = async () => {
