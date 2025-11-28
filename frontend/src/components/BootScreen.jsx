@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { cn } from '../lib/utils';
+import React, { useState, useEffect } from 'react';
 
 export default function BootScreen({ onComplete }) {
-  const [text, setText] = useState('');
-  const [phase, setPhase] = useState(0);
-  const mountedRef = useRef(true);
+  const [displayedText, setDisplayedText] = useState('');
+  const [isComplete, setIsComplete] = useState(false);
   
-  const lines = [
+  const fullText = [
     "INITIALIZING — THE SAIYAN VICTORIA ARCHIVE",
     "Synching Time Displacement Logs...",
     "Loading Sister Profiles...",
@@ -15,54 +13,39 @@ export default function BootScreen({ onComplete }) {
     "Binary Energy Spike Detected — Containing...",
     "Verifying NexusBridge Connection...",
     "Connection Established."
-  ];
+  ].join('\n');
 
   useEffect(() => {
-    mountedRef.current = true;
-    let currentLine = 0;
-    let currentChar = 0;
-    let timeoutId = null;
+    let index = 0;
+    // Use a ref to track index if we wanted to be strict-mode safe with intervals, 
+    // but for a simple effect, just clearing on unmount is usually enough.
+    // However, in StrictMode, this effect runs twice. 
+    // The first one starts, then cleanup runs (clearing interval), then second starts.
+    // So it should be fine.
+    
+    const interval = setInterval(() => {
+      setDisplayedText((prev) => {
+        // Calculate expected length based on index would be better, 
+        // but appending is fine if we ensure we don't go over.
+        if (prev.length < fullText.length) {
+           return prev + fullText.charAt(prev.length);
+        }
+        return prev;
+      });
+    }, 20);
 
-    const typeWriter = () => {
-      if (!mountedRef.current) return;
-
-      if (currentLine >= lines.length) {
-        setPhase(1);
-        return;
-      }
-
-      const line = lines[currentLine];
-      
-      if (currentChar < line.length) {
-        setText(prev => {
-          const char = line[currentChar];
-          // Safety check
-          if (char === undefined) return prev;
-          
-          if (currentChar === 0 && currentLine > 0) {
-            return prev + '\n' + char;
-          }
-          return prev + char;
-        });
-        currentChar++;
-        timeoutId = setTimeout(typeWriter, 20); // Faster typing
-      } else {
-        currentLine++;
-        currentChar = 0;
-        timeoutId = setTimeout(typeWriter, 200); // Faster pause
-      }
-    };
-
-    timeoutId = setTimeout(typeWriter, 100);
-
-    return () => {
-      mountedRef.current = false;
-      if (timeoutId) clearTimeout(timeoutId);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    if (phase === 1) {
+    if (displayedText.length >= fullText.length) {
+      const timer = setTimeout(() => setIsComplete(true), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [displayedText, fullText.length]);
+
+  useEffect(() => {
+    if (isComplete) {
       const handleKeyPress = () => onComplete();
       window.addEventListener('keydown', handleKeyPress);
       window.addEventListener('click', handleKeyPress);
@@ -71,17 +54,17 @@ export default function BootScreen({ onComplete }) {
         window.removeEventListener('click', handleKeyPress);
       };
     }
-  }, [phase, onComplete]);
+  }, [isComplete, onComplete]);
 
   return (
     <div className="fixed inset-0 bg-black text-primary font-mono p-8 flex flex-col items-center justify-center z-50">
       <div className="max-w-2xl w-full">
         <pre className="whitespace-pre-wrap text-lg md:text-xl leading-relaxed text-primary/80 shadow-primary/50 drop-shadow-[0_0_10px_rgba(var(--primary),0.8)]">
-          {text}
+          {displayedText}
           <span className="animate-pulse">_</span>
         </pre>
         
-        {phase === 1 && (
+        {isComplete && (
           <div className="mt-12 text-center animate-pulse">
             <p className="text-2xl font-bold glitch-text" data-text=">> PRESS ANY KEY TO ENTER">
               &gt;&gt; PRESS ANY KEY TO ENTER
