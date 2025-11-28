@@ -99,16 +99,6 @@ export default function RoomPage() {
     ]);
   };
 
-  const loadHistory = async () => {
-    const history = await nexusClient.getChatHistory(id);
-    if (history && Array.isArray(history)) {
-      setChatHistory(history.map(m => ({
-        role: m.role || m.sender || "assistant",
-        content: m.content || m.message || String(m)
-      })));
-    }
-  };
-
   return (
     <div className="h-full flex flex-col relative overflow-hidden border border-primary/30 rounded-lg">
       {/* Room Visualizer */}
