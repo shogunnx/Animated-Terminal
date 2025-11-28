@@ -4,6 +4,7 @@ import BootScreen from './components/BootScreen';
 import Layout from './components/Layout';
 import Dashboard from './pages/index';
 import CharacterPage from './pages/characters/CharacterPage';
+import CharactersIndex from './pages/characters/CharactersIndex';
 import RoomPage from './pages/rooms/RoomPage';
 import TimelinePage from './pages/timeline/index';
 import RaidsPage from './pages/raids/index';
