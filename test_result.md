@@ -101,3 +101,132 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Verify the TSV Archive Terminal application with Boot Screen, Dashboard, Characters, Theme Switcher, Personal Rooms, Timeline, and Restricted Files functionality"
+
+frontend:
+  - task: "Boot Screen with Typewriter Effect"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/BootScreen.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Boot screen loads perfectly with typewriter effect showing 'INITIALIZING — THE SAIYAN VICTORIA ARCHIVE' and displays 'PRESS ANY KEY TO ENTER' message after completion. Tested successfully."
+
+  - task: "Dashboard with SYSTEM_LOGS and Quick Access"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/index.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "Dashboard loads successfully after boot screen. SYSTEM_LOGS terminal displays system messages correctly. Quick Access panel with navigation links is present and functional."
+
+  - task: "Characters Page with Victoria Black Profile"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/characters/CharacterPage.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL: Characters navigation exists in sidebar but clicking on 'CHARACTERS' link does not load Victoria Black profile. Navigation is present but page content is not rendering properly."
+
+  - task: "Theme Switcher with Wargirl Theme"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/ThemeSwitcher.jsx"
+    stuck_count: 1
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL: Theme Switcher component exists in code but is not visible/accessible in the UI. The 'Change Theme' button is not found on the dashboard or in navigation."
+
+  - task: "Personal Rooms with Room Items"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/rooms/RoomPage.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL: Personal Rooms navigation link exists but clicking on 'PERSONAL ROOMS' times out. Navigation routing may not be properly configured."
+
+  - task: "Timeline with Events Display"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/timeline/index.jsx"
+    stuck_count: 1
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL: Timeline navigation link exists but clicking on 'TIMELINE' times out. Navigation routing may not be properly configured."
+
+  - task: "Restricted Files with Access Denial"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/restricted/index.jsx"
+    stuck_count: 1
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "CRITICAL: Restricted Files navigation link exists but clicking on 'RESTRICTED FILES' times out. Navigation routing may not be properly configured."
+
+  - task: "Entry Point Configuration Fix"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/index.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "FIXED: Updated index.js to import from App.jsx instead of App.js. This resolved the issue where basic template was loading instead of TSV Archive Terminal application."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Characters Page with Victoria Black Profile"
+    - "Theme Switcher with Wargirl Theme"
+    - "Personal Rooms with Room Items"
+    - "Timeline with Events Display"
+    - "Restricted Files with Access Denial"
+  stuck_tasks:
+    - "Characters Page with Victoria Black Profile"
+    - "Theme Switcher with Wargirl Theme"
+    - "Personal Rooms with Room Items"
+    - "Timeline with Events Display"
+    - "Restricted Files with Access Denial"
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "testing"
+      message: "CRITICAL FINDINGS: Fixed entry point issue (App.js -> App.jsx) which resolved basic template loading. Boot screen and dashboard work perfectly. However, all navigation links beyond dashboard are failing - they exist in sidebar but routing is broken. Characters, Personal Rooms, Timeline, and Restricted Files pages are not loading when clicked. Theme Switcher component exists but is not visible in UI. Main agent needs to investigate React Router configuration and component rendering issues."
+    - agent: "testing"
+      message: "SUCCESSFUL TESTS: 1) Boot screen typewriter effect works perfectly 2) Dashboard loads with SYSTEM_LOGS and Quick Access 3) Navigation sidebar shows all links correctly 4) Entry point now loads correct TSV Archive Terminal app"
+    - agent: "testing"
+      message: "FAILED TESTS: 1) Characters page navigation (timeout) 2) Theme Switcher not visible 3) Personal Rooms navigation (timeout) 4) Timeline navigation (timeout) 5) Restricted Files navigation (timeout). All navigation links exist but routing appears broken."
