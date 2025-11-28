@@ -11,14 +11,20 @@ export default function StatusPanel() {
   });
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setStatus(prev => ({
+    const ping = async () => {
+      const s = await nexusClient.getSystemStatus();
+      setStatus((prev) => ({
         ...prev,
+        nexus: s ? "CONNECTED" : "DISCONNECTED",
+        system: s ? "ONLINE" : "OFFLINE",
         cpu: Math.floor(Math.random() * 30) + 10,
         memory: Math.floor(Math.random() * 20) + 40,
       }));
-    }, 2000);
-    return () => clearInterval(interval);
+    };
+
+    ping();
+    const t = setInterval(ping, 5000);
+    return () => clearInterval(t);
   }, []);
 
   return (
@@ -52,7 +58,7 @@ export default function StatusPanel() {
 
           <div className="flex items-center justify-between text-xs border-t border-primary/20 pt-3 mt-2">
             <span className="text-muted-foreground">NEXUS_BRIDGE</span>
-            <span className="text-green-400 font-bold flex items-center gap-1">
+            <span className={`font-bold flex items-center gap-1 ${status.nexus === 'CONNECTED' ? 'text-green-400' : 'text-red-500'}`}>
               <Wifi className="w-3 h-3" /> {status.nexus}
             </span>
           </div>

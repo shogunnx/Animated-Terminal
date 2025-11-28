@@ -44,25 +44,87 @@ export default function RoomPage() {
   const handleItemClick = async (item) => {
     setSelectedItem(item);
     setItemData("Loading Nexus Data...");
-    
-    // Simulate API call
-    setTimeout(() => {
-      setItemData(`[NEXUS DATA RETRIEVED]\nObject: ${item.label}\nAnalysis: Contains residual energy signatures.\nMemory Trace: "I remember wearing this during the battle of..."`);
-    }, 1000);
+
+    try {
+      let data = null;
+
+      switch (item.action) {
+        case "memories":
+          data = await nexusClient.getMemories(id);
+          break;
+
+        case "personality":
+        case "logs":
+          data = await nexusClient.getCharacterStatus(id);
+          break;
+
+        case "raid_logs":
+          // if your Nexus has a raids endpoint later, swap this
+          data = await nexusClient.getLatestVideos();
+          break;
+
+        case "evolution":
+        case "lore":
+        default:
+          // fallback to local JSON later if you want
+          data = await nexusClient.getCharacterStatus(id);
+          break;
+      }
+
+      if (!data) {
+        setItemData(
+          `[NEXUS OFFLINE OR BLOCKED]\n` +
+          `Item: ${item.label}\n` +
+          `Action: ${item.action}\n\n` +
+          `Check: CORS/proxy, endpoint path, auth, or env var.`
+        );
+        return;
+      }
+
+      setItemData(
+        `[NEXUS DATA RETRIEVED]\n` +
+        `Object: ${item.label}\n` +
+        `Action: ${item.action}\n\n` +
+        `${typeof data === "string" ? data : JSON.stringify(data, null, 2)}`
+      );
+    } catch (err) {
+      setItemData(`[ERROR]\n${String(err)}`);
+    }
   };
 
   const handleChat = async (e) => {
     e.preventDefault();
-    if (!chatMessage.trim()) return;
+    const msg = chatMessage.trim();
+    if (!msg) return;
 
-    const newHistory = [...chatHistory, { role: 'user', content: chatMessage }];
-    setChatHistory(newHistory);
+    setChatHistory((prev) => [...prev, { role: "user", content: msg }]);
     setChatMessage("");
 
-    // Simulate response
-    setTimeout(() => {
-      setChatHistory(prev => [...prev, { role: 'assistant', content: `[${id}]: That is interesting... tell me more.` }]);
-    }, 1000);
+    const res = await nexusClient.sendChat(id, msg);
+
+    if (!res) {
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "assistant", content: `[${id}]: (Nexus not reachable from this site. Likely CORS/proxy.)` }
+      ]);
+      return;
+    }
+
+    // Try common shapes: {reply}, {message}, {output}, etc.
+    const reply =
+      res.reply ?? res.message ?? res.output ?? res.text ?? JSON.stringify(res);
+
+    setChatHistory((prev) => [...prev, { role: "assistant", content: reply }]);
+  };
+
+  const loadHistory = async () => {
+    const history = await nexusClient.getChatHistory(id);
+    if (history && Array.isArray(history)) {
+      setChatHistory(history.map(m => ({
+        role: m.role || m.sender || "assistant",
+        content: m.content || m.message || String(m)
+      })));
+    }
   };
 
   return (
@@ -96,7 +158,7 @@ export default function RoomPage() {
         {/* Chat Button */}
         <div className="absolute bottom-6 right-6 z-20">
           <Button 
-            onClick={() => setChatOpen(true)}
+            onClick={() => { setChatOpen(true); loadHistory(); }}
             className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_rgba(var(--primary),0.4)]"
           >
             <MessageSquare className="w-4 h-4 mr-2" />

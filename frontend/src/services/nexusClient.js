@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+console.log("API_URL =", API_URL);
 
 // Helper to handle API errors gracefully for the prototype
 const safeRequest = async (requestFn) => {
