@@ -1,0 +1,19 @@
+{
+  "nodes": [
+    { "id": "Victoria", "group": 1 },
+    { "id": "Wargirl", "group": 1 },
+    { "id": "Binary", "group": 2 },
+    { "id": "Vanessa", "group": 1 },
+    { "id": "Harmony", "group": 3 },
+    { "id": "Vegeta", "group": 4 },
+    { "id": "Turles", "group": 4 }
+  ],
+  "links": [
+    { "source": "Victoria", "target": "Wargirl", "value": 5 },
+    { "source": "Victoria", "target": "Binary", "value": 1 },
+    { "source": "Victoria", "target": "Vanessa", "value": 4 },
+    { "source": "Victoria", "target": "Vegeta", "value": 3 },
+    { "source": "Wargirl", "target": "Binary", "value": 2 },
+    { "source": "Binary", "target": "Turles", "value": 4 }
+  ]
+}
