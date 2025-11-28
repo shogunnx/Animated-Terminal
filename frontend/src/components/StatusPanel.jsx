@@ -12,11 +12,15 @@ export default function StatusPanel() {
 
   useEffect(() => {
     const ping = async () => {
-      const s = await nexusClient.getSystemStatus();
+      // Use the new ping method which checks multiple endpoints
+      const results = await nexusClient.ping();
+      // Check if any endpoint is reachable (status 200)
+      const isConnected = results.some(r => r.ok && r.status === 200);
+      
       setStatus((prev) => ({
         ...prev,
-        nexus: s ? "CONNECTED" : "DISCONNECTED",
-        system: s ? "ONLINE" : "OFFLINE",
+        nexus: isConnected ? "CONNECTED" : "DISCONNECTED",
+        system: isConnected ? "ONLINE" : "OFFLINE",
         cpu: Math.floor(Math.random() * 30) + 10,
         memory: Math.floor(Math.random() * 20) + 40,
       }));
