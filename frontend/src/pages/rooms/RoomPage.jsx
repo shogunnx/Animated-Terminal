@@ -140,7 +140,7 @@ export default function RoomPage() {
         {/* Chat Button */}
         <div className="absolute bottom-6 right-6 z-20">
           <Button 
-            onClick={() => { setChatOpen(true); loadHistory(); }}
+            onClick={() => { setChatOpen(true); }}
             className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_20px_rgba(var(--primary),0.4)]"
           >
             <MessageSquare className="w-4 h-4 mr-2" />
