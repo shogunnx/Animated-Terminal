@@ -29,6 +29,7 @@ function AppContent() {
     <Layout>
       <Routes>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/characters" element={<CharactersIndex />} />
         <Route path="/characters/:id" element={<CharacterPage />} />
         <Route path="/rooms/:id" element={<RoomPage />} />
         <Route path="/timeline" element={<TimelinePage />} />
