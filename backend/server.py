@@ -26,6 +26,10 @@ app = FastAPI()
 async def health_check():
     return {"status": "ok", "service": "anime-terminal-backend"}
 
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
