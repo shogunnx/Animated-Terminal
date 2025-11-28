@@ -11,6 +11,7 @@ import axios from "axios";
  * - REACT_APP_NEXUS_BASE_URL="/nexus"                                 (proxy, no CORS)
  */
 const NEXUS_BASE = (process.env.REACT_APP_NEXUS_BASE_URL || "/nexus").replace(/\/+$/, "");
+console.log("NEXUS BASE =", NEXUS_BASE);
 
 const client = axios.create({
   baseURL: NEXUS_BASE,
