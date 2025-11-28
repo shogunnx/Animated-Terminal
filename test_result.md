@@ -223,20 +223,10 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus:
-    - "Characters Page with Victoria Black Profile"
-    - "Theme Switcher with Wargirl Theme"
-    - "Personal Rooms with Room Items"
-    - "Timeline with Events Display"
-    - "Restricted Files with Access Denial"
-  stuck_tasks:
-    - "Characters Page with Victoria Black Profile"
-    - "Theme Switcher with Wargirl Theme"
-    - "Personal Rooms with Room Items"
-    - "Timeline with Events Display"
-    - "Restricted Files with Access Denial"
-  test_all: false
-  test_priority: "high_first"
+  current_focus: []
+  stuck_tasks: []
+  test_all: true
+  test_priority: "complete"
 
 agent_communication:
     - agent: "testing"
