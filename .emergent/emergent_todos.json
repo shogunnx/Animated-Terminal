@@ -1,0 +1,18 @@
+[
+  {
+    "content": "Analyze root cause: uvicorn binary not found + MongoDB auth error",
+    "status": "in_progress"
+  },
+  {
+    "content": "Check Dockerfile and entrypoint template for fastapi_react_mongo_base_image",
+    "status": "pending"
+  },
+  {
+    "content": "Verify MongoDB credentials and app access permissions",
+    "status": "pending"
+  },
+  {
+    "content": "Provide fix recommendations",
+    "status": "pending"
+  }
+]
