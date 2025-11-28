@@ -196,7 +196,10 @@ app.include_router(api)
 # But for the "One-service deploy", we expect it at /app/frontend_dist (from Dockerfile)
 # OR we can look in /app/frontend/dist if we built it locally.
 
-DIST = Path("/app/frontend/dist") # Changed to match local build path
+DIST = Path("/app/frontend_dist")
+if not DIST.exists():
+    DIST = Path("/app/frontend/dist")
+
 ASSETS = DIST / "assets"
 INDEX = DIST / "index.html"
 
