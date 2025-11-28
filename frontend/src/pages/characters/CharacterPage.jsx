@@ -12,19 +12,32 @@ export default function CharacterPage() {
   const [nexusStatus, setNexusStatus] = useState(null);
 
   useEffect(() => {
-    if (charactersData[id]) {
+    console.log("CharacterPage mounted with ID:", id);
+    if (id && charactersData[id]) {
       setCharacter(charactersData[id]);
       // Fetch live status from Nexus
       nexusClient.getCharacterStatus(id).then(data => {
         if (data) setNexusStatus(data);
       });
     } else {
-      // Default to Victoria if not found or redirect
-      navigate('/characters/victoria_black');
+      console.warn("Character ID not found:", id);
+      // Redirect to default if not found, but allow a small delay to avoid loops if something is weird
+      // navigate('/characters/victoria_black');
+      // Instead of redirecting immediately, let's show an error state
     }
-  }, [id, navigate]);
+  }, [id]);
 
-  if (!character) return <div>Loading...</div>;
+  if (!id || !charactersData[id]) {
+    return (
+      <div className="p-8 text-red-500 font-mono">
+        <h1 className="text-2xl font-bold">ERROR: CHARACTER_NOT_FOUND</h1>
+        <p>ID: {id}</p>
+        <p>The requested file does not exist in the archive.</p>
+      </div>
+    );
+  }
+
+  if (!character) return <div className="p-8 text-primary font-mono animate-pulse">LOADING_ARCHIVE_DATA...</div>;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
