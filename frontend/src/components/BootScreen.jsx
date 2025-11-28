@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '../lib/utils';
 
 export default function BootScreen({ onComplete }) {
   const [text, setText] = useState('');
   const [phase, setPhase] = useState(0);
+  const mountedRef = useRef(true);
   
   const lines = [
     "INITIALIZING — THE SAIYAN VICTORIA ARCHIVE",
@@ -17,11 +18,14 @@ export default function BootScreen({ onComplete }) {
   ];
 
   useEffect(() => {
+    mountedRef.current = true;
     let currentLine = 0;
     let currentChar = 0;
-    let timeout;
+    let timeoutId = null;
 
     const typeWriter = () => {
+      if (!mountedRef.current) return;
+
       if (currentLine >= lines.length) {
         setPhase(1);
         return;
@@ -31,24 +35,30 @@ export default function BootScreen({ onComplete }) {
       
       if (currentChar < line.length) {
         setText(prev => {
-          // If it's a new line, add a newline character
+          const char = line[currentChar];
+          // Safety check
+          if (char === undefined) return prev;
+          
           if (currentChar === 0 && currentLine > 0) {
-            return prev + '\n' + line[currentChar];
+            return prev + '\n' + char;
           }
-          return prev + line[currentChar];
+          return prev + char;
         });
         currentChar++;
-        timeout = setTimeout(typeWriter, 30); // Typing speed
+        timeoutId = setTimeout(typeWriter, 20); // Faster typing
       } else {
         currentLine++;
         currentChar = 0;
-        timeout = setTimeout(typeWriter, 400); // Pause between lines
+        timeoutId = setTimeout(typeWriter, 200); // Faster pause
       }
     };
 
-    timeout = setTimeout(typeWriter, 500);
+    timeoutId = setTimeout(typeWriter, 100);
 
-    return () => clearTimeout(timeout);
+    return () => {
+      mountedRef.current = false;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, []);
 
   useEffect(() => {
