@@ -70,8 +70,8 @@ export default function Layout({ children }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row overflow-hidden relative">
-      {/* Scanlines Overlay */}
-      <div className="scanlines pointer-events-none fixed inset-0 z-50 opacity-20"></div>
+      {/* Scanlines Overlay - Lower Z-index and ensure pointer-events-none */}
+      <div className="scanlines pointer-events-none fixed inset-0 z-10 opacity-20"></div>
 
       {/* Mobile Header */}
       <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-background/95 backdrop-blur z-40 sticky top-0">
