@@ -16,7 +16,7 @@ export default function CharacterPage() {
     if (id && charactersData[id]) {
       setCharacter(charactersData[id]);
       // Fetch live status from Nexus
-      nexusClient.getCharacterStatus(id).then(data => {
+      nexusClient.getLegacyCharacter(id).then(data => {
         if (data) setNexusStatus(data);
       });
     } else {
