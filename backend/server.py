@@ -64,51 +64,42 @@ async def get_status_checks(skip: int = 0, limit: int = 100):
 
 # --- PROXY TO REAL NEXUS ---
 
-NEXUS_BASE_URL = "https://nexus-multiverse.emergent.host"
+NEXUS_BASE_URL = os.environ.get("NEXUS_BASE_URL", "https://nexus-multiverse.emergent.host").rstrip("/")
 
-@api_router.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH"])
-async def proxy_to_nexus(request: Request, path: str):
-    # Construct the target URL
-    # The path here captures everything after /api/
-    # e.g. /api/nexus/status -> path="nexus/status"
-    # Target: https://nexus-multiverse.emergent.host/api/nexus/status
-    
-    target_url = f"{NEXUS_BASE_URL}/api/{path}"
-    
-    logger.info(f"Proxying request: {request.method} {request.url.path} -> {target_url}")
-    
-    async with httpx.AsyncClient() as client:
-        try:
-            # Forward headers (excluding host)
-            headers = dict(request.headers)
-            headers.pop("host", None)
-            headers.pop("content-length", None) # Let httpx handle this
-            
-            # Read body
-            body = await request.body()
-            
-            response = await client.request(
-                method=request.method,
-                url=target_url,
-                headers=headers,
-                content=body,
-                params=request.query_params,
-                timeout=30.0
-            )
-            
-            # Return response
-            return Response(
-                content=response.content,
-                status_code=response.status_code,
-                headers=dict(response.headers)
-            )
-            
-        except httpx.RequestError as exc:
-            logger.error(f"Proxy error: {exc}")
-            raise HTTPException(status_code=502, detail=f"Nexus Proxy Error: {exc}")
-        except Exception as exc:
-            logger.error(f"Proxy unexpected error: {exc}")
-            raise HTTPException(status_code=500, detail=str(exc))
+proxy_router = APIRouter(prefix="/nexus")
+
+@proxy_router.api_route("/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
+async def proxy_to_nexus(path: str, request: Request):
+    target_url = f"{NEXUS_BASE_URL}/{path}"
+
+    headers = dict(request.headers)
+    headers.pop("host", None)
+    headers.pop("content-length", None)
+
+    body = await request.body()
+
+    async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as c:
+        r = await c.request(
+            method=request.method,
+            url=target_url,
+            params=dict(request.query_params),
+            content=body,
+            headers=headers,
+        )
+
+    resp_headers = dict(r.headers)
+    resp_headers.pop("content-encoding", None)
+    resp_headers.pop("transfer-encoding", None)
+    resp_headers.pop("connection", None)
+
+    return Response(
+        content=r.content,
+        status_code=r.status_code,
+        headers=resp_headers,
+        media_type=r.headers.get("content-type"),
+    )
+
+app.include_router(proxy_router)
 
 # Include the router in the main app
 app.include_router(api_router)
