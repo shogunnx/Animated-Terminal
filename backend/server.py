@@ -22,6 +22,10 @@ db = client[os.environ['DB_NAME']]
 # Create the main app without a prefix
 app = FastAPI()
 
+@app.get("/")
+async def health_check():
+    return {"status": "ok", "service": "anime-terminal-backend"}
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
