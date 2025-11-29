@@ -51,15 +51,11 @@ export default function DressingRoom() {
         
         if (data.has_base_image) {
           // Load the stored base image
-          const imgResponse = await fetch(`/api/backend/base_images/${charId}.png`);
+          const imgResponse = await fetch(`/api/dressing-room/get-base/${charId}`);
           if (imgResponse.ok) {
-            const blob = await imgResponse.blob();
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              setBaseImage(reader.result);
-              setBaseImageSource("stored");
-            };
-            reader.readAsDataURL(blob);
+            const imgData = await imgResponse.json();
+            setBaseImage(`data:image/png;base64,${imgData.image_base64}`);
+            setBaseImageSource("stored");
           }
         }
       } catch (err) {
