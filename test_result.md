@@ -259,8 +259,10 @@ metadata:
   run_ui: true
 
 test_plan:
-  current_focus: []
-  stuck_tasks: []
+  current_focus: 
+    - "Updated Character Navigation"
+  stuck_tasks: 
+    - "Updated Character Navigation"
   test_all: true
   test_priority: "complete"
 
