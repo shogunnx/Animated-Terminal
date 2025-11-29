@@ -28,16 +28,19 @@ async def download_image(url: str) -> bytes:
         return response.content
 
 def prepare_image_for_openai(image_data: bytes) -> bytes:
-    """Convert image to PNG and ensure it's under 4MB and square"""
+    """Convert image to PNG with RGBA and ensure it's under 4MB and square"""
     img = Image.open(io.BytesIO(image_data))
     
-    # Convert RGBA to RGB if needed
-    if img.mode == 'RGBA':
-        background = Image.new('RGB', img.size, (255, 255, 255))
-        background.paste(img, mask=img.split()[3])
-        img = background
-    elif img.mode != 'RGB':
-        img = img.convert('RGB')
+    # Convert to RGBA (required by OpenAI image editing)
+    if img.mode != 'RGBA':
+        # For RGB, add full opacity alpha channel
+        if img.mode == 'RGB':
+            img = img.convert('RGBA')
+        # For grayscale or other modes, convert to RGBA
+        elif img.mode in ('L', 'LA'):
+            img = img.convert('RGBA')
+        else:
+            img = img.convert('RGBA')
     
     # Make image square by cropping/padding to center
     width, height = img.size
@@ -46,11 +49,11 @@ def prepare_image_for_openai(image_data: bytes) -> bytes:
     top = (height - size) // 2
     img = img.crop((left, top, left + size, top + size))
     
-    # Resize if too large (OpenAI max is 4MB, keep under 1024x1024 for safety)
-    if size > 1024:
+    # Resize if too large (OpenAI prefers 1024x1024 for editing)
+    if size != 1024:
         img = img.resize((1024, 1024), Image.Resampling.LANCZOS)
     
-    # Save as PNG
+    # Save as PNG with RGBA
     output = io.BytesIO()
     img.save(output, format='PNG')
     return output.getvalue()
