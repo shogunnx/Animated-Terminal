@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import httpx
 from openai import OpenAI
 from PIL import Image
+from pathlib import Path
 
 load_dotenv()
 
