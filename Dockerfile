@@ -22,5 +22,5 @@ COPY --from=fe /app/frontend/dist /app/frontend_dist
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
-EXPOSE 8000
+EXPOSE 8001
 CMD ["/app/start.sh"]
