@@ -98,12 +98,17 @@ def create_clothing_mask(image_bytes: bytes) -> bytes:
     mask = Image.new('RGBA', (1024, 1024), (255, 255, 255, 255))
     pixels = mask.load()
     
-    # More aggressive mask - only keep face area (top 15%)
-    # Make everything from neck down transparent for better outfit changes
-    for y in range(150, 1024):  # From 15% down (neck and below)
+    # Balanced mask - keep face and top of head, edit body
+    # Top 20% opaque (face), middle 70% transparent (body/clothes), bottom 10% semi (feet)
+    for y in range(200, 924):  # From 20% to 90% (body area)
         for x in range(1024):
-            alpha = 0  # Fully transparent - allows complete outfit replacement
-            pixels[x, y] = (255, 255, 255, alpha)
+            # Fully transparent in clothing area for complete replacement
+            pixels[x, y] = (255, 255, 255, 0)
+    
+    # Make bottom area (shoes) semi-transparent for better shoe rendering
+    for y in range(924, 1024):
+        for x in range(1024):
+            pixels[x, y] = (255, 255, 255, 128)  # Semi-transparent
     
     # Save mask
     output = io.BytesIO()
