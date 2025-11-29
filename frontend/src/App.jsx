@@ -22,6 +22,8 @@ function AnimatedRoutes() {
         <Route path="/rooms/:id" element={<Room />} />
         <Route path="/gameroom" element={<GameRoom />} />
         <Route path="/game/:gameId" element={<GamePlayer />} />
+        <Route path="/dressing-room" element={<DressingRoom />} />
+        <Route path="/dressing-room/:id" element={<DressingRoom />} />
         <Route path="/deviantart" element={<DeviantArt />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
