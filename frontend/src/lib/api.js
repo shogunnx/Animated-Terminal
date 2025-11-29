@@ -32,7 +32,7 @@ export async function fetchCharacters() {
 
 // A best-effort Nexus chat that tries common payload shapes.
 export async function nexusChat(characterId, message) {
-  const path = `api/chat/${characterId}`;
+  const path = `api/chat-mind/${characterId}`;
   const attempts = [
     { message },
     { prompt: message },
