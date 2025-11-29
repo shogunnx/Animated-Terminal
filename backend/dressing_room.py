@@ -65,33 +65,15 @@ def prepare_image_for_openai(image_data: bytes) -> bytes:
 
 def create_clothing_mask(image_bytes: bytes) -> bytes:
     """Create a mask for clothing area (transparent where clothes should be edited)"""
-    img = Image.open(io.BytesIO(image_bytes))
-    
-    # Ensure RGBA
-    if img.mode != 'RGBA':
-        img = img.convert('RGBA')
-    
-    # Make square
-    width, height = img.size
-    size = min(width, height)
-    left = (width - size) // 2
-    top = (height - size) // 2
-    img = img.crop((left, top, left + size, top + size))
-    
-    # Resize to 1024x1024
-    if size != 1024:
-        img = img.resize((1024, 1024), Image.Resampling.LANCZOS)
-    
-    # Create a mask - make the clothing area transparent
-    # Rough approximation: transparent in middle/body area, opaque at face (top 30%)
+    # Create 1024x1024 mask
     mask = Image.new('RGBA', (1024, 1024), (255, 255, 255, 255))
     pixels = mask.load()
     
-    # Make bottom 70% semi-transparent (where body/clothes typically are)
-    for y in range(300, 1024):  # From 30% down
+    # More aggressive mask - only keep face area (top 15%)
+    # Make everything from neck down transparent for better outfit changes
+    for y in range(150, 1024):  # From 15% down (neck and below)
         for x in range(1024):
-            # Create a soft gradient mask
-            alpha = 0  # Fully transparent in clothing area
+            alpha = 0  # Fully transparent - allows complete outfit replacement
             pixels[x, y] = (255, 255, 255, alpha)
     
     # Save mask
