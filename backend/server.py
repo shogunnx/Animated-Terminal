@@ -106,6 +106,23 @@ async def generate_dressing_room_image(request: OutfitRequest):
     """Generate an outfit image for a character"""
     return await generate_outfit_image(request)
 
+@api.post("/dressing-room/save-base")
+async def save_base_image_endpoint(request: BaseImageRequest):
+    """Save a base image for a character"""
+    from dressing_room import save_base_image
+    try:
+        image_data = base64.b64decode(request.image_base64.split(',')[-1])
+        file_path = save_base_image(request.character_id, image_data)
+        return {"success": True, "message": f"Base image saved for {request.character_id}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save base image: {str(e)}")
+
+@api.get("/dressing-room/has-base/{character_id}")
+async def check_base_image(character_id: str):
+    """Check if a character has a stored base image"""
+    from dressing_room import has_base_image
+    return {"has_base_image": has_base_image(character_id)}
+
 # -----------------------
 # Generic proxy helper
 # -----------------------
