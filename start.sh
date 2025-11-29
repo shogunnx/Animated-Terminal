@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-export PORT="${PORT:-8000}"
+export PORT="${PORT:-8001}"
 echo "[START] Using PORT=$PORT"
 
 # Run FastAPI (serves both API and frontend)
