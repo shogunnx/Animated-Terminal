@@ -118,11 +118,13 @@ export default function DressingRoom() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          character_id: selectedCharacter.id,
           character_name: selectedCharacter.name,
           character_description: selectedCharacter.subtitle || "anime character",
           outfit_description: outfitDesc,
           reference_image_url: baseImageSource === "nexus" ? baseImage : null,
-          reference_image_base64: baseImageSource === "upload" ? baseImage : null
+          reference_image_base64: baseImageSource === "upload" ? baseImage : null,
+          save_as_base: baseImageSource === "upload"  // Auto-save uploaded images
         })
       });
 
