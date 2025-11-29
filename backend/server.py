@@ -124,6 +124,17 @@ async def check_base_image(character_id: str):
     from dressing_room import has_base_image
     return {"has_base_image": has_base_image(character_id)}
 
+@api.get("/dressing-room/get-base/{character_id}")
+async def get_base_image_endpoint(character_id: str):
+    """Get stored base image for a character"""
+    from dressing_room import get_base_image
+    image_data = get_base_image(character_id)
+    if image_data:
+        image_base64 = base64.b64encode(image_data).decode('utf-8')
+        return {"success": True, "image_base64": image_base64}
+    else:
+        raise HTTPException(status_code=404, detail="No base image found for this character")
+
 # -----------------------
 # Generic proxy helper
 # -----------------------
