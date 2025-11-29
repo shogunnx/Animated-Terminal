@@ -205,7 +205,9 @@ High quality, detailed clothing, accurate colors, full body shot."""
             return {
                 "success": True,
                 "image_base64": image_base64,
-                "prompt_used": prompt
+                "prompt_used": prompt,
+                "image_source": image_source,
+                "base_image_saved": request.save_as_base and image_source == "upload"
             }
         else:
             raise HTTPException(status_code=500, detail="No image was generated")
