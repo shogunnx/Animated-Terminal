@@ -27,6 +27,7 @@ export default function Shell({ children }) {
             <div style={{ display:"flex", gap: 10, flexWrap:"wrap", justifyContent: "flex-end" }}>
               <NavLink to="/" label="Terminal" />
               <NavLink to="/characters" label="Characters" />
+              <NavLink to="/dressing-room" label="👗 Dressing Room" />
               <NavLink to="/deviantart" label="DeviantArt" />
             </div>
           </div>
