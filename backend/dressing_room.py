@@ -116,18 +116,40 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     if not OPENAI_API_KEY:
         raise HTTPException(status_code=500, detail="OPENAI_API_KEY not configured")
     
-    # Get base image
+    # Priority system for base images:
+    # 1. Nexus API (if reference_image_url provided)
+    # 2. Stored base image for this character
+    # 3. Uploaded image (reference_image_base64)
+    
     base_image_bytes = None
-    if request.reference_image_base64:
-        base_image_bytes = base64.b64decode(request.reference_image_base64.split(',')[-1])
-    elif request.reference_image_url:
+    image_source = None
+    
+    # Priority 1: Try Nexus URL if provided
+    if request.reference_image_url:
         try:
             base_image_bytes = await download_image(request.reference_image_url)
+            image_source = "nexus"
         except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Failed to download reference image: {str(e)}")
+            pass  # Fall through to next priority
+    
+    # Priority 2: Try stored base image
+    if not base_image_bytes:
+        stored_image = get_base_image(request.character_id)
+        if stored_image:
+            base_image_bytes = stored_image
+            image_source = "stored"
+    
+    # Priority 3: Use uploaded image
+    if not base_image_bytes and request.reference_image_base64:
+        base_image_bytes = base64.b64decode(request.reference_image_base64.split(',')[-1])
+        image_source = "upload"
+        
+        # Save uploaded image as base image for this character
+        if request.save_as_base:
+            save_base_image(request.character_id, base_image_bytes)
     
     if not base_image_bytes:
-        raise HTTPException(status_code=400, detail="No reference image provided.")
+        raise HTTPException(status_code=400, detail="No reference image available. Please upload a base image.")
     
     # Prepare base image
     try:
