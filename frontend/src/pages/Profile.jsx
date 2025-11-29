@@ -38,8 +38,8 @@ export default function Profile() {
   };
 
   return (
-    <div style={{ display:"grid", gridTemplateColumns:"360px 1fr", gap: 14, alignItems:"start" }}>
-      <div className="tsv-glass tsv-glow" style={{ padding: 14 }}>
+    <div style={{ display:"grid", gridTemplateColumns:"1fr", gap: 14, alignItems:"start" }}>
+      <div className="tsv-glass tsv-glow" style={{ padding: 14, maxWidth: "100%" }}>
         <div className="tsv-title" style={{ fontSize: 14 }}>{c.name}</div>
         <div style={{ fontSize: 12, opacity:.72, marginTop: 6 }}>{c.subtitle}</div>
 
