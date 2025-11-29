@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchCharacters } from "../lib/api.js";
+import { TSV_CHARACTERS } from "../content/tsvContent.js";
 import CharacterCard from "../components/CharacterCard.jsx";
 
 export default function Characters() {
@@ -16,7 +17,9 @@ export default function Characters() {
         setCharacters(data.characters || []);
         setLoading(false);
       } catch (err) {
-        setError(err.message);
+        // Fallback to local TSV_CHARACTERS data
+        setCharacters(TSV_CHARACTERS.filter(c => !c.isSpecial));
+        setError(null);
         setLoading(false);
       }
     }
