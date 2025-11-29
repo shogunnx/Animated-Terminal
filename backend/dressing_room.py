@@ -12,6 +12,8 @@ from PIL import Image
 load_dotenv()
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+BASE_IMAGES_DIR = Path("/app/backend/base_images")
+BASE_IMAGES_DIR.mkdir(exist_ok=True)
 
 class OutfitRequest(BaseModel):
     character_name: str
