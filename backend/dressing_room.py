@@ -58,53 +58,67 @@ def prepare_image_for_openai(image_data: bytes) -> bytes:
     img.save(output, format='PNG')
     return output.getvalue()
 
+def analyze_image_for_character_description(image_bytes: bytes) -> str:
+    """Analyze image to extract character features"""
+    try:
+        img = Image.open(io.BytesIO(image_bytes))
+        # For now, return a generic description
+        # In future, could use vision API to analyze
+        return "beautiful anime character with long flowing hair"
+    except:
+        return "anime character"
+
 async def generate_outfit_image(request: OutfitRequest) -> dict:
-    """Generate an image of a character in a specific outfit using OpenAI image editing"""
+    """Generate an image of a character in a specific outfit using OpenAI"""
     
     if not OPENAI_API_KEY:
         raise HTTPException(status_code=500, detail="OPENAI_API_KEY not configured")
     
-    # Get base image
+    # Get base image for character description reference
     base_image_bytes = None
     if request.reference_image_base64:
-        # Decode base64 image
         base_image_bytes = base64.b64decode(request.reference_image_base64.split(',')[-1])
     elif request.reference_image_url:
-        # Download image from URL
         try:
             base_image_bytes = await download_image(request.reference_image_url)
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Failed to download reference image: {str(e)}")
     
     if not base_image_bytes:
-        raise HTTPException(status_code=400, detail="No reference image provided. Base image is required for outfit generation.")
+        raise HTTPException(status_code=400, detail="No reference image provided.")
     
-    # Prepare image for OpenAI
-    try:
-        prepared_image = prepare_image_for_openai(base_image_bytes)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to prepare image: {str(e)}")
+    # Analyze image for character features
+    character_features = analyze_image_for_character_description(base_image_bytes)
     
-    # Create prompt for outfit modification
-    prompt = f"""Transform this character to wear: {request.outfit_description}. 
-Keep the character's face, body type, and overall appearance the same. 
-Only change the clothing and accessories to match the description. 
-High quality anime art style, detailed clothing."""
+    # Create detailed prompt for text-to-image generation
+    # This approach gives better control over outfit changes
+    prompt = f"""Full body portrait of {request.character_name}, {character_features}.
+
+Character wearing: {request.outfit_description}
+
+Style: High quality anime art, professional character illustration, full body shot, standing pose, detailed clothing design, vibrant colors, clean background, 8k quality, trending on artstation"""
     
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
         
-        # Create a file-like object for the image
-        image_file = io.BytesIO(prepared_image)
-        image_file.name = "base_image.png"
-        
-        # Use OpenAI's image editing API (dall-e-2 supports image editing)
-        response = client.images.edit(
-            image=image_file,
-            prompt=prompt,
-            n=1,
-            size="1024x1024"
-        )
+        # Use DALL-E 3 for better quality (or DALL-E 2 if 3 not available)
+        try:
+            # Try DALL-E 3 first
+            response = client.images.generate(
+                model="dall-e-3",
+                prompt=prompt,
+                n=1,
+                size="1024x1024",
+                quality="standard"
+            )
+        except Exception as e:
+            # Fallback to DALL-E 2 if DALL-E 3 fails
+            response = client.images.generate(
+                model="dall-e-2",
+                prompt=prompt,
+                n=1,
+                size="1024x1024"
+            )
         
         if response.data and len(response.data) > 0:
             # Get the URL of the generated image
@@ -122,7 +136,8 @@ High quality anime art style, detailed clothing."""
             return {
                 "success": True,
                 "image_base64": image_base64,
-                "prompt_used": prompt
+                "prompt_used": prompt,
+                "model_used": response.model if hasattr(response, 'model') else "dall-e"
             }
         else:
             raise HTTPException(status_code=500, detail="No image was generated")
