@@ -5,7 +5,8 @@ export const TSV_CHARACTERS = [
   { id:"vanessa", name:"Vanessa", subtitle:"Pinup warrior suite", accent:"#FF3D5A", glow:"#FFCC4D", portrait:"/assets/portraits/vanessa.png" },
   { id:"harmony", name:"Harmony", subtitle:"Tech loft & fusion lab", accent:"#63B3FF", glow:"#A7F0FF", portrait:"/assets/portraits/harmony.png" },
   { id:"evil_victoria", name:"Evil Victoria", subtitle:"Forbidden chamber", accent:"#FF4B4B", glow:"#B000FF", portrait:"/assets/portraits/evil_victoria.png" },
-  { id:"veronica", name:"Veronica", subtitle:"Human ally quarters", accent:"#FFB84D", glow:"#63B3FF", portrait:"/assets/portraits/veronica.png" }
+  { id:"veronica", name:"Veronica", subtitle:"Human ally quarters", accent:"#FFB84D", glow:"#63B3FF", portrait:"/assets/portraits/veronica.png" },
+  { id:"gameroom", name:"Game Room", subtitle:"Arcade & party zone", accent:"#FFD700", glow:"#FF6B00", portrait:"/assets/portraits/gameroom.png", isSpecial: true }
 ];
 
 export const TSV_ROOMS = {
@@ -90,5 +91,170 @@ export const TSV_ROOMS = {
       { key:"tools", label:"Tool Case", action:"memories", x:68, y:68 },
       { key:"screen", label:"Video Scout Screen", action:"raid_logs", x:76, y:30 }
     ],
+  },
+
+  gameroom: {
+    title: "GAME ROOM — Arcade Paradise",
+    vibe: "Large, bright arcade zone. Neon lights, game cabinets, party vibes!",
+    palette: { a:"#FFD700", b:"#FF6B00" },
+    hotspots: [
+      { key:"arcade", label:"Arcade Cabinet", action:"games", x:25, y:50 },
+      { key:"console", label:"Gaming Console", action:"games", x:50, y:55 },
+      { key:"snacks", label:"Snack Bar", action:"status", x:75, y:45 },
+      { key:"scoreboard", label:"High Score Board", action:"raid_logs", x:50, y:25 }
+    ],
+  }
+};
+
+// NINTENDO-STYLE GAMES LIST - FULLY PLAYABLE!
+export const TSV_GAMES = [
+  { 
+    id: "tetris", 
+    name: "Tetris Blocks", 
+    type: "Puzzle", 
+    description: "Stack falling blocks to clear lines! Classic addictive gameplay!", 
+    difficulty: "Medium", 
+    icon: "🟦",
+    implemented: true
+  },
+  { 
+    id: "snake", 
+    name: "Snake Feast", 
+    type: "Arcade", 
+    description: "Eat, grow, don't crash! The original mobile addiction!", 
+    difficulty: "Easy", 
+    icon: "🐍",
+    implemented: true
+  },
+  { 
+    id: "breakout", 
+    name: "Breakout Blitz", 
+    type: "Arcade", 
+    description: "Paddle, ball, bricks! Smash everything in sight!", 
+    difficulty: "Easy", 
+    icon: "🧱",
+    implemented: true
+  },
+  { 
+    id: "runner", 
+    name: "Endless Runner", 
+    type: "Action", 
+    description: "Jump over obstacles and run forever! How far can you go?", 
+    difficulty: "Medium", 
+    icon: "🏃",
+    implemented: true
+  },
+  { 
+    id: "microgames", 
+    name: "Micro Madness", 
+    type: "Party", 
+    description: "WarioWare-style rapid micro challenges! 5 seconds each!", 
+    difficulty: "Hard", 
+    icon: "⚡",
+    implemented: true
+  },
+  { 
+    id: "rhythm", 
+    name: "Rhythm Tapper", 
+    type: "Rhythm", 
+    description: "Hit the beats! Perfect timing = high scores!", 
+    difficulty: "Medium", 
+    icon: "🎵",
+    implemented: true
+  },
+];
+
+// GIRL COACHING MODES
+export const GIRL_COACHES = {
+  victoria_black: {
+    name: "Victoria Black",
+    role: "Goddess Strategist",
+    tips: [
+      "Plan three moves ahead, not one.",
+      "Patience brings perfection.",
+      "Every mistake teaches something.",
+      "Speed is nothing without control.",
+      "You're improving. I see it."
+    ],
+    successPhrases: ["Excellent.", "Impressive work.", "You're learning.", "Good."],
+    failPhrases: ["Try again.", "Focus.", "Don't rush.", "Think first."]
+  },
+  wargirl: {
+    name: "Wargirl",
+    role: "SSJ3 Hype Coach",
+    tips: [
+      "GO GO GO! FASTER!",
+      "COMBO THAT! DON'T STOP!",
+      "YOU'RE ON FIRE! KEEP GOING!",
+      "THAT'S THE SPIRIT!",
+      "UNLEASH IT! FULL POWER!"
+    ],
+    successPhrases: ["YES!! AWESOME!!", "THAT'S MY WARRIOR!!", "INCREDIBLE!!", "YOU'RE UNSTOPPABLE!!"],
+    failPhrases: ["Aww no! Again!", "Shake it off!", "You got this!", "Next time!"]
+  },
+  binary: {
+    name: "Binary",
+    role: "Rival Roaster",
+    tips: [
+      "My score is still higher...",
+      "Can you even beat level 5?",
+      "Interesting... for a human.",
+      "I've calculated your odds. Low.",
+      "Try not to embarrass yourself."
+    ],
+    successPhrases: ["...Not bad.", "Hmph. Lucky.", "Calculated.", "Acceptable."],
+    failPhrases: ["Predictable failure.", "As expected.", "Pathetic.", "Git gud."]
+  },
+  vanessa: {
+    name: "Vanessa",
+    role: "Flirt Queen",
+    tips: [
+      "Looking good out there~",
+      "Ooh, I like it when you combo like that!",
+      "Keep going, I'm watching~ ♥",
+      "You're making me blush!",
+      "Show me what you've got~"
+    ],
+    successPhrases: ["Amazing! ♥", "You're so good~!", "That's hot!", "Impressive~"],
+    failPhrases: ["Aww, it's okay~", "Next time, sweetie!", "Don't give up!", "I believe in you~"]
+  },
+  harmony: {
+    name: "Harmony",
+    role: "Tech Analyst",
+    tips: [
+      "Pattern recognition is key.",
+      "Your reaction time: 250ms average.",
+      "Optimize your positioning.",
+      "That sequence can be improved.",
+      "Data shows you peak at night."
+    ],
+    successPhrases: ["Optimal performance.", "Efficiency increased.", "Well executed.", "Above average."],
+    failPhrases: ["Suboptimal.", "Analyzing error...", "Recalculating...", "Try this angle."]
+  },
+  evil_victoria: {
+    name: "Evil Victoria",
+    role: "Dark Motivator",
+    tips: [
+      "Suffering builds character...",
+      "Embrace the chaos.",
+      "Pain is temporary, glory eternal.",
+      "Let the darkness guide you.",
+      "Show me your true power."
+    ],
+    successPhrases: ["Delicious.", "Exquisite.", "More...", "Yes... perfect."],
+    failPhrases: ["Disappointing.", "Weak.", "Again.", "Pathetic."]
+  },
+  veronica: {
+    name: "Veronica",
+    role: "Friendly Support",
+    tips: [
+      "You're doing great!",
+      "Remember to breathe!",
+      "I'm cheering for you!",
+      "Take your time, no rush!",
+      "You've got this!"
+    ],
+    successPhrases: ["Amazing job!!", "You did it!!", "So proud!!", "That was awesome!!"],
+    failPhrases: ["That's okay!", "You'll get it!", "Keep trying!", "I'm here for you!"]
   }
 };

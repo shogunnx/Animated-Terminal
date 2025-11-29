@@ -1,41 +1,108 @@
 import HoloPortrait from "./HoloPortrait.jsx";
 
 export default function CharacterCard({ c, onProfile, onRoom }) {
+  // Set default values for Nexus data
+  const accent = c.accent || "#00ffff";
+  const glow = c.glow || "#8800ff";
+  const subtitle = c.role || c.subtitle || "TSV Character";
+  const portrait = c.avatar || c.portrait || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.name)}&size=400&background=1a1a2e&color=00ffff&bold=true`;
+
   return (
-    <div className="tsv-glass tsv-glow" style={{ padding: 14, position:"relative", overflow:"hidden" }}>
-      <div style={{ display:"flex", justifyContent:"space-between", gap: 10, alignItems:"flex-start" }}>
-        <div>
-          <div className="tsv-title" style={{ fontSize: 14 }}>{c.name}</div>
-          <div style={{ fontSize: 12, opacity:.70, marginTop: 6 }}>{c.subtitle}</div>
+    <div className="tsv-glass tsv-glow tsv-float" style={{ padding: 16, position:"relative", overflow:"hidden" }}>
+      {/* POWER INDICATOR STRIP */}
+      <div style={{ 
+        position:"absolute", 
+        top:0, 
+        left:0, 
+        right:0, 
+        height:3, 
+        background:`linear-gradient(90deg, transparent, ${accent}, transparent)`,
+        boxShadow:`0 0 10px ${accent}`
+      }} />
+
+      <div style={{ display:"flex", justifyContent:"space-between", gap: 10, alignItems:"flex-start", flexWrap: "wrap" }}>
+        <div style={{ flex: "1 1 auto", minWidth: 0 }}>
+          <div className="tsv-title" style={{ fontSize: 14, color: accent, wordWrap: "break-word" }}>{c.name}</div>
+          <div style={{ fontSize: 11, color:"var(--text-dim)", marginTop: 6, textTransform:"uppercase", letterSpacing:".08em", lineHeight: 1.4 }}>
+            {subtitle.substring(0, 80)}{subtitle.length > 80 ? "..." : ""}
+          </div>
         </div>
-        <span className="tsv-pill" style={{ borderColor: `${c.accent}33` }}>
-          <span style={{ width: 8, height: 8, borderRadius: 999, background: c.accent, boxShadow: `0 0 16px ${c.accent}` }} />
-          FILE
+        <span className="tsv-pill tsv-pulse" style={{ 
+          borderColor: accent, 
+          background:`linear-gradient(135deg, ${accent}15, ${glow}10)`,
+          flexShrink: 0
+        }}>
+          <span className="tsv-holo" style={{ 
+            width: 8, 
+            height: 8, 
+            background: accent, 
+            boxShadow: `0 0 12px ${accent}, inset 0 0 4px ${accent}`,
+            clipPath:"polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)"
+          }} />
+          <span style={{fontSize:10,letterSpacing:".1em"}}>FILE</span>
         </span>
       </div>
 
-      <div className="tsv-scanlines tsv-noise" style={{ marginTop: 12, borderRadius: 16, border:"1px solid rgba(255,255,255,.10)", overflow:"hidden", position:"relative" }}>
-        <div style={{ aspectRatio:"4/5", background:`radial-gradient(900px 520px at 50% 15%, ${c.glow}22, transparent 65%)`, position:"relative" }}>
+      {/* 3D PORTRAIT FRAME */}
+      <div className="tsv-scanlines tsv-noise" style={{ 
+        marginTop: 14, 
+        overflow:"hidden", 
+        position:"relative",
+        border:`2px solid ${accent}`,
+        borderTop:`2px solid ${accent}88`,
+        borderLeft:`2px solid ${accent}88`,
+        clipPath:"polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)",
+        boxShadow:`0 0 20px ${accent}40, inset 0 0 30px ${glow}20`
+      }}>
+        <div style={{ 
+          aspectRatio:"4/5", 
+          background:`
+            radial-gradient(circle at 50% 30%, ${glow}35, transparent 60%),
+            radial-gradient(circle at 20% 80%, ${accent}25, transparent 50%),
+            linear-gradient(180deg, #0a0a12, #050508)
+          `, 
+          position:"relative" 
+        }}>
           <img
-            src={c.portrait}
+            src={portrait}
             alt={c.name}
             onError={(e) => { e.currentTarget.style.display = "none"; }}
-            style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
+            style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", opacity:0.92 }}
           />
           <div style={{ position:"absolute", inset:0, pointerEvents:"none" }}>
-            <HoloPortrait name={c.name} accent={c.accent} glow={c.glow} />
+            <HoloPortrait name={c.name} accent={accent} glow={glow} />
           </div>
+          
+          {/* CORNER BRACKETS */}
+          <svg style={{position:"absolute",inset:0,pointerEvents:"none"}} viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="M0 0 L8 0 L8 1 L1 1 L1 8 L0 8 Z" fill={accent} opacity=".6"/>
+            <path d="M100 0 L92 0 L92 1 L99 1 L99 8 L100 8 Z" fill={accent} opacity=".6"/>
+            <path d="M0 100 L8 100 L8 99 L1 99 L1 92 L0 92 Z" fill={accent} opacity=".6"/>
+            <path d="M100 100 L92 100 L92 99 L99 99 L99 92 L100 92 Z" fill={accent} opacity=".6"/>
+          </svg>
         </div>
       </div>
 
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 10, marginTop: 12 }}>
-        <button className="tsv-btn" onClick={onProfile}>Open Profile</button>
-        <button className="tsv-btn" onClick={onRoom}>Enter Room</button>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap: 10, marginTop: 14 }}>
+        <button className="tsv-btn" onClick={onProfile} style={{fontSize:11, padding: "10px 12px"}}>
+          OPEN PROFILE
+        </button>
+        <button className="tsv-btn" onClick={onRoom} style={{fontSize:11, padding: "10px 12px"}}>
+          ENTER ROOM
+        </button>
       </div>
 
+      {/* AMBIENT GLOW */}
       <div style={{
-        position:"absolute", inset:-2, pointerEvents:"none",
-        background:`radial-gradient(700px 260px at 50% 0%, ${c.accent}18, transparent 60%)`
+        position:"absolute", 
+        bottom:-20, 
+        left:"50%",
+        transform:"translateX(-50%)",
+        width:"80%",
+        height:60,
+        pointerEvents:"none",
+        background:`radial-gradient(ellipse, ${accent}30, transparent 70%)`,
+        filter:"blur(20px)"
       }} />
     </div>
   );

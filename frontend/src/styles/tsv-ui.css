@@ -1,93 +1,746 @@
 :root{
-  --bg0:#050713;
-  --bg1:#0B1022;
-  --glass: rgba(255,255,255,.08);
-  --stroke: rgba(255,255,255,.14);
-  --text: rgba(255,255,255,.92);
-  --muted: rgba(255,255,255,.68);
+  --bg0:#0a0a12;
+  --bg1:#050508;
+  --wall-dark:#1a1a2e;
+  --wall-light:#2a2a42;
+  --floor:#0f0f18;
+  --ceiling:#12121d;
+  --metal:#3a4a5a;
+  --glow-cyan:#00ffff;
+  --glow-purple:#8800ff;
+  --glow-green:#00ff88;
+  --text: #e0e0ff;
+  --text-dim: #8888aa;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 a { color: inherit; text-decoration: none; }
 
+body {
+  background: #000;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* DOOM/METROID 3D CORRIDOR BACKGROUND */
 .tsv-bg {
-  background:
-    radial-gradient(1200px 800px at 20% 10%, rgba(140, 80, 255, .22), transparent 60%),
-    radial-gradient(900px 700px at 82% 30%, rgba(0, 255, 190, .12), transparent 55%),
-    linear-gradient(180deg, var(--bg0), var(--bg1));
+  position: relative;
   min-height: 100vh;
+  background: 
+    linear-gradient(180deg, 
+      var(--ceiling) 0%, 
+      var(--bg0) 30%,
+      var(--bg1) 70%,
+      var(--floor) 100%
+    );
   color: var(--text);
+  perspective: 1000px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 3D PERSPECTIVE GRID FLOOR */
+.tsv-bg::before {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50vh;
+  background-image: 
+    linear-gradient(0deg, var(--glow-cyan) 1px, transparent 1px),
+    linear-gradient(90deg, var(--glow-cyan) 1px, transparent 1px);
+  background-size: 80px 80px;
+  background-position: center bottom;
+  opacity: 0.08;
+  transform: perspective(600px) rotateX(60deg);
+  transform-origin: bottom center;
+  pointer-events: none;
+}
+
+/* 3D DEPTH LINES (Doom corridor effect) */
+.tsv-bg::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: 
+    repeating-linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0,255,255,0.03) 10%,
+      transparent 20%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0%,
+      rgba(136,0,255,0.03) 10%,
+      transparent 20%
+    );
+  pointer-events: none;
+  animation: perspectiveDrift 20s linear infinite;
+}
+
+@keyframes perspectiveDrift {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 100px 0, 0 100px; }
 }
 
 .tsv-title {
   font-family: ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  letter-spacing: .06em;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-shadow: 
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    2px 2px 4px rgba(0,0,0,0.8);
 }
 
+/* 3D PANEL WITH PERSPECTIVE */
 .tsv-glass {
-  background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-  border: 1px solid var(--stroke);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 18px;
+  position: relative;
+  background: 
+    linear-gradient(135deg, 
+      rgba(26,26,46,0.95) 0%, 
+      rgba(15,15,24,0.98) 100%
+    );
+  border: 2px solid var(--metal);
+  border-top-color: rgba(58,74,90,0.6);
+  border-left-color: rgba(58,74,90,0.6);
+  box-shadow: 
+    inset 0 1px 0 rgba(255,255,255,0.1),
+    inset 0 -1px 0 rgba(0,0,0,0.5),
+    0 8px 32px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(0,255,255,0.1);
+  clip-path: polygon(
+    8px 0, 100% 0, 100% calc(100% - 8px), 
+    calc(100% - 8px) 100%, 0 100%, 0 8px
+  );
+}
+
+.tsv-glass::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--glow-cyan) 50%, 
+    transparent
+  );
+  opacity: 0.4;
 }
 
 .tsv-glow {
-  box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 14px 40px rgba(0,0,0,.55);
+  box-shadow: 
+    0 0 20px rgba(0,255,255,0.2),
+    0 0 40px rgba(136,0,255,0.15),
+    0 8px 32px rgba(0,0,0,0.8),
+    inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
+/* 3D BUTTON WITH DEPTH */
 .tsv-btn {
-  border-radius: 14px;
-  border: 1px solid var(--stroke);
-  background: rgba(255,255,255,.08);
+  position: relative;
+  background: linear-gradient(180deg, var(--wall-light), var(--wall-dark));
+  border: 2px solid var(--metal);
+  border-top-color: rgba(100,120,140,0.8);
+  border-left-color: rgba(100,120,140,0.8);
   color: var(--text);
-  padding: 10px 12px;
+  padding: 10px 16px;
   cursor: pointer;
-  transition: transform .12s ease, background .12s ease, border-color .12s ease;
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  transition: all 0.1s ease;
+  box-shadow: 
+    0 4px 0 rgba(0,0,0,0.4),
+    0 0 10px rgba(0,255,255,0.2);
 }
-.tsv-btn:hover { transform: translateY(-1px); background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.22); }
 
+.tsv-btn:hover {
+  background: linear-gradient(180deg, var(--wall-light), var(--glow-cyan)22);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 0 rgba(0,0,0,0.4),
+    0 0 20px var(--glow-cyan);
+  border-color: var(--glow-cyan);
+}
+
+.tsv-btn:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0 2px 0 rgba(0,0,0,0.4),
+    0 0 10px rgba(0,255,255,0.3);
+}
+
+/* 3D STATUS PILL */
 .tsv-pill {
-  display:inline-flex; align-items:center; gap:8px;
-  padding: 7px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.14);
+  display:inline-flex; 
+  align-items:center; 
+  gap:8px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, rgba(26,26,46,0.9), rgba(15,15,24,0.95));
+  border: 2px solid var(--metal);
+  border-top-color: rgba(58,74,90,0.6);
+  clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
   user-select:none;
+  box-shadow: 
+    0 2px 8px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
-.tsv-scanlines{ position:relative; overflow:hidden; }
-.tsv-scanlines::before{
+/* CRT SCANLINES (retro gaming effect) */
+.tsv-scanlines { 
+  position:relative; 
+  overflow:hidden; 
+}
+
+.tsv-scanlines::before {
   content:"";
-  position:absolute; inset:0;
+  position:absolute; 
+  inset:0;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(255,255,255,.07),
-    rgba(255,255,255,.07) 1px,
+    rgba(0,255,255,.06) 0px,
+    rgba(0,255,255,.06) 1px,
     transparent 1px,
-    transparent 3px
+    transparent 2px
   );
-  opacity:.14;
+  opacity:.3;
   pointer-events:none;
-  mix-blend-mode: overlay;
+  animation: scanlineScroll 8s linear infinite;
+  z-index: 10;
 }
 
-.tsv-noise::after{
+@keyframes scanlineScroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(20px); }
+}
+
+/* STATIC NOISE (VHS/CRT effect) */
+.tsv-noise::after {
   content:"";
-  position:absolute; inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");
-  opacity:.10;
+  position:absolute; 
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.3'/%3E%3C/svg%3E");
+  opacity:.08;
   pointer-events:none;
+  animation: staticNoise 0.2s steps(2) infinite;
+  z-index: 9;
 }
 
-.tsv-pulse { animation: tsvPulse 1.35s ease-in-out infinite; }
-@keyframes tsvPulse{
-  0%,100%{ opacity: .92; box-shadow: 0 0 18px currentColor; }
-  50%{ opacity: 1; box-shadow: 0 0 28px currentColor; }
+@keyframes staticNoise {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-1px, 1px); }
+  50% { transform: translate(1px, -1px); }
+  75% { transform: translate(-1px, -1px); }
+  100% { transform: translate(1px, 1px); }
 }
 
-.tsv-float { animation: tsvFloat 6s ease-in-out infinite; }
-@keyframes tsvFloat{
-  0%,100%{ transform: translateY(0px); }
-  50%{ transform: translateY(-6px); }
+/* POWER PULSE (energy reactor) */
+.tsv-pulse { 
+  animation: tsvPulse 1.2s ease-in-out infinite; 
+}
+
+@keyframes tsvPulse {
+  0%,100% { 
+    transform: scale(1); 
+    opacity: .9; 
+    box-shadow: 0 0 10px currentColor;
+  }
+  50% { 
+    transform: scale(1.08); 
+    opacity: 1;
+    box-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+  }
+}
+
+/* 3D HOVER LIFT */
+.tsv-float { 
+  animation: tsvFloat 4s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes tsvFloat {
+  0%,100% { 
+    transform: translateY(0px) translateZ(0px); 
+  }
+  50% { 
+    transform: translateY(-8px) translateZ(10px);
+  }
+}
+
+/* HOLOGRAM FLICKER */
+.tsv-holo {
+  animation: holoFlicker 3s ease-in-out infinite;
+}
+
+@keyframes holoFlicker {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.85; }
+  51% { opacity: 1; }
+  52% { opacity: 0.88; }
+  53% { opacity: 1; }
+}
+
+/* ============================================
+   PAGE TRANSITIONS - SUPER METROID + DOOM
+   ============================================ */
+
+/* SUPER METROID DOOR OPENING */
+.metroid-door-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+}
+
+.door-left, .door-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: 
+    linear-gradient(180deg, #2a2a42 0%, #1a1a2e 50%, #0a0a12 100%);
+  box-shadow: 
+    inset 0 0 100px rgba(0,255,255,0.2),
+    inset 0 0 50px rgba(136,0,255,0.2);
+  animation: doorOpen 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.door-left {
+  left: 0;
+  border-right: 4px solid var(--glow-cyan);
+  box-shadow: 
+    inset -20px 0 60px rgba(0,255,255,0.4),
+    20px 0 40px rgba(0,255,255,0.3);
+}
+
+.door-right {
+  right: 0;
+  border-left: 4px solid var(--glow-cyan);
+  box-shadow: 
+    inset 20px 0 60px rgba(0,255,255,0.4),
+    -20px 0 40px rgba(0,255,255,0.3);
+}
+
+.door-glow {
+  position: absolute;
+  width: 8px;
+  height: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, 
+    var(--glow-cyan), 
+    var(--glow-purple), 
+    var(--glow-cyan)
+  );
+  box-shadow: 
+    0 0 60px var(--glow-cyan),
+    0 0 100px var(--glow-purple);
+  animation: doorGlowPulse 0.8s ease-out;
+}
+
+@keyframes doorOpen {
+  0% {
+    transform: scaleX(1);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+}
+
+@keyframes doorGlowPulse {
+  0%, 100% {
+    opacity: 0;
+    width: 8px;
+    filter: blur(4px);
+  }
+  50% {
+    opacity: 1;
+    width: 40px;
+    filter: blur(20px);
+  }
+}
+
+/* DOOM CORRIDOR ZOOM EFFECT */
+.doom-corridor-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000;
+}
+
+.corridor-zoom {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: 
+    repeating-linear-gradient(
+      90deg,
+      #1a1a2e 0px,
+      #2a2a42 40px,
+      #1a1a2e 80px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      #0a0a12 0px,
+      #1a1a2e 40px,
+      #0a0a12 80px
+    );
+  background-blend-mode: multiply;
+  animation: corridorZoom 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transform-origin: center center;
+  box-shadow: 
+    inset 0 0 200px rgba(0,0,0,0.9),
+    0 0 100px rgba(0,255,255,0.2);
+}
+
+.corridor-zoom::before {
+  content: "";
+  position: absolute;
+  inset: 20%;
+  border: 4px solid var(--glow-cyan);
+  box-shadow: 
+    0 0 40px var(--glow-cyan),
+    inset 0 0 40px var(--glow-cyan);
+  animation: corridorFrameZoom 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.corridor-zoom::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0,255,255,0.1) 0px,
+      transparent 2px,
+      transparent 4px
+    );
+  animation: corridorScanlines 0.6s linear forwards;
+}
+
+@keyframes corridorZoom {
+  0% {
+    transform: scale(0.5) translateZ(-500px);
+    opacity: 0;
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 1;
+    filter: blur(0px);
+  }
+  100% {
+    transform: scale(3) translateZ(500px);
+    opacity: 0;
+    filter: blur(20px);
+  }
+}
+
+@keyframes corridorFrameZoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+
+@keyframes corridorScanlines {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100px;
+  }
+}
+
+/* PAGE CONTENT TRANSITIONS */
+.page-transition-fadeOut {
+  animation: pageOut 0.6s ease-out forwards;
+}
+
+.page-transition-fadeIn {
+  animation: pageIn 0.5s ease-in forwards;
+}
+
+@keyframes pageOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateZ(-50px);
+    filter: blur(5px);
+  }
+}
+
+@keyframes pageIn {
+  0% {
+    opacity: 0;
+    transform: scale(1.05) translateZ(50px);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+    filter: blur(0px);
+  }
+}
+
+/* SCREEN FLASH (door opening impact) */
+.screen-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at center,
+    rgba(0,255,255,0.8),
+    rgba(136,0,255,0.4),
+    transparent 60%
+  );
+  animation: screenFlash 0.4s ease-out;
+}
+
+@keyframes screenFlash {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* WARP LINES (space travel effect) */
+.warp-lines {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.warp-line {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--glow-cyan),
+    transparent
+  );
+  opacity: 0;
+  animation: warpLine 0.8s ease-out;
+}
+
+.warp-line:nth-child(1) { left: 20%; animation-delay: 0s; }
+.warp-line:nth-child(2) { left: 35%; animation-delay: 0.05s; }
+.warp-line:nth-child(3) { left: 50%; animation-delay: 0.1s; }
+.warp-line:nth-child(4) { left: 65%; animation-delay: 0.05s; }
+.warp-line:nth-child(5) { left: 80%; animation-delay: 0s; }
+
+@keyframes warpLine {
+  0% {
+    opacity: 0;
+    transform: scaleY(0) translateY(-100%);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(0) translateY(100%);
+  }
+}
+
+/* HEXAGON TECH TRANSITION */
+.hex-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 4px;
+}
+
+.hex-cell {
+  background: var(--wall-dark);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%);
+  animation: hexCollapse 0.6s ease-in-out forwards;
+  border: 1px solid var(--glow-cyan);
+}
+
+.hex-cell:nth-child(odd) {
+  animation-delay: calc(var(--i) * 0.02s);
+}
+
+.hex-cell:nth-child(even) {
+  animation-delay: calc(var(--i) * 0.03s);
+}
+
+@keyframes hexCollapse {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(360deg);
+  }
+
+
+/* ============================================
+   MOBILE OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Reduce perspective effects on mobile for performance */
+  .tsv-bg::before {
+    opacity: 0.04;
+    background-size: 120px 120px;
+  }
+
+  .tsv-bg::after {
+    animation: none;
+    opacity: 0.5;
+  }
+
+  /* Ensure proper touch scrolling */
+  .tsv-bg {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Responsive padding */
+  .tsv-glass {
+    padding: 12px !important;
+  }
+
+  /* Mobile-friendly buttons */
+  .tsv-btn {
+    padding: 12px 18px;
+    font-size: 14px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Stack navigation on mobile */
+  .tsv-pill {
+    font-size: 13px;
+    padding: 8px 14px;
+    min-height: 40px;
+  }
+
+  /* Responsive grid for character cards */
+  [style*="gridTemplateColumns"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Mobile text sizes */
+  .tsv-title {
+    font-size: 12px !important;
+    letter-spacing: 0.08em;
+  }
+
+  /* Reduce animations on mobile */
+  .tsv-float,
+  .tsv-pulse {
+    animation: none;
+  }
+
+  /* Mobile game canvas adjustments */
+  canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Mobile control buttons - ensure they're visible */
+  .mobile-control-btn {
+    min-width: 60px;
+    min-height: 60px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small screens */
+  body {
+    font-size: 14px;
+  }
+
+  .tsv-glass {
+    padding: 10px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .tsv-btn {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .tsv-title {
+    font-size: 11px !important;
+  }
+}
+
+/* Ensure scrollable content doesn't get clipped */
+#root {
+  min-height: 100vh;
+  height: auto;
+}
+
+/* Fix for iOS Safari bounce scroll */
+@supports (-webkit-touch-callout: none) {
+  .tsv-bg {
+    height: 100vh;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 }

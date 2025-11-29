@@ -14,26 +14,39 @@ async function j(url, opts = {}) {
 export const api = {
   status: () => j("/status"),
   deviantArtLatest: (limit = 12) => j(`/deviantart/latest?limit=${limit}`),
+  characters: () => j("/characters"),
 
   // Nexus proxy calls
   nexusGet: (path) => j(`/nexus/${path}`.replaceAll("//", "/")),
   nexusPost: (path, body) => j(`/nexus/${path}`.replaceAll("//", "/"), { method: "POST", body: JSON.stringify(body) }),
 
-  // GirlsMind proxy calls (path depends on your GirlsMind service)
+  // GirlsMind proxy calls
   girlsGet: (path) => j(`/girlsmind/${path}`.replaceAll("//", "/")),
   girlsPost: (path, body) => j(`/girlsmind/${path}`.replaceAll("//", "/"), { method: "POST", body: JSON.stringify(body) }),
 };
 
-// A best-effort Nexus chat that tries common payload shapes.
-// Adjust the path/payload to match your Nexus endpoint if needed.
-export async function nexusChat(characterId, message) {
-  // Nexus endpoint: /api/chat-mind/{characterId}
-  const path = `api/chat-mind/${characterId}`;
-  const body = { message };
+// Fetch characters from Nexus
+export async function fetchCharacters() {
+  return await api.characters();
+}
 
-  try {
-    return await api.nexusPost(path, body);
-  } catch (e) {
-    throw e;
+// A best-effort Nexus chat that tries common payload shapes.
+export async function nexusChat(characterId, message) {
+  const path = `api/chat/${characterId}`;
+  const attempts = [
+    { message },
+    { prompt: message },
+    { text: message },
+    { input: message },
+  ];
+
+  let lastErr = null;
+  for (const body of attempts) {
+    try {
+      return await api.nexusPost(path, body);
+    } catch (e) {
+      lastErr = e;
+    }
   }
+  throw lastErr || new Error("Nexus chat failed");
 }

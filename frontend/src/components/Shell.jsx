@@ -15,16 +15,16 @@ export default function Shell({ children }) {
 
   return (
     <div className="tsv-bg">
-      <div style={{ maxWidth: 1140, margin: "0 auto", padding: 16 }}>
+      <div style={{ maxWidth: 1140, margin: "0 auto", padding: "12px", minHeight: "100vh" }}>
         <div className="tsv-glass tsv-glow tsv-scanlines tsv-noise" style={{ padding: 14, position:"relative" }}>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap: 12, flexWrap:"wrap" }}>
-            <div>
+            <div style={{ flex: "1 1 auto", minWidth: 0 }}>
               <div className="tsv-title" style={{ fontSize: 14, opacity:.95 }}>TIME PATROL // TSV TERMINAL</div>
               <div style={{ fontSize: 12, opacity:.70, marginTop: 6 }}>
                 Live Nexus + GirlsMind + DeviantArt. Rooms for every girl.
               </div>
             </div>
-            <div style={{ display:"flex", gap: 10, flexWrap:"wrap" }}>
+            <div style={{ display:"flex", gap: 10, flexWrap:"wrap", justifyContent: "flex-end" }}>
               <NavLink to="/" label="Terminal" />
               <NavLink to="/characters" label="Characters" />
               <NavLink to="/deviantart" label="DeviantArt" />
@@ -36,7 +36,7 @@ export default function Shell({ children }) {
           </div>
         </div>
 
-        <div style={{ marginTop: 14 }}>
+        <div style={{ marginTop: 14, paddingBottom: 20 }}>
           {children}
         </div>
       </div>
