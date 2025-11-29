@@ -36,6 +36,26 @@ async def download_image(url: str) -> bytes:
         response.raise_for_status()
         return response.content
 
+def save_base_image(character_id: str, image_data: bytes) -> str:
+    """Save base image for a character"""
+    file_path = BASE_IMAGES_DIR / f"{character_id}.png"
+    with open(file_path, "wb") as f:
+        f.write(image_data)
+    return str(file_path)
+
+def get_base_image(character_id: str) -> Optional[bytes]:
+    """Get stored base image for a character"""
+    file_path = BASE_IMAGES_DIR / f"{character_id}.png"
+    if file_path.exists():
+        with open(file_path, "rb") as f:
+            return f.read()
+    return None
+
+def has_base_image(character_id: str) -> bool:
+    """Check if character has a stored base image"""
+    file_path = BASE_IMAGES_DIR / f"{character_id}.png"
+    return file_path.exists()
+
 def prepare_image_for_openai(image_data: bytes) -> bytes:
     """Convert image to PNG with RGBA, ensure full body visible (head to toe)"""
     img = Image.open(io.BytesIO(image_data))
