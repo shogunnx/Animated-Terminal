@@ -15,10 +15,16 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 
 class OutfitRequest(BaseModel):
     character_name: str
+    character_id: str
     character_description: str
     outfit_description: str
     reference_image_url: Optional[str] = None
     reference_image_base64: Optional[str] = None
+    save_as_base: Optional[bool] = False
+
+class BaseImageRequest(BaseModel):
+    character_id: str
+    image_base64: str
 
 async def download_image(url: str) -> bytes:
     """Download image from URL"""
