@@ -244,13 +244,16 @@ frontend:
     implemented: true
     working: false
     file: "/app/frontend/src/pages/Characters.jsx"
-    stuck_count: 1
-    priority: "medium"
+    stuck_count: 2
+    priority: "high"
     needs_retesting: false
     status_history:
         - working: false
           agent: "testing"
           comment: "ISSUE: Character profiles and rooms show 'PROFILE NOT FOUND' and 'ROOM NOT FOUND' errors when accessing /characters/victoria-black or /rooms/victoria-black. The Characters page displays character cards correctly with OPEN PROFILE and ENTER ROOM buttons, but the routing to individual character pages fails. Character ID mapping or route parameters may need adjustment."
+        - working: false
+          agent: "testing"
+          comment: "COMPREHENSIVE TESTING COMPLETED: ✅ TSV Terminal loads correctly with interactive map ✅ Characters page displays 6 character cards (Vanessa, Victoria Black, Veronica, Binary, Evil Victoria, Wargirl) ✅ Game Room with 6 games working perfectly ✅ Mobile responsiveness (390x844) working ✅ DeviantArt page loads (shows config error as expected) ✅ Most character profiles working: Binary, Wargirl, Vanessa, Veronica, Evil Victoria ✅ Room interactions working for most characters with 4 hotspots each ❌ CRITICAL ISSUE: Victoria Black profile (/characters/victoria-black) shows 'PROFILE NOT FOUND' error ❌ CRITICAL ISSUE: Victoria Black room (/rooms/victoria-black) shows 'ROOM NOT FOUND' error. This is specifically a Victoria Black routing issue - all other characters work perfectly. Character ID mapping needs to be fixed for 'victoria-black' specifically."
 
 metadata:
   created_by: "testing_agent"
