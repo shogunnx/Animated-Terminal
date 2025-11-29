@@ -4,6 +4,12 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
+    allowedHosts: [
+      "tsv-terminal.preview.emergentagent.com",
+      "tsv-terminal.preview.emeragent.com",
+      ".preview.emergentagent.com",
+      ".preview.emeragent.com"
+    ],
     proxy: {
       '/api': {
         target: 'http://localhost:8001',
