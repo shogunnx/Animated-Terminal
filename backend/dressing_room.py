@@ -28,29 +28,34 @@ async def download_image(url: str) -> bytes:
         return response.content
 
 def prepare_image_for_openai(image_data: bytes) -> bytes:
-    """Convert image to PNG with RGBA and ensure it's under 4MB and square"""
+    """Convert image to PNG with RGBA, ensure full body visible (head to toe)"""
     img = Image.open(io.BytesIO(image_data))
     
     # Convert to RGBA (required by OpenAI image editing)
     if img.mode != 'RGBA':
-        # For RGB, add full opacity alpha channel
         if img.mode == 'RGB':
             img = img.convert('RGBA')
-        # For grayscale or other modes, convert to RGBA
         elif img.mode in ('L', 'LA'):
             img = img.convert('RGBA')
         else:
             img = img.convert('RGBA')
     
-    # Make image square by cropping/padding to center
+    # Make image square by PADDING (not cropping) to preserve full body
     width, height = img.size
-    size = min(width, height)
-    left = (width - size) // 2
-    top = (height - size) // 2
-    img = img.crop((left, top, left + size, top + size))
     
-    # Resize if too large (OpenAI prefers 1024x1024 for editing)
-    if size != 1024:
+    if width != height:
+        # Create square canvas with padding to fit entire image
+        size = max(width, height)
+        square_img = Image.new('RGBA', (size, size), (255, 255, 255, 0))
+        
+        # Paste original image centered
+        paste_x = (size - width) // 2
+        paste_y = (size - height) // 2
+        square_img.paste(img, (paste_x, paste_y))
+        img = square_img
+    
+    # Resize to 1024x1024
+    if img.size[0] != 1024:
         img = img.resize((1024, 1024), Image.Resampling.LANCZOS)
     
     # Save as PNG with RGBA
