@@ -82,8 +82,8 @@ a { color: inherit; text-decoration: none; }
 
 .tsv-pulse { animation: tsvPulse 1.35s ease-in-out infinite; }
 @keyframes tsvPulse{
-  0%,100%{ transform: scale(1); opacity: .95; }
-  50%{ transform: scale(1.06); opacity: 1; }
+  0%,100%{ opacity: .92; box-shadow: 0 0 18px currentColor; }
+  50%{ opacity: 1; box-shadow: 0 0 28px currentColor; }
 }
 
 .tsv-float { animation: tsvFloat 6s ease-in-out infinite; }
