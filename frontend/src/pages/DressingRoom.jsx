@@ -99,6 +99,11 @@ export default function DressingRoom() {
       return;
     }
 
+    if (!baseImage) {
+      setError("Please provide a base image (from Nexus or upload your own)");
+      return;
+    }
+
     const outfitDesc = generateOutfitPrompt();
     if (!outfitDesc) {
       setError("Please select clothing items or enter a custom description");
@@ -116,7 +121,8 @@ export default function DressingRoom() {
           character_name: selectedCharacter.name,
           character_description: selectedCharacter.subtitle || "anime character",
           outfit_description: outfitDesc,
-          reference_image_url: baseImageSource === "nexus" ? baseImage : null
+          reference_image_url: baseImageSource === "nexus" ? baseImage : null,
+          reference_image_base64: baseImageSource === "upload" ? baseImage : null
         })
       });
 
