@@ -8,6 +8,7 @@ import Room from "./pages/Room.jsx";
 import DeviantArt from "./pages/DeviantArt.jsx";
 import GameRoom from "./pages/GameRoom.jsx";
 import GamePlayer from "./pages/GamePlayer.jsx";
+import DressingRoom from "./pages/DressingRoom.jsx";
 
 function AnimatedRoutes() {
   const location = useLocation();
