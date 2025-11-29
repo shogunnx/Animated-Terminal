@@ -205,7 +205,10 @@ export default function DressingRoom() {
         {/* Base Image Selection */}
         <div style={{ marginTop: 14 }}>
           <div className="tsv-title" style={{ fontSize: 12, opacity:.88, marginBottom: 8 }}>
-            BASE IMAGE SOURCE
+            BASE IMAGE REQUIRED
+          </div>
+          <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 8, color: "#ffa500" }}>
+            ⚠️ You must upload a base image of {selectedCharacter.name} to generate outfits
           </div>
           <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
             <button
@@ -217,18 +220,7 @@ export default function DressingRoom() {
               }}
               onClick={() => { setBaseImageSource("nexus"); fetchNexusImage(selectedCharacter.id); }}
             >
-              Nexus
-            </button>
-            <button
-              className="tsv-btn"
-              style={{ 
-                fontSize: 10, 
-                padding: "6px 10px",
-                opacity: baseImageSource === "placeholder" ? 1 : 0.5
-              }}
-              onClick={() => { setBaseImage(null); setBaseImageSource("placeholder"); }}
-            >
-              None
+              Try Nexus
             </button>
             <label style={{ flex: 1 }}>
               <input
@@ -243,11 +235,14 @@ export default function DressingRoom() {
                   fontSize: 10, 
                   padding: "6px 10px",
                   width: "100%",
-                  opacity: baseImageSource === "upload" ? 1 : 0.5
+                  opacity: baseImageSource === "upload" ? 1 : 0.5,
+                  background: baseImageSource === "upload" 
+                    ? `linear-gradient(135deg, ${selectedCharacter.accent}40, ${selectedCharacter.glow}30)`
+                    : undefined
                 }}
                 onClick={(e) => { e.preventDefault(); e.target.previousSibling.click(); }}
               >
-                Upload
+                📁 Upload Image
               </button>
             </label>
           </div>
