@@ -1,0 +1,403 @@
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { TSV_CHARACTERS } from "../content/tsvContent.js";
+
+const CLOTHING_CATEGORIES = {
+  tops: ["Crop Top", "T-Shirt", "Tank Top", "Blouse", "Jacket", "Hoodie", "Sweater", "Button-Up"],
+  bottoms: ["Jeans", "Shorts", "Skirt", "Leggings", "Dress Pants", "Cargo Pants", "Mini Skirt"],
+  shoes: ["Sneakers", "Heels", "Boots", "Sandals", "Wedges", "Flats", "Combat Boots"],
+  hairstyles: ["Long", "Short", "Ponytail", "Bun", "Braided", "Wavy", "Straight", "Curly"],
+  accessories: ["Belt", "Necklace", "Earrings", "Watch", "Bracelet", "Hat", "Sunglasses", "Bag"]
+};
+
+export default function DressingRoom() {
+  const { id } = useParams();
+  const nav = useNavigate();
+  
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [baseImage, setBaseImage] = useState(null);
+  const [baseImageSource, setBaseImageSource] = useState("nexus"); // nexus, placeholder, upload
+  const [customPrompt, setCustomPrompt] = useState("");
+  const [selectedItems, setSelectedItems] = useState({
+    tops: "",
+    bottoms: "",
+    shoes: "",
+    hairstyles: "",
+    accessories: ""
+  });
+  const [generatedImage, setGeneratedImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      const char = TSV_CHARACTERS.find(c => c.id === id);
+      if (char && !char.isSpecial) {
+        setSelectedCharacter(char);
+        fetchNexusImage(char.id);
+      }
+    }
+  }, [id]);
+
+  const fetchNexusImage = async (charId) => {
+    try {
+      const response = await fetch(`/api/nexus/api/characters`);
+      const characters = await response.json();
+      const nexusChar = characters.find(c => 
+        c.displayName?.toLowerCase() === charId.replace(/_/g, " ").toLowerCase()
+      );
+      if (nexusChar && nexusChar.avatar_image) {
+        setBaseImage(nexusChar.avatar_image);
+        setBaseImageSource("nexus");
+      } else {
+        setBaseImage(null);
+        setBaseImageSource("placeholder");
+      }
+    } catch (err) {
+      console.error("Failed to fetch Nexus image:", err);
+      setBaseImageSource("placeholder");
+    }
+  };
+
+  const handleItemToggle = (category, item) => {
+    setSelectedItems(prev => ({
+      ...prev,
+      [category]: prev[category] === item ? "" : item
+    }));
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBaseImage(reader.result);
+        setBaseImageSource("upload");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const generateOutfitPrompt = () => {
+    if (customPrompt.trim()) {
+      return customPrompt.trim();
+    }
+
+    const parts = [];
+    if (selectedItems.tops) parts.push(selectedItems.tops);
+    if (selectedItems.bottoms) parts.push(selectedItems.bottoms);
+    if (selectedItems.shoes) parts.push(selectedItems.shoes);
+    if (selectedItems.hairstyles) parts.push(`${selectedItems.hairstyles} hair`);
+    if (selectedItems.accessories) parts.push(selectedItems.accessories);
+
+    return parts.join(", ");
+  };
+
+  const handleGenerate = async () => {
+    if (!selectedCharacter) {
+      setError("Please select a character first");
+      return;
+    }
+
+    const outfitDesc = generateOutfitPrompt();
+    if (!outfitDesc) {
+      setError("Please select clothing items or enter a custom description");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/dressing-room/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          character_name: selectedCharacter.name,
+          character_description: selectedCharacter.subtitle || "anime character",
+          outfit_description: outfitDesc,
+          reference_image_url: baseImageSource === "nexus" ? baseImage : null
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to generate image");
+      }
+
+      const data = await response.json();
+      setGeneratedImage(`data:image/png;base64,${data.image_base64}`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!id) {
+    // Character selection screen
+    const characters = TSV_CHARACTERS.filter(c => !c.isSpecial);
+    
+    return (
+      <div>
+        <div className="tsv-glass tsv-glow" style={{ padding: 14, marginBottom: 14 }}>
+          <div className="tsv-title" style={{ fontSize: 14 }}>DRESSING ROOM</div>
+          <div style={{ fontSize: 12, opacity:.72, marginTop: 8 }}>
+            Select a character to dress up with AI-generated outfits
+          </div>
+        </div>
+
+        <div style={{ 
+          display:"grid", 
+          gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))", 
+          gap: 14 
+        }}>
+          {characters.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => nav(`/dressing-room/${c.id}`)}
+              className="tsv-glass tsv-glow"
+              style={{
+                padding: 14,
+                textAlign: "left",
+                cursor: "pointer",
+                border: "1px solid rgba(255,255,255,.14)",
+                background: "linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06))"
+              }}
+            >
+              <div className="tsv-title" style={{ fontSize: 14, color: c.accent }}>{c.name}</div>
+              <div style={{ fontSize: 11, opacity:.72, marginTop: 6 }}>{c.subtitle}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (!selectedCharacter) {
+    return (
+      <div className="tsv-glass" style={{ padding: 16 }}>
+        <div className="tsv-title">CHARACTER NOT FOUND</div>
+        <button className="tsv-btn" style={{ marginTop: 12 }} onClick={() => nav("/dressing-room")}>
+          Back to Selection
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, alignItems: "start" }}>
+      {/* Left Panel - Character & Base Image */}
+      <div className="tsv-glass tsv-glow" style={{ padding: 14 }}>
+        <div className="tsv-title" style={{ fontSize: 14, color: selectedCharacter.accent }}>
+          {selectedCharacter.name}
+        </div>
+        <div style={{ fontSize: 11, opacity:.72, marginTop: 6 }}>
+          {selectedCharacter.subtitle}
+        </div>
+
+        {/* Base Image Selection */}
+        <div style={{ marginTop: 14 }}>
+          <div className="tsv-title" style={{ fontSize: 12, opacity:.88, marginBottom: 8 }}>
+            BASE IMAGE SOURCE
+          </div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+            <button
+              className="tsv-btn"
+              style={{ 
+                fontSize: 10, 
+                padding: "6px 10px",
+                opacity: baseImageSource === "nexus" ? 1 : 0.5
+              }}
+              onClick={() => { setBaseImageSource("nexus"); fetchNexusImage(selectedCharacter.id); }}
+            >
+              Nexus
+            </button>
+            <button
+              className="tsv-btn"
+              style={{ 
+                fontSize: 10, 
+                padding: "6px 10px",
+                opacity: baseImageSource === "placeholder" ? 1 : 0.5
+              }}
+              onClick={() => { setBaseImage(null); setBaseImageSource("placeholder"); }}
+            >
+              None
+            </button>
+            <label style={{ flex: 1 }}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                style={{ display: "none" }}
+              />
+              <button
+                className="tsv-btn"
+                style={{ 
+                  fontSize: 10, 
+                  padding: "6px 10px",
+                  width: "100%",
+                  opacity: baseImageSource === "upload" ? 1 : 0.5
+                }}
+                onClick={(e) => { e.preventDefault(); e.target.previousSibling.click(); }}
+              >
+                Upload
+              </button>
+            </label>
+          </div>
+
+          {/* Base Image Display */}
+          <div className="tsv-scanlines tsv-noise" style={{ 
+            borderRadius: 16, 
+            border: "1px solid rgba(255,255,255,.10)", 
+            overflow: "hidden",
+            position: "relative",
+            minHeight: 400
+          }}>
+            {baseImage ? (
+              <img 
+                src={baseImage} 
+                alt={selectedCharacter.name}
+                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+              />
+            ) : (
+              <div style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                justifyContent: "center",
+                minHeight: 400,
+                opacity: 0.5
+              }}>
+                <div className="tsv-title" style={{ fontSize: 12 }}>
+                  No base image available
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Generated Image */}
+        {generatedImage && (
+          <div style={{ marginTop: 14 }}>
+            <div className="tsv-title" style={{ fontSize: 12, opacity:.88, marginBottom: 8 }}>
+              GENERATED OUTFIT
+            </div>
+            <div className="tsv-scanlines tsv-noise" style={{ 
+              borderRadius: 16, 
+              border: `2px solid ${selectedCharacter.accent}`,
+              overflow: "hidden",
+              boxShadow: `0 0 20px ${selectedCharacter.accent}40`
+            }}>
+              <img 
+                src={generatedImage} 
+                alt="Generated outfit"
+                style={{ width: "100%", display: "block" }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Right Panel - Clothing Selection */}
+      <div className="tsv-glass tsv-glow" style={{ padding: 14 }}>
+        <div className="tsv-title" style={{ fontSize: 13, opacity:.88 }}>
+          WARDROBE SELECTION
+        </div>
+
+        {/* Clothing Categories */}
+        {Object.entries(CLOTHING_CATEGORIES).map(([category, items]) => (
+          <div key={category} style={{ marginTop: 14 }}>
+            <div className="tsv-title" style={{ fontSize: 11, opacity:.75, marginBottom: 8, textTransform: "uppercase" }}>
+              {category}
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {items.map((item) => (
+                <button
+                  key={item}
+                  onClick={() => handleItemToggle(category, item)}
+                  className="tsv-pill"
+                  style={{
+                    fontSize: 10,
+                    padding: "4px 10px",
+                    cursor: "pointer",
+                    borderColor: selectedItems[category] === item ? selectedCharacter.accent : "rgba(255,255,255,.14)",
+                    background: selectedItems[category] === item 
+                      ? `linear-gradient(135deg, ${selectedCharacter.accent}25, ${selectedCharacter.glow}15)`
+                      : "rgba(255,255,255,.08)"
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {/* Custom Prompt */}
+        <div style={{ marginTop: 14 }}>
+          <div className="tsv-title" style={{ fontSize: 11, opacity:.75, marginBottom: 8 }}>
+            CUSTOM OUTFIT DESCRIPTION
+          </div>
+          <textarea
+            value={customPrompt}
+            onChange={(e) => setCustomPrompt(e.target.value)}
+            placeholder="E.g., 'red crop top with white leather chaki shirt pants with red belt and red wedge heels'"
+            style={{
+              width: "100%",
+              minHeight: 100,
+              borderRadius: 14,
+              border: "1px solid rgba(255,255,255,.16)",
+              background: "rgba(0,0,0,.22)",
+              color: "rgba(255,255,255,.92)",
+              padding: "10px 12px",
+              fontSize: 12,
+              fontFamily: "inherit",
+              resize: "vertical"
+            }}
+          />
+          <div style={{ fontSize: 10, opacity:.6, marginTop: 6 }}>
+            Leave blank to use selected items above, or type a custom description
+          </div>
+        </div>
+
+        {/* Generate Button */}
+        <button
+          className="tsv-btn"
+          onClick={handleGenerate}
+          disabled={loading}
+          style={{ 
+            width: "100%", 
+            marginTop: 14,
+            background: loading ? "rgba(100,100,100,.3)" : undefined,
+            cursor: loading ? "not-allowed" : "pointer"
+          }}
+        >
+          {loading ? "GENERATING..." : "🎨 GENERATE OUTFIT"}
+        </button>
+
+        {error && (
+          <div style={{ 
+            marginTop: 10, 
+            padding: 10, 
+            borderRadius: 8, 
+            background: "rgba(255,0,0,.1)",
+            border: "1px solid rgba(255,0,0,.3)",
+            fontSize: 11,
+            color: "#ff6666"
+          }}>
+            ⚠️ {error}
+          </div>
+        )}
+
+        {/* Back Button */}
+        <button
+          className="tsv-btn"
+          onClick={() => nav("/dressing-room")}
+          style={{ width: "100%", marginTop: 10, opacity: 0.7 }}
+        >
+          ← Back to Character Selection
+        </button>
+      </div>
+    </div>
+  );
+}
