@@ -99,6 +99,14 @@ async def status():
     return out
 
 # -----------------------
+# Dressing Room - AI Image Generation
+# -----------------------
+@api.post("/dressing-room/generate")
+async def generate_dressing_room_image(request: OutfitRequest):
+    """Generate an outfit image for a character"""
+    return await generate_outfit_image(request)
+
+# -----------------------
 # Generic proxy helper
 # -----------------------
 async def proxy_request(request: Request, target_base: str, path: str, inject_headers: Optional[dict] = None) -> Response:
