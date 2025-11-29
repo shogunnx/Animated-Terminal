@@ -58,23 +58,49 @@ def prepare_image_for_openai(image_data: bytes) -> bytes:
     img.save(output, format='PNG')
     return output.getvalue()
 
-def analyze_image_for_character_description(image_bytes: bytes) -> str:
-    """Analyze image to extract character features"""
-    try:
-        img = Image.open(io.BytesIO(image_bytes))
-        # For now, return a generic description
-        # In future, could use vision API to analyze
-        return "beautiful anime character with long flowing hair"
-    except:
-        return "anime character"
+def create_clothing_mask(image_bytes: bytes) -> bytes:
+    """Create a mask for clothing area (transparent where clothes should be edited)"""
+    img = Image.open(io.BytesIO(image_bytes))
+    
+    # Ensure RGBA
+    if img.mode != 'RGBA':
+        img = img.convert('RGBA')
+    
+    # Make square
+    width, height = img.size
+    size = min(width, height)
+    left = (width - size) // 2
+    top = (height - size) // 2
+    img = img.crop((left, top, left + size, top + size))
+    
+    # Resize to 1024x1024
+    if size != 1024:
+        img = img.resize((1024, 1024), Image.Resampling.LANCZOS)
+    
+    # Create a mask - make the clothing area transparent
+    # Rough approximation: transparent in middle/body area, opaque at face (top 30%)
+    mask = Image.new('RGBA', (1024, 1024), (255, 255, 255, 255))
+    pixels = mask.load()
+    
+    # Make bottom 70% semi-transparent (where body/clothes typically are)
+    for y in range(300, 1024):  # From 30% down
+        for x in range(1024):
+            # Create a soft gradient mask
+            alpha = 0  # Fully transparent in clothing area
+            pixels[x, y] = (255, 255, 255, alpha)
+    
+    # Save mask
+    output = io.BytesIO()
+    mask.save(output, format='PNG')
+    return output.getvalue()
 
 async def generate_outfit_image(request: OutfitRequest) -> dict:
-    """Generate an image of a character in a specific outfit using OpenAI"""
+    """Generate an image of a character in a specific outfit using OpenAI image editing"""
     
     if not OPENAI_API_KEY:
         raise HTTPException(status_code=500, detail="OPENAI_API_KEY not configured")
     
-    # Get base image for character description reference
+    # Get base image
     base_image_bytes = None
     if request.reference_image_base64:
         base_image_bytes = base64.b64decode(request.reference_image_base64.split(',')[-1])
@@ -87,38 +113,42 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     if not base_image_bytes:
         raise HTTPException(status_code=400, detail="No reference image provided.")
     
-    # Analyze image for character features
-    character_features = analyze_image_for_character_description(base_image_bytes)
+    # Prepare base image
+    try:
+        prepared_image = prepare_image_for_openai(base_image_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to prepare image: {str(e)}")
     
-    # Create detailed prompt for text-to-image generation
-    # This approach gives better control over outfit changes
-    prompt = f"""Full body portrait of {request.character_name}, {character_features}.
-
-Character wearing: {request.outfit_description}
-
-Style: High quality anime art, professional character illustration, full body shot, standing pose, detailed clothing design, vibrant colors, clean background, 8k quality, trending on artstation"""
+    # Create mask for clothing area
+    try:
+        mask_bytes = create_clothing_mask(base_image_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to create mask: {str(e)}")
+    
+    # Create prompt that references "this woman" or "this person"
+    prompt = f"""Show this woman wearing {request.outfit_description}. 
+Keep her exact face, hair, and body. 
+Only change the clothing to show: {request.outfit_description}. 
+Same person, different outfit. High quality, detailed clothing."""
     
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
         
-        # Use DALL-E 3 for better quality (or DALL-E 2 if 3 not available)
-        try:
-            # Try DALL-E 3 first
-            response = client.images.generate(
-                model="dall-e-3",
-                prompt=prompt,
-                n=1,
-                size="1024x1024",
-                quality="standard"
-            )
-        except Exception as e:
-            # Fallback to DALL-E 2 if DALL-E 3 fails
-            response = client.images.generate(
-                model="dall-e-2",
-                prompt=prompt,
-                n=1,
-                size="1024x1024"
-            )
+        # Create file-like objects
+        image_file = io.BytesIO(prepared_image)
+        image_file.name = "image.png"
+        
+        mask_file = io.BytesIO(mask_bytes)
+        mask_file.name = "mask.png"
+        
+        # Use image editing with mask
+        response = client.images.edit(
+            image=image_file,
+            mask=mask_file,
+            prompt=prompt,
+            n=1,
+            size="1024x1024"
+        )
         
         if response.data and len(response.data) > 0:
             # Get the URL of the generated image
@@ -136,8 +166,7 @@ Style: High quality anime art, professional character illustration, full body sh
             return {
                 "success": True,
                 "image_base64": image_base64,
-                "prompt_used": prompt,
-                "model_used": response.model if hasattr(response, 'model') else "dall-e"
+                "prompt_used": prompt
             }
         else:
             raise HTTPException(status_code=500, detail="No image was generated")
