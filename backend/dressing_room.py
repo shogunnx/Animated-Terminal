@@ -163,12 +163,12 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to create mask: {str(e)}")
     
-    # Create prompt that references "this woman" and ensures full body
-    prompt = f"""Full body portrait showing this woman from head to toe. 
-Replace her current clothes with: {request.outfit_description}. 
-Show complete outfit including top of hair and full shoes visible. 
-Keep her exact face, hair, and body the same. 
-High quality, detailed clothing, accurate colors, full body shot."""
+    # Create prompt for high-quality single full-body image
+    prompt = f"""A beautiful full body portrait of this woman wearing {request.outfit_description}.
+Show her from head to toe in a single elegant pose.
+Keep her exact face, hair color, and body type.
+High quality anime art style, detailed outfit, professional lighting, clean background.
+Full body visible with top of head and complete shoes showing."""
     
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
