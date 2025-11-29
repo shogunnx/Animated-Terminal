@@ -34,10 +34,39 @@ export default function DressingRoom() {
       const char = TSV_CHARACTERS.find(c => c.id === id);
       if (char && !char.isSpecial) {
         setSelectedCharacter(char);
-        fetchNexusImage(char.id);
+        checkAndLoadBaseImage(char.id);
       }
     }
   }, [id]);
+
+  const checkAndLoadBaseImage = async (charId) => {
+    // Priority 1: Try Nexus
+    await fetchNexusImage(charId);
+    
+    // Priority 2: If no Nexus image, check for stored base image
+    if (!baseImage) {
+      try {
+        const response = await fetch(`/api/dressing-room/has-base/${charId}`);
+        const data = await response.json();
+        
+        if (data.has_base_image) {
+          // Load the stored base image
+          const imgResponse = await fetch(`/api/backend/base_images/${charId}.png`);
+          if (imgResponse.ok) {
+            const blob = await imgResponse.blob();
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              setBaseImage(reader.result);
+              setBaseImageSource("stored");
+            };
+            reader.readAsDataURL(blob);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to check stored base image:", err);
+      }
+    }
+  };
 
   const fetchNexusImage = async (charId) => {
     try {
