@@ -10,7 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from dotenv import load_dotenv
 
-from dressing_room import generate_outfit_image, OutfitRequest
+from dressing_room import generate_outfit_image, OutfitRequest, BaseImageRequest
+import base64
 
 # -----------------------
 # Settings
