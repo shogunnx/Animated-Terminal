@@ -75,7 +75,17 @@ export default function DressingRoom() {
     // Priority 1: Try Nexus
     await fetchNexusImage(charId);
     
-    // Priority 2: If no Nexus image, check for stored base image
+    // Priority 2: If no Nexus image, try local portrait
+    if (!baseImage) {
+      const char = TSV_CHARACTERS.find(c => c.id === charId);
+      if (char && char.portrait) {
+        setBaseImage(char.portrait);
+        setBaseImageSource("portrait");
+        return;
+      }
+    }
+    
+    // Priority 3: If no portrait, check for stored base image
     if (!baseImage) {
       try {
         const response = await fetch(`/api/dressing-room/has-base/${charId}`);
