@@ -156,7 +156,7 @@ const Simple8BallGame = forwardRef(({ onScoreChange, onCoachTrigger }, ref) => {
     };
   }, [onScoreChange, onCoachTrigger]);
 
-  return <canvas ref={canvasRef} width={800} height={600} style={{ width: '100%', height: 'auto' }} />;
+  return <canvas ref={canvasRef} width={1400} height={800} style={{ width: '100%', height: 'auto' }} />;
 });
 
 export default Simple8BallGame;

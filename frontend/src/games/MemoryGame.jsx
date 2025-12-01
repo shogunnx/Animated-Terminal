@@ -116,7 +116,7 @@ const MemoryGame = forwardRef(({ onScoreChange, onCoachTrigger }, ref) => {
     };
   }, [onScoreChange, onCoachTrigger]);
 
-  return <canvas ref={canvasRef} width={800} height={600} style={{ width: '100%', height: 'auto', background: '#0a0a12' }} />;
+  return <canvas ref={canvasRef} width={1400} height={800} style={{ width: '100%', height: 'auto', background: '#0a0a12' }} />;
 });
 
 export default MemoryGame;
