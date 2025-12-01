@@ -9,6 +9,8 @@ import DeviantArt from "./pages/DeviantArt.jsx";
 import GameRoom from "./pages/GameRoom.jsx";
 import GamePlayer from "./pages/GamePlayer.jsx";
 import DressingRoom from "./pages/DressingRoom.jsx";
+import TerminalPolish from "./components/TerminalPolish.jsx";
+import CursorBlink from "./components/CursorBlink.jsx";
 
 function AnimatedRoutes() {
   const location = useLocation();
