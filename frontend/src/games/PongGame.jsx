@@ -5,12 +5,12 @@ const PongGame = forwardRef(({ onScoreChange, onCoachTrigger, mode }, ref) => {
   const [gameState, setGameState] = useState('playing');
   const gameLoopRef = useRef(null);
   const stateRef = useRef({
-    paddleY: 200,
-    ballX: 400,
-    ballY: 300,
+    paddleY: 350,
+    ballX: 700,
+    ballY: 400,
     ballVX: 5,
     ballVY: 3,
-    aiPaddleY: 200,
+    aiPaddleY: 350,
     score: 0,
     aiScore: 0,
     keys: {}
