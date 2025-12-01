@@ -36,6 +36,8 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
+      <TerminalPolish />
+      <CursorBlink />
       <Shell>
         <AnimatedRoutes />
       </Shell>
