@@ -343,11 +343,11 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "Relationship + Memory Panel System"
+    - "New Engagement System & Polish Features"
   stuck_tasks: 
     - "Relationship + Memory Panel System"
   test_all: true
-  test_priority: "deployment_critical"
+  test_priority: "engagement_features"
 
 agent_communication:
     - agent: "testing"
