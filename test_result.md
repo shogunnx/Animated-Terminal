@@ -332,7 +332,6 @@ metadata:
 test_plan:
   current_focus: 
     - "Relationship + Memory Panel System"
-    - "Character Animation System Mobile Optimization"
   stuck_tasks: 
     - "Relationship + Memory Panel System"
   test_all: true
