@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { nexusChat } from "../lib/api.js";
+import { addHotspotClick } from "../utils/engagement.js";
 
 function Backdrop({ a, b, title, isGameRoom }) {
   // Special bright game room
