@@ -46,7 +46,7 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
     if (!nexusId) return;
     
     try {
-      const response = await fetch(`/api/girlsmind/api/relationship/${nexusId}?userId=${userId}`);
+      const response = await fetch(`/api/girlsmind/relationship/${nexusId}?userId=${userId}`);
       if (response.ok) {
         const data = await response.json();
         setRelationship(data);
@@ -67,7 +67,7 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
     if (!nexusId) return;
     
     try {
-      const response = await fetch(`/api/girlsmind/api/memories/${nexusId}?userId=${userId}`);
+      const response = await fetch(`/api/girlsmind/memories/${nexusId}?userId=${userId}`);
       if (response.ok) {
         const data = await response.json();
         setMemories(data.memories || data || []);
