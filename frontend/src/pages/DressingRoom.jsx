@@ -40,7 +40,11 @@ const CLOTHING_CATEGORIES = {
     "Over-the-Knee Boots", "Lace-Up Boots", "Sock Boots", "Western Boots", "Hiking Boots", "Platform Sneakers", "Designer Sneakers", "Retro Sneakers",
     "Velvet Heels", "Metallic Heels", "Clear Heels", "Embellished Heels", "T-Strap Heels", "D'Orsay Heels", "Cone Heels", "Stiletto Boots",
     "Fur-Lined Boots", "Studded Boots", "Snake Print Heels", "Leopard Print Flats", "Embroidered Flats", "Driving Moccasins", "Boat Shoes", "Platform Sandals",
-    "Jelly Sandals", "Sport Sandals", "Fisherman Sandals", "Strappy Sandals", "Toe Ring Sandals", "Clogs"
+    "Jelly Sandals", "Sport Sandals", "Fisherman Sandals", "Strappy Sandals", "Toe Ring Sandals", "Clogs",
+    // 20 More Heels
+    "Red Bottom Heels", "Glitter Heels", "Holographic Heels", "Transparent Heels", "Lucite Heels", "Crystal Heels", "Pearl Heels", "Feather Heels",
+    "Bow Heels", "Ankle Wrap Heels", "Lace-Up Heels", "Cut-Out Heels", "Geometric Heels", "Sculptured Heels", "Wedge Heels", "Cork Heels",
+    "Espadrille Wedges", "Mule Heels", "Pointed Toe Pumps", "Almond Toe Heels"
   ],
   hairstyles: [
     "Long", "Short", "Ponytail", "Bun", "Braided", "Wavy", "Straight", "Curly",
