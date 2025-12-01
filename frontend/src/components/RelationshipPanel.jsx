@@ -36,9 +36,11 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
   }, [characterId]);
 
   useEffect(() => {
-    fetchRelationshipData();
-    fetchMemories();
-  }, [characterId]);
+    if (nexusId) {
+      fetchRelationshipData();
+      fetchMemories();
+    }
+  }, [nexusId]);
 
   const fetchRelationshipData = async () => {
     try {
