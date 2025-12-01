@@ -1,0 +1,14 @@
+# TSV Archive Terminal - Robots.txt
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://www.thesaiyanvictoria.com/sitemap.xml
+
+# Disallow crawling of API endpoints
+Disallow: /api/
+
+# Disallow crawling of base images directory
+Disallow: /base_images/
