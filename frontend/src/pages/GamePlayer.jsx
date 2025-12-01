@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, lazy } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { TSV_GAMES, GIRL_COACHES } from "../content/tsvContent.js";
 import TetrisGame from "../games/TetrisGame.jsx";
