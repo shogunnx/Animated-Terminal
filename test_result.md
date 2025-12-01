@@ -286,11 +286,12 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "Updated Character Navigation"
+    - "Relationship + Memory Panel System"
   stuck_tasks: 
     - "Updated Character Navigation"
+    - "Relationship + Memory Panel System"
   test_all: true
-  test_priority: "complete"
+  test_priority: "deployment_critical"
 
 agent_communication:
     - agent: "testing"
