@@ -1,4 +1,5 @@
 import HoloPortrait from "./HoloPortrait.jsx";
+import CharacterAnimations from "./CharacterAnimations.jsx";
 
 export default function CharacterCard({ c, onProfile, onRoom }) {
   // Set default values for Nexus data
