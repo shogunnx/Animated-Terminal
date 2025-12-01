@@ -122,7 +122,7 @@ const BubbleShooterGame = forwardRef(({ onScoreChange, onCoachTrigger }, ref) =>
     };
   }, [onScoreChange, onCoachTrigger]);
 
-  return <canvas ref={canvasRef} width={1400} height={800} style={{ width: '100%', height: 'auto', background: '#1a1a2e' }} />;
+  return <canvas ref={canvasRef} width={1400} height={800} style={{ display: 'block', width: '100%', maxWidth: '100vw', height: 'auto', background: '#1a1a2e' }} />;
 });
 
 export default BubbleShooterGame;
