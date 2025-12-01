@@ -162,6 +162,186 @@ export const TSV_GAMES = [
     icon: "🎵",
     implemented: true
   },
+  { 
+    id: "pong", 
+    name: "Neon Pong", 
+    type: "Classic", 
+    description: "The original arcade classic! Beat the AI paddle!", 
+    difficulty: "Easy", 
+    icon: "🏓",
+    implemented: true
+  },
+  { 
+    id: "space_invaders", 
+    name: "Space Invaders", 
+    type: "Shooter", 
+    description: "Defend Earth from alien invasion! Classic arcade action!", 
+    difficulty: "Medium", 
+    icon: "👾",
+    implemented: true
+  },
+  { 
+    id: "flappy", 
+    name: "Flappy Flyer", 
+    type: "Casual", 
+    description: "Tap to flap! Navigate through pipes in this addictive challenge!", 
+    difficulty: "Hard", 
+    icon: "🐦",
+    implemented: true
+  },
+  { 
+    id: "match3", 
+    name: "Gem Crusher", 
+    type: "Puzzle", 
+    description: "Match 3 gems to clear the board! Chain combos for huge scores!", 
+    difficulty: "Easy", 
+    icon: "💎",
+    implemented: true
+  },
+  { 
+    id: "solitaire", 
+    name: "Solitaire Classic", 
+    type: "Card", 
+    description: "The timeless card game! Stack 'em and clear the board!", 
+    difficulty: "Medium", 
+    icon: "🃏",
+    implemented: true
+  },
+  { 
+    id: "minesweeper", 
+    name: "Mine Hunter", 
+    type: "Puzzle", 
+    description: "Flag the mines, clear the grid! One wrong click and boom!", 
+    difficulty: "Medium", 
+    icon: "💣",
+    implemented: true
+  },
+  { 
+    id: "pacman", 
+    name: "Pac-Dash", 
+    type: "Maze", 
+    description: "Eat dots, avoid ghosts! The legendary maze chase!", 
+    difficulty: "Medium", 
+    icon: "👻",
+    implemented: true
+  },
+  { 
+    id: "platformer", 
+    name: "Jump Quest", 
+    type: "Platformer", 
+    description: "Run, jump, collect coins! Classic side-scrolling adventure!", 
+    difficulty: "Hard", 
+    icon: "🎮",
+    implemented: true
+  },
+  { 
+    id: "bubble_shooter", 
+    name: "Bubble Pop", 
+    type: "Puzzle", 
+    description: "Shoot bubbles to match colors! Clear the screen!", 
+    difficulty: "Easy", 
+    icon: "🫧",
+    implemented: true
+  },
+  { 
+    id: "tower_defense", 
+    name: "Tower Guard", 
+    type: "Strategy", 
+    description: "Build towers, stop enemies! Defend your base at all costs!", 
+    difficulty: "Hard", 
+    icon: "🏰",
+    implemented: true
+  },
+  { 
+    id: "word_search", 
+    name: "Word Hunter", 
+    type: "Puzzle", 
+    description: "Find hidden words in the grid! Race against time!", 
+    difficulty: "Easy", 
+    icon: "📝",
+    implemented: true
+  },
+  { 
+    id: "memory", 
+    name: "Memory Match", 
+    type: "Brain", 
+    description: "Flip cards and match pairs! Test your memory skills!", 
+    difficulty: "Easy", 
+    icon: "🧠",
+    implemented: true
+  },
+  { 
+    id: "racing", 
+    name: "Turbo Racer", 
+    type: "Racing", 
+    description: "Speed through tracks! Dodge traffic and set records!", 
+    difficulty: "Medium", 
+    icon: "🏎️",
+    implemented: true
+  },
+  { 
+    id: "bowling", 
+    name: "Strike King", 
+    type: "Sports", 
+    description: "Roll for strikes! Perfect your aim and score big!", 
+    difficulty: "Easy", 
+    icon: "🎳",
+    implemented: true
+  },
+  { 
+    id: "asteroids", 
+    name: "Asteroid Blaster", 
+    type: "Shooter", 
+    description: "Blast space rocks! Classic vector graphics action!", 
+    difficulty: "Medium", 
+    icon: "☄️",
+    implemented: true
+  },
+  { 
+    id: "chess", 
+    name: "Chess Master", 
+    type: "Strategy", 
+    description: "The ultimate strategy game! Checkmate the AI!", 
+    difficulty: "Hard", 
+    icon: "♟️",
+    implemented: true
+  },
+  { 
+    id: "pool", 
+    name: "8-Ball Pool", 
+    type: "Sports", 
+    description: "Sink all your balls, then the 8-ball to win!", 
+    difficulty: "Medium", 
+    icon: "🎱",
+    implemented: true
+  },
+  { 
+    id: "pinball", 
+    name: "Pinball Wizard", 
+    type: "Arcade", 
+    description: "Classic pinball action! Bumpers, ramps, and high scores!", 
+    difficulty: "Medium", 
+    icon: "🕹️",
+    implemented: true
+  },
+  { 
+    id: "sudoku", 
+    name: "Sudoku Solver", 
+    type: "Puzzle", 
+    description: "Fill the grid with numbers! Logic puzzle perfection!", 
+    difficulty: "Hard", 
+    icon: "🔢",
+    implemented: true
+  },
+  { 
+    id: "blackjack", 
+    name: "Blackjack 21", 
+    type: "Card", 
+    description: "Hit or stand? Get closer to 21 than the dealer!", 
+    difficulty: "Easy", 
+    icon: "🂡",
+    implemented: true
+  },
 ];
 
 // GIRL COACHING MODES
