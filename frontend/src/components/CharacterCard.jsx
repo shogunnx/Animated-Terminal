@@ -64,15 +64,17 @@ export default function CharacterCard({ c, onProfile, onRoom }) {
           `, 
           position:"relative" 
         }}>
-          <img
-            src={portrait}
-            alt={c.name}
-            onError={(e) => { e.currentTarget.style.display = "none"; }}
-            style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", opacity:0.92 }}
-          />
-          <div style={{ position:"absolute", inset:0, pointerEvents:"none" }}>
-            <HoloPortrait name={c.name} accent={accent} glow={glow} />
-          </div>
+          <CharacterAnimations characterId={c.id} intensity="medium">
+            <img
+              src={portrait}
+              alt={c.name}
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+              style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", opacity:0.92 }}
+            />
+            <div style={{ position:"absolute", inset:0, pointerEvents:"none" }}>
+              <HoloPortrait name={c.name} accent={accent} glow={glow} />
+            </div>
+          </CharacterAnimations>
           
           {/* CORNER BRACKETS */}
           <svg style={{position:"absolute",inset:0,pointerEvents:"none"}} viewBox="0 0 100 100" preserveAspectRatio="none">
