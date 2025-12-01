@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TSV_CHARACTERS } from "../content/tsvContent.js";
+import { addLike, getLikes, getCharacterRank } from "../utils/engagement.js";
 
 const CLOTHING_CATEGORIES = {
   tops: [
