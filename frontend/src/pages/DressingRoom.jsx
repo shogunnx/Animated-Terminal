@@ -3,11 +3,43 @@ import { useNavigate, useParams } from "react-router-dom";
 import { TSV_CHARACTERS } from "../content/tsvContent.js";
 
 const CLOTHING_CATEGORIES = {
-  tops: ["Crop Top", "T-Shirt", "Tank Top", "Blouse", "Jacket", "Hoodie", "Sweater", "Button-Up"],
-  bottoms: ["Jeans", "Shorts", "Skirt", "Leggings", "Dress Pants", "Cargo Pants", "Mini Skirt"],
-  shoes: ["Sneakers", "Heels", "Boots", "Sandals", "Wedges", "Flats", "Combat Boots"],
-  hairstyles: ["Long", "Short", "Ponytail", "Bun", "Braided", "Wavy", "Straight", "Curly"],
-  accessories: ["Belt", "Necklace", "Earrings", "Watch", "Bracelet", "Hat", "Sunglasses", "Bag"]
+  tops: [
+    "Crop Top", "T-Shirt", "Tank Top", "Blouse", "Jacket", "Hoodie", "Sweater", "Button-Up",
+    "Halter Top", "Tube Top", "Off-Shoulder", "Turtleneck", "V-Neck", "Cardigan", "Blazer", "Vest",
+    "Camisole", "Bodysuit", "Corset", "Kimono", "Wrap Top", "Peasant Top", "Peplum Top", "Bell Sleeve",
+    "Cold Shoulder", "Polo Shirt", "Henley", "Sports Bra", "Leather Jacket", "Denim Jacket", "Bomber Jacket",
+    "Trench Coat", "Peacoat", "Windbreaker", "Puffer Jacket", "Flannel", "Mesh Top", "Lace Top"
+  ],
+  bottoms: [
+    "Jeans", "Shorts", "Skirt", "Leggings", "Dress Pants", "Cargo Pants", "Mini Skirt",
+    "Maxi Skirt", "Midi Skirt", "Pencil Skirt", "A-Line Skirt", "Pleated Skirt", "Jean Shorts", "Bike Shorts",
+    "High-Waisted Pants", "Low-Rise Jeans", "Wide Leg Pants", "Capri Pants", "Joggers", "Sweatpants", "Leather Pants",
+    "Palazzo Pants", "Culottes", "Flare Jeans", "Bootcut Jeans", "Skinny Jeans", "Mom Jeans", "Boyfriend Jeans",
+    "Ripped Jeans", "Denim Skirt", "Wrap Skirt", "Tennis Skirt", "Cargo Skirt", "Yoga Pants", "Track Pants",
+    "Dress Shorts", "Bermuda Shorts", "Hot Pants"
+  ],
+  shoes: [
+    "Sneakers", "Heels", "Boots", "Sandals", "Wedges", "Flats", "Combat Boots",
+    "Stiletto Heels", "Platform Heels", "Ankle Boots", "Knee-High Boots", "Thigh-High Boots", "Chelsea Boots", "Cowboy Boots",
+    "Rain Boots", "Loafers", "Oxfords", "Mary Janes", "Mules", "Slides", "Flip Flops", "Espadrilles",
+    "Ballet Flats", "Pointed Flats", "Gladiator Sandals", "Strappy Heels", "Slingback Heels", "Kitten Heels", "Block Heels",
+    "Chunky Sneakers", "High-Top Sneakers", "Slip-On Shoes", "Canvas Shoes", "Running Shoes", "Court Shoes", "Pumps",
+    "Peep-Toe Heels", "Ankle Strap Heels"
+  ],
+  hairstyles: [
+    "Long", "Short", "Ponytail", "Bun", "Braided", "Wavy", "Straight", "Curly",
+    "Bob", "Pixie Cut", "Shaggy", "Layered", "Bangs", "Side Swept", "Updo", "Half-Up Half-Down",
+    "Messy Bun", "Top Knot", "French Braid", "Fishtail Braid", "Dutch Braid", "Crown Braid", "Space Buns", "Pigtails",
+    "Beach Waves", "Loose Curls", "Tight Curls", "Afro", "Locs", "Twists", "Cornrows", "High Ponytail",
+    "Low Ponytail", "Side Ponytail", "Slicked Back", "Mohawk", "Undercut", "Asymmetric Cut"
+  ],
+  accessories: [
+    "Belt", "Necklace", "Earrings", "Watch", "Bracelet", "Hat", "Sunglasses", "Bag",
+    "Choker", "Pendant", "Chain Necklace", "Hoop Earrings", "Stud Earrings", "Drop Earrings", "Cuff Bracelet", "Bangle",
+    "Anklet", "Ring", "Hair Clip", "Headband", "Scrunchie", "Bow", "Beanie", "Baseball Cap", "Bucket Hat",
+    "Fedora", "Wide Brim Hat", "Beret", "Backpack", "Crossbody Bag", "Clutch", "Tote Bag", "Hobo Bag",
+    "Satchel", "Fanny Pack", "Scarf", "Bandana", "Gloves"
+  ]
 };
 
 export default function DressingRoom() {
