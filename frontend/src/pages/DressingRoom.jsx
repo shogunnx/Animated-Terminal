@@ -103,9 +103,22 @@ export default function DressingRoom() {
       if (char && !char.isSpecial) {
         setSelectedCharacter(char);
         checkAndLoadBaseImage(char.id);
+        // Load current like count
+        setLikeCount(getLikes(char.id));
       }
     }
   }, [id]);
+
+  const handleLike = () => {
+    if (selectedCharacter && !liked) {
+      const newCount = addLike(selectedCharacter.id);
+      setLikeCount(newCount);
+      setLiked(true);
+      
+      // Reset liked state after animation
+      setTimeout(() => setLiked(false), 2000);
+    }
+  };
 
   const checkAndLoadBaseImage = async (charId) => {
     // Priority 1: Try Nexus
