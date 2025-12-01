@@ -196,15 +196,15 @@ High quality, detailed clothing, full body visible from head to toe including to
 Professional anime art style, clean background."""
     
     try:
-        # Use Fal.ai FLUX Redux for image editing (preserves person while changing outfit)
+        # Use Fal.ai FLUX Redux - specifically designed to preserve person from reference image
         handler = await fal_client.submit_async(
-            "fal-ai/flux-general",
+            "fal-ai/flux/redux",
             arguments={
                 "prompt": prompt,
                 "image_url": image_url,
-                "image_size": "square_hd",
-                "num_inference_steps": 28,
-                "guidance_scale": 3.5,
+                "image_size": "landscape_4_3",
+                "num_inference_steps": 40,
+                "guidance_scale": 4.0,
                 "num_images": 1,
                 "enable_safety_checker": True
             }
