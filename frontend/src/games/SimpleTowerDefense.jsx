@@ -178,7 +178,7 @@ const SimpleTowerDefense = forwardRef(({ onScoreChange, onCoachTrigger }, ref) =
 
   return (
     <div>
-      <canvas ref={canvasRef} width={1400} height={800} style={{ width: '100%', height: 'auto', minWidth: '1200px', maxWidth: '1400px', background: '#0a4a0a' }} />
+      <canvas ref={canvasRef} width={1400} height={800} style={{ width: '100%', height: 'auto', background: '#0a4a0a' }} />
       <div style={{ fontSize: 11, opacity: 0.7, marginTop: 8 }}>Click anywhere to place a tower ($100)</div>
     </div>
   );
