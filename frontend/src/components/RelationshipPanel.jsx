@@ -23,6 +23,12 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
       if (response.ok) {
         const data = await response.json();
         setRelationship(data);
+      } else if (response.status === 400) {
+        // GirlsMind not configured
+        const errorData = await response.json();
+        if (errorData.error?.includes("not configured")) {
+          setError("girlsmind_not_configured");
+        }
       } else {
         console.log("Relationship data not available");
       }
