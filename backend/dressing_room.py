@@ -182,41 +182,43 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     if not base_image_bytes:
         raise HTTPException(status_code=400, detail="No reference image available. Please upload a base image.")
     
-    # Analyze base image for features
-    image_features = analyze_base_image_features(base_image_bytes)
+    # Upload base image to Fal.ai
+    try:
+        image_url = await upload_image_to_fal(base_image_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
-    # Create detailed prompt for DALL-E 3 (text-to-image)
-    # Include character details from request
-    prompt = f"""A stunning full body portrait of {request.character_name}, {request.character_description}.
-
-She is wearing: {request.outfit_description}
-
-Character details: Long flowing blonde hair, beautiful face, confident pose
-Style: High quality anime art, professional illustration, detailed outfit design, cinematic lighting, clean background
-Full body shot from head to toe, showing complete hairstyle at top and full shoes at bottom
-Standing elegantly, {image_features}
-8K quality, trending on artstation, masterpiece"""
+    # Create detailed prompt for outfit change
+    prompt = f"""Change the outfit of this person to: {request.outfit_description}.
+Keep the same person, face, hair, and body proportions exactly as shown.
+Only change the clothing to match: {request.outfit_description}.
+High quality, detailed clothing, full body visible from head to toe including top of hair and complete shoes.
+Professional anime art style, clean background."""
     
     try:
-        client = OpenAI(api_key=OPENAI_API_KEY)
-        
-        # Use DALL-E 3 for high quality generation
-        response = client.images.generate(
-            model="dall-e-3",
-            prompt=prompt,
-            n=1,
-            size="1024x1024",
-            quality="hd",  # HD quality for best results
-            style="vivid"   # Vivid for more detailed, vibrant images
+        # Use Fal.ai FLUX Redux for image editing (preserves person while changing outfit)
+        handler = await fal_client.submit_async(
+            "fal-ai/flux-general",
+            arguments={
+                "prompt": prompt,
+                "image_url": image_url,
+                "image_size": "square_hd",
+                "num_inference_steps": 28,
+                "guidance_scale": 3.5,
+                "num_images": 1,
+                "enable_safety_checker": True
+            }
         )
         
-        if response.data and len(response.data) > 0:
-            # Get the URL of the generated image
-            image_url = response.data[0].url
+        # Get result
+        result = await handler.get()
+        
+        if result and result.get("images") and len(result["images"]) > 0:
+            # Download the generated image from Fal.ai
+            generated_image_url = result["images"][0]["url"]
             
-            # Download the generated image
             async with httpx.AsyncClient() as http_client:
-                img_response = await http_client.get(image_url, timeout=30.0)
+                img_response = await http_client.get(generated_image_url, timeout=30.0)
                 img_response.raise_for_status()
                 generated_image_bytes = img_response.content
             
@@ -229,7 +231,7 @@ Standing elegantly, {image_features}
                 "prompt_used": prompt,
                 "image_source": image_source,
                 "base_image_saved": request.save_as_base and image_source == "upload",
-                "model": "dall-e-3"
+                "model": "fal-ai/flux-general"
             }
         else:
             raise HTTPException(status_code=500, detail="No image was generated")
