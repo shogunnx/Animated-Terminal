@@ -227,24 +227,34 @@ export default function DressingRoom() {
       return customPrompt.trim();
     }
 
+    let basePrompt = "";
+
     // If a preset costume is selected, use it as the primary description
     if (selectedItems.presetCostumes) {
       const parts = [selectedItems.presetCostumes];
       // Add other selected items as modifiers
       if (selectedItems.hairstyles) parts.push(`with ${selectedItems.hairstyles} hair`);
       if (selectedItems.accessories) parts.push(`and ${selectedItems.accessories}`);
-      return parts.join(" ");
+      basePrompt = parts.join(" ");
+    } else {
+      // Otherwise, build from individual items
+      const parts = [];
+      if (selectedItems.tops) parts.push(selectedItems.tops);
+      if (selectedItems.bottoms) parts.push(selectedItems.bottoms);
+      if (selectedItems.shoes) parts.push(selectedItems.shoes);
+      if (selectedItems.hairstyles) parts.push(`${selectedItems.hairstyles} hair`);
+      if (selectedItems.accessories) parts.push(selectedItems.accessories);
+      basePrompt = parts.join(", ");
     }
 
-    // Otherwise, build from individual items
-    const parts = [];
-    if (selectedItems.tops) parts.push(selectedItems.tops);
-    if (selectedItems.bottoms) parts.push(selectedItems.bottoms);
-    if (selectedItems.shoes) parts.push(selectedItems.shoes);
-    if (selectedItems.hairstyles) parts.push(`${selectedItems.hairstyles} hair`);
-    if (selectedItems.accessories) parts.push(selectedItems.accessories);
+    // Add art style as a suffix if selected
+    if (selectedItems.artStyles && basePrompt) {
+      basePrompt = `${basePrompt}, rendered in ${selectedItems.artStyles}`;
+    } else if (selectedItems.artStyles && !basePrompt) {
+      basePrompt = `rendered in ${selectedItems.artStyles}`;
+    }
 
-    return parts.join(", ");
+    return basePrompt;
   };
 
   const handleGenerate = async () => {
