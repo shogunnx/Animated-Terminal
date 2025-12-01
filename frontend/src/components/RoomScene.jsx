@@ -664,6 +664,9 @@ export default function RoomScene({ room, characterId, onTalk }) {
   const clickHotspot = async (h) => {
     setSelected(h);
     
+    // Track hotspot click for unlock system
+    addHotspotClick();
+    
     // Special handling for game room
     if (h.action === "games") {
       setPayload(`[GAME ZONE]\nHOTSPOT: ${h.label}\n\nClick "Select Games" below to choose from our Nintendo-style arcade collection!`);
