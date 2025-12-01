@@ -198,12 +198,11 @@ Only change the clothing."""
         handler = await fal_client.submit_async(
             "fal-ai/flux-2/edit",
             arguments={
-                "image_url": image_url,  # Base image to edit
+                "image_urls": [image_url],  # Array of image URLs (base image to edit)
                 "prompt": prompt,
                 "strength": 0.85,  # How much to change (0.85 = strong edit but preserve person)
                 "guidance_scale": 3.5,
                 "num_inference_steps": 28,
-                "seed": None,
                 "enable_safety_checker": True
             }
         )
