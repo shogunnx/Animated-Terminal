@@ -87,7 +87,8 @@ export default function DressingRoom() {
     bottoms: "",
     shoes: "",
     hairstyles: "",
-    accessories: ""
+    accessories: "",
+    presetCostumes: ""
   });
   const [generatedImage, setGeneratedImage] = useState(null);
   const [loading, setLoading] = useState(false);
