@@ -125,5 +125,16 @@ export default function MobileControls({ gameId, onControl }) {
     );
   }
 
+  // Space Invaders controls
+  if (gameId === 'space_invaders') {
+    return (
+      <div style={{ marginTop: '16px', display: 'flex', gap: '12px', justifyContent: 'center' }}>
+        <ControlButton action="left" label="◄" style={{ flex: 1, maxWidth: '100px' }} />
+        <ControlButton action="fire" label="🚀 FIRE" style={{ flex: 2, maxWidth: '150px', background: activeButton === 'fire' ? 'rgba(255, 208, 0, 0.4)' : 'rgba(255, 208, 0, 0.2)', borderColor: '#ffd000', color: '#ffd000', textShadow: '0 0 10px #ffd000' }} />
+        <ControlButton action="right" label="►" style={{ flex: 1, maxWidth: '100px' }} />
+      </div>
+    );
+  }
+
   return null;
 }
