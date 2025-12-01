@@ -8,7 +8,12 @@ const CLOTHING_CATEGORIES = {
     "Halter Top", "Tube Top", "Off-Shoulder", "Turtleneck", "V-Neck", "Cardigan", "Blazer", "Vest",
     "Camisole", "Bodysuit", "Corset", "Kimono", "Wrap Top", "Peasant Top", "Peplum Top", "Bell Sleeve",
     "Cold Shoulder", "Polo Shirt", "Henley", "Sports Bra", "Leather Jacket", "Denim Jacket", "Bomber Jacket",
-    "Trench Coat", "Peacoat", "Windbreaker", "Puffer Jacket", "Flannel", "Mesh Top", "Lace Top"
+    "Trench Coat", "Peacoat", "Windbreaker", "Puffer Jacket", "Flannel", "Mesh Top", "Lace Top",
+    // 30 New Additions
+    "Crop Hoodie", "Longline T-Shirt", "Asymmetric Top", "Sequin Top", "Silk Blouse", "Cashmere Sweater", "Zip-Up Hoodie", "Ribbed Tank",
+    "Satin Camisole", "Cut-Out Top", "Bandeau Top", "Backless Top", "One-Shoulder Top", "Cape Top", "Bolero Jacket", "Moto Jacket",
+    "Varsity Jacket", "Shearling Jacket", "Suede Jacket", "Quilted Jacket", "Cropped Blazer", "Oversized Blazer", "Utility Vest", "Puffer Vest",
+    "Racerback Tank", "Muscle Tee", "Baseball Jersey", "Graphic Tee", "Tie-Dye Top", "Velvet Top"
   ],
   bottoms: [
     "Jeans", "Shorts", "Skirt", "Leggings", "Dress Pants", "Cargo Pants", "Mini Skirt",
@@ -16,7 +21,12 @@ const CLOTHING_CATEGORIES = {
     "High-Waisted Pants", "Low-Rise Jeans", "Wide Leg Pants", "Capri Pants", "Joggers", "Sweatpants", "Leather Pants",
     "Palazzo Pants", "Culottes", "Flare Jeans", "Bootcut Jeans", "Skinny Jeans", "Mom Jeans", "Boyfriend Jeans",
     "Ripped Jeans", "Denim Skirt", "Wrap Skirt", "Tennis Skirt", "Cargo Skirt", "Yoga Pants", "Track Pants",
-    "Dress Shorts", "Bermuda Shorts", "Hot Pants"
+    "Dress Shorts", "Bermuda Shorts", "Hot Pants",
+    // 30 New Additions
+    "Leather Skirt", "Suede Skirt", "Tulle Skirt", "Asymmetric Skirt", "Tiered Skirt", "Button-Front Skirt", "Slit Skirt", "Circle Skirt",
+    "Cargo Shorts", "Running Shorts", "Board Shorts", "Paper Bag Pants", "Harem Pants", "Straight Leg Jeans", "Barrel Leg Jeans", "White Jeans",
+    "Black Jeans", "Distressed Jeans", "Embroidered Jeans", "Coated Jeans", "Jeggings", "Faux Leather Pants", "Velvet Pants", "Corduroy Pants",
+    "Cropped Pants", "Ankle Pants", "Bell Bottom Pants", "Satin Pants", "Plaid Skirt", "Sequin Skirt"
   ],
   shoes: [
     "Sneakers", "Heels", "Boots", "Sandals", "Wedges", "Flats", "Combat Boots",
@@ -24,21 +34,43 @@ const CLOTHING_CATEGORIES = {
     "Rain Boots", "Loafers", "Oxfords", "Mary Janes", "Mules", "Slides", "Flip Flops", "Espadrilles",
     "Ballet Flats", "Pointed Flats", "Gladiator Sandals", "Strappy Heels", "Slingback Heels", "Kitten Heels", "Block Heels",
     "Chunky Sneakers", "High-Top Sneakers", "Slip-On Shoes", "Canvas Shoes", "Running Shoes", "Court Shoes", "Pumps",
-    "Peep-Toe Heels", "Ankle Strap Heels"
+    "Peep-Toe Heels", "Ankle Strap Heels",
+    // 30 New Additions
+    "Over-the-Knee Boots", "Lace-Up Boots", "Sock Boots", "Western Boots", "Hiking Boots", "Platform Sneakers", "Designer Sneakers", "Retro Sneakers",
+    "Velvet Heels", "Metallic Heels", "Clear Heels", "Embellished Heels", "T-Strap Heels", "D'Orsay Heels", "Cone Heels", "Stiletto Boots",
+    "Fur-Lined Boots", "Studded Boots", "Snake Print Heels", "Leopard Print Flats", "Embroidered Flats", "Driving Moccasins", "Boat Shoes", "Platform Sandals",
+    "Jelly Sandals", "Sport Sandals", "Fisherman Sandals", "Strappy Sandals", "Toe Ring Sandals", "Clogs"
   ],
   hairstyles: [
     "Long", "Short", "Ponytail", "Bun", "Braided", "Wavy", "Straight", "Curly",
     "Bob", "Pixie Cut", "Shaggy", "Layered", "Bangs", "Side Swept", "Updo", "Half-Up Half-Down",
     "Messy Bun", "Top Knot", "French Braid", "Fishtail Braid", "Dutch Braid", "Crown Braid", "Space Buns", "Pigtails",
     "Beach Waves", "Loose Curls", "Tight Curls", "Afro", "Locs", "Twists", "Cornrows", "High Ponytail",
-    "Low Ponytail", "Side Ponytail", "Slicked Back", "Mohawk", "Undercut", "Asymmetric Cut"
+    "Low Ponytail", "Side Ponytail", "Slicked Back", "Mohawk", "Undercut", "Asymmetric Cut",
+    // 30 New Additions
+    "Blunt Cut Bob", "Lob (Long Bob)", "Shag Cut", "Wolf Cut", "Butterfly Cut", "Curtain Bangs", "Micro Bangs", "Wispy Bangs",
+    "Pin Curls", "Finger Waves", "Victory Rolls", "Gibson Tuck", "Chignon", "Waterfall Braid", "Rope Braid", "Halo Braid",
+    "Boxer Braids", "Pull-Through Braid", "Milkmaid Braids", "Bubble Ponytail", "Twisted Ponytail", "Wrapped Ponytail", "Braided Updo", "Twisted Updo",
+    "Sleek Bun", "Textured Bun", "Ballerina Bun", "Dreadlocks", "Faux Hawk", "Buzz Cut"
   ],
   accessories: [
     "Belt", "Necklace", "Earrings", "Watch", "Bracelet", "Hat", "Sunglasses", "Bag",
     "Choker", "Pendant", "Chain Necklace", "Hoop Earrings", "Stud Earrings", "Drop Earrings", "Cuff Bracelet", "Bangle",
     "Anklet", "Ring", "Hair Clip", "Headband", "Scrunchie", "Bow", "Beanie", "Baseball Cap", "Bucket Hat",
     "Fedora", "Wide Brim Hat", "Beret", "Backpack", "Crossbody Bag", "Clutch", "Tote Bag", "Hobo Bag",
-    "Satchel", "Fanny Pack", "Scarf", "Bandana", "Gloves"
+    "Satchel", "Fanny Pack", "Scarf", "Bandana", "Gloves",
+    // 30 New Additions
+    "Statement Belt", "Chain Belt", "Western Belt", "Waist Bag", "Layered Necklaces", "Pearl Necklace", "Statement Necklace", "Body Chain",
+    "Tassel Earrings", "Chandelier Earrings", "Huggie Earrings", "Ear Cuff", "Stackable Rings", "Midi Rings", "Cocktail Ring", "Smart Watch",
+    "Leather Bracelet", "Charm Bracelet", "Tennis Bracelet", "Visor", "Newsboy Cap", "Panama Hat", "Sun Hat", "Aviator Sunglasses",
+    "Cat-Eye Sunglasses", "Round Sunglasses", "Mini Bag", "Chain Bag", "Bucket Bag", "Woven Bag"
+  ],
+  presetCostumes: [
+    "School Uniform", "Gothic Lolita", "Maid Outfit", "Nurse Uniform", "Police Officer", "Military Uniform",
+    "Pirate Captain", "Witch Costume", "Vampire Gothic", "Angel Wings", "Devil Costume", "Cat Girl",
+    "Bunny Suit", "Cheerleader", "Rockstar Outfit", "Cyberpunk Street", "Steampunk Victorian", "Medieval Knight",
+    "Samurai Warrior", "Ninja Assassin", "Cowgirl Western", "1950s Pin-Up", "1920s Flapper", "1980s Retro",
+    "Beach Summer", "Winter Wonderland", "Formal Evening Gown", "Casual Street Style", "Business Professional", "Athleisure Sports"
   ]
 };
 
