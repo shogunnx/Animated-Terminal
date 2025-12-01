@@ -51,7 +51,7 @@ const PongGame = forwardRef(({ onScoreChange, onCoachTrigger, mode }, ref) => {
       }
 
       // Ball collision with AI paddle
-      if (state.ballX >= 760 && state.ballY >= state.aiPaddleY && state.ballY <= state.aiPaddleY + 100) {
+      if (state.ballX >= 1360 && state.ballY >= state.aiPaddleY && state.ballY <= state.aiPaddleY + 100) {
         state.ballVX = -Math.abs(state.ballVX);
         state.ballVY += (Math.random() - 0.5) * 2;
       }
