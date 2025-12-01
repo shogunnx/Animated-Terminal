@@ -188,23 +188,23 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
-    # Create detailed prompt for outfit change
-    prompt = f"""Change the outfit of this person to: {request.outfit_description}.
-Keep the same person, face, hair, and body proportions exactly as shown.
-Only change the clothing to match: {request.outfit_description}.
-High quality, detailed clothing, full body visible from head to toe including top of hair and complete shoes.
-Professional anime art style, clean background."""
+    # Create detailed prompt emphasizing keeping exact person from image
+    prompt = f"""This exact woman from the reference image wearing: {request.outfit_description}.
+Same face, same hair, same person, same body.
+Full body visible from head to toe including complete hair and shoes.
+High quality, detailed clothing, realistic style."""
     
     try:
-        # Use Fal.ai FLUX Redux - specifically designed to preserve person from reference image
+        # Use Fal.ai FLUX LoRA with image reference for person preservation
         handler = await fal_client.submit_async(
-            "fal-ai/flux-redux",
+            "fal-ai/flux-lora",
             arguments={
                 "prompt": prompt,
-                "image_url": image_url,
-                "image_size": "landscape_4_3",
-                "num_inference_steps": 40,
-                "guidance_scale": 4.0,
+                "image_url": image_url,  # Reference image
+                "strength": 0.85,  # Strong adherence to reference image
+                "image_size": "square_hd",
+                "num_inference_steps": 50,
+                "guidance_scale": 4.5,
                 "num_images": 1,
                 "enable_safety_checker": True
             }
