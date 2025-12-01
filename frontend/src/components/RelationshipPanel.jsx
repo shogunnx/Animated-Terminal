@@ -9,8 +9,31 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
   const [memoryText, setMemoryText] = useState("");
   const [memoryTag, setMemoryTag] = useState("moment");
   const [submitting, setSubmitting] = useState(false);
+  const [nexusId, setNexusId] = useState(null);
 
   const userId = "guest"; // Default user ID
+
+  // Fetch Nexus UUID for the character
+  useEffect(() => {
+    const fetchNexusId = async () => {
+      try {
+        const response = await fetch("/api/nexus/api/characters");
+        if (response.ok) {
+          const characters = await response.json();
+          const character = characters.find(c => 
+            c.displayName.toLowerCase().replace(/\s+/g, "_") === characterId ||
+            c.displayName.toLowerCase() === characterId.replace(/_/g, " ")
+          );
+          if (character) {
+            setNexusId(character.id);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch Nexus ID:", err);
+      }
+    };
+    fetchNexusId();
+  }, [characterId]);
 
   useEffect(() => {
     fetchRelationshipData();
