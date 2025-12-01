@@ -79,7 +79,26 @@ const CLOTHING_CATEGORIES = {
     "Pirate Captain", "Witch Costume", "Vampire Gothic", "Angel Wings", "Devil Costume", "Cat Girl",
     "Bunny Suit", "Cheerleader", "Rockstar Outfit", "Cyberpunk Street", "Steampunk Victorian", "Medieval Knight",
     "Samurai Warrior", "Ninja Assassin", "Cowgirl Western", "1950s Pin-Up", "1920s Flapper", "1980s Retro",
-    "Beach Summer", "Winter Wonderland", "Formal Evening Gown", "Casual Street Style", "Business Professional", "Athleisure Sports"
+    "Beach Summer", "Winter Wonderland", "Formal Evening Gown", "Casual Street Style", "Business Professional", "Athleisure Sports",
+    // 30 More Presets - Power Rangers
+    "Mighty Morphin Red Ranger", "Mighty Morphin Pink Ranger", "Mighty Morphin Blue Ranger", "Mighty Morphin Yellow Ranger", "Mighty Morphin Black Ranger", "Mighty Morphin Green Ranger",
+    "Power Rangers Zeo Red", "Power Rangers Zeo Pink", "Power Rangers Zeo Blue", "Power Rangers Zeo Yellow", "Power Rangers Zeo Green",
+    // Marvel Heroes & Villains
+    "Iron Man Suit", "Captain America", "Thor Asgardian", "Black Widow Spy", "Spider-Man Web Slinger", "Scarlet Witch", "Black Panther", "Doctor Strange Sorcerer",
+    "Thanos Titan", "Loki God of Mischief", "Hela Goddess of Death",
+    // DC Heroes & Villains
+    "Superman Classic", "Batman Dark Knight", "Wonder Woman Amazonian", "The Flash Speedster", "Aquaman Atlantean", "Harley Quinn", "Joker Clown Prince", "Poison Ivy",
+    // 20 Meme Presets
+    "Distracted Boyfriend", "Woman Yelling at Cat", "Hide the Pain Harold", "Surprised Pikachu", "Doge Shiba", "Pepe the Frog", "Wojak Doomer",
+    "Chad Gigachad", "Karen Wants Manager", "Boomer Sipping Coffee", "Zoomer E-Boy/E-Girl", "NPC Grey Face", "Big Brain Time",
+    "This is Fine Dog", "Stonks Guy", "Trade Offer", "Bernie Sanders Mittens", "Success Kid", "Bad Luck Brian", "Overly Attached Girlfriend"
+  ],
+  artStyles: [
+    "Anime Style", "Manga Style", "Semi-Realistic Anime", "Chibi Style", "Kawaii Style", "Western Animation",
+    "Disney Style", "Pixar 3D", "Studio Ghibli", "Makoto Shinkai", "Comic Book Style", "Marvel Comics",
+    "DC Comics Style", "Graphic Novel", "Noir Style", "Cel Shaded", "Watercolor Painting", "Oil Painting",
+    "Digital Art", "Concept Art", "Fantasy Art", "Sci-Fi Art", "Cyberpunk Aesthetic", "Vaporwave",
+    "Retro 80s", "Retro 90s", "Art Nouveau", "Art Deco", "Pop Art", "Minimalist"
   ]
 };
 
