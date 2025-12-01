@@ -64,15 +64,15 @@ const PongGame = forwardRef(({ onScoreChange, onCoachTrigger, mode }, ref) => {
       // Score
       if (state.ballX <= 0) {
         state.aiScore++;
-        state.ballX = 400;
-        state.ballY = 300;
+        state.ballX = 700;
+        state.ballY = 400;
         state.ballVX = -5;
       }
-      if (state.ballX >= 800) {
+      if (state.ballX >= 1400) {
         state.score++;
         onScoreChange(state.score * 10);
-        state.ballX = 400;
-        state.ballY = 300;
+        state.ballX = 700;
+        state.ballY = 400;
         state.ballVX = 5;
         if (state.score % 3 === 0) onCoachTrigger('Great rally!');
       }
@@ -81,8 +81,8 @@ const PongGame = forwardRef(({ onScoreChange, onCoachTrigger, mode }, ref) => {
       ctx.strokeStyle = '#76FFE140';
       ctx.setLineDash([10, 10]);
       ctx.beginPath();
-      ctx.moveTo(400, 0);
-      ctx.lineTo(400, 600);
+      ctx.moveTo(700, 0);
+      ctx.lineTo(700, 800);
       ctx.stroke();
 
       // Draw paddles
