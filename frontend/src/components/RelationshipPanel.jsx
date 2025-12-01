@@ -82,15 +82,15 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
   };
 
   const handleWriteMemory = async () => {
-    if (!memoryText.trim()) return;
+    if (!memoryText.trim() || !nexusId) return;
 
     setSubmitting(true);
     try {
-      const response = await fetch(`/api/girlsmind/store_exchange`, {
+      const response = await fetch(`/api/girlsmind/api/store_exchange`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          characterId,
+          characterId: nexusId,
           userId,
           text: memoryText,
           tag: memoryTag,
@@ -101,10 +101,12 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
       if (response.ok) {
         setMemoryText("");
         setShowWriteMemory(false);
+        setError(null);
         // Refresh memories
         await fetchMemories();
       } else {
-        setError("Failed to save memory");
+        const errorData = await response.json();
+        setError(errorData.error || "Failed to save memory");
       }
     } catch (err) {
       setError("Failed to save memory: " + err.message);
