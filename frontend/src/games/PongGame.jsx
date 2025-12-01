@@ -35,7 +35,7 @@ const PongGame = forwardRef(({ onScoreChange, onCoachTrigger, mode }, ref) => {
 
       // Update paddle
       if (state.keys.ArrowUp || state.keys.w) state.paddleY = Math.max(0, state.paddleY - 8);
-      if (state.keys.ArrowDown || state.keys.s) state.paddleY = Math.min(500, state.paddleY + 8);
+      if (state.keys.ArrowDown || state.keys.s) state.paddleY = Math.min(700, state.paddleY + 8);
 
       // Update ball
       state.ballX += state.ballVX;
