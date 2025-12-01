@@ -31,7 +31,7 @@ const PongGame = forwardRef(({ onScoreChange, onCoachTrigger, mode }, ref) => {
     const gameLoop = () => {
       // Clear
       ctx.fillStyle = '#0a0a12';
-      ctx.fillRect(0, 0, 800, 600);
+      ctx.fillRect(0, 0, 1400, 800);
 
       // Update paddle
       if (state.keys.ArrowUp || state.keys.w) state.paddleY = Math.max(0, state.paddleY - 8);
