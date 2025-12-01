@@ -293,7 +293,10 @@ export default function Home() {
       {/* Quick Access Terminal Commands */}
       <div className="tsv-glass" style={{ padding: 14, marginTop: 14 }}>
         <div className="tsv-title" style={{ fontSize: 12, opacity:.85, marginBottom: 10 }}>QUICK ACCESS TERMINALS</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
+          <button className="tsv-btn" onClick={() => nav("/map")} style={{ fontSize: 11 }}>
+            🗺️ Interactive Map
+          </button>
           <button className="tsv-btn" onClick={() => nav("/characters")} style={{ fontSize: 11 }}>
             📂 Character Files
           </button>
