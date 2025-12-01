@@ -164,7 +164,7 @@ const SimpleBlackjackGame = forwardRef(({ onScoreChange, onCoachTrigger }, ref) 
     };
   }, [gameState, onScoreChange, onCoachTrigger]);
 
-  return <canvas ref={canvasRef} width={1400} height={800} style={{ width: '100%', height: 'auto' }} />;
+  return <canvas ref={canvasRef} width={1400} height={800} style={{ width: '100%', height: 'auto', minWidth: '1200px', maxWidth: '1400px' }} />;
 });
 
 export default SimpleBlackjackGame;
