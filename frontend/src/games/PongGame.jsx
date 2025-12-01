@@ -58,7 +58,7 @@ const PongGame = forwardRef(({ onScoreChange, onCoachTrigger, mode }, ref) => {
 
       // AI movement
       const aiTarget = state.ballY - 50;
-      if (state.aiPaddleY < aiTarget) state.aiPaddleY = Math.min(500, state.aiPaddleY + 4);
+      if (state.aiPaddleY < aiTarget) state.aiPaddleY = Math.min(700, state.aiPaddleY + 4);
       if (state.aiPaddleY > aiTarget) state.aiPaddleY = Math.max(0, state.aiPaddleY - 4);
 
       // Score
