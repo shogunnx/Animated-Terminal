@@ -93,6 +93,33 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
     );
   }
 
+  if (error === "girlsmind_not_configured") {
+    return (
+      <div className="tsv-glass tsv-glow" style={{ padding: 16, borderColor: accent }}>
+        <div className="tsv-title" style={{ fontSize: 12, color: accent, marginBottom: 12 }}>
+          ⚡ RELATIONSHIP SYSTEM
+        </div>
+        <div style={{ fontSize: 11, opacity: 0.7, lineHeight: 1.6 }}>
+          <p style={{ marginBottom: 8 }}>
+            The GirlsMind relationship tracking system is not currently configured.
+          </p>
+          <p style={{ marginBottom: 8 }}>
+            This feature allows you to:
+          </p>
+          <ul style={{ paddingLeft: 20, marginBottom: 8 }}>
+            <li>Track affinity, trust, and mood</li>
+            <li>View relationship milestones</li>
+            <li>Store and review shared memories</li>
+            <li>Build deeper connections over time</li>
+          </ul>
+          <p style={{ fontSize: 10, opacity: 0.5, marginTop: 12 }}>
+            To enable this feature, configure GIRLSMIND_BASE_URL and GIRLSMIND_API_KEY in your backend environment.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Relationship Snapshot */}
