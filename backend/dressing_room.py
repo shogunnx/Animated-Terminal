@@ -128,11 +128,24 @@ def analyze_base_image_features(image_bytes: bytes) -> str:
     except Exception:
         return "standard proportions"
 
+async def upload_image_to_fal(image_bytes: bytes) -> str:
+    """Upload image to Fal.ai and get URL"""
+    try:
+        # Fal.ai requires base64 data URL format
+        image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+        # Determine format
+        img = Image.open(io.BytesIO(image_bytes))
+        format_str = img.format.lower() if img.format else 'png'
+        data_url = f"data:image/{format_str};base64,{image_base64}"
+        return data_url
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to prepare image for upload: {str(e)}")
+
 async def generate_outfit_image(request: OutfitRequest) -> dict:
-    """Generate an image of a character in a specific outfit using OpenAI DALL-E 3"""
+    """Generate an image of a character in a specific outfit using Fal.ai image editing"""
     
-    if not OPENAI_API_KEY:
-        raise HTTPException(status_code=500, detail="OPENAI_API_KEY not configured")
+    if not FAL_KEY:
+        raise HTTPException(status_code=500, detail="FAL_KEY not configured")
     
     # Priority system for base images:
     # 1. Nexus API (if reference_image_url provided)
