@@ -417,8 +417,41 @@ export default function DressingRoom() {
           WARDROBE SELECTION
         </div>
 
-        {/* Clothing Categories */}
-        {Object.entries(CLOTHING_CATEGORIES).map(([category, items]) => (
+        {/* Preset Costumes - Featured Section */}
+        {CLOTHING_CATEGORIES.presetCostumes && (
+          <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.08)" }}>
+            <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10 }}>
+              ⭐ PRESET COSTUMES
+            </div>
+            <div style={{ fontSize: 9, opacity: 0.6, marginBottom: 10 }}>
+              Quick outfit presets - select one for instant transformation!
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {CLOTHING_CATEGORIES.presetCostumes.map((item) => (
+                <button
+                  key={item}
+                  onClick={() => handleItemToggle("presetCostumes", item)}
+                  className="tsv-pill"
+                  style={{
+                    fontSize: 10,
+                    padding: "5px 12px",
+                    cursor: "pointer",
+                    borderColor: selectedItems.presetCostumes === item ? selectedCharacter.accent : "rgba(255,255,255,.14)",
+                    background: selectedItems.presetCostumes === item 
+                      ? `linear-gradient(135deg, ${selectedCharacter.accent}35, ${selectedCharacter.glow}20)`
+                      : "rgba(255,255,255,.10)",
+                    boxShadow: selectedItems.presetCostumes === item ? `0 0 12px ${selectedCharacter.accent}40` : "none"
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Regular Clothing Categories */}
+        {Object.entries(CLOTHING_CATEGORIES).filter(([cat]) => cat !== 'presetCostumes').map(([category, items]) => (
           <div key={category} style={{ marginTop: 14 }}>
             <div className="tsv-title" style={{ fontSize: 11, opacity:.75, marginBottom: 8, textTransform: "uppercase" }}>
               {category}
