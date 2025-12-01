@@ -711,21 +711,28 @@
     animation-duration: 8s;
   }
   
-  /* Simplify particle effects */
+  /* Simplify particle effects - hide complex animations on mobile */
   .char-spark,
   .char-burst,
   .char-data,
   .char-sparkle,
-  .char-tendril {
-    display: none;
+  .char-tendril,
+  .char-gentle-sparkle {
+    display: none !important;
   }
   
-  /* Keep only main glow effects */
+  /* Also hide particle containers */
+  .char-particles::before,
+  .char-particles::after {
+    display: none !important;
+  }
+  
+  /* Keep only main glow effects with reduced blur */
   .char-glow,
   .char-dark-glow,
   .char-warm-glow,
   .char-power-aura {
-    filter: blur(20px);
+    filter: blur(20px) !important;
   }
 }
 
