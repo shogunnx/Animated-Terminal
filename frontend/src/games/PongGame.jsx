@@ -42,7 +42,7 @@ const PongGame = forwardRef(({ onScoreChange, onCoachTrigger, mode }, ref) => {
       state.ballY += state.ballVY;
 
       // Ball collision with top/bottom
-      if (state.ballY <= 0 || state.ballY >= 590) state.ballVY *= -1;
+      if (state.ballY <= 0 || state.ballY >= 790) state.ballVY *= -1;
 
       // Ball collision with player paddle
       if (state.ballX <= 30 && state.ballY >= state.paddleY && state.ballY <= state.paddleY + 100) {
