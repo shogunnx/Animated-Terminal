@@ -6,13 +6,14 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import httpx
-from openai import OpenAI
+import fal_client
 from PIL import Image
 from pathlib import Path
 
 load_dotenv()
 
-OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+FAL_KEY = os.environ.get("FAL_KEY", "")
+os.environ["FAL_KEY"] = FAL_KEY  # Ensure fal_client can access it
 BASE_IMAGES_DIR = Path("/app/backend/base_images")
 BASE_IMAGES_DIR.mkdir(exist_ok=True)
 
