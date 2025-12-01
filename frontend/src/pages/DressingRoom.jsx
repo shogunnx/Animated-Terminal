@@ -408,20 +408,79 @@ export default function DressingRoom() {
         {/* Generated Image */}
         {generatedImage && (
           <div style={{ marginTop: 14 }}>
-            <div className="tsv-title" style={{ fontSize: 12, opacity:.88, marginBottom: 8 }}>
-              GENERATED OUTFIT
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <div className="tsv-title" style={{ fontSize: 12, opacity:.88 }}>
+                GENERATED OUTFIT
+              </div>
+              <div style={{ fontSize: 10, opacity: 0.7, display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ color: selectedCharacter.accent }}>♥ {likeCount}</span>
+                <span style={{ opacity: 0.5 }}>RANK #{getCharacterRank(selectedCharacter.id) || '?'}</span>
+              </div>
             </div>
             <div className="tsv-scanlines tsv-noise" style={{ 
               borderRadius: 16, 
               border: `2px solid ${selectedCharacter.accent}`,
               overflow: "hidden",
-              boxShadow: `0 0 20px ${selectedCharacter.accent}40`
+              boxShadow: `0 0 20px ${selectedCharacter.accent}40`,
+              position: "relative"
             }}>
               <img 
                 src={generatedImage} 
                 alt="Generated outfit"
                 style={{ width: "100%", display: "block" }}
               />
+              
+              {/* Like Button Overlay */}
+              <button
+                onClick={handleLike}
+                disabled={liked}
+                className="tsv-btn"
+                style={{
+                  position: "absolute",
+                  bottom: 14,
+                  right: 14,
+                  padding: "8px 16px",
+                  fontSize: 12,
+                  background: liked ? `linear-gradient(135deg, ${selectedCharacter.accent}60, ${selectedCharacter.glow}40)` : `linear-gradient(135deg, ${selectedCharacter.accent}40, ${selectedCharacter.glow}20)`,
+                  border: `2px solid ${selectedCharacter.accent}`,
+                  boxShadow: liked ? `0 0 30px ${selectedCharacter.accent}` : `0 0 15px ${selectedCharacter.accent}40`,
+                  transform: liked ? "scale(1.1)" : "scale(1)",
+                  transition: "all 0.3s ease",
+                  cursor: liked ? "default" : "pointer"
+                }}
+              >
+                {liked ? "❤️ LIKED!" : "♥ LIKE OUTFIT"}
+              </button>
+            </div>
+            
+            {/* Action Buttons */}
+            <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <button 
+                className="tsv-btn"
+                onClick={() => {
+                  // Save to local storage
+                  const saves = JSON.parse(localStorage.getItem('tsv_saved_outfits') || '[]');
+                  saves.push({
+                    characterId: selectedCharacter.id,
+                    image: generatedImage,
+                    timestamp: Date.now()
+                  });
+                  localStorage.setItem('tsv_saved_outfits', JSON.stringify(saves));
+                  alert('Outfit saved locally!');
+                }}
+                style={{ fontSize: 11, padding: "8px" }}
+              >
+                💾 SAVE
+              </button>
+              <button 
+                className="tsv-btn"
+                onClick={() => {
+                  alert('DeviantArt integration coming soon!');
+                }}
+                style={{ fontSize: 11, padding: "8px", opacity: 0.6 }}
+              >
+                🎨 POST TO DA
+              </button>
             </div>
           </div>
         )}
