@@ -60,10 +60,12 @@ export default function Profile() {
 
         <div className="tsv-scanlines tsv-noise" style={{ marginTop: 12, borderRadius: 16, border:"1px solid rgba(255,255,255,.10)", overflow:"hidden", position:"relative" }}>
           <div style={{ aspectRatio:"4/5", position:"relative" }}>
-            <img src={c.portrait} alt={c.name} onError={(e)=>{e.currentTarget.style.display="none";}} style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }} />
-            <div style={{ position:"absolute", inset:0, pointerEvents:"none" }}>
-              <HoloPortrait name={c.name} accent={c.accent} glow={c.glow} />
-            </div>
+            <CharacterAnimations characterId={c.id} intensity="medium">
+              <img src={c.portrait} alt={c.name} onError={(e)=>{e.currentTarget.style.display="none";}} style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }} />
+              <div style={{ position:"absolute", inset:0, pointerEvents:"none" }}>
+                <HoloPortrait name={c.name} accent={c.accent} glow={c.glow} />
+              </div>
+            </CharacterAnimations>
           </div>
         </div>
 
