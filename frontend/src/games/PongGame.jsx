@@ -98,11 +98,11 @@ const PongGame = forwardRef(({ onScoreChange, onCoachTrigger, mode }, ref) => {
       ctx.fill();
 
       // Draw scores
-      ctx.font = '32px monospace';
+      ctx.font = '48px monospace';
       ctx.fillStyle = '#00ff88';
-      ctx.fillText(state.score, 350, 50);
+      ctx.fillText(state.score, 620, 70);
       ctx.fillStyle = '#ff4444';
-      ctx.fillText(state.aiScore, 430, 50);
+      ctx.fillText(state.aiScore, 750, 70);
 
       gameLoopRef.current = requestAnimationFrame(gameLoop);
     };
