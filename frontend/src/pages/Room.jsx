@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import RoomScene from "../components/RoomScene.jsx";
-import { TSV_ROOMS } from "../content/tsvContent.js";
+import RelationshipPanel from "../components/RelationshipPanel.jsx";
+import { TSV_ROOMS, TSV_CHARACTERS } from "../content/tsvContent.js";
 
 export default function Room() {
   const { id } = useParams();
