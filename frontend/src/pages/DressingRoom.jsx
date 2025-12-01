@@ -566,8 +566,41 @@ export default function DressingRoom() {
           </div>
         )}
 
+        {/* Art Styles - Featured Section */}
+        {CLOTHING_CATEGORIES.artStyles && (
+          <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "rgba(138,43,226,.05)", border: "1px solid rgba(138,43,226,.2)" }}>
+            <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10 }}>
+              🎨 ART STYLES
+            </div>
+            <div style={{ fontSize: 9, opacity: 0.6, marginBottom: 10 }}>
+              Choose rendering style for your outfit (anime, realistic, comic, etc.)
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {CLOTHING_CATEGORIES.artStyles.map((item) => (
+                <button
+                  key={item}
+                  onClick={() => handleItemToggle("artStyles", item)}
+                  className="tsv-pill"
+                  style={{
+                    fontSize: 10,
+                    padding: "5px 12px",
+                    cursor: "pointer",
+                    borderColor: selectedItems.artStyles === item ? "#8B2BDA" : "rgba(138,43,226,.3)",
+                    background: selectedItems.artStyles === item 
+                      ? "linear-gradient(135deg, rgba(138,43,226,.35), rgba(199,164,255,.2))"
+                      : "rgba(138,43,226,.1)",
+                    boxShadow: selectedItems.artStyles === item ? "0 0 12px rgba(138,43,226,.4)" : "none"
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Regular Clothing Categories */}
-        {Object.entries(CLOTHING_CATEGORIES).filter(([cat]) => cat !== 'presetCostumes').map(([category, items]) => (
+        {Object.entries(CLOTHING_CATEGORIES).filter(([cat]) => cat !== 'presetCostumes' && cat !== 'artStyles').map(([category, items]) => (
           <div key={category} style={{ marginTop: 14 }}>
             <div className="tsv-title" style={{ fontSize: 11, opacity:.75, marginBottom: 8, textTransform: "uppercase" }}>
               {category}
