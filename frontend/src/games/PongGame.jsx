@@ -89,7 +89,7 @@ const PongGame = forwardRef(({ onScoreChange, onCoachTrigger, mode }, ref) => {
       ctx.fillStyle = '#00ff88';
       ctx.fillRect(20, state.paddleY, 10, 100);
       ctx.fillStyle = '#ff4444';
-      ctx.fillRect(770, state.aiPaddleY, 10, 100);
+      ctx.fillRect(1370, state.aiPaddleY, 10, 100);
 
       // Draw ball
       ctx.fillStyle = '#ffffff';
