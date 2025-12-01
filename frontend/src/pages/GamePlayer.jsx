@@ -88,14 +88,16 @@ export default function GamePlayer() {
           </button>
         </div>
 
-        <GameComponent 
-          ref={gameControlRef}
-          onScoreChange={setScore}
-          onCoachTrigger={setCoachMessage}
-          onBondChange={setBondMeter}
-          coach={coach}
-          mode={mode}
-        />
+        <Suspense fallback={<div style={{ padding: 20, textAlign: 'center', color: '#00ff88' }}>Loading game...</div>}>
+          <GameComponent 
+            ref={gameControlRef}
+            onScoreChange={setScore}
+            onCoachTrigger={setCoachMessage}
+            onBondChange={setBondMeter}
+            coach={coach}
+            mode={mode}
+          />
+        </Suspense>
         
         {/* Mobile Controls */}
         <MobileControls gameId={gameId} onControl={handleMobileControl} />
