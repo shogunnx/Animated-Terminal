@@ -183,6 +183,16 @@ export default function DressingRoom() {
       return customPrompt.trim();
     }
 
+    // If a preset costume is selected, use it as the primary description
+    if (selectedItems.presetCostumes) {
+      const parts = [selectedItems.presetCostumes];
+      // Add other selected items as modifiers
+      if (selectedItems.hairstyles) parts.push(`with ${selectedItems.hairstyles} hair`);
+      if (selectedItems.accessories) parts.push(`and ${selectedItems.accessories}`);
+      return parts.join(" ");
+    }
+
+    // Otherwise, build from individual items
     const parts = [];
     if (selectedItems.tops) parts.push(selectedItems.tops);
     if (selectedItems.bottoms) parts.push(selectedItems.bottoms);
