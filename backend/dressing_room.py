@@ -115,8 +115,20 @@ def create_clothing_mask(image_bytes: bytes) -> bytes:
     mask.save(output, format='PNG')
     return output.getvalue()
 
+def analyze_base_image_features(image_bytes: bytes) -> str:
+    """Extract visual features from base image for prompt"""
+    try:
+        img = Image.open(io.BytesIO(image_bytes))
+        # Analyze image to get basic features
+        # This is a simple approach - could be enhanced with vision API
+        width, height = img.size
+        aspect = "tall" if height > width * 1.2 else "standard"
+        return f"{aspect} proportions"
+    except:
+        return "standard proportions"
+
 async def generate_outfit_image(request: OutfitRequest) -> dict:
-    """Generate an image of a character in a specific outfit using OpenAI image editing"""
+    """Generate an image of a character in a specific outfit using OpenAI DALL-E 3"""
     
     if not OPENAI_API_KEY:
         raise HTTPException(status_code=500, detail="OPENAI_API_KEY not configured")
@@ -156,42 +168,32 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     if not base_image_bytes:
         raise HTTPException(status_code=400, detail="No reference image available. Please upload a base image.")
     
-    # Prepare base image
-    try:
-        prepared_image = prepare_image_for_openai(base_image_bytes)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to prepare image: {str(e)}")
+    # Analyze base image for features
+    image_features = analyze_base_image_features(base_image_bytes)
     
-    # Create mask for clothing area
-    try:
-        mask_bytes = create_clothing_mask(base_image_bytes)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to create mask: {str(e)}")
-    
-    # Create prompt for high-quality single full-body image
-    prompt = f"""A beautiful full body portrait of this woman wearing {request.outfit_description}.
-Show her from head to toe in a single elegant pose.
-Keep her exact face, hair color, and body type.
-High quality anime art style, detailed outfit, professional lighting, clean background.
-Full body visible with top of head and complete shoes showing."""
+    # Create detailed prompt for DALL-E 3 (text-to-image)
+    # Include character details from request
+    prompt = f"""A stunning full body portrait of {request.character_name}, {request.character_description}.
+
+She is wearing: {request.outfit_description}
+
+Character details: Long flowing blonde hair, beautiful face, confident pose
+Style: High quality anime art, professional illustration, detailed outfit design, cinematic lighting, clean background
+Full body shot from head to toe, showing complete hairstyle at top and full shoes at bottom
+Standing elegantly, {image_features}
+8K quality, trending on artstation, masterpiece"""
     
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
         
-        # Create file-like objects
-        image_file = io.BytesIO(prepared_image)
-        image_file.name = "image.png"
-        
-        mask_file = io.BytesIO(mask_bytes)
-        mask_file.name = "mask.png"
-        
-        # Use image editing with mask
-        response = client.images.edit(
-            image=image_file,
-            mask=mask_file,
+        # Use DALL-E 3 for high quality generation
+        response = client.images.generate(
+            model="dall-e-3",
             prompt=prompt,
             n=1,
-            size="1024x1024"
+            size="1024x1024",
+            quality="hd",  # HD quality for best results
+            style="vivid"   # Vivid for more detailed, vibrant images
         )
         
         if response.data and len(response.data) > 0:
@@ -212,7 +214,8 @@ Full body visible with top of head and complete shoes showing."""
                 "image_base64": image_base64,
                 "prompt_used": prompt,
                 "image_source": image_source,
-                "base_image_saved": request.save_as_base and image_source == "upload"
+                "base_image_saved": request.save_as_base and image_source == "upload",
+                "model": "dall-e-3"
             }
         else:
             raise HTTPException(status_code=500, detail="No image was generated")
