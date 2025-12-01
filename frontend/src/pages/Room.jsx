@@ -39,17 +39,14 @@ export default function Room() {
       {/* Two-column layout: Room Scene + Relationship Panel */}
       <div style={{ 
         display: "grid", 
-        gridTemplateColumns: "1fr 400px", 
-        gap: 14,
-        "@media (max-width: 1024px)": {
-          gridTemplateColumns: "1fr"
-        }
+        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 400px), 1fr))", 
+        gap: 14
       }}>
-        <div>
+        <div style={{ minWidth: 0 }}>
           <RoomScene room={room} characterId={id} onTalk={() => nav(`/characters/${id}`)} />
         </div>
         
-        <div>
+        <div style={{ minWidth: 0 }}>
           <RelationshipPanel characterId={id} accent={accent} glow={glow} />
         </div>
       </div>
