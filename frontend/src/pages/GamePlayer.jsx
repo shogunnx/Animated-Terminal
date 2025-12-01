@@ -26,12 +26,34 @@ export default function GamePlayer() {
   const gameControlRef = useRef(null);
 
   const gameComponents = {
+    // Original 6 games
     tetris: TetrisGame,
     snake: SnakeGame,
     breakout: BreakoutGame,
     runner: RunnerGame,
     microgames: MicroGames,
     rhythm: RhythmGame,
+    // New 20 games
+    pong: lazy(() => import('../games/PongGame.jsx')),
+    space_invaders: lazy(() => import('../games/SpaceInvadersGame.jsx')),
+    flappy: lazy(() => import('../games/FlappyGame.jsx')),
+    match3: lazy(() => import('../games/Match3Game.jsx')),
+    solitaire: lazy(() => import('../games/SolitaireGame.jsx')),
+    minesweeper: lazy(() => import('../games/MinesweeperGame.jsx')),
+    pacman: lazy(() => import('../games/PacmanGame.jsx')),
+    platformer: lazy(() => import('../games/PlatformerGame.jsx')),
+    bubble_shooter: lazy(() => import('../games/BubbleShooterGame.jsx')),
+    tower_defense: lazy(() => import('../games/SimpleTowerDefense.jsx')),
+    word_search: lazy(() => import('../games/SimpleWordSearch.jsx')),
+    memory: lazy(() => import('../games/MemoryGame.jsx')),
+    racing: lazy(() => import('../games/SimpleRacingGame.jsx')),
+    bowling: lazy(() => import('../games/SimpleBowlingGame.jsx')),
+    asteroids: lazy(() => import('../games/AsteroidsGame.jsx')),
+    chess: lazy(() => import('../games/SimpleChessGame.jsx')),
+    pool: lazy(() => import('../games/Simple8BallGame.jsx')),
+    pinball: lazy(() => import('../games/SimplePinballGame.jsx')),
+    sudoku: lazy(() => import('../games/SimpleSudokuGame.jsx')),
+    blackjack: lazy(() => import('../games/SimpleBlackjackGame.jsx')),
   };
 
   const GameComponent = gameComponents[gameId];
