@@ -43,36 +43,41 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
   }, [nexusId]);
 
   const fetchRelationshipData = async () => {
+    if (!nexusId) return;
+    
     try {
-      const response = await fetch(`/api/girlsmind/relationship/${characterId}?userId=${userId}`);
+      const response = await fetch(`/api/girlsmind/api/relationship/${nexusId}?userId=${userId}`);
       if (response.ok) {
         const data = await response.json();
         setRelationship(data);
-      } else if (response.status === 400) {
-        // GirlsMind not configured
-        const errorData = await response.json();
-        if (errorData.error?.includes("not configured")) {
-          setError("girlsmind_not_configured");
-        }
       } else {
-        console.log("Relationship data not available");
+        console.log("Relationship data not available, status:", response.status);
+        // Show empty state, no error
+        setRelationship(null);
       }
     } catch (err) {
       console.error("Failed to fetch relationship:", err);
+      setRelationship(null);
     } finally {
       setLoading(false);
     }
   };
 
   const fetchMemories = async () => {
+    if (!nexusId) return;
+    
     try {
-      const response = await fetch(`/api/girlsmind/memories/${characterId}?userId=${userId}`);
+      const response = await fetch(`/api/girlsmind/api/memories/${nexusId}?userId=${userId}`);
       if (response.ok) {
         const data = await response.json();
         setMemories(data.memories || data || []);
+      } else {
+        console.log("Memories not available, status:", response.status);
+        setMemories([]);
       }
     } catch (err) {
       console.error("Failed to fetch memories:", err);
+      setMemories([]);
     }
   };
 
