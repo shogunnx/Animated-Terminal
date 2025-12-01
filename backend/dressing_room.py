@@ -146,7 +146,7 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
         try:
             base_image_bytes = await download_image(request.reference_image_url)
             image_source = "nexus"
-        except Exception as e:
+        except Exception:
             pass  # Fall through to next priority
     
     # Priority 2: Try stored base image
