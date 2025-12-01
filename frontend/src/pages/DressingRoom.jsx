@@ -56,7 +56,11 @@ const CLOTHING_CATEGORIES = {
     "Blunt Cut Bob", "Lob (Long Bob)", "Shag Cut", "Wolf Cut", "Butterfly Cut", "Curtain Bangs", "Micro Bangs", "Wispy Bangs",
     "Pin Curls", "Finger Waves", "Victory Rolls", "Gibson Tuck", "Chignon", "Waterfall Braid", "Rope Braid", "Halo Braid",
     "Boxer Braids", "Pull-Through Braid", "Milkmaid Braids", "Bubble Ponytail", "Twisted Ponytail", "Wrapped Ponytail", "Braided Updo", "Twisted Updo",
-    "Sleek Bun", "Textured Bun", "Ballerina Bun", "Dreadlocks", "Faux Hawk", "Buzz Cut"
+    "Sleek Bun", "Textured Bun", "Ballerina Bun", "Dreadlocks", "Faux Hawk", "Buzz Cut",
+    // 20 More Popular Hairstyles
+    "Vintage Waves", "Hollywood Curls", "Retro Flip", "Bouffant", "Beehive", "Rachel Cut", "Farrah Fawcett Feathered", "Mullet",
+    "Karen Cut", "E-Girl Hair", "Anime Protagonist Spikes", "Two-Tone Hair", "Ombre", "Balayage", "Highlights", "Money Pieces",
+    "Face-Framing Layers", "Curtain Layers", "Shaggy Layers", "Wet Look Slick"
   ],
   accessories: [
     "Belt", "Necklace", "Earrings", "Watch", "Bracelet", "Hat", "Sunglasses", "Bag",
