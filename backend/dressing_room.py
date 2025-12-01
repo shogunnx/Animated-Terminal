@@ -124,7 +124,7 @@ def analyze_base_image_features(image_bytes: bytes) -> str:
         width, height = img.size
         aspect = "tall" if height > width * 1.2 else "standard"
         return f"{aspect} proportions"
-    except:
+    except Exception:
         return "standard proportions"
 
 async def generate_outfit_image(request: OutfitRequest) -> dict:
