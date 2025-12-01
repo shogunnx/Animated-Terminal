@@ -198,7 +198,7 @@ Professional anime art style, clean background."""
     try:
         # Use Fal.ai FLUX Redux - specifically designed to preserve person from reference image
         handler = await fal_client.submit_async(
-            "fal-ai/flux/redux",
+            "fal-ai/flux-redux",
             arguments={
                 "prompt": prompt,
                 "image_url": image_url,
