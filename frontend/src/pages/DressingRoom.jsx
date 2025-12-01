@@ -261,6 +261,9 @@ export default function DressingRoom() {
 
       const data = await response.json();
       setGeneratedImage(`data:image/png;base64,${data.image_base64}`);
+      
+      // Dispatch event for TerminalPolish component
+      window.dispatchEvent(new Event('tsv_outfit_generated'));
     } catch (err) {
       setError(err.message);
     } finally {
