@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TSV_CHARACTERS } from "../content/tsvContent.js";
 import HoloPortrait from "../components/HoloPortrait.jsx";
+import CharacterAnimations from "../components/CharacterAnimations.jsx";
 import { nexusChat } from "../lib/api.js";
 
 export default function Profile() {
