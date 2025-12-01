@@ -8,6 +8,7 @@ export default function Room() {
   const { id } = useParams();
   const nav = useNavigate();
   const room = useMemo(() => TSV_ROOMS[id], [id]);
+  const character = useMemo(() => TSV_CHARACTERS.find(c => c.id === id), [id]);
 
   if (!room) {
     return (
@@ -18,6 +19,9 @@ export default function Room() {
       </div>
     );
   }
+
+  const accent = character?.accent || room.palette.a;
+  const glow = character?.glow || room.palette.b;
 
   return (
     <div>
@@ -32,7 +36,23 @@ export default function Room() {
         </div>
       </div>
 
-      <RoomScene room={room} characterId={id} onTalk={() => nav(`/characters/${id}`)} />
+      {/* Two-column layout: Room Scene + Relationship Panel */}
+      <div style={{ 
+        display: "grid", 
+        gridTemplateColumns: "1fr 400px", 
+        gap: 14,
+        "@media (max-width: 1024px)": {
+          gridTemplateColumns: "1fr"
+        }
+      }}>
+        <div>
+          <RoomScene room={room} characterId={id} onTalk={() => nav(`/characters/${id}`)} />
+        </div>
+        
+        <div>
+          <RelationshipPanel characterId={id} accent={accent} glow={glow} />
+        </div>
+      </div>
     </div>
   );
 }
