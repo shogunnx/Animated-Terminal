@@ -86,7 +86,7 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
 
     setSubmitting(true);
     try {
-      const response = await fetch(`/api/girlsmind/api/store_exchange`, {
+      const response = await fetch(`/api/girlsmind/store_exchange`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
