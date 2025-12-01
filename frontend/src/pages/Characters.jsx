@@ -14,7 +14,30 @@ export default function Characters() {
     async function loadCharacters() {
       try {
         const data = await fetchCharacters();
-        setCharacters(data.characters || []);
+        const nexusChars = data.characters || [];
+        
+        // Merge Nexus data with local TSV_CHARACTERS to include portraits and colors
+        const merged = TSV_CHARACTERS.filter(c => !c.isSpecial).map(localChar => {
+          const nexusChar = nexusChars.find(nc => 
+            nc.displayName?.toLowerCase() === localChar.name.toLowerCase()
+          );
+          
+          if (nexusChar) {
+            return {
+              ...localChar,
+              ...nexusChar,
+              name: localChar.name,
+              portrait: nexusChar.avatar_image || localChar.portrait,
+              avatar: nexusChar.avatar_image || localChar.portrait,
+              accent: localChar.accent,
+              glow: localChar.glow,
+              subtitle: localChar.subtitle
+            };
+          }
+          return localChar;
+        });
+        
+        setCharacters(merged);
         setLoading(false);
       } catch (err) {
         // Fallback to local TSV_CHARACTERS data
