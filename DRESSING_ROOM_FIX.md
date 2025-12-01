@@ -6,7 +6,7 @@
 ## 🔍 Root Cause
 The FAL_KEY in `/app/backend/.env` was incorrectly configured:
 - **Incorrect:** `FAL_KEY=saiyan-terminal:0bd24bdc4c4ce20779630c27fa21b236`
-- **Correct:** `FAL_KEY=4c46f3ab-3402-491e-98a9-e438aaae54a4:0bd24bdc4c4ce20779630c27fa21b236`
+- **Correct:** `FAL_KEY=character-portal-2:0bd24bdc4c4ce20779630c27fa21b236`
 
 The first part of the key (Key ID) was wrong, causing the Fal.ai API to reject authentication requests.
 
@@ -15,7 +15,7 @@ The first part of the key (Key ID) was wrong, causing the Fal.ai API to reject a
 ### 1. Updated Environment Variable
 ```bash
 # Updated /app/backend/.env
-FAL_KEY=4c46f3ab-3402-491e-98a9-e438aaae54a4:0bd24bdc4c4ce20779630c27fa21b236
+FAL_KEY=character-portal-2:0bd24bdc4c4ce20779630c27fa21b236
 ```
 
 ### 2. Restarted Backend Service

@@ -15,7 +15,7 @@ The FAL_KEY environment variable on the deployed site has an incorrect Key ID th
 The environment variable needs to be set as follows:
 
 ```
-FAL_KEY=4c46f3ab-3402-491e-98a9-e438aaae54a4:0bd24bdc4c4ce20779630c27fa21b236
+FAL_KEY=character-portal-2:0bd24bdc4c4ce20779630c27fa21b236
 ```
 
 **Format Breakdown:**
@@ -41,7 +41,7 @@ FAL_KEY=4c46f3ab-3402-491e-98a9-e438aaae54a4:0bd24bdc4c4ce20779630c27fa21b236
 
 ```bash
 # Set environment variable
-emergent env set FAL_KEY=4c46f3ab-3402-491e-98a9-e438aaae54a4:0bd24bdc4c4ce20779630c27fa21b236
+emergent env set FAL_KEY=character-portal-2:0bd24bdc4c4ce20779630c27fa21b236
 
 # Redeploy
 emergent deploy
@@ -53,7 +53,7 @@ If your deployment platform reads from committed .env files:
 
 1. Ensure `/app/backend/.env` contains:
    ```
-   FAL_KEY=4c46f3ab-3402-491e-98a9-e438aaae54a4:0bd24bdc4c4ce20779630c27fa21b236
+   FAL_KEY=character-portal-2:0bd24bdc4c4ce20779630c27fa21b236
    ```
 
 2. **Important:** Check if `.env` files are gitignored. If they are:
