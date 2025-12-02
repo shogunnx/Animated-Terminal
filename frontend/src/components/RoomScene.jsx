@@ -10,6 +10,29 @@ const BEDROOM_BACKGROUNDS = {
 };
 
 function Backdrop({ a, b, title, isGameRoom, characterId }) {
+  // Check if character has a custom bedroom background
+  const bedroomBg = BEDROOM_BACKGROUNDS[characterId];
+  
+  if (bedroomBg) {
+    return (
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: `url(${bedroomBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}>
+        {/* Subtle overlay for better text readability */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.2) 100%)'
+        }} />
+      </div>
+    );
+  }
+  
   // Special bright game room
   if (isGameRoom) {
     return (
