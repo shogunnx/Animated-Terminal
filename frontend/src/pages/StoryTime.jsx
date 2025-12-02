@@ -497,9 +497,43 @@ export default function StoryTime() {
 
         {/* CSS Animations */}
         <style>{`
-          @keyframes flicker {
-            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
-            50% { opacity: 0.85; transform: translateX(-50%) scale(1.05); }
+          @keyframes float {
+            0%, 100% { 
+              transform: translateY(0px) translateX(0px);
+              opacity: 0.3;
+            }
+            50% { 
+              transform: translateY(-20px) translateX(10px);
+              opacity: 0.8;
+            }
+          }
+          
+          @keyframes pulse {
+            0%, 100% { 
+              opacity: 0.4;
+              transform: scale(1);
+            }
+            50% { 
+              opacity: 0.7;
+              transform: scale(1.1);
+            }
+          }
+          
+          @keyframes fallingSoft {
+            0% {
+              transform: translateY(0) rotate(0deg);
+              opacity: 0;
+            }
+            10% {
+              opacity: 0.6;
+            }
+            90% {
+              opacity: 0.6;
+            }
+            100% {
+              transform: translateY(400px) rotate(180deg);
+              opacity: 0;
+            }
           }
         `}</style>
       </div>
