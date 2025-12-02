@@ -232,7 +232,9 @@ export default function StoryTime() {
   };
 
   const currentNarrator = HEYGEN_AVATARS[selectedNarrator];
-  const characterData = TSV_CHARACTERS.find(c => c.id === selectedNarrator);
+  // Fallback to evil_victoria for alt narrator
+  const characterLookupId = selectedNarrator === 'evil_victoria_alt' ? 'evil_victoria' : selectedNarrator;
+  const characterData = TSV_CHARACTERS.find(c => c.id === characterLookupId);
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>
