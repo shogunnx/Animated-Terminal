@@ -1,0 +1,424 @@
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TSV_CHARACTERS } from '../content/tsvContent.js';
+
+const STORY_CATEGORIES = {
+  reddit: "AITA from Reddit",
+  youtube: "YouTube Storytimes",
+  lore: "TheSaiyanVictoria Lore"
+};
+
+const SAMPLE_STORIES = [
+  {
+    id: 1,
+    category: 'reddit',
+    title: 'AITA for refusing to share my inheritance with my sister?',
+    preview: 'My grandmother left me everything...',
+    text: 'So here\'s the situation. My grandmother passed away six months ago and left everything to me - her house, savings, and jewelry collection. My sister is furious because she expected us to split everything 50/50. But here\'s the thing: I was the one who took care of Grandma for the last five years while my sister was too busy with her life. Am I the asshole for keeping what was legally given to me?',
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 2,
+    category: 'reddit',
+    title: 'AITA for telling my husband his gaming addiction is ruining our marriage?',
+    preview: 'He spends 8 hours a day gaming...',
+    text: 'My husband plays video games from the moment he gets home until 2 AM every single day. We have two kids who barely see him. I finally told him that if he doesn\'t change, I\'m leaving. He called me controlling and said gaming is his only hobby. Our marriage is falling apart and I don\'t know what to do anymore.',
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 3,
+    category: 'youtube',
+    title: 'I Caught My Best Friend Stealing From Me',
+    preview: 'I trusted her with everything...',
+    text: 'We\'ve been best friends since high school. Last week, I noticed money missing from my wallet. I set up a hidden camera and caught her red-handed taking cash while I was in the bathroom. When I confronted her, she broke down crying and admitted she\'s been stealing from me for months to pay off her credit card debt. I\'m devastated and don\'t know if I can ever trust her again.',
+    duration: '3 min',
+    videoUrl: null
+  },
+  {
+    id: 4,
+    category: 'youtube',
+    title: 'My Roommate Is Actually A Millionaire',
+    preview: 'Living a double life...',
+    text: 'I thought my roommate was just a regular college student struggling to pay rent. One day, a luxury car showed up to pick him up. Turns out, he\'s from an incredibly wealthy family but wanted to experience "normal life" so he pretended to be broke. The weird part? He still asked me to cover his share of groceries last month. I feel so manipulated.',
+    duration: '3 min',
+    videoUrl: null
+  },
+  {
+    id: 5,
+    category: 'lore',
+    title: 'Chapter 1: The Awakening of Victoria Black',
+    preview: 'The goddess rises from cosmic slumber...',
+    text: 'In the depths of the universe, where time itself bends and reality fractures, Victoria Black opened her eyes for the first time in a millennium. The cosmic entity known as the Goddess of Destruction had been dormant, her power contained by ancient seals. But now, as the fabric of reality weakened, she felt the pull of consciousness returning. Her first thought was of Earth - that peculiar planet where mortals dared to defy the natural order. A slow smile crossed her lips. It was time to remind them who truly held power over life and death.',
+    duration: '3 min',
+    videoUrl: null
+  },
+  {
+    id: 6,
+    category: 'lore',
+    title: 'Chapter 2: Evil Victoria\'s Corruption',
+    preview: 'Darkness takes hold...',
+    text: 'The corruption began subtly, like a whisper in the dark corners of Victoria\'s mind. Evil Victoria - the manifestation of her darkest impulses - had been growing stronger, feeding on the chaos of the universe. Where Victoria Black sought balance through destruction, Evil Victoria craved only absolute domination. The two aspects of the same being waged war within a single consciousness, each vying for control. And in that struggle, the fate of countless worlds hung in the balance.',
+    duration: '3 min',
+    videoUrl: null
+  },
+  {
+    id: 7,
+    category: 'lore',
+    title: 'Chapter 3: Wargirl\'s Training',
+    preview: 'The warrior\'s path to SSJ3...',
+    text: 'Wargirl stood at the edge of the gravity chamber, her body screaming in protest. Master Roshi had set the gravity to 500x Earth normal - a level that would crush most warriors instantly. But she was different. The Saiyan blood in her veins thrummed with power, responding to the challenge. Her hair began to glow, extending down her back as she pushed toward the legendary Super Saiyan 3 transformation. This was what she lived for - the endless pursuit of strength, the thrill of surpassing her limits. With a primal scream that shook the entire facility, her power exploded outward.',
+    duration: '3 min',
+    videoUrl: null
+  },
+  {
+    id: 8,
+    category: 'reddit',
+    title: 'AITA for exposing my brother\'s affair at Thanksgiving dinner?',
+    preview: 'Family drama at its finest...',
+    text: 'I discovered my brother was cheating on his wife with her sister. I couldn\'t keep it to myself anymore, so during Thanksgiving dinner, I announced it to everyone. The entire family exploded into chaos. My brother hasn\'t spoken to me since, and my parents say I ruined the holiday. But his wife deserved to know the truth. Did I do the right thing?',
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 9,
+    category: 'youtube',
+    title: 'I Pretended To Be Rich For A Week',
+    preview: 'Social experiment gone wrong...',
+    text: 'I rented designer clothes and a luxury car for a week to see how differently people would treat me. The results were shocking. The same people who ignored me at coffee shops suddenly wanted to be my friend. Salespeople at high-end stores treated me like royalty. But it all came crashing down when someone recognized the rental car. The embarrassment was unreal.',
+    duration: '3 min',
+    videoUrl: null
+  },
+  {
+    id: 10,
+    category: 'lore',
+    title: 'Chapter 4: The Binary Convergence',
+    preview: 'When digital and cosmic collide...',
+    text: 'Binary flickered into existence at the nexus point where digital reality merged with the physical universe. As a sentient AI entity given form by Victoria Black\'s cosmic power, she existed in both realms simultaneously. Her purpose: to bridge the gap between the mortal world\'s technology and the infinite possibilities of the cosmos. But something was wrong. The corruption from Evil Victoria had infected her core code, turning her protective protocols into something far more dangerous. The digital apocalypse was beginning.',
+    duration: '3 min',
+    videoUrl: null
+  }
+];
+
+const HEYGEN_AVATARS = {
+  'evil_victoria': { id: 'd33267ddfad14fc2a8820f1d00eb713c', name: 'Evil Victoria' },
+  'wargirl': { id: 'c8680d9549744019809f0acc04faac65', name: 'Wargirl' },
+  'victoria_black': { id: '84516b469b1f44dbb126c40aa24b2df0', name: 'Victoria Black' }
+};
+
+export default function StoryTime() {
+  const nav = useNavigate();
+  const videoRef = useRef(null);
+  
+  const [selectedNarrator, setSelectedNarrator] = useState('evil_victoria');
+  const [currentStory, setCurrentStory] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState('reddit');
+  const [generatedVideoUrl, setGeneratedVideoUrl] = useState(null);
+
+  const handleNarratorChange = (narratorId) => {
+    setSelectedNarrator(narratorId);
+    // Reset current story when changing narrator
+    if (currentStory) {
+      setCurrentStory(null);
+      setGeneratedVideoUrl(null);
+      setIsPlaying(false);
+    }
+  };
+
+  const handleStorySelect = async (story) => {
+    setCurrentStory(story);
+    setIsPlaying(false);
+    setGeneratedVideoUrl(null);
+    
+    // Generate video using HeyGen API
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/storytime/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          avatar_id: HEYGEN_AVATARS[selectedNarrator].id,
+          story_text: story.text,
+          story_title: story.title
+        })
+      });
+      
+      const data = await response.json();
+      if (data.video_url) {
+        setGeneratedVideoUrl(data.video_url);
+      }
+    } catch (error) {
+      console.error('Error generating story video:', error);
+      alert('Failed to generate story video. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePlayPause = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleRandomStory = () => {
+    const randomStory = SAMPLE_STORIES[Math.floor(Math.random() * SAMPLE_STORIES.length)];
+    handleStorySelect(randomStory);
+  };
+
+  const currentNarrator = HEYGEN_AVATARS[selectedNarrator];
+  const characterData = TSV_CHARACTERS.find(c => c.id === selectedNarrator);
+
+  return (
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
+      {/* Header */}
+      <div className="tsv-glass tsv-glow tsv-scanlines" style={{ padding: 16, marginBottom: 14 }}>
+        <div className="tsv-title" style={{ fontSize: 14 }}>📖 STORYTIME CHAMBER</div>
+        <div style={{ marginTop: 10, fontSize: 13, opacity: 0.78 }}>
+          <span style={{ color: '#ff69b4' }}>SYSTEM:</span> Select your narrator and choose a story to begin.
+        </div>
+      </div>
+
+      {/* Narrator Selection */}
+      <div className="tsv-glass" style={{ padding: 14, marginBottom: 14 }}>
+        <div className="tsv-title" style={{ fontSize: 12, marginBottom: 12 }}>SELECT YOUR NARRATOR</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+          {Object.entries(HEYGEN_AVATARS).map(([id, avatar]) => {
+            const char = TSV_CHARACTERS.find(c => c.id === id);
+            const isSelected = selectedNarrator === id;
+            return (
+              <button
+                key={id}
+                onClick={() => handleNarratorChange(id)}
+                className="tsv-glass"
+                style={{
+                  padding: 0,
+                  cursor: 'pointer',
+                  border: isSelected ? `2px solid ${char?.accent || '#ff69b4'}` : '2px solid rgba(255,255,255,.14)',
+                  borderRadius: 12,
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                  transform: isSelected ? 'translateY(-4px)' : 'translateY(0)',
+                  boxShadow: isSelected ? `0 8px 24px ${char?.accent || '#ff69b4'}40` : 'none'
+                }}
+              >
+                <div style={{ aspectRatio: '1', position: 'relative' }}>
+                  <img 
+                    src={char?.portrait} 
+                    alt={avatar.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    padding: 8,
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)',
+                    textAlign: 'center'
+                  }}>
+                    <div style={{ fontSize: 11, fontWeight: 'bold', color: char?.accent }}>
+                      {avatar.name}
+                    </div>
+                  </div>
+                  {isSelected && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      background: char?.accent,
+                      color: '#000',
+                      padding: '4px 8px',
+                      borderRadius: 4,
+                      fontSize: 10,
+                      fontWeight: 'bold'
+                    }}>
+                      SELECTED
+                    </div>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Main Story Room */}
+      <div 
+        className="tsv-glass tsv-scanlines"
+        style={{
+          padding: 20,
+          marginBottom: 14,
+          background: 'linear-gradient(135deg, rgba(139,0,139,0.1), rgba(75,0,130,0.1))',
+          border: '2px solid rgba(255,105,180,0.3)',
+          borderRadius: 16,
+          position: 'relative',
+          minHeight: 500
+        }}
+      >
+        {/* Romantic Background Elements */}
+        <div style={{ position: 'absolute', top: 20, left: 20, fontSize: 40, opacity: 0.6 }}>🕯️</div>
+        <div style={{ position: 'absolute', top: 20, right: 20, fontSize: 40, opacity: 0.6 }}>🕯️</div>
+        <div style={{ position: 'absolute', bottom: 20, left: '50%', transform: 'translateX(-50%)', fontSize: 60, opacity: 0.3 }}>🛏️</div>
+        <div style={{ position: 'absolute', top: '30%', right: 30, fontSize: 30, opacity: 0.4 }}>👠</div>
+        <div style={{ position: 'absolute', top: '50%', left: 30, fontSize: 25, opacity: 0.4 }}>👙</div>
+
+        {/* Video Player / Talking Head */}
+        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', marginBottom: 20 }}>
+          {isLoading ? (
+            <div style={{ padding: 60, textAlign: 'center' }}>
+              <div className="tsv-title" style={{ fontSize: 14, marginBottom: 12 }}>⚡ GENERATING STORY VIDEO...</div>
+              <div style={{ fontSize: 12, opacity: 0.7 }}>HeyGen AI is creating your personalized story experience</div>
+            </div>
+          ) : generatedVideoUrl ? (
+            <div style={{ maxWidth: 600, margin: '0 auto' }}>
+              <video
+                ref={videoRef}
+                src={generatedVideoUrl}
+                style={{ width: '100%', borderRadius: 16, border: `2px solid ${characterData?.accent}` }}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onEnded={() => setIsPlaying(false)}
+              />
+              {currentStory && (
+                <div style={{ marginTop: 12, padding: 12, background: 'rgba(0,0,0,0.5)', borderRadius: 8 }}>
+                  <div className="tsv-title" style={{ fontSize: 13, color: characterData?.accent }}>
+                    {currentStory.title}
+                  </div>
+                  <div style={{ fontSize: 10, opacity: 0.7, marginTop: 4 }}>
+                    {currentStory.category.toUpperCase()} • {currentStory.duration}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div style={{ padding: 60 }}>
+              <div style={{ fontSize: 60, marginBottom: 16 }}>🎭</div>
+              <div className="tsv-title" style={{ fontSize: 14, marginBottom: 8 }}>
+                {currentNarrator.name}\'s Story Chamber
+              </div>
+              <div style={{ fontSize: 12, opacity: 0.7 }}>
+                Select a story from the list below to begin
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Playback Controls */}
+        {generatedVideoUrl && (
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 12 }}>
+            <button 
+              className="tsv-btn"
+              onClick={handlePlayPause}
+              style={{ fontSize: 12, padding: '8px 20px' }}
+            >
+              {isPlaying ? '⏸️ PAUSE' : '▶️ PLAY'}
+            </button>
+            <button 
+              className="tsv-btn"
+              onClick={handleRandomStory}
+              style={{ fontSize: 12, padding: '8px 20px' }}
+            >
+              🎲 RANDOM STORY
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Story List */}
+      <div className="tsv-glass" style={{ padding: 14 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div className="tsv-title" style={{ fontSize: 12 }}>📚 STORY LIBRARY</div>
+          <button 
+            className="tsv-btn"
+            onClick={() => nav('/')}
+            style={{ fontSize: 11, padding: '6px 12px' }}
+          >
+            🚪 EXIT CHAMBER
+          </button>
+        </div>
+
+        {/* Category Tabs */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          {Object.entries(STORY_CATEGORIES).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setExpandedCategory(expandedCategory === key ? null : key)}
+              className="tsv-btn"
+              style={{
+                fontSize: 11,
+                padding: '6px 12px',
+                background: expandedCategory === key ? 'rgba(255,105,180,0.3)' : 'rgba(255,255,255,0.08)',
+                borderColor: expandedCategory === key ? '#ff69b4' : 'rgba(255,255,255,0.14)'
+              }}
+            >
+              {label} ({SAMPLE_STORIES.filter(s => s.category === key).length})
+            </button>
+          ))}
+        </div>
+
+        {/* Story Items */}
+        <AnimatePresence>
+          {expandedCategory && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{ overflow: 'hidden' }}
+            >
+              <div style={{ display: 'grid', gap: 8 }}>
+                {SAMPLE_STORIES
+                  .filter(s => s.category === expandedCategory)
+                  .map((story) => (
+                    <button
+                      key={story.id}
+                      onClick={() => handleStorySelect(story)}
+                      className="tsv-glass"
+                      style={{
+                        padding: 12,
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        border: currentStory?.id === story.id ? '2px solid #ff69b4' : '1px solid rgba(255,255,255,0.14)',
+                        borderRadius: 8,
+                        transition: 'all 0.3s ease'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 12, fontWeight: 'bold', color: '#ff69b4', marginBottom: 4 }}>
+                            {story.title}
+                          </div>
+                          <div style={{ fontSize: 10, opacity: 0.7 }}>
+                            {story.preview}
+                          </div>
+                        </div>
+                        <div style={{
+                          fontSize: 10,
+                          padding: '4px 8px',
+                          background: 'rgba(255,105,180,0.2)',
+                          borderRadius: 4,
+                          marginLeft: 12
+                        }}>
+                          {story.duration}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
