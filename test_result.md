@@ -125,7 +125,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Verify the TSV Archive Terminal application with Boot Screen, Dashboard, Characters, Theme Switcher, Personal Rooms, Timeline, and Restricted Files functionality"
+user_problem_statement: "StoryTime Feature End-to-End Testing - Verify narrator selection, story library interaction, and video generation flow with HeyGen API integration"
 
 frontend:
   - task: "Boot Screen with Typewriter Effect"
