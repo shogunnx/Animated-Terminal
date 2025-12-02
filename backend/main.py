@@ -190,8 +190,16 @@ async def deviantart_latest(limit: int = 10):
 app.include_router(api)
 
 # StoryTime routes
-from storytime import router as storytime_router
-app.include_router(storytime_router)
+import logging
+logger = logging.getLogger(__name__)
+logger.info("About to import StoryTime router...")
+try:
+    from storytime import router as storytime_router
+    logger.info(f"StoryTime router imported: {storytime_router.prefix}")
+    app.include_router(storytime_router)
+    logger.info("StoryTime router included successfully!")
+except Exception as e:
+    logger.error(f"Failed to load StoryTime: {e}", exc_info=True)
 
 # -----------------------
 # Serve frontend (self-contained)
