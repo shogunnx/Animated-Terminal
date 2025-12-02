@@ -146,6 +146,30 @@ export default function StoryTime() {
     setIsPlaying(false);
     setGeneratedVideoUrl(null);
     
+    // Check if story has a pre-recorded video ID
+    if (story.preRecordedVideoId) {
+      setIsLoading(true);
+      try {
+        // Fetch the pre-recorded video status directly
+        const statusResponse = await fetch(`/api/storytime/status/${story.preRecordedVideoId}`);
+        const statusData = await statusResponse.json();
+        
+        const videoUrl = statusData.data?.video_url;
+        
+        if (videoUrl) {
+          setGeneratedVideoUrl(videoUrl);
+        } else {
+          throw new Error('Pre-recorded video not found');
+        }
+      } catch (error) {
+        console.error('Error loading pre-recorded video:', error);
+        alert(`Failed to load pre-recorded video: ${error.message}`);
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+    
     // Generate video using HeyGen API
     setIsLoading(true);
     try {
