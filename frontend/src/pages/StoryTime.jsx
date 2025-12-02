@@ -14,11 +14,12 @@ const SAMPLE_STORIES = [
   {
     id: 0,
     category: 'test',
-    title: 'Test Story - Quick Demo',
-    preview: 'A short test story for video generation...',
-    text: 'Hello, this is a test story from the StoryTime chamber. Testing video generation and playback functionality.',
-    duration: '15 sec',
-    videoUrl: null
+    title: 'Test Story - Pre-Recorded',
+    preview: 'Evil Victoria in her elegant outfit...',
+    text: 'This is a pre-recorded video.',
+    duration: '30 sec',
+    videoUrl: null,
+    preRecordedVideoId: '98cc7d80048842ffa8e75196f98391e2'
   },
   {
     id: 1,
