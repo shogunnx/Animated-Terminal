@@ -42,6 +42,10 @@ async def generate_story_video(request: StoryGenerationRequest):
                     }
                 }
             ],
+            "dimension": {
+                "width": 1280,
+                "height": 720
+            },
             "test": False,  # Set to True for testing without using credits
             "title": request.story_title
         }
