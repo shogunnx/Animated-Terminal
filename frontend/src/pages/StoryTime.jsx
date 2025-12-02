@@ -14,12 +14,12 @@ const SAMPLE_STORIES = [
   {
     id: 0,
     category: 'test',
-    title: 'Test Story - Pre-Recorded',
-    preview: 'Evil Victoria in her elegant outfit...',
-    text: 'This is a pre-recorded video.',
+    title: 'Test Story - Evil Victoria',
+    preview: 'Watch Evil Victoria in action...',
+    text: 'This is a pre-recorded video featuring Evil Victoria.',
     duration: '30 sec',
     videoUrl: null,
-    preRecordedVideoId: '98cc7d80048842ffa8e75196f98391e2'
+    preRecordedVideoId: '6f57658f511c42a28c2b53e3ccdda965'
   },
   {
     id: 1,
