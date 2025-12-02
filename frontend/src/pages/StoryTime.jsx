@@ -42,6 +42,16 @@ const SAMPLE_STORIES = [
     preRecordedVideoId: 'e08b1ee999ea4769bf3c738861e962b6'
   },
   {
+    id: 'test-groupid',
+    category: 'test',
+    title: 'Group ID Test',
+    preview: 'Evil Victoria using group ID...',
+    text: 'Testing group ID for outfit variations.',
+    duration: '4 sec',
+    videoUrl: null,
+    preRecordedVideoId: '5405a3fefa5f4653a26041a190734b6f'
+  },
+  {
     id: 1,
     category: 'reddit',
     title: 'AITA for refusing to share my inheritance with my sister?',
