@@ -2,7 +2,14 @@ import { useMemo, useState } from "react";
 import { nexusChat } from "../lib/api.js";
 import { addHotspotClick } from "../utils/engagement.js";
 
-function Backdrop({ a, b, title, isGameRoom }) {
+// Bedroom backgrounds for each character
+const BEDROOM_BACKGROUNDS = {
+  'binary': 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/an552qy6_binarysbedroom.jpg',
+  'evil_victoria': 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/84zqaydh_evilvictoriabedroom.jpg',
+  'harmony': 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/2efekrc3_harmonysbedroom.jpg',
+};
+
+function Backdrop({ a, b, title, isGameRoom, characterId }) {
   // Special bright game room
   if (isGameRoom) {
     return (
