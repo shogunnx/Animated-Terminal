@@ -394,11 +394,10 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "New Engagement System & Polish Features"
-  stuck_tasks: 
-    - "Relationship + Memory Panel System"
+    - "StoryTime Feature End-to-End Testing"
+  stuck_tasks: []
   test_all: true
-  test_priority: "engagement_features"
+  test_priority: "storytime_integration"
 
 agent_communication:
     - agent: "testing"
