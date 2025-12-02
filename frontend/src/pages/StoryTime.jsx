@@ -329,256 +329,75 @@ export default function StoryTime() {
           }} />
         </div>
 
-        {/* Animated Elements Layer */}
+        {/* Animated Elements Overlay */}
         <div style={{
           position: 'absolute',
           inset: 0,
           zIndex: 2,
           pointerEvents: 'none'
         }}>
-          {/* Back Wall with Window/Mood Lighting */}
+          {/* Floating sparkles/particles */}
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={i}
+              style={{
+                position: 'absolute',
+                width: '4px',
+                height: '4px',
+                background: 'rgba(255,182,193,0.6)',
+                borderRadius: '50%',
+                top: `${15 + (i * 7)}%`,
+                left: `${10 + (i * 8)}%`,
+                animation: `float ${3 + (i % 3)}s ease-in-out infinite`,
+                animationDelay: `${i * 0.3}s`,
+                boxShadow: '0 0 10px rgba(255,182,193,0.8)'
+              }}
+            />
+          ))}
+
+          {/* Pulsing ambient light overlays */}
           <div style={{
             position: 'absolute',
             top: '10%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '70%',
-            height: '35%',
-            background: 'radial-gradient(ellipse at center, rgba(139,0,139,0.3), transparent 70%)',
+            left: '20%',
+            width: '200px',
+            height: '200px',
+            background: 'radial-gradient(circle, rgba(255,105,180,0.15), transparent 70%)',
+            borderRadius: '50%',
             filter: 'blur(40px)',
-            zIndex: 1
+            animation: 'pulse 4s ease-in-out infinite'
           }} />
           
-          {/* Floor */}
           <div style={{
             position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '40%',
-            background: `
-              linear-gradient(180deg, 
-                transparent 0%,
-                rgba(80,40,100,0.3) 50%,
-                rgba(100,50,120,0.5) 100%
-              )
-            `,
-            clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)',
-            zIndex: 1
+            bottom: '15%',
+            right: '25%',
+            width: '180px',
+            height: '180px',
+            background: 'radial-gradient(circle, rgba(138,43,226,0.12), transparent 70%)',
+            borderRadius: '50%',
+            filter: 'blur(50px)',
+            animation: 'pulse 5s ease-in-out infinite 1s'
           }} />
 
-          {/* Large Romantic Bed - Background Center */}
-          <div style={{
-            position: 'absolute',
-            bottom: '5%',
-            left: '50%',
-            transform: 'translateX(-50%) perspective(800px) rotateX(5deg)',
-            width: '500px',
-            height: '200px',
-            zIndex: 2
-          }}>
-            {/* Bed Frame */}
-            <div style={{
-              position: 'absolute',
-              bottom: 0,
-              left: '10%',
-              width: '80%',
-              height: '120px',
-              background: 'linear-gradient(180deg, rgba(60,30,50,0.9), rgba(40,20,40,0.95))',
-              border: '2px solid rgba(139,69,139,0.5)',
-              borderRadius: '12px',
-              boxShadow: '0 10px 40px rgba(0,0,0,0.6)'
-            }} />
-            {/* Bedding/Pillows */}
-            <div style={{
-              position: 'absolute',
-              bottom: '40px',
-              left: '15%',
-              width: '70%',
-              height: '100px',
-              background: 'linear-gradient(135deg, rgba(255,182,193,0.3), rgba(219,112,147,0.4))',
-              borderRadius: '20px 20px 8px 8px',
-              border: '1px solid rgba(255,105,180,0.3)',
-              boxShadow: 'inset 0 -10px 30px rgba(139,0,139,0.3)'
-            }}>
-              {/* Pillows */}
-              <div style={{
+          {/* Rose petals floating */}
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={`petal-${i}`}
+              style={{
                 position: 'absolute',
-                top: '10px',
-                left: '15%',
-                width: '30%',
-                height: '40px',
-                background: 'linear-gradient(135deg, rgba(255,192,203,0.5), rgba(255,160,180,0.6))',
-                borderRadius: '50%',
-                border: '1px solid rgba(255,105,180,0.2)',
-                boxShadow: '0 5px 15px rgba(0,0,0,0.3)'
-              }} />
-              <div style={{
-                position: 'absolute',
-                top: '10px',
-                right: '15%',
-                width: '30%',
-                height: '40px',
-                background: 'linear-gradient(135deg, rgba(255,192,203,0.5), rgba(255,160,180,0.6))',
-                borderRadius: '50%',
-                border: '1px solid rgba(255,105,180,0.2)',
-                boxShadow: '0 5px 15px rgba(0,0,0,0.3)'
-              }} />
-            </div>
-          </div>
-
-          {/* Candles - Left Side */}
-          <div style={{
-            position: 'absolute',
-            top: '20%',
-            left: '8%',
-            zIndex: 3
-          }}>
-            <div style={{
-              width: '15px',
-              height: '80px',
-              background: 'linear-gradient(180deg, rgba(139,69,19,0.8), rgba(101,67,33,0.9))',
-              borderRadius: '4px',
-              position: 'relative',
-              boxShadow: '0 5px 20px rgba(0,0,0,0.5)'
-            }}>
-              {/* Flame */}
-              <div style={{
-                position: 'absolute',
-                top: '-20px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: '20px',
-                height: '30px',
-                background: 'radial-gradient(ellipse at center, rgba(255,200,100,0.9), rgba(255,150,50,0.7), transparent)',
-                borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
-                filter: 'blur(2px)',
-                animation: 'flicker 2s ease-in-out infinite'
-              }} />
-              {/* Glow */}
-              <div style={{
-                position: 'absolute',
-                top: '-40px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: '60px',
-                height: '60px',
-                background: 'radial-gradient(circle, rgba(255,200,100,0.3), transparent 70%)',
-                borderRadius: '50%',
-                filter: 'blur(15px)'
-              }} />
-            </div>
-          </div>
-
-          {/* Candles - Right Side */}
-          <div style={{
-            position: 'absolute',
-            top: '20%',
-            right: '8%',
-            zIndex: 3
-          }}>
-            <div style={{
-              width: '15px',
-              height: '80px',
-              background: 'linear-gradient(180deg, rgba(139,69,19,0.8), rgba(101,67,33,0.9))',
-              borderRadius: '4px',
-              position: 'relative',
-              boxShadow: '0 5px 20px rgba(0,0,0,0.5)'
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: '-20px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: '20px',
-                height: '30px',
-                background: 'radial-gradient(ellipse at center, rgba(255,200,100,0.9), rgba(255,150,50,0.7), transparent)',
-                borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
-                filter: 'blur(2px)',
-                animation: 'flicker 2s ease-in-out infinite 0.5s'
-              }} />
-              <div style={{
-                position: 'absolute',
-                top: '-40px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: '60px',
-                height: '60px',
-                background: 'radial-gradient(circle, rgba(255,200,100,0.3), transparent 70%)',
-                borderRadius: '50%',
-                filter: 'blur(15px)'
-              }} />
-            </div>
-          </div>
-
-          {/* Heels on Wall - Right */}
-          <div style={{
-            position: 'absolute',
-            top: '35%',
-            right: '12%',
-            transform: 'perspective(600px) rotateY(-15deg)',
-            zIndex: 2
-          }}>
-            <div style={{
-              width: '60px',
-              height: '70px',
-              position: 'relative'
-            }}>
-              {/* Heel body */}
-              <div style={{
-                position: 'absolute',
-                bottom: '20px',
-                left: 0,
-                width: '50px',
-                height: '30px',
-                background: 'linear-gradient(135deg, rgba(255,0,100,0.7), rgba(200,0,80,0.8))',
-                borderRadius: '15px 15px 5px 5px',
-                border: '1px solid rgba(255,105,180,0.4)',
-                boxShadow: '0 5px 15px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.2)'
-              }} />
-              {/* Stiletto heel */}
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                right: '10px',
-                width: '4px',
-                height: '25px',
-                background: 'linear-gradient(180deg, rgba(200,0,80,0.9), rgba(100,0,40,1))',
-                borderRadius: '2px',
-                boxShadow: '0 3px 8px rgba(0,0,0,0.6)'
-              }} />
-            </div>
-          </div>
-
-          {/* Lingerie on Wall - Left */}
-          <div style={{
-            position: 'absolute',
-            top: '50%',
-            left: '15%',
-            transform: 'perspective(600px) rotateY(15deg)',
-            zIndex: 2
-          }}>
-            <div style={{
-              width: '50px',
-              height: '40px',
-              background: 'linear-gradient(135deg, rgba(255,182,193,0.6), rgba(255,160,180,0.7))',
-              borderRadius: '20px 20px 15px 15px',
-              border: '1px solid rgba(255,105,180,0.3)',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.4), inset 0 1px 3px rgba(255,255,255,0.3)',
-              position: 'relative'
-            }}>
-              {/* Lace detail */}
-              <div style={{
-                position: 'absolute',
-                top: '5px',
-                left: '10%',
-                right: '10%',
-                height: '2px',
-                background: 'rgba(255,105,180,0.4)',
-                borderRadius: '1px'
-              }} />
-            </div>
-          </div>
+                width: '8px',
+                height: '12px',
+                background: 'rgba(255,160,180,0.4)',
+                borderRadius: '50% 0 50% 0',
+                top: `${20 + (i * 15)}%`,
+                left: `${85 + (i % 2) * 5}%`,
+                animation: `fallingSoft ${4 + (i % 2)}s ease-in-out infinite`,
+                animationDelay: `${i * 0.8}s`,
+                transform: 'rotate(45deg)'
+              }}
+            />
+          ))}
         </div>
 
         {/* Video Player / Talking Head - Foreground */}
