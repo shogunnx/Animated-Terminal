@@ -7,6 +7,10 @@ const BEDROOM_BACKGROUNDS = {
   'binary': 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/an552qy6_binarysbedroom.jpg',
   'evil_victoria': 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/84zqaydh_evilvictoriabedroom.jpg',
   'harmony': 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/2efekrc3_harmonysbedroom.jpg',
+  'vanessa': 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/2f8m64hv_vanessabedroom.jpg',
+  'veronica': 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/rwnrrxw1_veronicasbedroom.jpg',
+  'victoria_black': 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/lqboo8xz_victoriablackbedroom.jpg',
+  'wargirl': 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/rbb9dufs_wargirlsbedroom.jpg',
 };
 
 function Backdrop({ a, b, title, isGameRoom, characterId }) {
