@@ -294,6 +294,9 @@ export default function Home() {
       <div className="tsv-glass" style={{ padding: 14, marginTop: 14 }}>
         <div className="tsv-title" style={{ fontSize: 12, opacity:.85, marginBottom: 10 }}>QUICK ACCESS TERMINALS</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
+          <button className="tsv-btn" onClick={() => nav("/storytime")} style={{ fontSize: 11 }}>
+            📖 StoryTime Chamber
+          </button>
           <button className="tsv-btn" onClick={() => nav("/map")} style={{ fontSize: 11 }}>
             🗺️ Interactive Map
           </button>
