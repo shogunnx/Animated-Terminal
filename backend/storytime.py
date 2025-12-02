@@ -24,10 +24,10 @@ class StoryGenerationResponse(BaseModel):
 @router.post("/generate", response_model=StoryGenerationResponse)
 async def generate_story_video(request: StoryGenerationRequest):
     """
-    Generate a story video using HeyGen API
+    Generate a story video using HeyGen API V2
     """
     try:
-        # Prepare HeyGen API request
+        # Prepare HeyGen API V2 request
         heygen_payload = {
             "video_inputs": [
                 {
@@ -39,7 +39,7 @@ async def generate_story_video(request: StoryGenerationRequest):
                     "voice": {
                         "type": "text",
                         "input_text": request.story_text,
-                        "voice_id": "en-US-JennyNeural"  # Default voice, can be customized
+                        "voice_id": "1bd001e7e50f421d891986aad5158bc8"  # English female voice
                     },
                     "background": {
                         "type": "color",
@@ -51,16 +51,17 @@ async def generate_story_video(request: StoryGenerationRequest):
                 "width": 1280,
                 "height": 720
             },
-            "aspect_ratio": "16:9",
-            "title": request.story_title
+            "title": request.story_title,
+            "test": False  # Set to True for testing without using credits
         }
 
         headers = {
-            "X-Api-Key": HEYGEN_API_KEY,
-            "Content-Type": "application/json"
+            "accept": "application/json",
+            "content-type": "application/json",
+            "x-api-key": HEYGEN_API_KEY
         }
 
-        # Make request to HeyGen API
+        # Make request to HeyGen API V2
         async with httpx.AsyncClient(timeout=30.0) as client:
             response = await client.post(
                 HEYGEN_API_URL,
@@ -68,29 +69,32 @@ async def generate_story_video(request: StoryGenerationRequest):
                 headers=headers
             )
 
+        response_data = response.json()
+        
         if response.status_code != 200:
-            logger.error(f"HeyGen API error: {response.status_code} - {response.text}")
+            error_msg = response_data.get("error", {}).get("message", response.text) if isinstance(response_data, dict) else response.text
+            logger.error(f"HeyGen API error: {response.status_code} - {error_msg}")
             raise HTTPException(
                 status_code=response.status_code,
-                detail=f"HeyGen API error: {response.text}"
+                detail=f"{response.status_code}: HeyGen API error: {error_msg}"
             )
 
-        result = response.json()
-        
-        # HeyGen returns a video_id that needs to be checked for status
-        # In production, you'd poll for completion or use webhooks
-        video_id = result.get("data", {}).get("video_id")
+        # Extract video_id from response
+        video_id = response_data.get("data", {}).get("video_id")
         
         if not video_id:
+            logger.error(f"No video_id in response: {response_data}")
             raise HTTPException(
                 status_code=500,
-                detail="Failed to get video_id from HeyGen"
+                detail="Failed to get video_id from HeyGen response"
             )
 
-        # For now, return a placeholder response
-        # In production, you'd check video status and return the actual URL
+        logger.info(f"Video generation started successfully. Video ID: {video_id}")
+
+        # Return response with video_id
+        # Frontend will need to poll the status endpoint to get the final video URL
         return StoryGenerationResponse(
-            video_url=f"https://api.heygen.com/v1/video/{video_id}",  # Placeholder
+            video_url="",  # Will be populated after video is ready
             video_id=video_id,
             status="processing"
         )
