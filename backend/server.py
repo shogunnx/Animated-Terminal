@@ -271,3 +271,7 @@ async def deviantart_latest(limit: int = 10):
     return {"rss": rss, "items": items[:limit]}
 
 app.include_router(api)
+
+# StoryTime routes
+from storytime import router as storytime_router
+app.include_router(storytime_router)
