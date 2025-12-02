@@ -13,8 +13,8 @@ HEYGEN_API_URL = "https://api.heygen.com/v2/video/generate"
 
 # Voice ID mappings for different avatars
 AVATAR_VOICE_MAPPING = {
-    # Evil Victoria - mature, sexy voice
-    'd33267ddfad14fc2a8820f1d00eb713c': 'f72f75e7b88649d08af89dff1fa0f641',  # Premium female voice
+    # Evil Victoria - Cassidy voice (mature, sexy)
+    'd33267ddfad14fc2a8820f1d00eb713c': 'e0cc82c22f414c95b1f25696c732f058',  # Cassidy
     # Wargirl - default voice
     'c8680d9549744019809f0acc04faac65': '1bd001e7e50f421d891986aad5158bc8',
     # Victoria Black - default voice
