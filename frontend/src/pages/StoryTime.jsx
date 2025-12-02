@@ -148,13 +148,58 @@ export default function StoryTime() {
       });
       
       const data = await response.json();
-      if (data.video_url) {
-        setGeneratedVideoUrl(data.video_url);
+      
+      if (!response.ok) {
+        throw new Error(data.detail || 'Failed to generate video');
+      }
+      
+      const videoId = data.video_id;
+      
+      if (videoId) {
+        // Poll for video status
+        const pollStatus = async () => {
+          const maxAttempts = 60; // Poll for up to 5 minutes (60 * 5 seconds)
+          let attempts = 0;
+          
+          const checkStatus = async () => {
+            try {
+              const statusResponse = await fetch(`/api/storytime/status/${videoId}`);
+              const statusData = await statusResponse.json();
+              
+              const videoStatus = statusData.data?.status;
+              const videoUrl = statusData.data?.video_url;
+              
+              if (videoStatus === 'completed' && videoUrl) {
+                setGeneratedVideoUrl(videoUrl);
+                setIsLoading(false);
+                return true;
+              } else if (videoStatus === 'failed') {
+                throw new Error('Video generation failed');
+              } else if (attempts >= maxAttempts) {
+                throw new Error('Video generation timeout');
+              }
+              
+              attempts++;
+              return false;
+            } catch (error) {
+              console.error('Error checking video status:', error);
+              throw error;
+            }
+          };
+          
+          // Start polling
+          while (attempts < maxAttempts) {
+            const completed = await checkStatus();
+            if (completed) break;
+            await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds between checks
+          }
+        };
+        
+        await pollStatus();
       }
     } catch (error) {
       console.error('Error generating story video:', error);
-      alert('Failed to generate story video. Please try again.');
-    } finally {
+      alert(`Failed to generate story video: ${error.message}`);
       setIsLoading(false);
     }
   };
