@@ -11,6 +11,19 @@ router = APIRouter(prefix="/api/storytime", tags=["storytime"])
 HEYGEN_API_KEY = "sk_V2_hgu_kJ4OIR7bc3W_Ijv4zuugjHrMH4InRyg7QbrsPe6Atb1h"
 HEYGEN_API_URL = "https://api.heygen.com/v2/video/generate"
 
+# Voice ID mappings for different avatars
+AVATAR_VOICE_MAPPING = {
+    # Evil Victoria - mature, sexy voice
+    'd33267ddfad14fc2a8820f1d00eb713c': 'f72f75e7b88649d08af89dff1fa0f641',  # Premium female voice
+    # Wargirl - default voice
+    'c8680d9549744019809f0acc04faac65': '1bd001e7e50f421d891986aad5158bc8',
+    # Victoria Black - default voice
+    '84516b469b1f44dbb126c40aa24b2df0': '1bd001e7e50f421d891986aad5158bc8',
+}
+
+# Default voice if avatar not in mapping
+DEFAULT_VOICE_ID = '1bd001e7e50f421d891986aad5158bc8'
+
 class StoryGenerationRequest(BaseModel):
     avatar_id: str
     story_text: str
