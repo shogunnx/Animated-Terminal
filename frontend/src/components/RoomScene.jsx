@@ -718,7 +718,7 @@ export default function RoomScene({ room, characterId, onTalk }) {
   return (
     <div className="tsv-glass tsv-glow" style={{ position:"relative", overflow:"hidden", minHeight: 520 }}>
       <div className="tsv-scanlines tsv-noise" style={{ position:"absolute", inset:0 }}>
-        <Backdrop a={a} b={b} title={room.title} isGameRoom={isGameRoom} />
+        <Backdrop a={a} b={b} title={room.title} isGameRoom={isGameRoom} characterId={characterId} />
       </div>
 
       <div className="tsv-float" style={{
