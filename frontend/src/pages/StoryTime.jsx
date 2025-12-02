@@ -114,6 +114,7 @@ const SAMPLE_STORIES = [
 
 const HEYGEN_AVATARS = {
   'evil_victoria': { id: 'd33267ddfad14fc2a8820f1d00eb713c', name: 'Evil Victoria' },
+  'evil_victoria_alt': { id: '98cc7d80048842ffa8e75196f98391e2', name: 'Evil Victoria (Alt)' },
   'wargirl': { id: 'c8680d9549744019809f0acc04faac65', name: 'Wargirl' },
   'victoria_black': { id: '84516b469b1f44dbb126c40aa24b2df0', name: 'Victoria Black' }
 };
