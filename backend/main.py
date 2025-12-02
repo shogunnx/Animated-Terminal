@@ -189,6 +189,10 @@ async def deviantart_latest(limit: int = 10):
 
 app.include_router(api)
 
+# StoryTime routes
+from routes.storytime import router as storytime_router
+app.include_router(storytime_router)
+
 # -----------------------
 # Serve frontend (self-contained)
 # -----------------------
