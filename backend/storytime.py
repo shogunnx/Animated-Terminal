@@ -116,23 +116,36 @@ async def generate_story_video(request: StoryGenerationRequest):
 async def check_video_status(video_id: str):
     """
     Check the status of a HeyGen video generation
+    Returns the video URL when ready
     """
     try:
         status_url = f"https://api.heygen.com/v1/video_status.get?video_id={video_id}"
         headers = {
-            "X-Api-Key": HEYGEN_API_KEY
+            "accept": "application/json",
+            "x-api-key": HEYGEN_API_KEY
         }
 
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(status_url, headers=headers)
 
+        response_data = response.json()
+        
         if response.status_code != 200:
+            error_msg = response_data.get("error", {}).get("message", response.text) if isinstance(response_data, dict) else response.text
             raise HTTPException(
                 status_code=response.status_code,
-                detail="Failed to check video status"
+                detail=f"Failed to check video status: {error_msg}"
             )
 
-        return response.json()
+        # HeyGen status response format:
+        # {
+        #   "data": {
+        #     "video_id": "...",
+        #     "status": "processing" | "completed" | "failed",
+        #     "video_url": "..." (only when completed)
+        #   }
+        # }
+        return response_data
 
     except Exception as e:
         logger.error(f"Error checking video status: {str(e)}")
