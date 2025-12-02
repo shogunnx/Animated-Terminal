@@ -183,11 +183,19 @@ export default function StoryTime() {
     // Generate video using HeyGen API
     setIsLoading(true);
     try {
+      // Get the current narrator
+      const currentNarratorData = HEYGEN_AVATARS[selectedNarrator];
+      
+      // If narrator is pre-recorded only, use the regular evil_victoria avatar for generation
+      const avatarIdForGeneration = currentNarratorData.isPreRecorded 
+        ? HEYGEN_AVATARS['evil_victoria'].id 
+        : currentNarratorData.id;
+      
       const response = await fetch('/api/storytime/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          avatar_id: HEYGEN_AVATARS[selectedNarrator].id,
+          avatar_id: avatarIdForGeneration,
           story_text: story.text,
           story_title: story.title
         })
