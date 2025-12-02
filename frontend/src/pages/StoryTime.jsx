@@ -32,6 +32,16 @@ const SAMPLE_STORIES = [
     preRecordedVideoId: 'b9ef2dc39adf44feaa760b60e42cfb37'
   },
   {
+    id: 'test-cassidy',
+    category: 'test',
+    title: 'Cassidy Voice Test',
+    preview: 'Evil Victoria with Cassidy voice...',
+    text: 'Test the new Cassidy voice for Evil Victoria.',
+    duration: '6 sec',
+    videoUrl: null,
+    preRecordedVideoId: 'e08b1ee999ea4769bf3c738861e962b6'
+  },
+  {
     id: 1,
     category: 'reddit',
     title: 'AITA for refusing to share my inheritance with my sister?',
