@@ -27,13 +27,23 @@ async def generate_story_video(request: StoryGenerationRequest):
     Generate a story video using HeyGen API V2
     """
     try:
-        # Prepare HeyGen Avatar IV API request
+        # Prepare HeyGen API request for talking photo
         heygen_payload = {
-            "avatar_id": request.avatar_id,
-            "script": request.story_text,
-            "voice_id": "1bd001e7e50f421d891986aad5158bc8",  # English female voice
-            "title": request.story_title,
-            "test": False  # Set to True for testing without using credits
+            "video_inputs": [
+                {
+                    "character": {
+                        "type": "talking_photo",
+                        "talking_photo_id": request.avatar_id
+                    },
+                    "voice": {
+                        "type": "text",
+                        "input_text": request.story_text,
+                        "voice_id": "1bd001e7e50f421d891986aad5158bc8"  # English female voice
+                    }
+                }
+            ],
+            "test": False,  # Set to True for testing without using credits
+            "title": request.story_title
         }
 
         headers = {
