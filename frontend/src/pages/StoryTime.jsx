@@ -271,7 +271,7 @@ export default function StoryTime() {
               >
                 <div style={{ aspectRatio: '1', position: 'relative' }}>
                   <img 
-                    src={char?.portrait} 
+                    src={avatar.portrait || char?.portrait} 
                     alt={avatar.name}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
