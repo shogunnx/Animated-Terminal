@@ -108,8 +108,8 @@ const SAMPLE_STORIES = [
   {
     id: 1000,
     category: 'lore',
-    title: 'Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning',
-    preview: 'In the depths of a timeline controlled by the tyrannical Black Frieza, the Saiya...',
+    title: "Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning",
+    preview: "In the depths of a timeline controlled by the tyrannical Black Frieza, the Saiya...",
     text: `In the depths of a timeline controlled by the tyrannical Black Frieza, the Saiyan family was shackled by the oppression of a dark future—a future that none had ever imagined they'd be forced to face. Victoria Chaser, the resolute and stoic protector, had always known that their time in captivity was not their destiny. She trained relentlessly, knowing that only through strength could she break free from Frieza's iron grip.
 
 The Saiyan Time Patrollers—once guardians of the timeline—had been transformed into pawns in a game far darker than they had ever imagined. Victoria Chaser became the driving force of her family's escape plan. Her rebellion wasn't just for herself—it was for her twin sister, Victoria Black, younger sister Wargirl, and for the family they had left behind.
