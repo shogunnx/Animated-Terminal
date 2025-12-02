@@ -22,6 +22,16 @@ const SAMPLE_STORIES = [
     preRecordedVideoId: '6f57658f511c42a28c2b53e3ccdda965'
   },
   {
+    id: 'test-2',
+    category: 'test',
+    title: 'Test Video 2',
+    preview: 'Another pre-recorded demo...',
+    text: 'Pre-recorded test video.',
+    duration: '1 min',
+    videoUrl: null,
+    preRecordedVideoId: 'b9ef2dc39adf44feaa760b60e42cfb37'
+  },
+  {
     id: 1,
     category: 'reddit',
     title: 'AITA for refusing to share my inheritance with my sister?',
