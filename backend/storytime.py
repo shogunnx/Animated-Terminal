@@ -40,6 +40,9 @@ async def generate_story_video(request: StoryGenerationRequest):
     Generate a story video using HeyGen API V2
     """
     try:
+        # Get the appropriate voice for this avatar
+        voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
+        
         # Prepare HeyGen API request for talking photo
         heygen_payload = {
             "video_inputs": [
@@ -51,7 +54,7 @@ async def generate_story_video(request: StoryGenerationRequest):
                     "voice": {
                         "type": "text",
                         "input_text": request.story_text,
-                        "voice_id": "1bd001e7e50f421d891986aad5158bc8"  # English female voice
+                        "voice_id": voice_id
                     }
                 }
             ],
