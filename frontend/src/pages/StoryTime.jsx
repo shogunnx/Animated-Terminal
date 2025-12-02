@@ -297,7 +297,7 @@ export default function StoryTime() {
         </div>
       </div>
 
-      {/* Main Story Room - 3D Rendered Background */}
+      {/* Main Story Room - Romantic Bedroom Background */}
       <div 
         className="tsv-scanlines"
         style={{
@@ -310,18 +310,31 @@ export default function StoryTime() {
           boxShadow: '0 8px 32px rgba(255,105,180,0.2)'
         }}
       >
-        {/* 3D Room Background - Layered Perspective */}
+        {/* Background Image */}
         <div style={{
           position: 'absolute',
           inset: 0,
-          background: `
-            linear-gradient(180deg, 
-              rgba(20,10,30,0.95) 0%,
-              rgba(40,20,50,0.9) 50%,
-              rgba(60,30,70,0.95) 100%
-            )
-          `,
+          backgroundImage: 'url(https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/0otpcd04_bedroomstorytime.jpeg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
           zIndex: 0
+        }}>
+          {/* Overlay for better text readability */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.3) 100%)',
+            zIndex: 1
+          }} />
+        </div>
+
+        {/* Animated Elements Layer */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 2,
+          pointerEvents: 'none'
         }}>
           {/* Back Wall with Window/Mood Lighting */}
           <div style={{
