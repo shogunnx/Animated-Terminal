@@ -12,6 +12,15 @@ const STORY_CATEGORIES = {
 
 const SAMPLE_STORIES = [
   {
+    id: 0,
+    category: 'test',
+    title: 'Test Story - Quick Demo',
+    preview: 'A short test story for video generation...',
+    text: 'Hello, this is a test story from the StoryTime chamber. Testing video generation and playback functionality.',
+    duration: '15 sec',
+    videoUrl: null
+  },
+  {
     id: 1,
     category: 'reddit',
     title: 'AITA for refusing to share my inheritance with my sister?',
