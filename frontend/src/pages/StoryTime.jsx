@@ -583,7 +583,7 @@ export default function StoryTime() {
             }}>
               <div style={{ fontSize: 60, marginBottom: 16 }}>🎭</div>
               <div className="tsv-title" style={{ fontSize: 14, marginBottom: 8, color: characterData?.accent }}>
-                {currentNarrator.name}\'s Story Chamber
+                {currentNarrator.name}&apos;s Story Chamber
               </div>
               <div style={{ fontSize: 12, opacity: 0.7 }}>
                 Select a story from the list below to begin
