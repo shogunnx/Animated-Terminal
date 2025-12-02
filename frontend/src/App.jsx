@@ -3,6 +3,7 @@ import { AnimatePresence } from "./components/AnimatePresence.jsx";
 import Shell from "./components/Shell.jsx";
 import Home from "./pages/Home.jsx";
 import Map from "./pages/Map.jsx";
+import StoryTime from "./pages/StoryTime.jsx";
 import Characters from "./pages/Characters.jsx";
 import Profile from "./pages/Profile.jsx";
 import Room from "./pages/Room.jsx";
