@@ -61,7 +61,7 @@ heygen_payload = {
 ### API Verification
 ```bash
 # Successful test call
-curl -X POST "https://char-chat-world.preview.emergentagent.com/api/storytime/generate" \
+curl -X POST "https://aicompanion-71.preview.emergentagent.com/api/storytime/generate" \
   -H "Content-Type: application/json" \
   -d '{
     "avatar_id": "d33267ddfad14fc2a8820f1d00eb713c",
