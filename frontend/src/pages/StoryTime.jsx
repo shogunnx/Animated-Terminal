@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TSV_CHARACTERS } from '../content/tsvContent.js';
 
 const STORY_CATEGORIES = {
+  test: "Test Stories",
   reddit: "AITA from Reddit",
   youtube: "YouTube Storytimes",
   lore: "TheSaiyanVictoria Lore"
