@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/storytime", tags=["storytime"])
 
 HEYGEN_API_KEY = "sk_V2_hgu_kJ4OIR7bc3W_Ijv4zuugjHrMH4InRyg7QbrsPe6Atb1h"
-HEYGEN_API_URL = "https://api.heygen.com/v2/avatar_iv/video"
+HEYGEN_API_URL = "https://api.heygen.com/v2/video/av4/generate"
 
 class StoryGenerationRequest(BaseModel):
     avatar_id: str
