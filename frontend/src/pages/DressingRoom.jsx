@@ -63,15 +63,18 @@ const CLOTHING_CATEGORIES = {
     "Messy Bun", "Top Knot", "French Braid", "Fishtail Braid", "Dutch Braid", "Crown Braid", "Space Buns", "Pigtails",
     "Beach Waves", "Loose Curls", "Tight Curls", "Afro", "Locs", "Twists", "Cornrows", "High Ponytail",
     "Low Ponytail", "Side Ponytail", "Slicked Back", "Mohawk", "Undercut", "Asymmetric Cut",
-    // 30 New Additions
     "Blunt Cut Bob", "Lob (Long Bob)", "Shag Cut", "Wolf Cut", "Butterfly Cut", "Curtain Bangs", "Micro Bangs", "Wispy Bangs",
     "Pin Curls", "Finger Waves", "Victory Rolls", "Gibson Tuck", "Chignon", "Waterfall Braid", "Rope Braid", "Halo Braid",
     "Boxer Braids", "Pull-Through Braid", "Milkmaid Braids", "Bubble Ponytail", "Twisted Ponytail", "Wrapped Ponytail", "Braided Updo", "Twisted Updo",
     "Sleek Bun", "Textured Bun", "Ballerina Bun", "Dreadlocks", "Faux Hawk", "Buzz Cut",
-    // 20 More Popular Hairstyles
     "Vintage Waves", "Hollywood Curls", "Retro Flip", "Bouffant", "Beehive", "Rachel Cut", "Farrah Fawcett Feathered", "Mullet",
     "Karen Cut", "E-Girl Hair", "Anime Protagonist Spikes", "Two-Tone Hair", "Ombre", "Balayage", "Highlights", "Money Pieces",
-    "Face-Framing Layers", "Curtain Layers", "Shaggy Layers", "Wet Look Slick"
+    "Face-Framing Layers", "Curtain Layers", "Shaggy Layers", "Wet Look Slick",
+    // 30 More Sexy Hairstyles
+    "Bombshell Waves", "Pin-Up Curls", "Sultry Side Sweep", "Tousled Bedroom Hair", "Windswept Waves", "Seductive Low Ponytail", "High Fashion Ponytail", "Sleek Straight Middle Part",
+    "Messy Sex Hair", "Wet Look Waves", "Glossy Straight", "Siren Curls", "Vixen Waves", "Goddess Braids", "Mermaid Waves", "Long Flowing Hair",
+    "Super Long Hair", "Hip Length Hair", "Rapunzel Length", "Cascading Curls", "Voluminous Blowout", "Big Hair Energy", "Teased Crown", "80s Big Hair",
+    "Glamour Waves", "Red Carpet Updo", "Elegant Chignon", "Sexy Messy Bun", "Half-Up Goddess", "Crown Braid Goddess"
   ],
   accessories: [
     "Belt", "Necklace", "Earrings", "Watch", "Bracelet", "Hat", "Sunglasses", "Bag",
