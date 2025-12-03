@@ -19,8 +19,8 @@ AVATAR_VOICE_MAPPING = {
     'd33267ddfad14fc2a8820f1d00eb713c': 'e0cc82c22f414c95b1f25696c732f058',  # Cassidy
     # Evil Victoria Talking Head - Cassidy voice
     '94fd37e9ad0b42efb9d828edf5be22ee': 'e0cc82c22f414c95b1f25696c732f058',  # Cassidy
-    # Wargirl - default voice
-    'c8680d9549744019809f0acc04faac65': '1bd001e7e50f421d891986aad5158bc8',
+    # Wargirl - updated voice ID
+    'c8680d9549744019809f0acc04faac65': '1a9bfb4ec9bc43d59ab64a4e66fe467c',
     # Victoria Black - default avatar ID
     '04ace9b9356e42a2831ec0a764e70bcc': '1bd001e7e50f421d891986aad5158bc8',
 }
