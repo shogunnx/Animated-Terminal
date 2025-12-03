@@ -98,22 +98,28 @@ IMPORTANT INSTRUCTIONS:
 
 Response length target: {max_words} words"""
 
-    # Generate response using OpenAI GPT-5
+    # Generate response using emergentintegrations
     try:
-        response = openai_client.chat.completions.create(
-            model="gpt-4o",  # Latest GPT-4o is available via Emergent key
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": question}
-            ],
-            temperature=0.8,
-            max_tokens=800
-        )
+        # Create unique session ID for this Q&A
+        session_id = f"qa_{character_id}_{hash(question)}"
         
-        return response.choices[0].message.content.strip()
+        # Initialize LlmChat with Emergent LLM key
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=session_id,
+            system_message=system_prompt
+        ).with_model("openai", "gpt-4o")
+        
+        # Create user message
+        user_message = UserMessage(text=question)
+        
+        # Send message and get response
+        response = await chat.send_message(user_message)
+        
+        return response.strip()
     
     except Exception as e:
-        print(f"OpenAI API error: {e}")
+        print(f"LLM API error: {e}")
         raise Exception(f"Failed to generate response: {str(e)}")
 
 async def create_qa_video(
