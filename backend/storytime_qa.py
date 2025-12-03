@@ -129,58 +129,29 @@ async def create_qa_video(
     avatar_id: str,
     heygen_api_key: str
 ) -> dict:
-    """Generate Q&A response and create video"""
+    """Generate Q&A response and create video using existing story generation"""
     
-    # Voice ID mappings for different avatars
-    AVATAR_VOICE_MAPPING = {
-        '130c202a4e7a47898dfc6f434c86dc24': 'e0cc82c22f414c95b1f25696c732f058',  # Evil Victoria - Cassidy
-        'd33267ddfad14fc2a8820f1d00eb713c': 'e0cc82c22f414c95b1f25696c732f058',  # Evil Victoria Alt - Cassidy
-        '1a9bfb4ec9bc43d59ab64a4e66fe467c': '1bd001e7e50f421d891986aad5158bc8',  # Wargirl - default
-        '84516b469b1f44dbb126c40aa24b2df0': '1bd001e7e50f421d891986aad5158bc8',  # Victoria Black - default
-    }
-    DEFAULT_VOICE_ID = '1bd001e7e50f421d891986aad5158bc8'
-    
-    # Get voice ID for avatar
-    voice_id = AVATAR_VOICE_MAPPING.get(avatar_id, DEFAULT_VOICE_ID)
-    
-    # Generate character response
+    # Generate character response using AI
     response_text = await generate_character_response(character_id, character_name, question)
     
-    # Create HeyGen video using talking photo format
+    # Use the existing storytime generate endpoint which already has working HeyGen integration
     async with httpx.AsyncClient() as client:
-        heygen_response = await client.post(
-            "https://api.heygen.com/v2/video/generate",
-            headers={
-                "accept": "application/json",
-                "content-type": "application/json",
-                "x-api-key": heygen_api_key
-            },
+        story_response = await client.post(
+            "http://localhost:8001/api/storytime/generate",
             json={
-                "video_inputs": [{
-                    "character": {
-                        "type": "talking_photo",
-                        "talking_photo_id": avatar_id
-                    },
-                    "voice": {
-                        "type": "text",
-                        "input_text": response_text,
-                        "voice_id": voice_id
-                    }
-                }],
-                "dimension": {
-                    "width": 1280,
-                    "height": 720
-                },
-                "test": False
+                "avatar_id": avatar_id,
+                "story_text": response_text,
+                "story_title": f"Q&A: {question[:50]}"
             },
             timeout=30.0
         )
         
-        if heygen_response.status_code != 200:
-            raise Exception(f"HeyGen API error: {heygen_response.text}")
+        if story_response.status_code != 200:
+            error_data = story_response.json()
+            raise Exception(f"Video generation error: {error_data.get('detail', story_response.text)}")
         
-        heygen_data = heygen_response.json()
-        video_id = heygen_data.get("data", {}).get("video_id")
+        story_data = story_response.json()
+        video_id = story_data.get("video_id")
         
         return {
             "video_id": video_id,
