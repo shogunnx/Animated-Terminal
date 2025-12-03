@@ -753,6 +753,162 @@ export default function StoryTime() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Q&A Section */}
+      <div className="tsv-glass" style={{ padding: 14, marginTop: 14 }}>
+        <div className="tsv-title" style={{ fontSize: 12, marginBottom: 12 }}>
+          💬 ASK {currentNarrator?.name?.toUpperCase() || 'CHARACTER'} A QUESTION
+        </div>
+        <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 12 }}>
+          Ask anything! {characterData?.name} will respond with a personalized video answer based on their lore and personality.
+        </div>
+
+        {/* Question Input */}
+        <div style={{ marginBottom: 12 }}>
+          <input
+            type="text"
+            value={qaQuestion}
+            onChange={(e) => setQaQuestion(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleQASubmit()}
+            placeholder={`e.g., "How was Binary created?" or "What's your favorite memory?"`}
+            disabled={qaLoading}
+            style={{
+              width: '100%',
+              padding: '10px 14px',
+              fontSize: 12,
+              background: 'rgba(0,0,0,0.4)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              borderRadius: 6,
+              color: '#fff',
+              fontFamily: 'inherit',
+              outline: 'none'
+            }}
+          />
+        </div>
+
+        <button
+          onClick={handleQASubmit}
+          disabled={qaLoading || !qaQuestion.trim()}
+          className="tsv-btn"
+          style={{
+            width: '100%',
+            padding: '10px',
+            fontSize: 12,
+            opacity: qaLoading || !qaQuestion.trim() ? 0.5 : 1
+          }}
+        >
+          {qaLoading ? '🎬 GENERATING VIDEO RESPONSE...' : '🎤 ASK QUESTION'}
+        </button>
+
+        {/* Response Display */}
+        {qaResponse && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{ marginTop: 14 }}
+          >
+            {/* Question Asked */}
+            <div style={{
+              padding: 10,
+              background: 'rgba(255,105,180,0.1)',
+              borderLeft: '3px solid #ff69b4',
+              borderRadius: 4,
+              marginBottom: 12
+            }}>
+              <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 4 }}>YOU ASKED:</div>
+              <div style={{ fontSize: 11, color: '#ff69b4' }}>{qaResponse.question}</div>
+            </div>
+
+            {/* Video Response */}
+            {qaVideoUrl && (
+              <div style={{ marginBottom: 12 }}>
+                <video
+                  src={qaVideoUrl}
+                  controls
+                  autoPlay
+                  style={{
+                    width: '100%',
+                    borderRadius: 8,
+                    border: '2px solid rgba(255,105,180,0.3)'
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Text Response/Transcript */}
+            <div style={{
+              padding: 10,
+              background: 'rgba(0,0,0,0.3)',
+              borderRadius: 6,
+              fontSize: 11,
+              lineHeight: 1.6,
+              maxHeight: 200,
+              overflowY: 'auto'
+            }}>
+              <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 6, color: '#ff69b4' }}>
+                {qaResponse.character} RESPONDS:
+              </div>
+              {qaResponse.text}
+            </div>
+
+            {/* Ask Another Button */}
+            <button
+              onClick={() => {
+                setQaQuestion('');
+                setQaResponse(null);
+                setQaVideoUrl(null);
+              }}
+              className="tsv-btn"
+              style={{
+                width: '100%',
+                marginTop: 12,
+                fontSize: 11,
+                padding: '8px'
+              }}
+            >
+              💭 ASK ANOTHER QUESTION
+            </button>
+          </motion.div>
+        )}
+
+        {/* Loading State */}
+        {qaLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              marginTop: 14,
+              padding: 14,
+              textAlign: 'center',
+              background: 'rgba(255,105,180,0.1)',
+              borderRadius: 8
+            }}
+          >
+            <div style={{ fontSize: 11, marginBottom: 8 }}>⚡ Generating AI Response...</div>
+            <div style={{ fontSize: 10, opacity: 0.7 }}>
+              This may take 1-2 minutes while we create your personalized video
+            </div>
+            <div style={{
+              width: '100%',
+              height: 4,
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: 2,
+              marginTop: 12,
+              overflow: 'hidden'
+            }}>
+              <motion.div
+                animate={{ x: ['0%', '100%'] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }}
+                style={{
+                  width: '30%',
+                  height: '100%',
+                  background: 'linear-gradient(90deg, transparent, #ff69b4, transparent)'
+                }}
+              />
+            </div>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }
