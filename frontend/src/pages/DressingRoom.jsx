@@ -10,11 +10,15 @@ const CLOTHING_CATEGORIES = {
     "Camisole", "Bodysuit", "Corset", "Kimono", "Wrap Top", "Peasant Top", "Peplum Top", "Bell Sleeve",
     "Cold Shoulder", "Polo Shirt", "Henley", "Sports Bra", "Leather Jacket", "Denim Jacket", "Bomber Jacket",
     "Trench Coat", "Peacoat", "Windbreaker", "Puffer Jacket", "Flannel", "Mesh Top", "Lace Top",
-    // 30 New Additions
     "Crop Hoodie", "Longline T-Shirt", "Asymmetric Top", "Sequin Top", "Silk Blouse", "Cashmere Sweater", "Zip-Up Hoodie", "Ribbed Tank",
     "Satin Camisole", "Cut-Out Top", "Bandeau Top", "Backless Top", "One-Shoulder Top", "Cape Top", "Bolero Jacket", "Moto Jacket",
     "Varsity Jacket", "Shearling Jacket", "Suede Jacket", "Quilted Jacket", "Cropped Blazer", "Oversized Blazer", "Utility Vest", "Puffer Vest",
-    "Racerback Tank", "Muscle Tee", "Baseball Jersey", "Graphic Tee", "Tie-Dye Top", "Velvet Top"
+    "Racerback Tank", "Muscle Tee", "Baseball Jersey", "Graphic Tee", "Tie-Dye Top", "Velvet Top",
+    // 30 More Sexy Tops
+    "Sheer Mesh Top", "Fishnet Top", "Latex Top", "PVC Bodysuit", "Leather Bustier", "Strappy Bra Top", "Chain Mail Top", "Deep V Crop",
+    "Side Boob Top", "Underboob Crop", "Nipple Cover Top", "Body Harness", "Cupless Corset", "Wet Look Top", "Snakeskin Top", "Feather Top",
+    "Jeweled Bra Top", "Crystal Chainmail", "Barely There Halter", "String Bikini Top", "Micro Crop", "Navel Tie Top", "Open Back Bodysuit", "Caged Bralette",
+    "Shredded Top", "Net Sleeve Top", "Transparent Blouse", "Liquid Metal Top", "Holographic Crop", "LED Light-Up Top"
   ],
   bottoms: [
     "Jeans", "Shorts", "Skirt", "Leggings", "Dress Pants", "Cargo Pants", "Mini Skirt",
