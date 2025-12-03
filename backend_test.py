@@ -73,13 +73,19 @@ TEST_STORY_DATA = {
 class StoryTimeTester:
     def __init__(self):
         self.results = []
+        self.qa_results = []
         self.test_summary = {
             "lore_count_verified": False,
             "chapter_content_verified": False,
             "video_generation_working": False,
             "character_limit_compliant": True,
             "evil_victoria_avatar_correct": False,
-            "api_endpoints_working": False
+            "api_endpoints_working": False,
+            "qa_endpoint_working": False,
+            "ai_response_quality": False,
+            "video_generation_integration": False,
+            "multiple_characters_working": False,
+            "error_handling_working": False
         }
         self.issues_found = []
         
