@@ -174,10 +174,8 @@ export default function StoryTime() {
       // Get the current narrator
       const currentNarratorData = HEYGEN_AVATARS[selectedNarrator];
       
-      // If narrator is pre-recorded only, use the regular evil_victoria avatar for generation
-      const avatarIdForGeneration = currentNarratorData.isPreRecorded 
-        ? HEYGEN_AVATARS['evil_victoria'].id 
-        : currentNarratorData.id;
+      // Use the selected narrator's avatar ID
+      const avatarIdForGeneration = currentNarratorData.id;
       
       const response = await fetch('/api/storytime/generate', {
         method: 'POST',
