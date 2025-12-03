@@ -166,3 +166,41 @@ async def check_video_status(video_id: str):
             status_code=500,
             detail=f"Internal server error: {str(e)}"
         )
+
+# Q&A Request Model
+class QARequest(BaseModel):
+    character_id: str
+    character_name: str
+    avatar_id: str
+    question: str
+
+@router.post("/qa")
+async def generate_qa_response(request: QARequest):
+    """
+    Generate Q&A video response using character lore + AI
+    """
+    try:
+        from storytime_qa import create_qa_video
+        
+        result = await create_qa_video(
+            character_id=request.character_id,
+            character_name=request.character_name,
+            question=request.question,
+            avatar_id=request.avatar_id,
+            heygen_api_key=HEYGEN_API_KEY
+        )
+        
+        return {
+            "success": True,
+            "video_id": result["video_id"],
+            "response_text": result["response_text"],
+            "question": result["question"],
+            "character_name": result["character_name"]
+        }
+        
+    except Exception as e:
+        logger.error(f"Error generating Q&A response: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate Q&A response: {str(e)}"
+        )
