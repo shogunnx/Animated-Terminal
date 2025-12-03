@@ -255,6 +255,7 @@ export default function DressingRoom() {
       // Add other selected items as modifiers
       if (selectedItems.hairstyles) parts.push(`with ${selectedItems.hairstyles} hair`);
       if (selectedItems.accessories) parts.push(`and ${selectedItems.accessories}`);
+      if (selectedItems.positions) parts.push(`in ${selectedItems.positions} position`);
       basePrompt = parts.join(" ");
     } else {
       // Otherwise, build from individual items
@@ -264,6 +265,7 @@ export default function DressingRoom() {
       if (selectedItems.shoes) parts.push(selectedItems.shoes);
       if (selectedItems.hairstyles) parts.push(`${selectedItems.hairstyles} hair`);
       if (selectedItems.accessories) parts.push(selectedItems.accessories);
+      if (selectedItems.positions) parts.push(`${selectedItems.positions} position`);
       basePrompt = parts.join(", ");
     }
 
