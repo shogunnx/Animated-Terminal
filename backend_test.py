@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-GirlsMind API Discovery and Testing Script
-Tests the Memory & Relationship Management System at https://girlsmind-1.emergent.host
+StoryTime Lore Feature Comprehensive Testing Script
+Tests the StoryTime feature with FULL chapter text scraped from Fandom wiki
 """
 
 import asyncio
@@ -9,9 +9,10 @@ import httpx
 import json
 from typing import Dict, List, Any, Optional
 import time
+import os
 
-# Base URL for GirlsMind API
-BASE_URL = "https://girlsmind-1.emergent.host"
+# Get backend URL from environment
+BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://avatar-realm-5.preview.emergentagent.com')
 
 # Known Character UUIDs from the review request
 KNOWN_CHARACTERS = {
