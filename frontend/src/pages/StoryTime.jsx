@@ -114,6 +114,7 @@ const SAMPLE_STORIES = [
 const HEYGEN_AVATARS = {
   'evil_victoria': { id: '130c202a4e7a47898dfc6f434c86dc24', name: 'Evil Victoria', portrait: null, isPreRecorded: false, isGroupId: true },
   'evil_victoria_alt': { id: 'd33267ddfad14fc2a8820f1d00eb713c', name: 'Evil Victoria (Alt)', portrait: 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/jvbc12fl_evilviccourt.png', isPreRecorded: false },
+  'evil_victoria_talking_head': { id: '94fd37e9ad0b42efb9d828edf5be22ee', name: 'Evil Victoria Talking Head', portrait: null, isPreRecorded: false },
   'wargirl': { id: 'c8680d9549744019809f0acc04faac65', name: 'Wargirl', portrait: null, isPreRecorded: false },
   'victoria_black': { id: '84516b469b1f44dbb126c40aa24b2df0', name: 'Victoria Black', portrait: null, isPreRecorded: false }
 };
