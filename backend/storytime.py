@@ -21,8 +21,8 @@ AVATAR_VOICE_MAPPING = {
     '94fd37e9ad0b42efb9d828edf5be22ee': 'e0cc82c22f414c95b1f25696c732f058',  # Cassidy
     # Wargirl - default voice
     'c8680d9549744019809f0acc04faac65': '1bd001e7e50f421d891986aad5158bc8',
-    # Victoria Black - default voice
-    '84516b469b1f44dbb126c40aa24b2df0': '1bd001e7e50f421d891986aad5158bc8',
+    # Victoria Black - new avatar ID (testing)
+    '47ee88680a8243d8869c6f3503e6716f': '1bd001e7e50f421d891986aad5158bc8',
 }
 
 # Default voice if avatar not in mapping
