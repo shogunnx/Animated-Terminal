@@ -88,6 +88,11 @@ const CLOTHING_CATEGORIES = {
     "Leather Bracelet", "Charm Bracelet", "Tennis Bracelet", "Visor", "Newsboy Cap", "Panama Hat", "Sun Hat", "Aviator Sunglasses",
     "Cat-Eye Sunglasses", "Round Sunglasses", "Mini Bag", "Chain Bag", "Bucket Bag", "Woven Bag"
   ],
+  positions: [
+    "Standing", "Sitting", "Laying on Stomach", "Laying on Back", "Kneeling", "Squatting", "Leaning Forward", "Leaning Back",
+    "Arms Crossed", "Hands on Hips", "One Hand on Hip", "Peace Sign", "Waving", "Pointing", "Thumbs Up", "Heart Hands",
+    "Looking Over Shoulder", "Side Profile", "Three-Quarter View", "Full Frontal"
+  ],
   presetCostumes: [
     "School Uniform", "Gothic Lolita", "Maid Outfit", "Nurse Uniform", "Police Officer", "Military Uniform",
     "Pirate Captain", "Witch Costume", "Vampire Gothic", "Angel Wings", "Devil Costume", "Cat Girl",
