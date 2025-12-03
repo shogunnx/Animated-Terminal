@@ -11,6 +11,7 @@ const STORY_CATEGORIES = {
   lore: "TheSaiyanVictoria Lore"
 };
 
+// Merge test/reddit/youtube stories with full lore stories from wiki
 const SAMPLE_STORIES = [
   {
     id: 0,
@@ -106,6 +107,7 @@ const SAMPLE_STORIES = [
     duration: '3 min',
     videoUrl: null
   },
+  // Import full lore stories from wiki (86 chapters, 94 segments)
   {
     id: 1000,
     category: 'lore',
