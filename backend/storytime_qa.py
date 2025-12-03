@@ -7,11 +7,10 @@ import os
 import json
 from typing import Optional
 import httpx
-from openai import OpenAI
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
-# Initialize OpenAI with Emergent LLM key
+# Emergent LLM key
 EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY", "sk-emergent-3A6Ea89Ad00D72b461")
-openai_client = OpenAI(api_key=EMERGENT_LLM_KEY)
 
 # Character lore summaries (from our story data)
 CHARACTER_LORE = {
