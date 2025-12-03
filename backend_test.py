@@ -170,26 +170,36 @@ class StoryTimeTester:
             print(f"❌ Error reading lore story data: {str(e)}")
             self.issues_found.append(f"Error reading lore story data: {str(e)}")
     
-    async def test_character_endpoints(self):
-        """Test character-specific endpoints"""
-        print("\n👥 TESTING CHARACTER ENDPOINTS...")
+    async def test_evil_victoria_avatar(self):
+        """Test Evil Victoria avatar configuration"""
+        print("\n👹 TESTING EVIL VICTORIA AVATAR CONFIGURATION...")
         print("=" * 60)
         
-        character_endpoints = ["/api/relationship", "/api/memories", "/relationship", "/memories"]
-        
-        for endpoint in character_endpoints:
-            for char_id in CHARACTER_VARIATIONS:
-                # Test with character ID in path
-                url = f"{BASE_URL}{endpoint}/{char_id}"
-                result = await self.test_endpoint("GET", url)
-                self.results.append(result)
+        try:
+            # Read the StoryTime.jsx file to verify avatar ID
+            with open('/app/frontend/src/pages/StoryTime.jsx', 'r') as f:
+                storytime_content = f.read()
+            
+            # Check if the correct Evil Victoria avatar ID is present
+            if EXPECTED_EVIL_VICTORIA_AVATAR_ID in storytime_content:
+                print(f"✅ Evil Victoria avatar ID found: {EXPECTED_EVIL_VICTORIA_AVATAR_ID}")
+                self.test_summary["evil_victoria_avatar_correct"] = True
+            else:
+                print(f"❌ Evil Victoria avatar ID not found: {EXPECTED_EVIL_VICTORIA_AVATAR_ID}")
+                self.issues_found.append(f"Evil Victoria avatar ID not found: {EXPECTED_EVIL_VICTORIA_AVATAR_ID}")
                 
-                if result["success"]:
-                    print(f"✅ {endpoint}/{char_id} - Status: {result['status_code']}")
-                    if result["response_preview"]:
-                        print(f"   Preview: {result['response_preview'][:100]}...")
-                else:
-                    print(f"❌ {endpoint}/{char_id} - Status: {result['status_code']}")
+                # Look for other avatar IDs that might be used instead
+                import re
+                avatar_pattern = r"'evil_victoria':\s*{\s*id:\s*'([^']+)'"
+                matches = re.findall(avatar_pattern, storytime_content)
+                if matches:
+                    actual_id = matches[0]
+                    print(f"❌ Found different avatar ID: {actual_id}")
+                    self.issues_found.append(f"Wrong Evil Victoria avatar ID: {actual_id} (expected: {EXPECTED_EVIL_VICTORIA_AVATAR_ID})")
+                
+        except Exception as e:
+            print(f"❌ Error checking Evil Victoria avatar: {str(e)}")
+            self.issues_found.append(f"Error checking Evil Victoria avatar: {str(e)}")
     
     async def test_with_query_params(self):
         """Test endpoints with various query parameters"""
