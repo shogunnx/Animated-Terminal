@@ -43,17 +43,24 @@ TEST_STORY_DATA = {
     "story_title": "Test Story - Evil Victoria"
 }
 
-class APITester:
+class StoryTimeTester:
     def __init__(self):
         self.results = []
-        self.working_endpoints = []
-        self.failed_endpoints = []
+        self.test_summary = {
+            "lore_count_verified": False,
+            "chapter_content_verified": False,
+            "video_generation_working": False,
+            "character_limit_compliant": True,
+            "evil_victoria_avatar_correct": False,
+            "api_endpoints_working": False
+        }
+        self.issues_found = []
         
     async def test_endpoint(self, method: str, url: str, params: Optional[Dict] = None, 
                           headers: Optional[Dict] = None, data: Optional[Dict] = None) -> Dict[str, Any]:
         """Test a single API endpoint"""
         try:
-            async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
+            async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
                 if method.upper() == "GET":
                     response = await client.get(url, params=params, headers=headers)
                 elif method.upper() == "POST":
@@ -69,16 +76,19 @@ class APITester:
                     "success": response.status_code < 400,
                     "response_size": len(response.content),
                     "content_type": response.headers.get("content-type", ""),
-                    "response_preview": ""
+                    "response_preview": "",
+                    "full_response": None
                 }
                 
-                # Try to get response preview
+                # Try to get response preview and full response
                 try:
                     if "application/json" in result["content_type"]:
                         json_data = response.json()
                         result["response_preview"] = json.dumps(json_data, indent=2)[:500]
+                        result["full_response"] = json_data
                     else:
                         result["response_preview"] = response.text[:500]
+                        result["full_response"] = response.text
                 except:
                     result["response_preview"] = f"<Binary content, {len(response.content)} bytes>"
                 
@@ -92,7 +102,8 @@ class APITester:
                 "status_code": 0,
                 "success": False,
                 "error": str(e),
-                "response_preview": f"Error: {str(e)}"
+                "response_preview": f"Error: {str(e)}",
+                "full_response": None
             }
     
     async def discover_endpoints(self):
