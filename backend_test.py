@@ -315,15 +315,19 @@ class StoryTimeTester:
             print(f"❌ Error in video generation flow: {str(e)}")
             self.issues_found.append(f"Error in video generation flow: {str(e)}")
     
-    async def test_root_endpoints(self):
-        """Test root and common endpoints"""
-        print("\n🏠 TESTING ROOT ENDPOINTS...")
+    async def test_backend_connectivity(self):
+        """Test basic backend connectivity"""
+        print("\n🔗 TESTING BACKEND CONNECTIVITY...")
         print("=" * 60)
         
-        root_endpoints = ["/", "/health", "/status", "/api", "/api/health", "/api/status"]
+        # Test basic endpoints
+        endpoints_to_test = [
+            "/api/health",
+            "/api/status"
+        ]
         
-        for endpoint in root_endpoints:
-            url = f"{BASE_URL}{endpoint}"
+        for endpoint in endpoints_to_test:
+            url = f"{BACKEND_URL}{endpoint}"
             result = await self.test_endpoint("GET", url)
             self.results.append(result)
             
@@ -333,6 +337,7 @@ class StoryTimeTester:
                     print(f"   Preview: {result['response_preview'][:100]}...")
             else:
                 print(f"❌ {endpoint} - Status: {result['status_code']}")
+                self.issues_found.append(f"Backend endpoint {endpoint} failed: {result.get('error', 'Unknown error')}")
     
     def generate_report(self):
         """Generate comprehensive test report"""
