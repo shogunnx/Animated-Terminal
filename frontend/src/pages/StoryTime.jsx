@@ -116,7 +116,7 @@ const HEYGEN_AVATARS = {
   'evil_victoria_alt': { id: 'd33267ddfad14fc2a8820f1d00eb713c', name: 'Evil Victoria (Alt)', portrait: 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/jvbc12fl_evilviccourt.png', isPreRecorded: false },
   'evil_victoria_talking_head': { id: '94fd37e9ad0b42efb9d828edf5be22ee', name: 'Evil Victoria Talking Head', portrait: null, isPreRecorded: false },
   'wargirl': { id: 'c8680d9549744019809f0acc04faac65', name: 'Wargirl', portrait: null, isPreRecorded: false },
-  'victoria_black': { id: '47ee88680a8243d8869c6f3503e6716f', name: 'Victoria Black', portrait: null, isPreRecorded: false }
+  'victoria_black': { id: '04ace9b9356e42a2831ec0a764e70bcc', name: 'Victoria Black', portrait: null, isPreRecorded: false }
 };
 
 export default function StoryTime() {
