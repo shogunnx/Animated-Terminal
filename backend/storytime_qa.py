@@ -131,6 +131,18 @@ async def create_qa_video(
 ) -> dict:
     """Generate Q&A response and create video"""
     
+    # Voice ID mappings for different avatars
+    AVATAR_VOICE_MAPPING = {
+        '130c202a4e7a47898dfc6f434c86dc24': 'e0cc82c22f414c95b1f25696c732f058',  # Evil Victoria - Cassidy
+        'd33267ddfad14fc2a8820f1d00eb713c': 'e0cc82c22f414c95b1f25696c732f058',  # Evil Victoria Alt - Cassidy
+        '1a9bfb4ec9bc43d59ab64a4e66fe467c': '1bd001e7e50f421d891986aad5158bc8',  # Wargirl - default
+        '84516b469b1f44dbb126c40aa24b2df0': '1bd001e7e50f421d891986aad5158bc8',  # Victoria Black - default
+    }
+    DEFAULT_VOICE_ID = '1bd001e7e50f421d891986aad5158bc8'
+    
+    # Get voice ID for avatar
+    voice_id = AVATAR_VOICE_MAPPING.get(avatar_id, DEFAULT_VOICE_ID)
+    
     # Generate character response
     response_text = await generate_character_response(character_id, character_name, question)
     
@@ -151,7 +163,8 @@ async def create_qa_video(
                     },
                     "voice": {
                         "type": "text",
-                        "input_text": response_text
+                        "input_text": response_text,
+                        "voice_id": voice_id
                     }
                 }],
                 "dimension": {
