@@ -340,63 +340,54 @@ class StoryTimeTester:
                 self.issues_found.append(f"Backend endpoint {endpoint} failed: {result.get('error', 'Unknown error')}")
     
     def generate_report(self):
-        """Generate comprehensive test report"""
+        """Generate comprehensive StoryTime test report"""
         print("\n" + "=" * 80)
-        print("📋 COMPREHENSIVE TEST REPORT")
+        print("📋 STORYTIME LORE FEATURE TEST REPORT")
         print("=" * 80)
         
         working_results = [r for r in self.results if r["success"]]
         failed_results = [r for r in self.results if not r["success"]]
         
-        print(f"\n📊 SUMMARY:")
-        print(f"   Total Tests: {len(self.results)}")
+        print(f"\n📊 API TEST SUMMARY:")
+        print(f"   Total API Tests: {len(self.results)}")
         print(f"   ✅ Working: {len(working_results)}")
         print(f"   ❌ Failed: {len(failed_results)}")
         
+        print(f"\n🎯 STORYTIME FEATURE VERIFICATION:")
+        print(f"   ✅ Lore Count (94 stories): {'PASS' if self.test_summary['lore_count_verified'] else 'FAIL'}")
+        print(f"   ✅ Chapter Content: {'PASS' if self.test_summary['chapter_content_verified'] else 'FAIL'}")
+        print(f"   ✅ Video Generation API: {'PASS' if self.test_summary['video_generation_working'] else 'FAIL'}")
+        print(f"   ✅ Character Limit (<5000): {'PASS' if self.test_summary['character_limit_compliant'] else 'FAIL'}")
+        print(f"   ✅ Evil Victoria Avatar ID: {'PASS' if self.test_summary['evil_victoria_avatar_correct'] else 'FAIL'}")
+        print(f"   ✅ API Endpoints: {'PASS' if self.test_summary['api_endpoints_working'] else 'FAIL'}")
+        
+        # Calculate overall success
+        all_tests_passed = all(self.test_summary.values())
+        print(f"\n🏆 OVERALL RESULT: {'✅ ALL TESTS PASSED' if all_tests_passed else '❌ SOME TESTS FAILED'}")
+        
+        if self.issues_found:
+            print(f"\n❌ ISSUES FOUND ({len(self.issues_found)}):")
+            for i, issue in enumerate(self.issues_found, 1):
+                print(f"   {i}. {issue}")
+        
         if working_results:
-            print(f"\n✅ WORKING ENDPOINTS ({len(working_results)}):")
+            print(f"\n✅ WORKING API ENDPOINTS ({len(working_results)}):")
             for result in working_results:
-                params_str = f" (params: {result['params']})" if result.get('params') else ""
-                print(f"   {result['method']} {result['url']}{params_str} - Status: {result['status_code']}")
-                if result.get('response_preview') and len(result['response_preview']) > 10:
-                    print(f"      Response: {result['response_preview'][:150]}...")
+                print(f"   {result['method']} {result['url']} - Status: {result['status_code']}")
         
         if failed_results:
-            print(f"\n❌ FAILED ENDPOINTS ({len(failed_results)}):")
+            print(f"\n❌ FAILED API ENDPOINTS ({len(failed_results)}):")
             for result in failed_results:
-                params_str = f" (params: {result['params']})" if result.get('params') else ""
                 error_info = result.get('error', f"HTTP {result['status_code']}")
-                print(f"   {result['method']} {result['url']}{params_str} - {error_info}")
-        
-        # Detailed analysis
-        print(f"\n🔍 DETAILED ANALYSIS:")
-        
-        # Group by status code
-        status_codes = {}
-        for result in self.results:
-            code = result['status_code']
-            if code not in status_codes:
-                status_codes[code] = []
-            status_codes[code].append(result)
-        
-        for code, results in sorted(status_codes.items()):
-            print(f"   Status {code}: {len(results)} endpoints")
-        
-        # Find patterns in working endpoints
-        if working_results:
-            print(f"\n🎯 WORKING ENDPOINT PATTERNS:")
-            working_paths = [r['url'].replace(BASE_URL, '') for r in working_results]
-            unique_paths = list(set(working_paths))
-            for path in sorted(unique_paths):
-                print(f"   {path}")
+                print(f"   {result['method']} {result['url']} - {error_info}")
         
         return {
             "total_tests": len(self.results),
             "working_count": len(working_results),
             "failed_count": len(failed_results),
-            "working_endpoints": working_results,
-            "failed_endpoints": failed_results,
-            "status_codes": status_codes
+            "test_summary": self.test_summary,
+            "issues_found": self.issues_found,
+            "all_tests_passed": all_tests_passed
         }
 
 async def main():
