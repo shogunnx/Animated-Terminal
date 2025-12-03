@@ -44,15 +44,18 @@ const CLOTHING_CATEGORIES = {
     "Ballet Flats", "Pointed Flats", "Gladiator Sandals", "Strappy Heels", "Slingback Heels", "Kitten Heels", "Block Heels",
     "Chunky Sneakers", "High-Top Sneakers", "Slip-On Shoes", "Canvas Shoes", "Running Shoes", "Court Shoes", "Pumps",
     "Peep-Toe Heels", "Ankle Strap Heels",
-    // 30 New Additions
     "Over-the-Knee Boots", "Lace-Up Boots", "Sock Boots", "Western Boots", "Hiking Boots", "Platform Sneakers", "Designer Sneakers", "Retro Sneakers",
     "Velvet Heels", "Metallic Heels", "Clear Heels", "Embellished Heels", "T-Strap Heels", "D'Orsay Heels", "Cone Heels", "Stiletto Boots",
     "Fur-Lined Boots", "Studded Boots", "Snake Print Heels", "Leopard Print Flats", "Embroidered Flats", "Driving Moccasins", "Boat Shoes", "Platform Sandals",
     "Jelly Sandals", "Sport Sandals", "Fisherman Sandals", "Strappy Sandals", "Toe Ring Sandals", "Clogs",
-    // 20 More Heels
     "Red Bottom Heels", "Glitter Heels", "Holographic Heels", "Transparent Heels", "Lucite Heels", "Crystal Heels", "Pearl Heels", "Feather Heels",
     "Bow Heels", "Ankle Wrap Heels", "Lace-Up Heels", "Cut-Out Heels", "Geometric Heels", "Sculptured Heels", "Wedge Heels", "Cork Heels",
-    "Espadrille Wedges", "Mule Heels", "Pointed Toe Pumps", "Almond Toe Heels"
+    "Espadrille Wedges", "Mule Heels", "Pointed Toe Pumps", "Almond Toe Heels",
+    // 30 More Sexy Shoes
+    "Stripper Heels", "Pole Dancing Boots", "Fetish Heels", "Extreme Platform Heels", "10 Inch Stilettos", "Thigh High Stiletto Boots", "Lace-Up Thigh Highs", "Dominatrix Boots",
+    "Latex Boots", "PVC Heels", "Chain Heels", "Spiked Heels", "Lock & Key Heels", "Ankle Cuff Heels", "Strappy Platform Boots", "Clear Platform Heels",
+    "LED Light-Up Heels", "Neon Heels", "Reflective Heels", "Chrome Heels", "Mirror Heels", "Diamond Studded Heels", "Gold Chain Heels", "Barely There Sandals",
+    "Invisible Strap Heels", "Glass Slipper Heels", "Cinderella Heels", "Fantasy Heels", "Showgirl Heels", "Burlesque Boots"
   ],
   hairstyles: [
     "Long", "Short", "Ponytail", "Bun", "Braided", "Wavy", "Straight", "Curly",
