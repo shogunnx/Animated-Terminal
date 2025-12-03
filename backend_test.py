@@ -106,27 +106,69 @@ class StoryTimeTester:
                 "full_response": None
             }
     
-    async def discover_endpoints(self):
-        """Discover available API endpoints"""
-        print("🔍 DISCOVERING API ENDPOINTS...")
+    async def test_lore_story_data(self):
+        """Test lore story data by reading the frontend file"""
+        print("📚 TESTING LORE STORY DATA...")
         print("=" * 60)
         
-        # Test basic endpoints
-        for endpoint in API_ENDPOINTS:
-            url = f"{BASE_URL}{endpoint}"
-            result = await self.test_endpoint("GET", url)
-            self.results.append(result)
+        try:
+            # Read the story-lore.js file to verify story count and content
+            with open('/app/frontend/src/data/story-lore.js', 'r') as f:
+                lore_content = f.read()
             
-            if result["success"]:
-                self.working_endpoints.append(endpoint)
-                print(f"✅ {endpoint} - Status: {result['status_code']}")
-                if result["response_preview"]:
-                    print(f"   Preview: {result['response_preview'][:100]}...")
+            # Count lore stories by looking for category: 'lore' entries
+            lore_story_count = lore_content.count("category: 'lore'")
+            
+            print(f"📊 Found {lore_story_count} lore stories in story-lore.js")
+            
+            if lore_story_count == EXPECTED_LORE_COUNT:
+                print(f"✅ Lore story count matches expected: {EXPECTED_LORE_COUNT}")
+                self.test_summary["lore_count_verified"] = True
             else:
-                self.failed_endpoints.append(endpoint)
-                print(f"❌ {endpoint} - Status: {result['status_code']} - {result.get('error', 'Failed')}")
-        
-        print(f"\n📊 Discovery Summary: {len(self.working_endpoints)} working, {len(self.failed_endpoints)} failed")
+                print(f"❌ Lore story count mismatch: Expected {EXPECTED_LORE_COUNT}, Found {lore_story_count}")
+                self.issues_found.append(f"Lore story count mismatch: Expected {EXPECTED_LORE_COUNT}, Found {lore_story_count}")
+            
+            # Check for expected chapter titles
+            chapters_found = 0
+            for chapter in EXPECTED_CHAPTERS:
+                if chapter in lore_content:
+                    chapters_found += 1
+                    print(f"✅ Found expected chapter: {chapter}")
+                else:
+                    print(f"❌ Missing expected chapter: {chapter}")
+                    self.issues_found.append(f"Missing expected chapter: {chapter}")
+            
+            if chapters_found == len(EXPECTED_CHAPTERS):
+                print(f"✅ All expected chapters found")
+                self.test_summary["chapter_content_verified"] = True
+            else:
+                print(f"❌ Only {chapters_found}/{len(EXPECTED_CHAPTERS)} expected chapters found")
+            
+            # Check character limits
+            print("\n🔍 CHECKING CHARACTER LIMITS...")
+            over_limit_count = 0
+            
+            # Extract story text content and check lengths
+            import re
+            text_pattern = r'text:\s*`([^`]*)`'
+            text_matches = re.findall(text_pattern, lore_content, re.DOTALL)
+            
+            for i, text in enumerate(text_matches):
+                text_length = len(text)
+                if text_length > HEYGEN_CHARACTER_LIMIT:
+                    over_limit_count += 1
+                    print(f"❌ Story {i+1} exceeds character limit: {text_length} chars (limit: {HEYGEN_CHARACTER_LIMIT})")
+                    self.issues_found.append(f"Story {i+1} exceeds character limit: {text_length} chars")
+            
+            if over_limit_count == 0:
+                print(f"✅ All stories are under {HEYGEN_CHARACTER_LIMIT} character limit")
+            else:
+                print(f"❌ {over_limit_count} stories exceed character limit")
+                self.test_summary["character_limit_compliant"] = False
+                
+        except Exception as e:
+            print(f"❌ Error reading lore story data: {str(e)}")
+            self.issues_found.append(f"Error reading lore story data: {str(e)}")
     
     async def test_character_endpoints(self):
         """Test character-specific endpoints"""
