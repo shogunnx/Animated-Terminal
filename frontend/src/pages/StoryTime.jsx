@@ -275,6 +275,9 @@ export default function StoryTime() {
     setQaLoading(true);
     setQaVideoUrl(null);
     setQaResponse(null);
+    setCurrentStory(null);
+    setGeneratedVideoUrl(null);
+    setIsPlaying(false);
 
     try {
       const currentNarratorData = HEYGEN_AVATARS[selectedNarrator];
@@ -308,7 +311,7 @@ export default function StoryTime() {
 
       const videoId = data.video_id;
 
-      // Poll for video completion
+      // Poll for video completion and display in MAIN player
       if (videoId) {
         const pollInterval = setInterval(async () => {
           try {
@@ -319,6 +322,8 @@ export default function StoryTime() {
             const videoUrl = statusData.data?.video_url;
 
             if (status === 'completed' && videoUrl) {
+              // Set video in MAIN player
+              setGeneratedVideoUrl(videoUrl);
               setQaVideoUrl(videoUrl);
               setQaLoading(false);
               clearInterval(pollInterval);
