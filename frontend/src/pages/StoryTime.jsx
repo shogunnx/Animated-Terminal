@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TSV_CHARACTERS } from '../content/tsvContent.js';
+import { LORE_STORIES } from '../data/story-lore.js';
 
 const STORY_CATEGORIES = {
   test: "Test Stories",
