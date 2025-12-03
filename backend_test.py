@@ -391,20 +391,20 @@ class StoryTimeTester:
         }
 
 async def main():
-    """Main testing function"""
-    print("🚀 GIRLSMIND API DISCOVERY & TESTING")
-    print(f"🎯 Target: {BASE_URL}")
+    """Main StoryTime testing function"""
+    print("🚀 STORYTIME LORE FEATURE COMPREHENSIVE TESTING")
+    print(f"🎯 Backend URL: {BACKEND_URL}")
     print(f"📅 Started: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 80)
     
-    tester = APITester()
+    tester = StoryTimeTester()
     
     # Run all test phases
-    await tester.test_root_endpoints()
-    await tester.discover_endpoints()
-    await tester.test_character_endpoints()
-    await tester.test_with_query_params()
-    await tester.test_post_endpoints()
+    await tester.test_backend_connectivity()
+    await tester.test_lore_story_data()
+    await tester.test_evil_victoria_avatar()
+    await tester.test_storytime_api_endpoints()
+    await tester.test_video_generation_flow()
     
     # Generate final report
     report = tester.generate_report()
