@@ -266,6 +266,88 @@ export default function StoryTime() {
     handleStorySelect(randomStory);
   };
 
+  const handleQASubmit = async () => {
+    if (!qaQuestion.trim()) {
+      alert('Please enter a question!');
+      return;
+    }
+
+    setQaLoading(true);
+    setQaVideoUrl(null);
+    setQaResponse(null);
+
+    try {
+      const currentNarratorData = HEYGEN_AVATARS[selectedNarrator];
+      const characterLookupId = selectedNarrator === 'evil_victoria_alt' ? 'evil_victoria' : selectedNarrator;
+      const characterData = TSV_CHARACTERS.find(c => c.id === characterLookupId);
+
+      // Call Q&A API
+      const response = await fetch('/api/storytime/qa', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          character_id: characterLookupId,
+          character_name: characterData?.name || currentNarratorData.name,
+          avatar_id: currentNarratorData.id,
+          question: qaQuestion
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || 'Failed to generate Q&A response');
+      }
+
+      // Store response data
+      setQaResponse({
+        question: data.question,
+        text: data.response_text,
+        character: data.character_name
+      });
+
+      const videoId = data.video_id;
+
+      // Poll for video completion
+      if (videoId) {
+        const pollInterval = setInterval(async () => {
+          try {
+            const statusResponse = await fetch(`/api/storytime/status/${videoId}`);
+            const statusData = await statusResponse.json();
+
+            const status = statusData.data?.status;
+            const videoUrl = statusData.data?.video_url;
+
+            if (status === 'completed' && videoUrl) {
+              setQaVideoUrl(videoUrl);
+              setQaLoading(false);
+              clearInterval(pollInterval);
+            } else if (status === 'failed') {
+              throw new Error('Video generation failed');
+            }
+          } catch (err) {
+            console.error('Error polling Q&A video status:', err);
+            clearInterval(pollInterval);
+            setQaLoading(false);
+          }
+        }, 3000);
+
+        // Cleanup after 5 minutes
+        setTimeout(() => {
+          clearInterval(pollInterval);
+          if (qaLoading) {
+            setQaLoading(false);
+            alert('Video generation timed out. Please try again.');
+          }
+        }, 300000);
+      }
+    } catch (error) {
+      console.error('Error generating Q&A:', error);
+      alert(`Failed to generate Q&A response: ${error.message}`);
+      setQaLoading(false);
+    }
+  };
+
   const currentNarrator = HEYGEN_AVATARS[selectedNarrator];
   // Fallback to evil_victoria for alt narrator
   const characterLookupId = selectedNarrator === 'evil_victoria_alt' ? 'evil_victoria' : selectedNarrator;
