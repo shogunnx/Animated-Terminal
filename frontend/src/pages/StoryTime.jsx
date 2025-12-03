@@ -824,19 +824,16 @@ export default function StoryTime() {
               <div style={{ fontSize: 11, color: '#ff69b4' }}>{qaResponse.question}</div>
             </div>
 
-            {/* Video Response */}
+            {/* Video Status */}
             {qaVideoUrl && (
-              <div style={{ marginBottom: 12 }}>
-                <video
-                  src={qaVideoUrl}
-                  controls
-                  autoPlay
-                  style={{
-                    width: '100%',
-                    borderRadius: 8,
-                    border: '2px solid rgba(255,105,180,0.3)'
-                  }}
-                />
+              <div style={{ 
+                padding: 10,
+                background: 'rgba(0,255,0,0.1)',
+                borderLeft: '3px solid #00ff00',
+                borderRadius: 4,
+                marginBottom: 12
+              }}>
+                <div style={{ fontSize: 11, color: '#00ff00' }}>✅ Video ready! Playing in main player above ⬆️</div>
               </div>
             )}
 
