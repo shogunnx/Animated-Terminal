@@ -128,6 +128,12 @@ export default function StoryTime() {
   const [isLoading, setIsLoading] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState('reddit');
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState(null);
+  
+  // Q&A State
+  const [qaQuestion, setQaQuestion] = useState('');
+  const [qaResponse, setQaResponse] = useState(null);
+  const [qaLoading, setQaLoading] = useState(false);
+  const [qaVideoUrl, setQaVideoUrl] = useState(null);
 
   const handleNarratorChange = (narratorId) => {
     setSelectedNarrator(narratorId);
