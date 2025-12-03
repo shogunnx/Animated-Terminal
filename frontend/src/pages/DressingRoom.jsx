@@ -135,6 +135,7 @@ export default function DressingRoom() {
     shoes: "",
     hairstyles: "",
     accessories: "",
+    positions: "",
     presetCostumes: "",
     artStyles: ""
   });
