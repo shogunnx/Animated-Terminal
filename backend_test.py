@@ -201,22 +201,67 @@ class StoryTimeTester:
             print(f"❌ Error checking Evil Victoria avatar: {str(e)}")
             self.issues_found.append(f"Error checking Evil Victoria avatar: {str(e)}")
     
-    async def test_with_query_params(self):
-        """Test endpoints with various query parameters"""
-        print("\n🔧 TESTING WITH QUERY PARAMETERS...")
+    async def test_storytime_api_endpoints(self):
+        """Test StoryTime API endpoints"""
+        print("\n🎬 TESTING STORYTIME API ENDPOINTS...")
         print("=" * 60)
         
-        # Test working endpoints with different query parameters
-        for endpoint in self.working_endpoints[:3]:  # Test top 3 working endpoints
-            for params in QUERY_PARAMS:
-                url = f"{BASE_URL}{endpoint}"
-                result = await self.test_endpoint("GET", url, params=params)
-                self.results.append(result)
+        # Test video generation endpoint
+        generate_url = f"{BACKEND_URL}/api/storytime/generate"
+        print(f"Testing POST {generate_url}")
+        
+        result = await self.test_endpoint("POST", generate_url, data=TEST_STORY_DATA)
+        self.results.append(result)
+        
+        if result["success"]:
+            print(f"✅ Video generation endpoint working - Status: {result['status_code']}")
+            
+            # Check if we got a video_id back
+            if result["full_response"] and "video_id" in result["full_response"]:
+                video_id = result["full_response"]["video_id"]
+                print(f"✅ Received video_id: {video_id}")
                 
-                if result["success"]:
-                    print(f"✅ {endpoint} with {params} - Status: {result['status_code']}")
+                # Test status endpoint with the video_id
+                status_url = f"{BACKEND_URL}/api/storytime/status/{video_id}"
+                print(f"Testing GET {status_url}")
+                
+                status_result = await self.test_endpoint("GET", status_url)
+                self.results.append(status_result)
+                
+                if status_result["success"]:
+                    print(f"✅ Video status endpoint working - Status: {status_result['status_code']}")
+                    self.test_summary["api_endpoints_working"] = True
+                    
+                    # Check status response format
+                    if status_result["full_response"] and "data" in status_result["full_response"]:
+                        status_data = status_result["full_response"]["data"]
+                        print(f"✅ Status response format correct: {status_data}")
+                    else:
+                        print(f"❌ Invalid status response format")
+                        self.issues_found.append("Invalid status response format")
                 else:
-                    print(f"❌ {endpoint} with {params} - Status: {result['status_code']}")
+                    print(f"❌ Video status endpoint failed - Status: {status_result['status_code']}")
+                    self.issues_found.append(f"Video status endpoint failed: {status_result.get('error', 'Unknown error')}")
+            else:
+                print(f"❌ No video_id in generation response")
+                self.issues_found.append("No video_id in generation response")
+        else:
+            print(f"❌ Video generation endpoint failed - Status: {result['status_code']}")
+            error_msg = result.get('error', 'Unknown error')
+            if result.get('full_response'):
+                error_msg = result['full_response'].get('detail', error_msg)
+            self.issues_found.append(f"Video generation endpoint failed: {error_msg}")
+            
+        # Test health endpoint
+        health_url = f"{BACKEND_URL}/api/health"
+        health_result = await self.test_endpoint("GET", health_url)
+        self.results.append(health_result)
+        
+        if health_result["success"]:
+            print(f"✅ Health endpoint working - Status: {health_result['status_code']}")
+        else:
+            print(f"❌ Health endpoint failed - Status: {health_result['status_code']}")
+            self.issues_found.append(f"Health endpoint failed: {health_result.get('error', 'Unknown error')}")
     
     async def test_post_endpoints(self):
         """Test POST requests for storing data"""
