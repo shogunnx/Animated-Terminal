@@ -146,20 +146,20 @@ async def create_qa_video(
     # Generate character response
     response_text = await generate_character_response(character_id, character_name, question)
     
-    # Create HeyGen video
+    # Create HeyGen video using talking photo format
     async with httpx.AsyncClient() as client:
         heygen_response = await client.post(
             "https://api.heygen.com/v2/video/generate",
             headers={
-                "X-Api-Key": heygen_api_key,
-                "Content-Type": "application/json"
+                "accept": "application/json",
+                "content-type": "application/json",
+                "x-api-key": heygen_api_key
             },
             json={
                 "video_inputs": [{
                     "character": {
-                        "type": "avatar",
-                        "avatar_id": avatar_id,
-                        "avatar_style": "normal"
+                        "type": "talking_photo",
+                        "talking_photo_id": avatar_id
                     },
                     "voice": {
                         "type": "text",
@@ -171,7 +171,7 @@ async def create_qa_video(
                     "width": 1280,
                     "height": 720
                 },
-                "aspect_ratio": "16:9"
+                "test": False
             },
             timeout=30.0
         )
