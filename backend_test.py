@@ -14,56 +14,34 @@ import os
 # Get backend URL from environment
 BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://avatar-realm-5.preview.emergentagent.com')
 
-# Known Character UUIDs from the review request
-KNOWN_CHARACTERS = {
-    "Victoria Black": "59ab0b0b-c78a-4f25-8983-6a5ed3482b35",
-    "Wargirl": "e1e0650c-3888-4af5-9858-479280d3fca1", 
-    "Binary": "e4c92345-8b86-4837-8c3d-6a4632c65f62"
+# Expected Evil Victoria Avatar ID from review request
+EXPECTED_EVIL_VICTORIA_AVATAR_ID = "45ac5eccd176497998afb3e9e508fad1"
+
+# Expected lore story count from review request
+EXPECTED_LORE_COUNT = 94
+
+# Expected chapter titles to verify
+EXPECTED_CHAPTERS = [
+    "Chapter 1: A Saiyan's Fate",
+    "2. A New Fighter Joins the team! Harmony Blaster!",
+    "Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning (Part 1)"
+]
+
+# Character limit for HeyGen API
+HEYGEN_CHARACTER_LIMIT = 5000
+
+# StoryTime API endpoints to test
+STORYTIME_ENDPOINTS = [
+    "/api/storytime/generate",
+    "/api/storytime/status"
+]
+
+# Test story data for API testing
+TEST_STORY_DATA = {
+    "avatar_id": EXPECTED_EVIL_VICTORIA_AVATAR_ID,
+    "story_text": "This is a test story for Evil Victoria. The story should be engaging and demonstrate the video generation capabilities of the StoryTime feature.",
+    "story_title": "Test Story - Evil Victoria"
 }
-
-# Character name variations to test
-CHARACTER_VARIATIONS = [
-    "victoria_black",
-    "Victoria Black", 
-    "59ab0b0b-c78a-4f25-8983-6a5ed3482b35",
-    "wargirl",
-    "Wargirl",
-    "e1e0650c-3888-4af5-9858-479280d3fca1",
-    "binary",
-    "Binary",
-    "e4c92345-8b86-4837-8c3d-6a4632c65f62"
-]
-
-# API endpoints to test based on review request
-API_ENDPOINTS = [
-    # With /api prefix
-    "/api/relationship",
-    "/api/memories", 
-    "/api/store_exchange",
-    "/api/girls",
-    "/api/characters",
-    "/api/users",
-    "/api/stats",
-    "/api/dashboard",
-    # Without /api prefix
-    "/relationship",
-    "/memories",
-    "/store_exchange", 
-    "/girls",
-    "/characters",
-    "/users",
-    "/stats",
-    "/dashboard"
-]
-
-# Query parameters to test
-QUERY_PARAMS = [
-    {"userId": "guest"},
-    {"user": "guest"},
-    {"limit": "10"},
-    {"characterId": "59ab0b0b-c78a-4f25-8983-6a5ed3482b35"},
-    {}  # No params
-]
 
 class APITester:
     def __init__(self):
