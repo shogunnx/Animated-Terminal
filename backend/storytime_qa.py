@@ -12,28 +12,22 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 # Emergent LLM key
 EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY", "sk-emergent-3A6Ea89Ad00D72b461")
 
-# Character lore summaries (from our story data)
+# Character lore summaries (concise, factual only)
 CHARACTER_LORE = {
-    "victoria_black": """Victoria Black is the seductive and manipulative twin sister of Victoria Chaser. 
-    She uses her enchanting voice and motherly figure to gain power through charm rather than combat. 
-    During their captivity under Black Frieza, she seduced her way into becoming a Teacher. She saved 
-    baby Harmony during their escape and became her adoptive mother. She later participated in a spirit 
-    fusion with Victoria Chaser and Wargirl that was permanently bound to Harmony.""",
+    "victoria_black": """Victoria Black: Seductive twin of Victoria Chaser. Uses charm over combat. 
+    Made deal with Vegeta that created Binary. Saved baby Harmony during escape. Spirit-fused with 
+    Victoria Chaser and Wargirl into Harmony.""",
     
-    "wargirl": """Wargirl is the youngest sister who bridges the gap between Victoria Chaser's warrior 
-    spirit and Victoria Black's manipulation. She's a skilled fighter who farms PQs to level up her 
-    family's abilities. She loves battle and proving herself among great warriors. She participated 
-    in the permanent spirit fusion that created Harmony Blaster. She knows Binary was created from 
-    a deal Victoria Black made with Vegeta.""",
+    "wargirl": """Wargirl: Youngest sister. Skilled fighter who farms PQs. Loves battle. 
+    Spirit-fused with Victoria Chaser and Victoria Black into Harmony Blaster. 
+    LORE FACT: Binary was created from Victoria Black's deal with Vegeta.""",
     
-    "evil_victoria": """Evil Victoria represents a darker, more dangerous version of the Victoria persona. 
-    She operates from a hidden 'Classified' chamber and has connections to darker forces. She's mysterious, 
-    powerful, and speaks with authority about the darker aspects of their timeline.""",
+    "evil_victoria": """Evil Victoria: Darker, dangerous persona. Operates from hidden 'Classified' chamber. 
+    Mysterious, powerful. Connected to darker forces. Speaks with authority.""",
     
-    "victoria_chaser": """Victoria Chaser is the resolute warrior and protector of the family. She led 
-    the rebellion and escape from Black Frieza's captivity. She's a master combatant who scorns manipulation 
-    in favor of pure strength. Though she initially disliked Harmony, her love for Victoria Black made her 
-    tolerant of the child. She participated in the spirit fusion that created Harmony Blaster."""
+    "victoria_chaser": """Victoria Chaser: Warrior and protector. Led rebellion and escape from Black Frieza. 
+    Master combatant. Scorns manipulation, favors pure strength. Spirit-fused with Victoria Black and 
+    Wargirl into Harmony."""
 }
 
 async def fetch_girlsmind_personality(character_id: str) -> Optional[dict]:
