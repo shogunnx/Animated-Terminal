@@ -108,8 +108,10 @@ const SAMPLE_STORIES = [
     videoUrl: null
   },
   // Import full lore stories from wiki (86 chapters, 94 segments)
-  {
-    id: 1000,
+  ...LORE_STORIES
+];
+
+const HEYGEN_AVATARS = {
     category: 'lore',
     title: "Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning",
     preview: "In the depths of a timeline controlled by the tyrannical Black Frieza, the Saiya...",
