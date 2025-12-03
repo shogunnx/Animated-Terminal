@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-StoryTime Lore Feature Comprehensive Testing Script
-Tests the StoryTime feature with FULL chapter text scraped from Fandom wiki
+StoryTime Q&A Feature Comprehensive Testing Script
+Tests the StoryTime Q&A system with AI-generated video responses
 """
 
 import asyncio
@@ -10,9 +10,35 @@ import json
 from typing import Dict, List, Any, Optional
 import time
 import os
+import re
 
 # Get backend URL from environment
 BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://avatar-realm-5.preview.emergentagent.com')
+
+# Q&A Test Characters with their avatar IDs (from review request)
+QA_TEST_CHARACTERS = {
+    "wargirl": {
+        "character_name": "Wargirl",
+        "avatar_id": "1a9bfb4ec9bc43d59ab64a4e66fe467c"
+    },
+    "evil_victoria": {
+        "character_name": "Evil Victoria", 
+        "avatar_id": "130c202a4e7a47898dfc6f434c86dc24"
+    },
+    "victoria_black": {
+        "character_name": "Victoria Black",
+        "avatar_id": "84516b469b1f44dbb126c40aa24b2df0"
+    }
+}
+
+# Test questions for Q&A system
+QA_TEST_QUESTIONS = [
+    "How was Binary created?",  # Lore-specific question from review
+    "What happened during your escape from Black Frieza?",
+    "Tell me about your relationship with the other characters.",
+    "What are your greatest strengths and abilities?",
+    ""  # Empty question for error testing
+]
 
 # Expected Evil Victoria Avatar ID from review request
 EXPECTED_EVIL_VICTORIA_AVATAR_ID = "45ac5eccd176497998afb3e9e508fad1"
@@ -33,7 +59,8 @@ HEYGEN_CHARACTER_LIMIT = 5000
 # StoryTime API endpoints to test
 STORYTIME_ENDPOINTS = [
     "/api/storytime/generate",
-    "/api/storytime/status"
+    "/api/storytime/status",
+    "/api/storytime/qa"  # New Q&A endpoint
 ]
 
 # Test story data for API testing
