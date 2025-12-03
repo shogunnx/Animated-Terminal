@@ -348,6 +348,245 @@ class StoryTimeTester:
             print(f"❌ Error in video generation flow: {str(e)}")
             self.issues_found.append(f"Error in video generation flow: {str(e)}")
     
+    async def test_qa_endpoint_basic(self):
+        """Test Q&A endpoint with basic functionality"""
+        print("\n🤖 TESTING Q&A ENDPOINT BASIC FUNCTIONALITY...")
+        print("=" * 60)
+        
+        # Test with Wargirl and Binary creation question (from review request)
+        test_payload = {
+            "character_id": "wargirl",
+            "character_name": "Wargirl", 
+            "avatar_id": "1a9bfb4ec9bc43d59ab64a4e66fe467c",
+            "question": "How was Binary created?"
+        }
+        
+        qa_url = f"{BACKEND_URL}/api/storytime/qa"
+        print(f"Testing POST {qa_url}")
+        print(f"Payload: {json.dumps(test_payload, indent=2)}")
+        
+        result = await self.test_endpoint("POST", qa_url, data=test_payload)
+        self.qa_results.append(result)
+        
+        if result["success"]:
+            print(f"✅ Q&A endpoint working - Status: {result['status_code']}")
+            
+            # Verify response structure
+            if result["full_response"]:
+                response = result["full_response"]
+                required_fields = ["video_id", "response_text", "question", "character_name"]
+                missing_fields = [field for field in required_fields if field not in response]
+                
+                if not missing_fields:
+                    print(f"✅ Response contains all required fields: {required_fields}")
+                    self.test_summary["qa_endpoint_working"] = True
+                    
+                    # Check response text length (400-600 words for 1-2 minute video)
+                    response_text = response.get("response_text", "")
+                    word_count = len(response_text.split())
+                    print(f"📝 Response text length: {word_count} words ({len(response_text)} characters)")
+                    
+                    if 400 <= word_count <= 600:
+                        print(f"✅ Response length appropriate for video (400-600 words)")
+                        self.test_summary["ai_response_quality"] = True
+                    else:
+                        print(f"⚠️ Response length outside optimal range: {word_count} words")
+                        if word_count < 200:
+                            self.issues_found.append(f"Response too short: {word_count} words (expected 400-600)")
+                        elif word_count > 800:
+                            self.issues_found.append(f"Response too long: {word_count} words (expected 400-600)")
+                    
+                    # Check if response mentions Binary creation (lore accuracy)
+                    if any(keyword in response_text.lower() for keyword in ["binary", "victoria black", "vegeta", "deal"]):
+                        print(f"✅ Response references Binary creation lore")
+                    else:
+                        print(f"⚠️ Response may not reference Binary creation lore accurately")
+                        self.issues_found.append("Response doesn't reference expected Binary creation lore")
+                    
+                    # Check video_id format
+                    video_id = response.get("video_id")
+                    if video_id and len(video_id) > 10:
+                        print(f"✅ Video ID received: {video_id}")
+                        return video_id
+                    else:
+                        print(f"❌ Invalid video_id: {video_id}")
+                        self.issues_found.append(f"Invalid video_id format: {video_id}")
+                else:
+                    print(f"❌ Missing required fields: {missing_fields}")
+                    self.issues_found.append(f"Q&A response missing fields: {missing_fields}")
+            else:
+                print(f"❌ No response data received")
+                self.issues_found.append("Q&A endpoint returned no response data")
+        else:
+            print(f"❌ Q&A endpoint failed - Status: {result['status_code']}")
+            error_msg = result.get('error', 'Unknown error')
+            if result.get('full_response'):
+                error_msg = result['full_response'].get('detail', error_msg)
+            self.issues_found.append(f"Q&A endpoint failed: {error_msg}")
+            
+        return None
+
+    async def test_multiple_characters(self):
+        """Test Q&A with different characters"""
+        print("\n👥 TESTING MULTIPLE CHARACTERS...")
+        print("=" * 60)
+        
+        working_characters = 0
+        
+        for char_id, char_data in QA_TEST_CHARACTERS.items():
+            print(f"\n🎭 Testing character: {char_data['character_name']} ({char_id})")
+            
+            test_payload = {
+                "character_id": char_id,
+                "character_name": char_data["character_name"],
+                "avatar_id": char_data["avatar_id"], 
+                "question": "Tell me about your role in the story."
+            }
+            
+            qa_url = f"{BACKEND_URL}/api/storytime/qa"
+            result = await self.test_endpoint("POST", qa_url, data=test_payload)
+            self.qa_results.append(result)
+            
+            if result["success"] and result.get("full_response", {}).get("video_id"):
+                print(f"✅ {char_data['character_name']}: Working")
+                working_characters += 1
+                
+                # Check character-specific response
+                response_text = result["full_response"].get("response_text", "").lower()
+                if char_id in response_text or char_data["character_name"].lower() in response_text:
+                    print(f"✅ Response stays in character")
+                else:
+                    print(f"⚠️ Response may not be character-specific")
+            else:
+                print(f"❌ {char_data['character_name']}: Failed")
+                error_msg = result.get('error', f"HTTP {result['status_code']}")
+                self.issues_found.append(f"Character {char_data['character_name']} Q&A failed: {error_msg}")
+        
+        if working_characters == len(QA_TEST_CHARACTERS):
+            print(f"\n✅ All {len(QA_TEST_CHARACTERS)} characters working correctly")
+            self.test_summary["multiple_characters_working"] = True
+        else:
+            print(f"\n❌ Only {working_characters}/{len(QA_TEST_CHARACTERS)} characters working")
+
+    async def test_video_generation_integration(self, video_id: str = None):
+        """Test HeyGen video generation integration"""
+        print("\n🎬 TESTING VIDEO GENERATION INTEGRATION...")
+        print("=" * 60)
+        
+        if not video_id:
+            print("❌ No video_id available for testing - skipping integration test")
+            return
+            
+        # Test status polling
+        status_url = f"{BACKEND_URL}/api/storytime/status/{video_id}"
+        print(f"Testing video status polling: {status_url}")
+        
+        max_polls = 3
+        for poll_count in range(max_polls):
+            print(f"📊 Status poll {poll_count + 1}/{max_polls}")
+            
+            result = await self.test_endpoint("GET", status_url)
+            self.results.append(result)
+            
+            if result["success"]:
+                print(f"✅ Status endpoint working - Status: {result['status_code']}")
+                
+                if result["full_response"] and "data" in result["full_response"]:
+                    status_data = result["full_response"]["data"]
+                    video_status = status_data.get("status", "unknown")
+                    print(f"📹 Video status: {video_status}")
+                    
+                    if video_status == "completed":
+                        video_url = status_data.get("video_url")
+                        if video_url:
+                            print(f"✅ Video completed with URL: {video_url[:50]}...")
+                            self.test_summary["video_generation_integration"] = True
+                            return
+                        else:
+                            print(f"❌ Video completed but no URL provided")
+                    elif video_status == "failed":
+                        print(f"❌ Video generation failed")
+                        self.issues_found.append("HeyGen video generation failed")
+                        return
+                    elif video_status in ["processing", "pending"]:
+                        print(f"⏳ Video still processing...")
+                        if poll_count < max_polls - 1:
+                            await asyncio.sleep(10)  # Wait before next poll
+                    else:
+                        print(f"⚠️ Unknown video status: {video_status}")
+                else:
+                    print(f"❌ Invalid status response format")
+                    self.issues_found.append("Invalid video status response format")
+                    return
+            else:
+                print(f"❌ Status endpoint failed - Status: {result['status_code']}")
+                self.issues_found.append(f"Video status check failed: {result.get('error', 'Unknown error')}")
+                return
+        
+        print(f"⏳ Video still processing after {max_polls} polls - integration test incomplete")
+
+    async def test_error_handling(self):
+        """Test Q&A error handling"""
+        print("\n🚨 TESTING ERROR HANDLING...")
+        print("=" * 60)
+        
+        error_tests = [
+            {
+                "name": "Empty question",
+                "payload": {
+                    "character_id": "wargirl",
+                    "character_name": "Wargirl",
+                    "avatar_id": "1a9bfb4ec9bc43d59ab64a4e66fe467c",
+                    "question": ""
+                },
+                "expected_error": True
+            },
+            {
+                "name": "Invalid character_id", 
+                "payload": {
+                    "character_id": "invalid_character",
+                    "character_name": "Invalid Character",
+                    "avatar_id": "1a9bfb4ec9bc43d59ab64a4e66fe467c",
+                    "question": "Test question"
+                },
+                "expected_error": False  # Should still work, just use default lore
+            },
+            {
+                "name": "Missing required fields",
+                "payload": {
+                    "character_id": "wargirl",
+                    "question": "Test question"
+                    # Missing character_name and avatar_id
+                },
+                "expected_error": True
+            }
+        ]
+        
+        qa_url = f"{BACKEND_URL}/api/storytime/qa"
+        error_handling_working = True
+        
+        for test_case in error_tests:
+            print(f"\n🧪 Testing: {test_case['name']}")
+            
+            result = await self.test_endpoint("POST", qa_url, data=test_case["payload"])
+            self.qa_results.append(result)
+            
+            if test_case["expected_error"]:
+                if not result["success"]:
+                    print(f"✅ Correctly rejected invalid request")
+                else:
+                    print(f"❌ Should have rejected invalid request")
+                    error_handling_working = False
+                    self.issues_found.append(f"Error handling failed for: {test_case['name']}")
+            else:
+                if result["success"]:
+                    print(f"✅ Handled edge case gracefully")
+                else:
+                    print(f"⚠️ Failed to handle edge case: {test_case['name']}")
+        
+        if error_handling_working:
+            self.test_summary["error_handling_working"] = True
+
     async def test_backend_connectivity(self):
         """Test basic backend connectivity"""
         print("\n🔗 TESTING BACKEND CONNECTIVITY...")
