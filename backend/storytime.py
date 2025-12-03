@@ -17,6 +17,8 @@ AVATAR_VOICE_MAPPING = {
     '130c202a4e7a47898dfc6f434c86dc24': 'e0cc82c22f414c95b1f25696c732f058',  # Cassidy
     # Evil Victoria - original individual ID (fallback)
     'd33267ddfad14fc2a8820f1d00eb713c': 'e0cc82c22f414c95b1f25696c732f058',  # Cassidy
+    # Evil Victoria Talking Head - Cassidy voice
+    '94fd37e9ad0b42efb9d828edf5be22ee': 'e0cc82c22f414c95b1f25696c732f058',  # Cassidy
     # Wargirl - default voice
     'c8680d9549744019809f0acc04faac65': '1bd001e7e50f421d891986aad5158bc8',
     # Victoria Black - default voice
