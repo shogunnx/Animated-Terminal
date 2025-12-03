@@ -27,11 +27,15 @@ const CLOTHING_CATEGORIES = {
     "Palazzo Pants", "Culottes", "Flare Jeans", "Bootcut Jeans", "Skinny Jeans", "Mom Jeans", "Boyfriend Jeans",
     "Ripped Jeans", "Denim Skirt", "Wrap Skirt", "Tennis Skirt", "Cargo Skirt", "Yoga Pants", "Track Pants",
     "Dress Shorts", "Bermuda Shorts", "Hot Pants",
-    // 30 New Additions
     "Leather Skirt", "Suede Skirt", "Tulle Skirt", "Asymmetric Skirt", "Tiered Skirt", "Button-Front Skirt", "Slit Skirt", "Circle Skirt",
     "Cargo Shorts", "Running Shorts", "Board Shorts", "Paper Bag Pants", "Harem Pants", "Straight Leg Jeans", "Barrel Leg Jeans", "White Jeans",
     "Black Jeans", "Distressed Jeans", "Embroidered Jeans", "Coated Jeans", "Jeggings", "Faux Leather Pants", "Velvet Pants", "Corduroy Pants",
-    "Cropped Pants", "Ankle Pants", "Bell Bottom Pants", "Satin Pants", "Plaid Skirt", "Sequin Skirt"
+    "Cropped Pants", "Ankle Pants", "Bell Bottom Pants", "Satin Pants", "Plaid Skirt", "Sequin Skirt",
+    // 30 More Sexy Bottoms
+    "Micro Mini Skirt", "High Slit Skirt", "Sheer Skirt", "Latex Skirt", "PVC Skirt", "Chain Skirt", "Barely There Skirt", "Thong Skirt",
+    "Cutout Skirt", "Strappy Skirt", "Fishnet Skirt", "See-Through Pants", "Assless Chaps", "Leather Hot Pants", "Latex Leggings", "Wet Look Leggings",
+    "Crotchless Leggings", "Ripped Fishnets", "Garter Belt Bottom", "Suspender Shorts", "Booty Shorts", "Cheeky Shorts", "Brazilian Cut Shorts", "Low Rise Thong Jeans",
+    "Hip Hugger Jeans", "Painted-On Jeans", "Liquid Latex Pants", "Body Paint Pants", "Holographic Shorts", "LED Skirt"
   ],
   shoes: [
     "Sneakers", "Heels", "Boots", "Sandals", "Wedges", "Flats", "Combat Boots",
