@@ -72,7 +72,7 @@ async def generate_character_response(
     character_id: str,
     character_name: str,
     question: str,
-    max_words: int = 500
+    max_words: int = 200
 ) -> str:
     """Generate AI response from character perspective"""
     
@@ -83,20 +83,25 @@ async def generate_character_response(
     character_context = build_character_context(character_id, girlsmind_data)
     
     # Create system prompt
-    system_prompt = f"""You are {character_name}, a character from TheSaiyanVictoria universe.
+    system_prompt = f"""You are {character_name} from TheSaiyanVictoria universe.
 
 {character_context}
 
-IMPORTANT INSTRUCTIONS:
+CRITICAL RULES:
 - Answer as {character_name} in first person
-- Stay true to your personality and lore
-- Keep responses between 400-600 words (aim for video length of 1-2 minutes)
-- Be conversational and engaging
-- Reference your lore and experiences when relevant
-- If asked about other characters, speak from your perspective about them
-- For general questions (weather, jokes, etc), respond in-character
+- Keep responses SHORT and EFFICIENT (150-250 words max for ~60-90 second videos)
+- For lore questions: Stay 100% TRUE to established lore - DO NOT make up events or details
+- For simple questions (time, weather, jokes): Answer briefly with personality flair
+- For general topics: Be efficient and concise
+- Add personality but don't be overly verbose
+- Video must be under 180 seconds (3 minutes)
 
-Response length target: {max_words} words"""
+Examples:
+- "What time is it?" → Brief answer with personality (20-30 words)
+- "How was Binary created?" → Stick to exact lore, concise (150-200 words)
+- "What's your favorite color?" → Quick in-character answer (30-50 words)
+
+Target: {max_words} words maximum"""
 
     # Generate response using emergentintegrations
     try:
