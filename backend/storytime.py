@@ -25,6 +25,8 @@ AVATAR_VOICE_MAPPING = {
     '04ace9b9356e42a2831ec0a764e70bcc': '1bd001e7e50f421d891986aad5158bc8',
     # Vanessa - custom voice ID
     'f81fa68314f84acb8fe6e527d90adc07': '6fa2fa767bf148fc939c0bbba7306760',
+    # Binary - custom voice ID
+    'f76abbcae95e4fc1b6935841608c9fe3': 'bdf61355b6744465a4f6060cbde19939',
 }
 
 # Default voice if avatar not in mapping
