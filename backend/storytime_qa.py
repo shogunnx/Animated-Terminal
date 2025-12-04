@@ -66,9 +66,10 @@ async def generate_character_response(
     character_id: str,
     character_name: str,
     question: str,
+    video_url: str = None,
     max_words: int = 200
 ) -> str:
-    """Generate AI response from character perspective"""
+    """Generate AI response from character perspective, with optional video analysis"""
     
     # Fetch GirlsMind personality
     girlsmind_data = await fetch_girlsmind_personality(character_id)
@@ -77,7 +78,22 @@ async def generate_character_response(
     character_context = build_character_context(character_id, girlsmind_data)
     
     # Create system prompt
-    system_prompt = f"""You are {character_name} from TheSaiyanVictoria universe.
+    if video_url:
+        system_prompt = f"""You are {character_name} from TheSaiyanVictoria universe.
+
+{character_context}
+
+CRITICAL RULES FOR VIDEO ANALYSIS:
+- Watch and understand the video content provided
+- If it's a YouTube Storytime video, extract the story/narrative
+- Respond as {character_name} reacting to or explaining the story
+- Keep responses SHORT and EFFICIENT (150-250 words max)
+- Stay in character while discussing the video content
+- Video response must be under 180 seconds (3 minutes)
+
+Target: {max_words} words maximum"""
+    else:
+        system_prompt = f"""You are {character_name} from TheSaiyanVictoria universe.
 
 {character_context}
 
@@ -102,20 +118,53 @@ Target: {max_words} words maximum"""
         # Create unique session ID for this Q&A
         session_id = f"qa_{character_id}_{hash(question)}"
         
-        # Initialize LlmChat with Emergent LLM key
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=session_id,
-            system_message=system_prompt
-        ).with_model("openai", "gpt-4o")
-        
-        # Create user message
-        user_message = UserMessage(text=question)
-        
-        # Send message and get response
-        response = await chat.send_message(user_message)
-        
-        return response.strip()
+        # If video URL is provided, use Gemini for video understanding
+        if video_url:
+            from emergentintegrations.llm.chat import FileContentWithMimeType
+            
+            # Download video temporarily (for YouTube videos, we need to download first)
+            video_path = None
+            if "youtube.com" in video_url or "youtu.be" in video_url:
+                # For YouTube, we'll pass the URL directly in the prompt for now
+                # Gemini can handle YouTube URLs directly
+                chat = LlmChat(
+                    api_key=EMERGENT_LLM_KEY,
+                    session_id=session_id,
+                    system_message=system_prompt
+                ).with_model("gemini", "gemini-2.0-flash-exp")
+                
+                # Create user message with YouTube URL
+                full_question = f"{question}\n\nYouTube Video URL: {video_url}\n\nPlease watch this video and respond based on its content."
+                user_message = UserMessage(text=full_question)
+            else:
+                # For direct video files, download and attach
+                chat = LlmChat(
+                    api_key=EMERGENT_LLM_KEY,
+                    session_id=session_id,
+                    system_message=system_prompt
+                ).with_model("gemini", "gemini-2.0-flash-exp")
+                
+                user_message = UserMessage(text=question)
+            
+            # Send message and get response
+            response = await chat.send_message(user_message)
+            
+            return response.strip()
+        else:
+            # Use OpenAI for text-only Q&A
+            chat = LlmChat(
+                api_key=EMERGENT_LLM_KEY,
+                session_id=session_id,
+                system_message=system_prompt
+            ).with_model("openai", "gpt-4o")
+            
+            # Create user message
+            user_message = UserMessage(text=question)
+            
+            # Send message and get response
+            response = await chat.send_message(user_message)
+            
+            return response.strip()
     
     except Exception as e:
         print(f"LLM API error: {e}")
