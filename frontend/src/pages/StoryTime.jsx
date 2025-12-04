@@ -772,6 +772,8 @@ export default function StoryTime() {
         </div>
         <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 12 }}>
           Ask anything! {characterData?.name} will respond with a personalized video answer based on their lore and personality.
+          <br/>
+          🎥 <strong>NEW:</strong> Include a YouTube video link to have {characterData?.name} watch and analyze it!
         </div>
 
         {/* Question Input */}
@@ -780,7 +782,7 @@ export default function StoryTime() {
             type="text"
             value={qaQuestion}
             onChange={(e) => setQaQuestion(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleQASubmit()}
+            onKeyPress={(e) => e.key === 'Enter' && !qaVideoLink && handleQASubmit()}
             placeholder={`e.g., "How was Binary created?" or "What's your favorite memory?"`}
             disabled={qaLoading}
             style={{
@@ -792,9 +794,37 @@ export default function StoryTime() {
               borderRadius: 6,
               color: '#fff',
               fontFamily: 'inherit',
+              outline: 'none',
+              marginBottom: 8
+            }}
+          />
+        </div>
+
+        {/* Video URL Input */}
+        <div style={{ marginBottom: 12 }}>
+          <input
+            type="text"
+            value={qaVideoLink}
+            onChange={(e) => setQaVideoLink(e.target.value)}
+            placeholder={`🎥 Optional: YouTube video URL (e.g., youtube.com/watch?v=...)`}
+            disabled={qaLoading}
+            style={{
+              width: '100%',
+              padding: '10px 14px',
+              fontSize: 11,
+              background: 'rgba(255,105,180,0.1)',
+              border: '1px solid rgba(255,105,180,0.3)',
+              borderRadius: 6,
+              color: '#fff',
+              fontFamily: 'inherit',
               outline: 'none'
             }}
           />
+          {qaVideoLink && (
+            <div style={{ fontSize: 10, opacity: 0.7, marginTop: 6, color: '#ff69b4' }}>
+              ✅ Video will be analyzed by {characterData?.name} using AI vision
+            </div>
+          )}
         </div>
 
         <button
