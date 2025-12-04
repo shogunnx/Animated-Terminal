@@ -131,7 +131,7 @@ Target: {max_words} words maximum"""
                     api_key=EMERGENT_LLM_KEY,
                     session_id=session_id,
                     system_message=system_prompt
-                ).with_model("gemini", "gemini-2.0-flash-exp")
+                ).with_model("gemini", "gemini-2.0-flash-001")
                 
                 # Create user message with YouTube URL
                 full_question = f"{question}\n\nYouTube Video URL: {video_url}\n\nPlease watch this video and respond based on its content."
@@ -142,7 +142,7 @@ Target: {max_words} words maximum"""
                     api_key=EMERGENT_LLM_KEY,
                     session_id=session_id,
                     system_message=system_prompt
-                ).with_model("gemini", "gemini-2.0-flash-exp")
+                ).with_model("gemini", "gemini-2.0-flash-001")
                 
                 user_message = UserMessage(text=question)
             
