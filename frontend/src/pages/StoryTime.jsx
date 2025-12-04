@@ -139,6 +139,16 @@ export default function StoryTime() {
         
         if (videoUrl) {
           setGeneratedVideoUrl(videoUrl);
+          
+          // Auto-play pre-recorded video when ready
+          setTimeout(() => {
+            if (videoRef.current) {
+              videoRef.current.play().catch(err => {
+                console.log('Auto-play prevented by browser:', err);
+              });
+              setIsPlaying(true);
+            }
+          }, 100);
         } else {
           throw new Error('Pre-recorded video not found');
         }
