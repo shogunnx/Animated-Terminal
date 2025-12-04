@@ -11,8 +11,8 @@ const STORY_CATEGORIES = {
   lore: "TheSaiyanVictoria Lore"
 };
 
-// Merge test/reddit/youtube stories with full lore stories from wiki
-const SAMPLE_STORIES = [
+// Test stories (pre-recorded videos)
+const TEST_STORIES = [
   {
     id: 0,
     category: 'test',
@@ -52,63 +52,7 @@ const SAMPLE_STORIES = [
     duration: '4 sec',
     videoUrl: null,
     preRecordedVideoId: '5405a3fefa5f4653a26041a190734b6f'
-  },
-  {
-    id: 1,
-    category: 'reddit',
-    title: 'AITA for refusing to share my inheritance with my sister?',
-    preview: 'My grandmother left me everything...',
-    text: 'So here\'s the situation. My grandmother passed away six months ago and left everything to me - her house, savings, and jewelry collection. My sister is furious because she expected us to split everything 50/50. But here\'s the thing: I was the one who took care of Grandma for the last five years while my sister was too busy with her life. Am I the asshole for keeping what was legally given to me?',
-    duration: '2 min',
-    videoUrl: null
-  },
-  {
-    id: 2,
-    category: 'reddit',
-    title: 'AITA for telling my husband his gaming addiction is ruining our marriage?',
-    preview: 'He spends 8 hours a day gaming...',
-    text: 'My husband plays video games from the moment he gets home until 2 AM every single day. We have two kids who barely see him. I finally told him that if he doesn\'t change, I\'m leaving. He called me controlling and said gaming is his only hobby. Our marriage is falling apart and I don\'t know what to do anymore.',
-    duration: '2 min',
-    videoUrl: null
-  },
-  {
-    id: 3,
-    category: 'youtube',
-    title: 'I Caught My Best Friend Stealing From Me',
-    preview: 'I trusted her with everything...',
-    text: 'We\'ve been best friends since high school. Last week, I noticed money missing from my wallet. I set up a hidden camera and caught her red-handed taking cash while I was in the bathroom. When I confronted her, she broke down crying and admitted she\'s been stealing from me for months to pay off her credit card debt. I\'m devastated and don\'t know if I can ever trust her again.',
-    duration: '3 min',
-    videoUrl: null
-  },
-  {
-    id: 4,
-    category: 'youtube',
-    title: 'My Roommate Is Actually A Millionaire',
-    preview: 'Living a double life...',
-    text: 'I thought my roommate was just a regular college student struggling to pay rent. One day, a luxury car showed up to pick him up. Turns out, he\'s from an incredibly wealthy family but wanted to experience "normal life" so he pretended to be broke. The weird part? He still asked me to cover his share of groceries last month. I feel so manipulated.',
-    duration: '3 min',
-    videoUrl: null
-  },
-  {
-    id: 8,
-    category: 'reddit',
-    title: 'AITA for exposing my brother\'s affair at Thanksgiving dinner?',
-    preview: 'Family drama at its finest...',
-    text: 'I discovered my brother was cheating on his wife with her sister. I couldn\'t keep it to myself anymore, so during Thanksgiving dinner, I announced it to everyone. The entire family exploded into chaos. My brother hasn\'t spoken to me since, and my parents say I ruined the holiday. But his wife deserved to know the truth. Did I do the right thing?',
-    duration: '2 min',
-    videoUrl: null
-  },
-  {
-    id: 9,
-    category: 'youtube',
-    title: 'I Pretended To Be Rich For A Week',
-    preview: 'Social experiment gone wrong...',
-    text: 'I rented designer clothes and a luxury car for a week to see how differently people would treat me. The results were shocking. The same people who ignored me at coffee shops suddenly wanted to be my friend. Salespeople at high-end stores treated me like royalty. But it all came crashing down when someone recognized the rental car. The embarrassment was unreal.',
-    duration: '3 min',
-    videoUrl: null
-  },
-  // Import full lore stories from wiki (86 chapters, 94 segments)
-  ...LORE_STORIES
+  }
 ];
 
 const HEYGEN_AVATARS = {
