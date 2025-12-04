@@ -23,8 +23,8 @@ AVATAR_VOICE_MAPPING = {
     'c8680d9549744019809f0acc04faac65': '1a9bfb4ec9bc43d59ab64a4e66fe467c',
     # Victoria Black - default avatar ID
     '04ace9b9356e42a2831ec0a764e70bcc': '1bd001e7e50f421d891986aad5158bc8',
-    # Vanessa - default voice
-    'bc3e2e4ff895464c9132d6a2cfe8871d': '1bd001e7e50f421d891986aad5158bc8',
+    # Vanessa - custom voice ID
+    'bc3e2e4ff895464c9132d6a2cfe8871d': '6fa2fa767bf148fc939c0bbba7306760',
 }
 
 # Default voice if avatar not in mapping
