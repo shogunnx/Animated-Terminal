@@ -135,6 +135,7 @@ export default function StoryTime() {
   
   // Q&A State
   const [qaQuestion, setQaQuestion] = useState('');
+  const [qaVideoLink, setQaVideoLink] = useState('');
   const [qaResponse, setQaResponse] = useState(null);
   const [qaLoading, setQaLoading] = useState(false);
   const [qaVideoUrl, setQaVideoUrl] = useState(null);
