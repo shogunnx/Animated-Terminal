@@ -214,3 +214,33 @@ async def generate_qa_response(request: QARequest):
             status_code=500,
             detail=f"Failed to generate Q&A response: {str(e)}"
         )
+
+
+@router.get("/dynamic-content")
+async def get_dynamic_content():
+    """
+    Fetch dynamic content for StoryTime (AITA from Reddit + YouTube Storytimes)
+    """
+    try:
+        from content_fetcher import fetch_all_dynamic_content
+        
+        content = await fetch_all_dynamic_content()
+        
+        return {
+            "success": True,
+            "content": content
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching dynamic content: {str(e)}")
+        # Return fallback content on error
+        from content_fetcher import get_fallback_aita_content, get_fallback_youtube_content
+        
+        return {
+            "success": True,
+            "content": {
+                "aita": get_fallback_aita_content(),
+                "youtube": get_fallback_youtube_content()
+            },
+            "fallback": True
+        }
