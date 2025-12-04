@@ -195,6 +195,17 @@ export default function StoryTime() {
               if (videoStatus === 'completed' && videoUrl) {
                 setGeneratedVideoUrl(videoUrl);
                 setIsLoading(false);
+                
+                // Auto-play video when ready
+                setTimeout(() => {
+                  if (videoRef.current) {
+                    videoRef.current.play().catch(err => {
+                      console.log('Auto-play prevented by browser:', err);
+                    });
+                    setIsPlaying(true);
+                  }
+                }, 100);
+                
                 return true;
               } else if (videoStatus === 'failed') {
                 throw new Error('Video generation failed');
