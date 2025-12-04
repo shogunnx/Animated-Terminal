@@ -181,11 +181,12 @@ class QARequest(BaseModel):
     character_name: str
     avatar_id: str
     question: str
+    video_url: str = None  # Optional YouTube or video URL for analysis
 
 @router.post("/qa")
 async def generate_qa_response(request: QARequest):
     """
-    Generate Q&A video response using character lore + AI
+    Generate Q&A video response using character lore + AI (with optional video analysis)
     """
     try:
         from storytime_qa import create_qa_video
@@ -195,7 +196,8 @@ async def generate_qa_response(request: QARequest):
             character_name=request.character_name,
             question=request.question,
             avatar_id=request.avatar_id,
-            heygen_api_key=HEYGEN_API_KEY
+            heygen_api_key=HEYGEN_API_KEY,
+            video_url=request.video_url
         )
         
         return {
