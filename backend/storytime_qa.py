@@ -175,12 +175,13 @@ async def create_qa_video(
     character_name: str,
     question: str,
     avatar_id: str,
-    heygen_api_key: str
+    heygen_api_key: str,
+    video_url: str = None
 ) -> dict:
     """Generate Q&A response and create video using existing story generation"""
     
-    # Generate character response using AI
-    response_text = await generate_character_response(character_id, character_name, question)
+    # Generate character response using AI (with optional video analysis)
+    response_text = await generate_character_response(character_id, character_name, question, video_url)
     
     # Use the existing storytime generate endpoint which already has working HeyGen integration
     async with httpx.AsyncClient() as client:
