@@ -83,6 +83,34 @@ export default function StoryTime() {
   const [qaResponse, setQaResponse] = useState(null);
   const [qaLoading, setQaLoading] = useState(false);
   const [qaVideoUrl, setQaVideoUrl] = useState(null);
+  
+  // Dynamic Content State
+  const [dynamicStories, setDynamicStories] = useState([]);
+  const [contentLoading, setContentLoading] = useState(true);
+  
+  // Build complete story list
+  const SAMPLE_STORIES = [...TEST_STORIES, ...dynamicStories, ...LORE_STORIES];
+  
+  // Fetch dynamic content on mount
+  useEffect(() => {
+    const fetchDynamicContent = async () => {
+      try {
+        const response = await fetch('/api/storytime/dynamic-content');
+        const data = await response.json();
+        
+        if (data.success && data.content) {
+          const allDynamic = [...data.content.aita, ...data.content.youtube];
+          setDynamicStories(allDynamic);
+        }
+      } catch (error) {
+        console.error('Error fetching dynamic content:', error);
+      } finally {
+        setContentLoading(false);
+      }
+    };
+    
+    fetchDynamicContent();
+  }, []);
 
   const handleNarratorChange = (narratorId) => {
     setSelectedNarrator(narratorId);
