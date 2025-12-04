@@ -297,7 +297,8 @@ export default function StoryTime() {
           character_id: characterLookupId,
           character_name: characterData?.name || currentNarratorData.name,
           avatar_id: currentNarratorData.id,
-          question: qaQuestion
+          question: qaQuestion,
+          video_url: qaVideoLink || null
         })
       });
 
