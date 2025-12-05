@@ -174,6 +174,14 @@ async def check_video_status(video_id: str):
         #     "video_url": "..." (only when completed)
         #   }
         # }
+        return response_data
+
+    except Exception as e:
+        logger.error(f"Error checking video status: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Internal server error: {str(e)}"
+        )
 
 @router.post("/generate-narrated", response_model=StoryGenerationResponse)
 async def generate_narrated_story_video(request: NarratedStoryRequest):
