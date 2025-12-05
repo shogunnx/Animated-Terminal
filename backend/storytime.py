@@ -286,15 +286,6 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
             detail=f"Internal server error: {str(e)}"
         )
 
-        return response_data
-
-    except Exception as e:
-        logger.error(f"Error checking video status: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Internal server error: {str(e)}"
-        )
-
 # Q&A Request Model
 class QARequest(BaseModel):
     character_id: str
