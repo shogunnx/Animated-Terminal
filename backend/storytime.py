@@ -13,12 +13,12 @@ HEYGEN_API_URL = "https://api.heygen.com/v2/video/generate"
 
 # Voice ID mappings for different avatars
 AVATAR_VOICE_MAPPING = {
-    # Evil Victoria - Cassidy voice (mature, sexy) - Using Group ID
-    '130c202a4e7a47898dfc6f434c86dc24': 'e0cc82c22f414c95b1f25696c732f058',  # Cassidy
+    # Evil Victoria - Using Group ID
+    '130c202a4e7a47898dfc6f434c86dc24': 'd74c1480d47e457d9181cb0b61d56eb0',
     # Evil Victoria - original individual ID (fallback)
-    'd33267ddfad14fc2a8820f1d00eb713c': 'e0cc82c22f414c95b1f25696c732f058',  # Cassidy
-    # Evil Victoria Talking Head - Cassidy voice
-    '94fd37e9ad0b42efb9d828edf5be22ee': 'e0cc82c22f414c95b1f25696c732f058',  # Cassidy
+    'd33267ddfad14fc2a8820f1d00eb713c': 'd74c1480d47e457d9181cb0b61d56eb0',
+    # Evil Victoria Talking Head
+    '94fd37e9ad0b42efb9d828edf5be22ee': 'd74c1480d47e457d9181cb0b61d56eb0',
     # Wargirl - updated voice ID
     'c8680d9549744019809f0acc04faac65': '1a9bfb4ec9bc43d59ab64a4e66fe467c',
     # Victoria Black - default avatar ID
