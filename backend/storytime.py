@@ -14,7 +14,7 @@ HEYGEN_API_URL = "https://api.heygen.com/v2/video/generate"
 # Voice ID mappings for different avatars
 AVATAR_VOICE_MAPPING = {
     # Evil Victoria - Main avatar
-    'd73e6156989546e08de413069c15da11': 'd74c1480d47e457d9181cb0b61d56eb0',
+    '738db1645bc140beb1b476231a8b79f4': 'd74c1480d47e457d9181cb0b61d56eb0',
     # Evil Victoria - original individual ID (fallback)
     'd33267ddfad14fc2a8820f1d00eb713c': 'd74c1480d47e457d9181cb0b61d56eb0',
     # Evil Victoria Talking Head
