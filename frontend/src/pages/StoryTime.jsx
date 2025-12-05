@@ -62,7 +62,7 @@ const HEYGEN_AVATARS = {
   'wargirl': { id: 'c8680d9549744019809f0acc04faac65', name: 'Wargirl', portrait: null, isPreRecorded: false },
   'victoria_black': { id: '04ace9b9356e42a2831ec0a764e70bcc', name: 'Victoria Black', portrait: null, isPreRecorded: false },
   'vanessa': { id: 'f81fa68314f84acb8fe6e527d90adc07', name: 'Vanessa', portrait: null, isPreRecorded: false },
-  'binary': { id: '52acc24c8b6d4968bbd85c39635b3123', name: 'Binary', portrait: null, isPreRecorded: false },
+  'binary': { id: 'd8d16687495340c5805ad9821046be3a', name: 'Binary', portrait: null, isPreRecorded: false },
   'harmony': { id: 'a64a978ca7364ea19d02abb62b201920', name: 'Harmony', portrait: null, isPreRecorded: false }
 };
 
