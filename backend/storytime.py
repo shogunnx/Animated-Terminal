@@ -62,8 +62,20 @@ class NarratedStoryRequest(BaseModel):
 async def generate_story_video(request: StoryGenerationRequest):
     """
     Generate a story video using HeyGen API V2
+    If HEYGEN_TEST_MODE is enabled, returns pre-recorded video without API call
     """
     try:
+        # TEST MODE: Return pre-recorded video without API call
+        if HEYGEN_TEST_MODE:
+            import random
+            test_video_id = random.choice(HEYGEN_TEST_VIDEOS)
+            logger.info(f"TEST MODE: Using pre-recorded video {test_video_id}")
+            return StoryGenerationResponse(
+                video_url="",
+                video_id=test_video_id,
+                status="processing"
+            )
+        
         # Get the appropriate voice for this avatar
         voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
         
