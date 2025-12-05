@@ -188,6 +188,14 @@ class TeachModePlayer:
         import copy
         data_copy = copy.deepcopy(data)
         
+        # Auto-inject HeyGen credentials if not provided
+        if not variables:
+            variables = {}
+        if "email" not in variables:
+            variables["email"] = os.getenv("HEYGEN_EMAIL", "")
+        if "password" not in variables:
+            variables["password"] = os.getenv("HEYGEN_PASSWORD", "")
+        
         for key, value in data_copy.items():
             if isinstance(value, str):
                 # Replace {{variable_name}} with actual value
