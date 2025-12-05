@@ -438,9 +438,21 @@ async def get_dynamic_content():
 @router.get("/test-mode-status")
 async def get_test_mode_status():
     """
-    Check if HeyGen test mode is enabled
+    Check if HeyGen test mode or automation mode is enabled
     """
+    if HEYGEN_AUTOMATION_MODE:
+        mode = "automation"
+        message = "Using browser automation (no API credits)"
+    elif HEYGEN_TEST_MODE:
+        mode = "test"
+        message = "Using pre-recorded videos"
+    else:
+        mode = "api"
+        message = "Using HeyGen API"
+    
     return {
         "test_mode_enabled": HEYGEN_TEST_MODE,
-        "message": "Using pre-recorded videos" if HEYGEN_TEST_MODE else "Using HeyGen API"
+        "automation_mode_enabled": HEYGEN_AUTOMATION_MODE,
+        "mode": mode,
+        "message": message
     }
