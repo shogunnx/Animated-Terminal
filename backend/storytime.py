@@ -44,6 +44,14 @@ class StoryGenerationResponse(BaseModel):
     video_id: str
     status: str
 
+class NarratedStoryRequest(BaseModel):
+    avatar_id: str
+    character_id: str
+    character_name: str
+    story_text: str
+    story_title: str
+    use_character_voice: bool = True
+
 @router.post("/generate", response_model=StoryGenerationResponse)
 async def generate_story_video(request: StoryGenerationRequest):
     """
