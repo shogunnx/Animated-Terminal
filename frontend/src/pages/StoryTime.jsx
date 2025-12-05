@@ -89,7 +89,7 @@ export default function StoryTime() {
   const [contentLoading, setContentLoading] = useState(true);
   
   // Pagination state for lore stories
-  const [loreDisplayCount, setLoreDisplayCount] = useState(20);
+  const [loreDisplayCount, setLoreDisplayCount] = useState(10);
   
   // Build complete story list
   const SAMPLE_STORIES = [...TEST_STORIES, ...dynamicStories, ...LORE_STORIES];
