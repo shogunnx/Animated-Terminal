@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse, Response
 from dotenv import load_dotenv
 
 from dressing_room import generate_outfit_image, OutfitRequest, BaseImageRequest
+from teach_mode_routes import router as teach_mode_router
 import base64
 
 # -----------------------
