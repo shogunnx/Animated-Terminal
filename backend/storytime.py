@@ -28,7 +28,7 @@ AVATAR_VOICE_MAPPING = {
     # Binary - custom voice ID
     'd8d16687495340c5805ad9821046be3a': 'bdf61355b6744465a4f6060cbde19939',
     # Harmony - younger voice ID
-    'a64a978ca7364ea19d02abb62b201920': 'a4272ae62e804b9d8660935d3df96459',
+    '783e82f2b06948d5b2f882fa351337fd': 'a4272ae62e804b9d8660935d3df96459',
 }
 
 # Default voice if avatar not in mapping
