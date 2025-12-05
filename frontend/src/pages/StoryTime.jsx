@@ -776,20 +776,34 @@ export default function StoryTime() {
                 
                 {/* Load More Button for Lore Category */}
                 {expandedCategory === 'lore' && loreDisplayCount < SAMPLE_STORIES.filter(s => s.category === 'lore').length && (
-                  <button
-                    onClick={() => setLoreDisplayCount(prev => prev + 20)}
-                    className="tsv-btn"
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      fontSize: 11,
-                      marginTop: 8,
-                      background: 'rgba(255,105,180,0.2)',
-                      border: '1px solid rgba(255,105,180,0.5)'
-                    }}
-                  >
-                    📖 LOAD MORE CHAPTERS ({loreDisplayCount} / {SAMPLE_STORIES.filter(s => s.category === 'lore').length})
-                  </button>
+                  <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                    <button
+                      onClick={() => setLoreDisplayCount(prev => prev + 10)}
+                      className="tsv-btn"
+                      style={{
+                        flex: 1,
+                        padding: '10px',
+                        fontSize: 11,
+                        background: 'rgba(255,105,180,0.2)',
+                        border: '1px solid rgba(255,105,180,0.5)'
+                      }}
+                    >
+                      📖 LOAD 10 MORE ({loreDisplayCount} / {SAMPLE_STORIES.filter(s => s.category === 'lore').length})
+                    </button>
+                    <button
+                      onClick={() => setLoreDisplayCount(SAMPLE_STORIES.filter(s => s.category === 'lore').length)}
+                      className="tsv-btn"
+                      style={{
+                        flex: 1,
+                        padding: '10px',
+                        fontSize: 11,
+                        background: 'rgba(138,43,226,0.2)',
+                        border: '1px solid rgba(138,43,226,0.5)'
+                      }}
+                    >
+                      📚 SHOW ALL
+                    </button>
+                  </div>
                 )}
               </div>
             </motion.div>
