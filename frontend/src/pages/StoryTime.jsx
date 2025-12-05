@@ -164,7 +164,7 @@ export default function StoryTime() {
       return;
     }
     
-    // Generate video using HeyGen API
+    // Generate video using HeyGen API with in-character narration
     setIsLoading(true);
     try {
       // Get the current narrator
@@ -173,13 +173,17 @@ export default function StoryTime() {
       // Use the selected narrator's avatar ID
       const avatarIdForGeneration = currentNarratorData.id;
       
-      const response = await fetch('/api/storytime/generate', {
+      // Use the narrated endpoint for in-character voice
+      const response = await fetch('/api/storytime/generate-narrated', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           avatar_id: avatarIdForGeneration,
+          character_id: selectedNarrator,
+          character_name: currentNarratorData.name,
           story_text: story.text,
-          story_title: story.title
+          story_title: story.title,
+          use_character_voice: true
         })
       });
       
