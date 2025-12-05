@@ -401,3 +401,14 @@ async def get_dynamic_content():
             },
             "fallback": True
         }
+
+
+@router.get("/test-mode-status")
+async def get_test_mode_status():
+    """
+    Check if HeyGen test mode is enabled
+    """
+    return {
+        "test_mode_enabled": HEYGEN_TEST_MODE,
+        "message": "Using pre-recorded videos" if HEYGEN_TEST_MODE else "Using HeyGen API"
+    }
