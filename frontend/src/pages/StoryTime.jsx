@@ -94,10 +94,11 @@ export default function StoryTime() {
   // Build complete story list
   const SAMPLE_STORIES = [...TEST_STORIES, ...dynamicStories, ...LORE_STORIES];
   
-  // Test mode state
-  const [testMode, setTestMode] = useState(false);
+  // Mode state (test/automation/api)
+  const [mode, setMode] = useState('api');
+  const [modeMessage, setModeMessage] = useState('');
   
-  // Fetch dynamic content and check test mode on mount
+  // Fetch dynamic content and check mode on mount
   useEffect(() => {
     const fetchDynamicContent = async () => {
       try {
@@ -115,18 +116,19 @@ export default function StoryTime() {
       }
     };
     
-    const checkTestMode = async () => {
+    const checkMode = async () => {
       try {
         const response = await fetch('/api/storytime/test-mode-status');
         const data = await response.json();
-        setTestMode(data.test_mode_enabled);
+        setMode(data.mode || 'api');
+        setModeMessage(data.message || '');
       } catch (error) {
-        console.error('Error checking test mode:', error);
+        console.error('Error checking mode:', error);
       }
     };
     
     fetchDynamicContent();
-    checkTestMode();
+    checkMode();
   }, []);
 
   const handleNarratorChange = (narratorId) => {
