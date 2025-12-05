@@ -26,7 +26,7 @@ AVATAR_VOICE_MAPPING = {
     # Vanessa - custom voice ID
     'f81fa68314f84acb8fe6e527d90adc07': '6fa2fa767bf148fc939c0bbba7306760',
     # Binary - custom voice ID
-    '52acc24c8b6d4968bbd85c39635b3123': 'bdf61355b6744465a4f6060cbde19939',
+    'd8d16687495340c5805ad9821046be3a': 'bdf61355b6744465a4f6060cbde19939',
     # Harmony - younger voice ID
     'a64a978ca7364ea19d02abb62b201920': 'a4272ae62e804b9d8660935d3df96459',
 }
