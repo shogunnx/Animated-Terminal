@@ -174,6 +174,110 @@ async def check_video_status(video_id: str):
         #     "video_url": "..." (only when completed)
         #   }
         # }
+
+@router.post("/generate-narrated", response_model=StoryGenerationResponse)
+async def generate_narrated_story_video(request: NarratedStoryRequest):
+    """
+    Generate a story video with in-character narration using HeyGen API V2
+    Rewrites the story in the character's voice before generating video
+    """
+    try:
+        # Rewrite story in character's voice if requested
+        final_story_text = request.story_text
+        
+        if request.use_character_voice:
+            from storytime_qa import rewrite_story_in_character_voice
+            
+            final_story_text = await rewrite_story_in_character_voice(
+                character_id=request.character_id,
+                character_name=request.character_name,
+                story_text=request.story_text,
+                story_title=request.story_title
+            )
+            
+            logger.info(f"Story rewritten in {request.character_name}'s voice")
+        
+        # Get the appropriate voice for this avatar
+        voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
+        
+        # Prepare HeyGen API request for talking photo
+        heygen_payload = {
+            "video_inputs": [
+                {
+                    "character": {
+                        "type": "talking_photo",
+                        "talking_photo_id": request.avatar_id
+                    },
+                    "voice": {
+                        "type": "text",
+                        "input_text": final_story_text,
+                        "voice_id": voice_id
+                    }
+                }
+            ],
+            "dimension": {
+                "width": 1280,
+                "height": 720
+            },
+            "test": False,
+            "title": request.story_title
+        }
+
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json",
+            "x-api-key": HEYGEN_API_KEY
+        }
+
+        # Make request to HeyGen API V2
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                HEYGEN_API_URL,
+                json=heygen_payload,
+                headers=headers
+            )
+
+        response_data = response.json()
+        
+        if response.status_code != 200:
+            error_msg = response_data.get("error", {}).get("message", response.text) if isinstance(response_data, dict) else response.text
+            logger.error(f"HeyGen API error: {response.status_code} - {error_msg}")
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=f"{response.status_code}: HeyGen API error: {error_msg}"
+            )
+
+        # Extract video_id from response
+        video_id = response_data.get("data", {}).get("video_id")
+        
+        if not video_id:
+            logger.error(f"No video_id in response: {response_data}")
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to get video_id from HeyGen response"
+            )
+
+        logger.info(f"Narrated video generation started. Video ID: {video_id}")
+
+        return StoryGenerationResponse(
+            video_url="",
+            video_id=video_id,
+            status="processing"
+        )
+
+    except httpx.HTTPError as e:
+        logger.error(f"HTTP error while calling HeyGen: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to connect to HeyGen API: {str(e)}"
+        )
+    except Exception as e:
+        logger.error(f"Error generating narrated story video: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Internal server error: {str(e)}"
+        )
+
         return response_data
 
     except Exception as e:
