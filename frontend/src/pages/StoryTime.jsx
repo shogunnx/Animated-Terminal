@@ -417,6 +417,19 @@ export default function StoryTime() {
         <div style={{ marginTop: 10, fontSize: 13, opacity: 0.78 }}>
           <span style={{ color: '#ff69b4' }}>SYSTEM:</span> Select your narrator and choose a story to begin.
         </div>
+        {modeMessage && (
+          <div style={{ 
+            marginTop: 8, 
+            fontSize: 12, 
+            opacity: 0.9,
+            padding: '8px 12px',
+            background: 'rgba(255, 105, 180, 0.1)',
+            borderRadius: 6,
+            border: '1px solid rgba(255, 105, 180, 0.3)'
+          }}>
+            <span style={{ color: '#ff69b4' }}>MODE INFO:</span> {modeMessage}
+          </div>
+        )}
       </div>
 
       {/* Narrator Selection */}
