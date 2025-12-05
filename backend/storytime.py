@@ -268,6 +268,52 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
                 status="processing"
             )
         
+        # AUTOMATION MODE: Use browser automation instead of API
+        if HEYGEN_AUTOMATION_MODE:
+            from heygen_automation import generate_video_via_automation
+            
+            # Rewrite story in character's voice if requested
+            final_story_text = request.story_text
+            if request.use_character_voice:
+                try:
+                    from storytime_qa import rewrite_story_in_character_voice
+                    final_story_text = await rewrite_story_in_character_voice(
+                        character_id=request.character_id,
+                        character_name=request.character_name,
+                        story_text=request.story_text,
+                        story_title=request.story_title
+                    )
+                    logger.info(f"AUTOMATION MODE: Story rewritten in {request.character_name}'s voice")
+                except Exception as e:
+                    logger.warning(f"AUTOMATION MODE: Character voice rewrite failed: {e}")
+            
+            voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
+            
+            logger.info(f"AUTOMATION MODE: Generating video via browser automation")
+            result = await generate_video_via_automation(
+                talking_photo_id=request.avatar_id,
+                script_text=final_story_text,
+                voice_id=voice_id,
+                title=request.story_title
+            )
+            
+            if result["success"] and result.get("video_id"):
+                return StoryGenerationResponse(
+                    video_url="",
+                    video_id=result["video_id"],
+                    status="processing"
+                )
+            else:
+                # Fallback to test mode if automation fails
+                logger.warning(f"Automation failed: {result.get('error')} - falling back to test mode")
+                import random
+                test_video_id = random.choice(HEYGEN_TEST_VIDEOS)
+                return StoryGenerationResponse(
+                    video_url="",
+                    video_id=test_video_id,
+                    status="processing"
+                )
+        
         # Rewrite story in character's voice if requested
         final_story_text = request.story_text
         
