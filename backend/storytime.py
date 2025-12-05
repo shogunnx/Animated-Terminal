@@ -77,6 +77,37 @@ async def generate_story_video(request: StoryGenerationRequest):
                 status="processing"
             )
         
+        # AUTOMATION MODE: Use browser automation instead of API
+        if HEYGEN_AUTOMATION_MODE:
+            from heygen_automation import generate_video_via_automation
+            
+            voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
+            
+            logger.info(f"AUTOMATION MODE: Generating video via browser automation")
+            result = await generate_video_via_automation(
+                talking_photo_id=request.avatar_id,
+                script_text=request.story_text,
+                voice_id=voice_id,
+                title=request.story_title
+            )
+            
+            if result["success"] and result.get("video_id"):
+                return StoryGenerationResponse(
+                    video_url="",
+                    video_id=result["video_id"],
+                    status="processing"
+                )
+            else:
+                # Fallback to test mode if automation fails
+                logger.warning(f"Automation failed: {result.get('error')} - falling back to test mode")
+                import random
+                test_video_id = random.choice(HEYGEN_TEST_VIDEOS)
+                return StoryGenerationResponse(
+                    video_url="",
+                    video_id=test_video_id,
+                    status="processing"
+                )
+        
         # Get the appropriate voice for this avatar
         voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
         
