@@ -193,6 +193,66 @@ Target: {max_words} words maximum"""
         print(f"LLM API error: {e}")
         raise Exception(f"Failed to generate response: {str(e)}")
 
+async def rewrite_story_in_character_voice(
+    character_id: str,
+    character_name: str,
+    story_text: str,
+    story_title: str
+) -> str:
+    """Rewrite a story in the character's narrative voice/personality"""
+    
+    # Fetch GirlsMind personality
+    girlsmind_data = await fetch_girlsmind_personality(character_id)
+    
+    # Build character context
+    character_context = build_character_context(character_id, girlsmind_data)
+    
+    # Create system prompt for narration
+    system_prompt = f"""You are {character_name} from TheSaiyanVictoria universe, narrating a story.
+
+{character_context}
+
+CRITICAL RULES:
+- Rewrite this story in YOUR voice and personality
+- Keep the core facts and events the same
+- Add your personality through word choice, tone, and commentary
+- Stay true to your character traits
+- Keep it engaging and conversational
+- DO NOT add your own commentary or break the fourth wall
+- Target length: Match the original story length (don't make it much longer)
+- This will be read aloud, so make it flow naturally
+
+Examples of staying in character:
+- Binary: Use sass, confidence, cutting remarks ("Oh please, like THAT was going to work...")
+- Evil Victoria: Sultry, controlled, menacing undertones ("How... delightful...")
+- Victoria Black: Seductive, manipulative charm ("Darling, let me tell you what really happened...")
+- Wargirl: Energetic, battle-focused ("And then BAM! The fight was ON!")
+"""
+
+    try:
+        # Create session for this narration
+        session_id = f"narrate_{character_id}_{hash(story_title)}"
+        
+        # Use Claude for text generation
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=session_id,
+            system_message=system_prompt
+        ).with_model("openai", "gpt-4o")
+        
+        # Create user message with the story
+        user_message = UserMessage(text=f"Narrate this story in your voice:\n\nTitle: {story_title}\n\nStory: {story_text}")
+        
+        # Send message and get response
+        response = await chat.send_message(user_message)
+        
+        return response.strip()
+    
+    except Exception as e:
+        print(f"Character narration rewrite error: {e}")
+        # Fallback: return original text if rewrite fails
+        return story_text
+
 async def create_qa_video(
     character_id: str,
     character_name: str,
