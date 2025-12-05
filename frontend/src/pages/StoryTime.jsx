@@ -728,9 +728,13 @@ export default function StoryTime() {
               style={{ overflow: 'hidden' }}
             >
               <div style={{ display: 'grid', gap: 8 }}>
-                {SAMPLE_STORIES
-                  .filter(s => s.category === expandedCategory)
-                  .map((story) => (
+                {(() => {
+                  const filteredStories = SAMPLE_STORIES.filter(s => s.category === expandedCategory);
+                  const displayStories = expandedCategory === 'lore' 
+                    ? filteredStories.slice(0, loreDisplayCount)
+                    : filteredStories;
+                  
+                  return displayStories.map((story) => (
                     <button
                       key={story.id}
                       onClick={() => handleStorySelect(story)}
@@ -764,7 +768,26 @@ export default function StoryTime() {
                         </div>
                       </div>
                     </button>
-                  ))}
+                  ));
+                })()}
+                
+                {/* Load More Button for Lore Category */}
+                {expandedCategory === 'lore' && loreDisplayCount < SAMPLE_STORIES.filter(s => s.category === 'lore').length && (
+                  <button
+                    onClick={() => setLoreDisplayCount(prev => prev + 20)}
+                    className="tsv-btn"
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      fontSize: 11,
+                      marginTop: 8,
+                      background: 'rgba(255,105,180,0.2)',
+                      border: '1px solid rgba(255,105,180,0.5)'
+                    }}
+                  >
+                    📖 LOAD MORE CHAPTERS ({loreDisplayCount} / {SAMPLE_STORIES.filter(s => s.category === 'lore').length})
+                  </button>
+                )}
               </div>
             </motion.div>
           )}
