@@ -206,8 +206,36 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
     """
     Generate a story video with in-character narration using HeyGen API V2
     Rewrites the story in the character's voice before generating video
+    If HEYGEN_TEST_MODE is enabled, returns pre-recorded video without API call
     """
     try:
+        # TEST MODE: Return pre-recorded video without API call (still do LLM rewrite for testing)
+        if HEYGEN_TEST_MODE:
+            import random
+            
+            # Still perform character voice rewrite to test that functionality
+            final_story_text = request.story_text
+            if request.use_character_voice:
+                try:
+                    from storytime_qa import rewrite_story_in_character_voice
+                    final_story_text = await rewrite_story_in_character_voice(
+                        character_id=request.character_id,
+                        character_name=request.character_name,
+                        story_text=request.story_text,
+                        story_title=request.story_title
+                    )
+                    logger.info(f"TEST MODE: Story rewritten in {request.character_name}'s voice (length: {len(final_story_text)} chars)")
+                except Exception as e:
+                    logger.warning(f"TEST MODE: Character voice rewrite failed: {e}")
+            
+            test_video_id = random.choice(HEYGEN_TEST_VIDEOS)
+            logger.info(f"TEST MODE: Using pre-recorded video {test_video_id}")
+            return StoryGenerationResponse(
+                video_url="",
+                video_id=test_video_id,
+                status="processing"
+            )
+        
         # Rewrite story in character's voice if requested
         final_story_text = request.story_text
         
