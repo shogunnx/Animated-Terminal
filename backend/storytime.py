@@ -8,8 +8,14 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/storytime", tags=["storytime"])
 
-HEYGEN_API_KEY = "sk_V2_hgu_kJ4OIR7bc3W_Ijv4zuugjHrMH4InRyg7QbrsPe6Atb1h"
+HEYGEN_API_KEY = os.getenv("HEYGEN_API_KEY", "")
 HEYGEN_API_URL = "https://api.heygen.com/v2/video/generate"
+HEYGEN_TEST_MODE = os.getenv("HEYGEN_TEST_MODE", "false").lower() == "true"
+HEYGEN_TEST_VIDEOS = [
+    os.getenv("HEYGEN_TEST_VIDEO_1", "6f57658f511c42a28c2b53e3ccdda965"),
+    os.getenv("HEYGEN_TEST_VIDEO_2", "b9ef2dc39adf44feaa760b60e42cfb37"),
+    os.getenv("HEYGEN_TEST_VIDEO_3", "e08b1ee999ea4769bf3c738861e962b6")
+]
 
 # Voice ID mappings for different avatars
 AVATAR_VOICE_MAPPING = {
