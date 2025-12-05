@@ -396,21 +396,21 @@ export default function StoryTime() {
       <div className="tsv-glass tsv-glow tsv-scanlines" style={{ padding: 16, marginBottom: 14 }}>
         <div className="tsv-title" style={{ fontSize: 14, position: 'relative' }}>
           📖 STORYTIME CHAMBER
-          {testMode && (
+          {mode !== 'api' && (
             <div style={{
               position: 'absolute',
               top: -10,
               right: '50%',
               transform: 'translateX(50%)',
-              background: 'rgba(255, 140, 0, 0.9)',
+              background: mode === 'test' ? 'rgba(255, 140, 0, 0.9)' : 'rgba(0, 255, 0, 0.9)',
               color: 'black',
               padding: '4px 12px',
               borderRadius: 12,
               fontSize: 10,
               fontWeight: 'bold',
-              border: '2px solid #ff8c00'
+              border: mode === 'test' ? '2px solid #ff8c00' : '2px solid #00ff00'
             }}>
-              🎬 TEST MODE - Using Pre-recorded Videos
+              {mode === 'test' ? '🎬 TEST MODE - Using Pre-recorded Videos' : '🤖 AUTOMATION MODE - AI Generated Content'}
             </div>
           )}
         </div>
