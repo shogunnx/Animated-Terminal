@@ -392,7 +392,26 @@ export default function StoryTime() {
     <div style={{ position: 'relative', minHeight: '100vh' }}>
       {/* Header */}
       <div className="tsv-glass tsv-glow tsv-scanlines" style={{ padding: 16, marginBottom: 14 }}>
-        <div className="tsv-title" style={{ fontSize: 14 }}>📖 STORYTIME CHAMBER</div>
+        <div className="tsv-title" style={{ fontSize: 14, position: 'relative' }}>
+          📖 STORYTIME CHAMBER
+          {testMode && (
+            <div style={{
+              position: 'absolute',
+              top: -10,
+              right: '50%',
+              transform: 'translateX(50%)',
+              background: 'rgba(255, 140, 0, 0.9)',
+              color: 'black',
+              padding: '4px 12px',
+              borderRadius: 12,
+              fontSize: 10,
+              fontWeight: 'bold',
+              border: '2px solid #ff8c00'
+            }}>
+              🎬 TEST MODE - Using Pre-recorded Videos
+            </div>
+          )}
+        </div>
         <div style={{ marginTop: 10, fontSize: 13, opacity: 0.78 }}>
           <span style={{ color: '#ff69b4' }}>SYSTEM:</span> Select your narrator and choose a story to begin.
         </div>
