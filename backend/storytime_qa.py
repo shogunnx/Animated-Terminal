@@ -51,10 +51,15 @@ CHARACTER_LORE = {
 async def fetch_girlsmind_personality(character_id: str) -> Optional[dict]:
     """Fetch character personality from GirlsMind API"""
     try:
+        headers = {}
+        if GIRLSMIND_API_KEY:
+            headers["Authorization"] = f"Bearer {GIRLSMIND_API_KEY}"
+        
         async with httpx.AsyncClient() as client:
             # Try to get character from GirlsMind
             response = await client.get(
                 f"{os.getenv('GIRLSMIND_BASE_URL', 'https://girlsmind-1.emergent.host')}/api/girls/{character_id}",
+                headers=headers,
                 timeout=5.0
             )
             if response.status_code == 200:
