@@ -297,6 +297,9 @@ export default function Home() {
           <button className="tsv-btn" onClick={() => nav("/storytime")} style={{ fontSize: 11 }}>
             📖 StoryTime Chamber
           </button>
+          <button className="tsv-btn" onClick={() => nav("/teach-mode")} style={{ fontSize: 11, background: 'rgba(0,255,0,0.2)', border: '1px solid #00ff00' }}>
+            🎓 Teach Mode
+          </button>
           <button className="tsv-btn" onClick={() => nav("/map")} style={{ fontSize: 11 }}>
             🗺️ Interactive Map
           </button>
