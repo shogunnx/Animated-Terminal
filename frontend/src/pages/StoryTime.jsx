@@ -63,7 +63,7 @@ const HEYGEN_AVATARS = {
   'victoria_black': { id: '04ace9b9356e42a2831ec0a764e70bcc', name: 'Victoria Black', portrait: null, isPreRecorded: false },
   'vanessa': { id: 'f81fa68314f84acb8fe6e527d90adc07', name: 'Vanessa', portrait: null, isPreRecorded: false },
   'binary': { id: 'd8d16687495340c5805ad9821046be3a', name: 'Binary', portrait: null, isPreRecorded: false },
-  'harmony': { id: 'a64a978ca7364ea19d02abb62b201920', name: 'Harmony', portrait: null, isPreRecorded: false }
+  'harmony': { id: '783e82f2b06948d5b2f882fa351337fd', name: 'Harmony', portrait: null, isPreRecorded: false }
 };
 
 export default function StoryTime() {
