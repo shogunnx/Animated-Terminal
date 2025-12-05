@@ -705,7 +705,7 @@ export default function StoryTime() {
               key={key}
               onClick={() => {
                 setExpandedCategory(expandedCategory === key ? null : key);
-                if (key === 'lore') setLoreDisplayCount(20); // Reset pagination when opening lore
+                if (key === 'lore') setLoreDisplayCount(10); // Reset pagination when opening lore
               }}
               className="tsv-btn"
               style={{
