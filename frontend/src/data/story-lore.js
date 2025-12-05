@@ -1,20 +1,34 @@
-// TheSaiyanVictoria Lore - Complete Story Text from Wiki
-// Auto-generated with intelligent chapter splitting (<5000 chars per segment)
-// Total: 94 segments from 86 chapters
-
 export const LORE_STORIES = [
   {
-    id: 999,
+    id: 6000,
     category: 'lore',
-    title: `Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning (Part 1)`,
-    preview: `In the depths of a timeline controlled by the tyrannical Black Frieza, the Saiyan family was shackle...`,
+    title: `Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning (Part 1) (Part 1/3)`,
+    preview: `In the depths of a timeline controlled by the tyrannical Black Frieza, the Saiyan family was shackle......`,
     text: `In the depths of a timeline controlled by the tyrannical Black Frieza, the Saiyan family was shackled by the oppression of a dark future—a future that none had ever imagined they'd be forced to face. Victoria Chaser, the resolute and stoic protector, had always known that their time in captivity was not their destiny. She trained relentlessly, knowing that only through strength could she break free from Frieza's iron grip. The Saiyan Time Patrollers—once guardians of the timeline—had been transformed into pawns in a game far darker than they had ever imagined. Captured in a future ravaged by Black Frieza's reign, they found themselves in an unyielding prison where survival was no longer about victory in battle, but about keeping their will to fight alive.
 
-Victoria Chaser, determined to stop the bleak future that led them to captivity, became the driving force of her family's escape plan. She honed her combat skills, embracing the harsh reality of being a fighter, knowing that only by mastering the art of battle could she protect the ones she loved. The weight of the rebellion rested heavily on her shoulders as she planned their escape from Black Frieza's control. She was relentless, using every ounce of her strength to prepare for the day she would defy their fate. Her rebellion wasn't just for herself—it was for her twin sister, Victoria Black, youinger sister Wargirl, and for the family they had left behind. Though she scorned her sister's path, she could never abandon her.
+Victoria Chaser, determined to stop the bleak future that led them to captivity, became the driving force of her family's escape plan. She honed her combat skills, embracing the harsh reality of being a fighter, knowing that only by mastering the art of battle could she protect the ones she loved. The weight of the rebellion rested heavily on her shoulders as she planned their escape from Black Frieza's control. She was relentless, using every ounce of her strength to prepare for the day she would defy their fate. Her rebellion wasn't just for herself—it was for her twin sister, Victoria Black, youinger sister Wargirl, and for the family they had left behind.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6001,
+    category: 'lore',
+    title: `Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning (Part 1) (Part 2/3)`,
+    preview: `In the depths of a timeline controlled by the tyrannical Black Frieza, the Saiyan family was shackle......`,
+    text: `Though she scorned her sister's path, she could never abandon her.
 
 Victoria Black, on the other hand, had no interest in the brutal life of a warrior. Instead, she carved out her own path in their captivity, focusing on manipulation and her alluring presence. Her skills in ki control were unmatched, but her true strength lay in her ability to captivate and seduce her way into higher positions in society. She remained a seductive slave. You couldn't command her without accidentally bumping into her. You couldn't chastise her without desiring her. She was always a tad too revealing and distracting. When her captors would physically attempt to attack her, she would strategically fall in such ways that exposed something desirable about herself, such as her legs or her breast.  Using her enchanting voice and towering, motherly figure, Victoria Black seduced her way into becoming a Teacher. She became a manipulator, not of the battlefield, but of the social hierarchy, making her mark in a way her sister would never understand. Her beauty and charm were her weapons, and she wielded them with the same precision as any fighter. Still, no matter how much she pushed away from combat, the family's fight was far from over, and she couldn't escape the pull of the coming battle.
 
-Wargirl, the youngest of the sisters, was the bridge between the two. She was the one who understood the need for both strength and balance. Though she spent her days farming PQs in the Time Patroller ranks, gathering the skills and tools to level up her family's abilities, her heart longed for the thrill of true battle. Despite her youthful, carefree persona, Wargirl found herself at home on the battlefield. Her love of battle wasn't just about fighting—it was about proving herself, about finding her own place among the great warriors of the universe. But even as she trained, she never forgot her dream of a life where she could just have fun, live without the weight of destiny on her shoulders, and find love.
+Wargirl, the youngest of the sisters, was the bridge between the two. She was the one who understood the need for both strength and balance.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6002,
+    category: 'lore',
+    title: `Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning (Part 1) (Part 3/3)`,
+    preview: `In the depths of a timeline controlled by the tyrannical Black Frieza, the Saiyan family was shackle......`,
+    text: `Though she spent her days farming PQs in the Time Patroller ranks, gathering the skills and tools to level up her family's abilities, her heart longed for the thrill of true battle. Despite her youthful, carefree persona, Wargirl found herself at home on the battlefield. Her love of battle wasn't just about fighting—it was about proving herself, about finding her own place among the great warriors of the universe. But even as she trained, she never forgot her dream of a life where she could just have fun, live without the weight of destiny on her shoulders, and find love.
 
 As Victoria Chaser's rebellion grew, she found herself frustrated by her sister's refusal to fight alongside her. The twin's relationship was strained by their contrasting views on what it meant to survive. Victoria Chaser, driven by her desire to protect, loathed the fact that her sister used her beauty to gain power. She saw it as a betrayal of their Saiyan heritage. But despite their differences, Victoria Chaser could never bring herself to abandon her sister—no matter how much she looked down on Victoria Black for her seductive ways. As the walls of their future seemed to close in around them, Chaser knew that the family could not continue to live in Frieza's grip. And she vowed to save herself, her younger brother and sister, and even her harlot twin sister.
 
@@ -23,25 +37,34 @@ This was only the beginning.`,
     videoUrl: null
   },
   {
-    id: 998,
+    id: 6003,
     category: 'lore',
-    title: `Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning (Part 2)`,
-    preview: `Then, as the timeline seemed on the brink of unraveling, their escape finally came to fruition. With...`,
+    title: `Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning (Part 2) (Part 1/2)`,
+    preview: `Then, as the timeline seemed on the brink of unraveling, their escape finally came to fruition. With......`,
     text: `Then, as the timeline seemed on the brink of unraveling, their escape finally came to fruition. With Victoria Chaser leading the way, the family would make their break, hoping that they could not only escape their captors, but change the course of the future. As they were escaping in battle, a fatally injured Saiyan mother lay dying near her toddler child. While Saiyans have immense pride and would rather perish before begging, The Saiyan mother reached out, hoping someone would see her as she faded away, and save her child. Victoria Chaser would have none of it, as this would slow them down. However, Victoria Black took the child, initially hiding the little girl from her twin. Victoria Chaser discovered the tag along after they had escaped the timeline.
 
-Initially Victoria Chaser wanted nothing to do with the child, chosing to ignore her altogether. However, over time Victoria Chaser saw how much her twin loved the child, and since the love for her sister outweighed the disinterest for the kid, she became tolerant. Victoria Black went on to name the little girl **Harmony**. Victoria Black would sneakily contact evil sources, with the request to combine the spirit of the three sisters into the child. The result was the permanent spirit fusion of Victoria Chaser, Victoria Black, and Wargirl. Harmony was tech-savvy, and brimming with potential, a child of hope born from the pain of captivity. The story of the Saiyan Victoria was no longer one of subjugation—it was a story of defiance, of survival, and of the fight for a better tomorrow.`,
+Initially Victoria Chaser wanted nothing to do with the child, chosing to ignore her altogether. However, over time Victoria Chaser saw how much her twin loved the child, and since the love for her sister outweighed the disinterest for the kid, she became tolerant. Victoria Black went on to name the little girl **Harmony**. Victoria Black would sneakily contact evil sources, with the request to combine the spirit of the three sisters into the child. The result was the permanent spirit fusion of Victoria Chaser, Victoria Black, and Wargirl. Harmony was tech-savvy, and brimming with potential, a child of hope born from the pain of captivity.`,
     duration: '2 min',
     videoUrl: null
   },
   {
-    id: 1000,
+    id: 6004,
     category: 'lore',
-    title: `2. A New Fighter Joins the team! Harmony Blaster! #xenoverse 2[]`,
+    title: `Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning (Part 2) (Part 2/2)`,
+    preview: `Then, as the timeline seemed on the brink of unraveling, their escape finally came to fruition. With......`,
+    text: `The story of the Saiyan Victoria was no longer one of subjugation—it was a story of defiance, of survival, and of the fight for a better tomorrow.`,
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 6005,
+    category: 'lore',
+    title: `2. A New Fighter Joins the team! Harmony Blaster! #xenoverse 2[] (Part 1/3)`,
     preview: `• In this video, I introduce Harmony in Xenoverse 2!
 
 • 00:00 Harmony Vs Goku
 
-• 01:47 Harmony Vs Ve...`,
+• 01:47 Harmony Vs Ve......`,
     text: `• In this video, I introduce Harmony in Xenoverse 2!
 
 • 00:00 Harmony Vs Goku
@@ -60,16 +83,51 @@ Initially Victoria Chaser wanted nothing to do with the child, chosing to ignore
 
 • Harmony is 5”2 and weighs about 120 pounds. She has the same complexion as Victoria Black
 
-• Victoria Chaser wants her to grow stronger the hard way, as she has done, but Victoria Black doesn’t want that. She tells Wargirl to assist Harmony in leveling up fast. Victoria Black assumes a mother role for Harmony and she’s  determined to protect her from anyone who tries to hurt her. However, Harmony is by far a more capable fighter than her “mother”. Victoria Black is a blaster, not a fighter, so she often needs protection herself! Here Victoria Black asks Victoria Chaser to assist Harmony in her tournament. Victoria Chaser refuses, stating that since Harmony leveled up fast, she should be able to handle herself, which she believes ill make her stronger. When Harmony starts to lose, Victoria Black blindly rushes to defend Harmony against the might of Vegito and Gogeta. To no one’s surprise, she ends up getting into trouble and is getting beat pretty badly by the opponent using Gogeta. Victoria Black is losing so badly that Harmony is crying to her, begging her mother to let her re-enter the fight in her place. Victoria Black is far out of her league here, but she was determined to defend Harmony. After seeing her sister in trouble and seeing Harmony cry for her mother, Victoria Chaser loses it. She believes she is right , but she did not intend for her impulsive sister to rush into her own demise to protect her daughter figure. The rage surges through Victoria Chaser as she blasts onto the ring. The opponent , by now is using !00 percent Final Frieza, but Chaser doesnt care. With rage she powers through the opponent in a one sided beating. Halfway thru the fight, Victoria Black , who was unconscious , begins to wake up. Seeing Victoria Chaser there avenging her puts a smile on her face. She's barely able to make a joking line to Chaser " I knew you would come. Thank you" ... This sent a second wave of rage through Victoria Chaser. While holding back tears she bursts into a Super Saiyan. She violently tears thru Frieza (not Black Frieza). Her anger was mostly at herself for letting Victoria Black believe that she was all alone in this and that no one valued her love for her child.  After blitzing thru Frieza, the stronger opponents exited the tournament. Victoria Chaser was sure Harmony could defeat the remaining opponents, so she went over to Victoria Black and carried her, telling Harmony to continue and defeat the other opponents. Harmony obeyed with a "Yes Ma'am" and Victoria Chaser carried her sister home to help her recover.`,
+• Victoria Chaser wants her to grow stronger the hard way, as she has done, but Victoria Black doesn’t want that. She tells Wargirl to assist Harmony in leveling up fast. Victoria Black assumes a mother role for Harmony and she’s  determined to protect her from anyone who tries to hurt her. However, Harmony is by far a more capable fighter than her “mother”. Victoria Black is a blaster, not a fighter, so she often needs protection herself! Here Victoria Black asks Victoria Chaser to assist Harmony in her tournament.`,
     duration: '4 min',
     videoUrl: null
   },
   {
-    id: 1001,
+    id: 6006,
     category: 'lore',
-    title: `3. Victoria Black vs Vegeta: The Deal That Created Binary ( Dragon Ball Xenoverse 2 ) #xenoverse2[]`,
-    preview: `• Victoria Black faces her toughest challenge yet as she strikes a deal with Vegeta to unlock her tr...`,
-    text: `• Victoria Black faces her toughest challenge yet as she strikes a deal with Vegeta to unlock her true potential. Victoria Black sassed Vegeta into a deal , essentially claiming that if she were to beat him, at all, then Vegeta would show her how to evolve past her limitations. Although Vegeta never verbally agreed, his Saiyan pride in himself and in this beautiful Saiyan woman motivated him to go along with her deal. He was certain that Victoria Black could never beat him. However, after 3 failed attempts, Victoria Black finally landed a victory over Vegeta. Afterwards, she led Vegeta by the hand to an empty area in the mountains. When she was satisfied with the location , she went to sit on a rock, folding her arms and crossed her legs. She was waiting for Vegeta to honor his word and show her how he surpassed his limits during the tournament of power. Vegeta, finally went out to the middle of the area. "Let's see you copy this!"... Vegeta charged his ki and ignited the Final Explosion, at the end of the explosion , Vegeta was SSBE. Victoria Black, reluctantly attempted to repeat what she saw. Her final explosion was restrained , and didnt build enough energy to ignite the evolvement. Vegeta convinced her to try again, without holding back. Finally Victoria Black overcame her fear of blowing herself up and performed the Final explosion with full intensity. This triggered more than just an evolvement. The energy generated by Victoria Black while inside the explosion began to manifest as its own entity. This entity continued to surge in power, surpassing even Victoria Black. The entity was blindingly bright and appeared to have wings. Eventually, the energy became powerful enough to absorb Victoria Black herself, which increased the entity, named Binary, even more. When the explosion resided, Vegeta marveled at  the person he saw. Binary was winged, bright with red, pupiless eyes , overflowing with power. When her aura calmed down, and she spotted Vegeta, Binary broke the ice, immediately attacking Vegeta. The fight began and SSG Vegeta was eventually defeated. When Binary was calmed down, she reverted back into Victoria Black.`,
+    title: `2. A New Fighter Joins the team! Harmony Blaster! #xenoverse 2[] (Part 2/3)`,
+    preview: `• In this video, I introduce Harmony in Xenoverse 2!
+
+• 00:00 Harmony Vs Goku
+
+• 01:47 Harmony Vs Ve......`,
+    text: `Victoria Chaser refuses, stating that since Harmony leveled up fast, she should be able to handle herself, which she believes ill make her stronger. When Harmony starts to lose, Victoria Black blindly rushes to defend Harmony against the might of Vegito and Gogeta. To no one’s surprise, she ends up getting into trouble and is getting beat pretty badly by the opponent using Gogeta. Victoria Black is losing so badly that Harmony is crying to her, begging her mother to let her re-enter the fight in her place. Victoria Black is far out of her league here, but she was determined to defend Harmony. After seeing her sister in trouble and seeing Harmony cry for her mother, Victoria Chaser loses it. She believes she is right , but she did not intend for her impulsive sister to rush into her own demise to protect her daughter figure. The rage surges through Victoria Chaser as she blasts onto the ring. The opponent , by now is using !00 percent Final Frieza, but Chaser doesnt care. With rage she powers through the opponent in a one sided beating. Halfway thru the fight, Victoria Black , who was unconscious , begins to wake up. Seeing Victoria Chaser there avenging her puts a smile on her face. She's barely able to make a joking line to Chaser " I knew you would come. Thank you" ...`,
+    duration: '4 min',
+    videoUrl: null
+  },
+  {
+    id: 6007,
+    category: 'lore',
+    title: `2. A New Fighter Joins the team! Harmony Blaster! #xenoverse 2[] (Part 3/3)`,
+    preview: `• In this video, I introduce Harmony in Xenoverse 2!
+
+• 00:00 Harmony Vs Goku
+
+• 01:47 Harmony Vs Ve......`,
+    text: `This sent a second wave of rage through Victoria Chaser. While holding back tears she bursts into a Super Saiyan. She violently tears thru Frieza (not Black Frieza). Her anger was mostly at herself for letting Victoria Black believe that she was all alone in this and that no one valued her love for her child.  After blitzing thru Frieza, the stronger opponents exited the tournament. Victoria Chaser was sure Harmony could defeat the remaining opponents, so she went over to Victoria Black and carried her, telling Harmony to continue and defeat the other opponents. Harmony obeyed with a "Yes Ma'am" and Victoria Chaser carried her sister home to help her recover.`,
+    duration: '4 min',
+    videoUrl: null
+  },
+  {
+    id: 6008,
+    category: 'lore',
+    title: `3. Victoria Black vs Vegeta: The Deal That Created Binary ( Dragon Ball Xenoverse 2 ) #xenoverse2[] (Part 1/2)`,
+    preview: `• Victoria Black faces her toughest challenge yet as she strikes a deal with Vegeta to unlock her tr......`,
+    text: `• Victoria Black faces her toughest challenge yet as she strikes a deal with Vegeta to unlock her true potential. Victoria Black sassed Vegeta into a deal , essentially claiming that if she were to beat him, at all, then Vegeta would show her how to evolve past her limitations. Although Vegeta never verbally agreed, his Saiyan pride in himself and in this beautiful Saiyan woman motivated him to go along with her deal. He was certain that Victoria Black could never beat him. However, after 3 failed attempts, Victoria Black finally landed a victory over Vegeta. Afterwards, she led Vegeta by the hand to an empty area in the mountains. When she was satisfied with the location , she went to sit on a rock, folding her arms and crossed her legs. She was waiting for Vegeta to honor his word and show her how he surpassed his limits during the tournament of power. Vegeta, finally went out to the middle of the area. "Let's see you copy this!"... Vegeta charged his ki and ignited the Final Explosion, at the end of the explosion , Vegeta was SSBE. Victoria Black, reluctantly attempted to repeat what she saw. Her final explosion was restrained , and didnt build enough energy to ignite the evolvement. Vegeta convinced her to try again, without holding back.`,
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 6009,
+    category: 'lore',
+    title: `3. Victoria Black vs Vegeta: The Deal That Created Binary ( Dragon Ball Xenoverse 2 ) #xenoverse2[] (Part 2/2)`,
+    preview: `• Victoria Black faces her toughest challenge yet as she strikes a deal with Vegeta to unlock her tr......`,
+    text: `Finally Victoria Black overcame her fear of blowing herself up and performed the Final explosion with full intensity. This triggered more than just an evolvement. The energy generated by Victoria Black while inside the explosion began to manifest as its own entity. This entity continued to surge in power, surpassing even Victoria Black. The entity was blindingly bright and appeared to have wings. Eventually, the energy became powerful enough to absorb Victoria Black herself, which increased the entity, named Binary, even more. When the explosion resided, Vegeta marveled at  the person he saw. Binary was winged, bright with red, pupiless eyes , overflowing with power. When her aura calmed down, and she spotted Vegeta, Binary broke the ice, immediately attacking Vegeta. The fight began and SSG Vegeta was eventually defeated. When Binary was calmed down, she reverted back into Victoria Black.`,
     duration: '2 min',
     videoUrl: null
   },
@@ -155,19 +213,26 @@ Initially Victoria Chaser wanted nothing to do with the child, chosing to ignore
     videoUrl: null
   },
   {
-    id: 1008,
+    id: 6010,
     category: 'lore',
-    title: `11. Jerks in the Lobby are CATCALLING and harassing Victoria Black!! She’s NOT gonna stand for this!![]`,
-    preview: `• The team competition against Brother Kai and his team @Yaboi354  is getting closer! Harmony and Vi...`,
+    title: `11. Jerks in the Lobby are CATCALLING and harassing Victoria Black!! She’s NOT gonna stand for this!![] (Part 1/2)`,
+    preview: `• The team competition against Brother Kai and his team @Yaboi354  is getting closer! Harmony and Vi......`,
     text: `• The team competition against Brother Kai and his team @Yaboi354  is getting closer! Harmony and Victoria Chaser are both thinking about the fight. Victoria Black is trying to find a way that she and her friends can take pictures while watching TV in the Kami House. She's interrupted by a jerk in the Lobby who’s catcalling and sexually harassing her.  Some fun pre-competion fights ensue. Jiren and the rest of the Pride Troopers are in another dimension, along with Hit, so she has to make due with what she has. Eventually, Victoria Chaser arrives and is barely able to defeat the harasser and defend her sisters honor. She realizes she needs to get even stronger. She doesn’t want to go the Vegeta or Goku route, so she’s out to find someone “darker”.
 
 • This is the reason Victoria Chaser went to Turles to strike a deal to become stronger.
 
 • Because of Victoria Blacks size and build, and how she dresses, it's hard for her to escape sexual harassment. She can fight back, as with any other woman, but it's physically difficult to constantly avoid a hand brushing against her long legs, or a perv "accidentally" bumping into her bigger butt.
 
-• These are the times when Binary's immature personality shows. She's much to focused on having cool one-liners than focusing on fights.
-
-• The Music During Victoria Blacks Fight is: Kehlani x Jeremih x Ty Dolla $ign Nyrell - \\`,
+• These are the times when Binary's immature personality shows. She's much to focused on having cool one-liners than focusing on fights.`,
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 6011,
+    category: 'lore',
+    title: `11. Jerks in the Lobby are CATCALLING and harassing Victoria Black!! She’s NOT gonna stand for this!![] (Part 2/2)`,
+    preview: `• The team competition against Brother Kai and his team @Yaboi354  is getting closer! Harmony and Vi......`,
+    text: `• The Music During Victoria Blacks Fight is: Kehlani x Jeremih x Ty Dolla $ign Nyrell - \\`,
     duration: '2 min',
     videoUrl: null
   },
@@ -189,11 +254,20 @@ Initially Victoria Chaser wanted nothing to do with the child, chosing to ignore
     videoUrl: null
   },
   {
-    id: 1010,
+    id: 6012,
     category: 'lore',
-    title: `13. Binary is Exploited, Birth of Victoria Blue !!![]`,
-    preview: `.        . After Turles defeats Harmony and narrowly defeated Victoria Black, he taunts that he know...`,
-    text: `.        . After Turles defeats Harmony and narrowly defeated Victoria Black, he taunts that he knows she has more fight in her than that. Harmony suspects Turles is baiting her to get to Binary, and tries to convince her mother that she didn't need to use her. In all honesty , Victoria Black was not really even injured or even outclassed by Turles. She was defeated due to a slight mistake. Harmony knew Victoria Black could just fight Turles again and defeat him. However, Victoria Black was blinded by anger and pride, and she evolved into Binary, exactly what Turles wanted. He observed in disbelief as Binary, the Nuclear Angel formed in front of him. Binary immediately went on the offensive, dealing very damaging blows, more damaging than Turles was, but thats what Turles expected. He was eventually able to outsmart her and defeat her. As she lay temporarily unconscious , Turles saw his opportunity to steal some of her power. Turles, being a space pirate, was not immune to beautiful women, and this was no exception. Binary is the size of Victoria Black, with great beauty , winged, crazy, volatile, half naked, and right then, unconscious. So, Turles took what he wanted, and finished up before Binary devolved back to Victoria Black. Victoria Chaser was not there to witness the acts, as that would NOT be a part of her plans. Fortunately , this is NOT one of those stories where a victim ends up pregnant. Since Binary was unconscious during the act, and Victoria Black WAS Binary at the time, it remains a secret only known by Turles himself. Later, after Turles "unexplained" resurrection, he only barely recognizes Binary without her wings and bright skin.
+    title: `13. Binary is Exploited, Birth of Victoria Blue !!![] (Part 1/2)`,
+    preview: `.        . After Turles defeats Harmony and narrowly defeated Victoria Black, he taunts that he know......`,
+    text: `.        . After Turles defeats Harmony and narrowly defeated Victoria Black, he taunts that he knows she has more fight in her than that. Harmony suspects Turles is baiting her to get to Binary, and tries to convince her mother that she didn't need to use her. In all honesty , Victoria Black was not really even injured or even outclassed by Turles. She was defeated due to a slight mistake. Harmony knew Victoria Black could just fight Turles again and defeat him. However, Victoria Black was blinded by anger and pride, and she evolved into Binary, exactly what Turles wanted. He observed in disbelief as Binary, the Nuclear Angel formed in front of him. Binary immediately went on the offensive, dealing very damaging blows, more damaging than Turles was, but thats what Turles expected. He was eventually able to outsmart her and defeat her. As she lay temporarily unconscious , Turles saw his opportunity to steal some of her power. Turles, being a space pirate, was not immune to beautiful women, and this was no exception. Binary is the size of Victoria Black, with great beauty , winged, crazy, volatile, half naked, and right then, unconscious. So, Turles took what he wanted, and finished up before Binary devolved back to Victoria Black. Victoria Chaser was not there to witness the acts, as that would NOT be a part of her plans.`,
+    duration: '3 min',
+    videoUrl: null
+  },
+  {
+    id: 6013,
+    category: 'lore',
+    title: `13. Binary is Exploited, Birth of Victoria Blue !!![] (Part 2/2)`,
+    preview: `.        . After Turles defeats Harmony and narrowly defeated Victoria Black, he taunts that he know......`,
+    text: `Fortunately , this is NOT one of those stories where a victim ends up pregnant. Since Binary was unconscious during the act, and Victoria Black WAS Binary at the time, it remains a secret only known by Turles himself. Later, after Turles "unexplained" resurrection, he only barely recognizes Binary without her wings and bright skin.
 
 Afterwards, Turles, keeping his word, met up with Victoria Chaser. He had mixed the energy he stole from Binary and his own Tree of Might fruit into a vile and gave the vile to Victoria Chaser. Chaser drank the potion and braced herself as the potion evolved her into a more powerful, all blue version of herself, Victoria Blue. Since Victoria Chaser was more of the melee fighter, the Victoria Blue transformation enhanced all her melee abilities. She was lightning fast, incredibly strong and so cunning she almost only needed one strike to kill. As a test , she fought and defeated Turles without breaking a sweat. Victoria Black, none the wiser, was at her classroom and could feel the energy of her sister. She was happy for her. She believed that was Victoria Chaser avenging her for Turles defeating her.`,
     duration: '3 min',
@@ -231,11 +305,20 @@ Afterwards, Turles, keeping his word, met up with Victoria Chaser. He had mixed 
     videoUrl: null
   },
   {
-    id: 1014,
+    id: 6014,
     category: 'lore',
-    title: `17. Little Sister NEEDS some Protection out here....Birth of Evil Victoria!!!..... #xenoverse2 #dragonball[]`,
-    preview: `• Victoria Black is beginning to worry about WarGirl's safety. To make things worse, although Wargir...`,
-    text: `• Victoria Black is beginning to worry about WarGirl's safety. To make things worse, although Wargirl was the first of the sisters to reach SSGSS, she limits herself to Super Sayin 3 in hopes that she is accepted by all PvP groups. Unfortunately the PVP community is not as restrictive and will stop at nothing to take down their opponent. On a daily basis, WarGirl is One-shotted, double teamed, triple teamed and more, but she seems to enjoy the challenge. Victoria Black decides WarGirl needs some protection, some bodyguards, who don't hold back, and will not fail to protect, defend or avenge her. Meanwhile, WarGirls ignorance and arrogance is attracting some  ruthless opponents. Members of the gang, The Gas Mask Clan.  I think Victoria may be right. Victoria Black seeks out Zamasu to wish for immortality, so that she can defend her family better. In exchange for granting this, Victoria Black agrees to servitude to him. She feels its a small price to pay since Zamasu is such a condescending god that he believes everyone is beneath him, meaning he'll rarely have use for women. Since Victoria Black has become a very busy woman, Zamasu created an alternate version of her, named Evil Victoria, for the purpose of always being available to him at any time. Evil Victoria was a visual clone to Victoria Black, but he was completely unrestrained. She was the darker side of Victoria Black. She made seduction her actual weapon. She was not as stoic as Victoria Black had become. Instead she was softer, gentler , and much more sensual. She remained hidden at first, only existing afterhours in the school where Victoria Black taught. Zamasu's primary use for her is to deal with the Fusions warriors , so that Merged Zamasu would be undefeatable  when he decides to strike again. While Evil Victoria was mostly sneaky and slightly weaker than Victoria Black, later she underwent a strong upgrade.
+    title: `17. Little Sister NEEDS some Protection out here....Birth of Evil Victoria!!!..... #xenoverse2 #dragonball[] (Part 1/2)`,
+    preview: `• Victoria Black is beginning to worry about WarGirl's safety. To make things worse, although Wargir......`,
+    text: `• Victoria Black is beginning to worry about WarGirl's safety. To make things worse, although Wargirl was the first of the sisters to reach SSGSS, she limits herself to Super Sayin 3 in hopes that she is accepted by all PvP groups. Unfortunately the PVP community is not as restrictive and will stop at nothing to take down their opponent. On a daily basis, WarGirl is One-shotted, double teamed, triple teamed and more, but she seems to enjoy the challenge. Victoria Black decides WarGirl needs some protection, some bodyguards, who don't hold back, and will not fail to protect, defend or avenge her. Meanwhile, WarGirls ignorance and arrogance is attracting some  ruthless opponents. Members of the gang, The Gas Mask Clan.  I think Victoria may be right. Victoria Black seeks out Zamasu to wish for immortality, so that she can defend her family better. In exchange for granting this, Victoria Black agrees to servitude to him. She feels its a small price to pay since Zamasu is such a condescending god that he believes everyone is beneath him, meaning he'll rarely have use for women. Since Victoria Black has become a very busy woman, Zamasu created an alternate version of her, named Evil Victoria, for the purpose of always being available to him at any time. Evil Victoria was a visual clone to Victoria Black, but he was completely unrestrained. She was the darker side of Victoria Black.`,
+    duration: '3 min',
+    videoUrl: null
+  },
+  {
+    id: 6015,
+    category: 'lore',
+    title: `17. Little Sister NEEDS some Protection out here....Birth of Evil Victoria!!!..... #xenoverse2 #dragonball[] (Part 2/2)`,
+    preview: `• Victoria Black is beginning to worry about WarGirl's safety. To make things worse, although Wargir......`,
+    text: `She made seduction her actual weapon. She was not as stoic as Victoria Black had become. Instead she was softer, gentler , and much more sensual. She remained hidden at first, only existing afterhours in the school where Victoria Black taught. Zamasu's primary use for her is to deal with the Fusions warriors , so that Merged Zamasu would be undefeatable  when he decides to strike again. While Evil Victoria was mostly sneaky and slightly weaker than Victoria Black, later she underwent a strong upgrade.
 
 • Evil Victoria is completely independant from Victoria Black and her alter egos. Evil Victoria was created by Merged Zamasu as a way for Victoria Black to carry out her servitude duties to him, without blowing the cover and image that Victoria Black represents.
 
@@ -257,10 +340,10 @@ Afterwards, Turles, keeping his word, met up with Victoria Chaser. He had mixed 
     videoUrl: null
   },
   {
-    id: 1016,
+    id: 6016,
     category: 'lore',
-    title: `19.  The night Victoria Black needed Wargirl ...[]`,
-    preview: `After Turles’ death, Victoria Chaser retired from combat to become an attorney, leaving Wargirl as t...`,
+    title: `19.  The night Victoria Black needed Wargirl ...[] (Part 1/2)`,
+    preview: `After Turles’ death, Victoria Chaser retired from combat to become an attorney, leaving Wargirl as t......`,
     text: `After Turles’ death, Victoria Chaser retired from combat to become an attorney, leaving Wargirl as the family’s main PvP fighter. Wargirl embraced the responsibility without hesitation, carrying their reputation and protecting Harmony as if she were blood. During this time, Wargirl noticed something changing in Victoria Black. Black was always radiant, confident, and commanding—but she began to seem lonely. Her smiles grew forced, her laughter thin. She would linger near Wargirl, then pull away, pretending nothing was wrong. Wargirl grew worried. When she pressed for answers, Victoria Black brushed her off, then quietly cried where she knew Wargirl could hear. Finally, Wargirl cornered her in private and demanded to know what was wrong.
 
 Victoria Black turned to her with tears in her eyes and whispered:
@@ -275,9 +358,16 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
 
 • It marks the start of a complicated hidden bond between them that quietly influences all of Wargirl’s later decisions.
 
-• It also begins Wargirl's habit of "freezing" whenever she feels intimately excited by her older sister.
-
-• In time, Wargirl begins to accept Victoria Black's intimate taboo love for her , as Wargirl is not able to just be intimate with someone without her heart becoming attached .`,
+• It also begins Wargirl's habit of "freezing" whenever she feels intimately excited by her older sister.`,
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 6017,
+    category: 'lore',
+    title: `19.  The night Victoria Black needed Wargirl ...[] (Part 2/2)`,
+    preview: `After Turles’ death, Victoria Chaser retired from combat to become an attorney, leaving Wargirl as t......`,
+    text: `• In time, Wargirl begins to accept Victoria Black's intimate taboo love for her , as Wargirl is not able to just be intimate with someone without her heart becoming attached .`,
     duration: '2 min',
     videoUrl: null
   },
@@ -373,11 +463,20 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1026,
+    id: 6018,
     category: 'lore',
-    title: `29. The Pretty SSJ3 WarGirl is injured in the Xenoverse 2 Broly Raid ....Introduction to Veronica!!![]`,
-    preview: `• The Pretty Wargirl is having a tough time in a raid against Broly. Her Pretty moves are almost use...`,
-    text: `• The Pretty Wargirl is having a tough time in a raid against Broly. Her Pretty moves are almost useless against the monster. During the fight Wargirl is captured by Broly and tossed aside - far aside, to the other side of the map! While she is unconscious , a Human, Veronica, finds her and restores her. Veronica is immediately smitten after tending to her. She is overwhelmed by Wargirl's beauty and sheer build. While holding Wargirl's leg, Veronica accidentally hit on her, telling her she was "fine" , before realizing the mistake and correcting herself to say, she'll BE fine. Wargirl watched teasingly as Veronica stumbled, while still holding her leg. Veronica, who was in a trans while feeling on her leg. Wargirl retained an identity of straight, so Veronica's feelings were oblivious to her. Veronica had her hand halfway up Wargirl's thigh, before she realized what she was doing. She snapped back to reality, introducing herself properly. Wargirl thanked her for her assistance but warned that she should get somewhere safe, that this was no place for a human. Eager to impress her, Veronica explained to Wargirl that she was part of a team of universal patrollers, and that she intended to fight Broly with science. Her suit had speed, defensive and generational powers and her gauntlets could generate enough energy to create massive balls of destructive scientific energy. Embarrassed by her shyness, Veronica stood up, transformed into her supersuit, and went off to impress Wargirl by defeating Broly with the help of the others. When she came back to the area, Wargirl had already left. Over the next few days Veronica searched for Wargirl, daydreaming and fantasizing about her. About her body, her eyes. Satisfying her with her lips, spending time with her, ect. She slowly fell in love with this woman whom she only just met.`,
+    title: `29. The Pretty SSJ3 WarGirl is injured in the Xenoverse 2 Broly Raid ....Introduction to Veronica!!![] (Part 1/2)`,
+    preview: `• The Pretty Wargirl is having a tough time in a raid against Broly. Her Pretty moves are almost use......`,
+    text: `• The Pretty Wargirl is having a tough time in a raid against Broly. Her Pretty moves are almost useless against the monster. During the fight Wargirl is captured by Broly and tossed aside - far aside, to the other side of the map! While she is unconscious , a Human, Veronica, finds her and restores her. Veronica is immediately smitten after tending to her. She is overwhelmed by Wargirl's beauty and sheer build. While holding Wargirl's leg, Veronica accidentally hit on her, telling her she was "fine" , before realizing the mistake and correcting herself to say, she'll BE fine. Wargirl watched teasingly as Veronica stumbled, while still holding her leg. Veronica, who was in a trans while feeling on her leg. Wargirl retained an identity of straight, so Veronica's feelings were oblivious to her. Veronica had her hand halfway up Wargirl's thigh, before she realized what she was doing. She snapped back to reality, introducing herself properly. Wargirl thanked her for her assistance but warned that she should get somewhere safe, that this was no place for a human. Eager to impress her, Veronica explained to Wargirl that she was part of a team of universal patrollers, and that she intended to fight Broly with science. Her suit had speed, defensive and generational powers and her gauntlets could generate enough energy to create massive balls of destructive scientific energy.`,
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 6019,
+    category: 'lore',
+    title: `29. The Pretty SSJ3 WarGirl is injured in the Xenoverse 2 Broly Raid ....Introduction to Veronica!!![] (Part 2/2)`,
+    preview: `• The Pretty Wargirl is having a tough time in a raid against Broly. Her Pretty moves are almost use......`,
+    text: `Embarrassed by her shyness, Veronica stood up, transformed into her supersuit, and went off to impress Wargirl by defeating Broly with the help of the others. When she came back to the area, Wargirl had already left. Over the next few days Veronica searched for Wargirl, daydreaming and fantasizing about her. About her body, her eyes. Satisfying her with her lips, spending time with her, ect. She slowly fell in love with this woman whom she only just met.`,
     duration: '2 min',
     videoUrl: null
   },
@@ -491,10 +590,10 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1038,
+    id: 6020,
     category: 'lore',
-    title: `41. I sent my most DESTRUCTIVE Cac to the WARZONE - Birth of Aeria Destroyer!![]`,
-    preview: `• Swordswoman Vanessa wants to goto a group fight , even tho she knows she'll most likely be the wea...`,
+    title: `41. I sent my most DESTRUCTIVE Cac to the WARZONE - Birth of Aeria Destroyer!![] (Part 1/2)`,
+    preview: `• Swordswoman Vanessa wants to goto a group fight , even tho she knows she'll most likely be the wea......`,
     text: `• Swordswoman Vanessa wants to goto a group fight , even tho she knows she'll most likely be the weakest one there. Harmony has been working on an experiment for a new Fusion technique and wants two fighters to test it with. Her school friends Goten and Kid Trunks already have the Fusion Dance, so she wants to find two other fighters who are friends to try it on. She begs Vanessa and FlashDancer to let her test her fusion machine on them. FlashDancer wants to run from the idea but is peer pressured by Vanessa. The two girls go thru Harmony’s fusion machine! The fusion works and the combined fighter is called Aeria Destroyer!  Aeria Destroyer goes out to the warzone!!
 
 • Aeria Destroyer is a weapon of mass destruction nearly powerful as Full Powered Binary.
@@ -503,9 +602,16 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
 
 • She has a metallic skin tone, making her more defensive than Binary.  However , she has the added benefit of being a logical thinker. Her stand alone fighting is better than Vanessa’s and her Time Controlling abilities lead to more destruction than with FlashDancer. She has decent speed and her supersoul allows her near invulnerability. Her fusion doesn’t last long tho.
 
-• Her Supersoul (I like it better when you're mad) was patched some time afterwards, Making it difficult to sustain Aeira Destroyer for long battles.
-
-• Aeria Destroyer is the Fusion of Vanessa and FlashDancer, using Harmony''s Fusion Door.
+• Her Supersoul (I like it better when you're mad) was patched some time afterwards, Making it difficult to sustain Aeira Destroyer for long battles.`,
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 6021,
+    category: 'lore',
+    title: `41. I sent my most DESTRUCTIVE Cac to the WARZONE - Birth of Aeria Destroyer!![] (Part 2/2)`,
+    preview: `• Swordswoman Vanessa wants to goto a group fight , even tho she knows she'll most likely be the wea......`,
+    text: `• Aeria Destroyer is the Fusion of Vanessa and FlashDancer, using Harmony''s Fusion Door.
 
 • As Vanessa becomes stronger.  Harmony upgrading the Fusion Door into the TransDimensional Door.  And FlashDancer returns to her modeling job up north, after Wargirls return. These factors greatly limit the usage of Aeria Destroyer in future episodes.`,
     duration: '2 min',
@@ -557,13 +663,22 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1044,
+    id: 6022,
     category: 'lore',
-    title: `47. Goku Black couldn’t protect my Female Saiyan Succubus from the MODDERS!! Xenoverse 2[]`,
-    preview: `• Succubus Vanessa was born as an alter ego from the depths of Vanessa’s unfulfilled personal desire...`,
+    title: `47. Goku Black couldn’t protect my Female Saiyan Succubus from the MODDERS!! Xenoverse 2[] (Part 1/2)`,
+    preview: `• Succubus Vanessa was born as an alter ego from the depths of Vanessa’s unfulfilled personal desire......`,
     text: `• Succubus Vanessa was born as an alter ego from the depths of Vanessa’s unfulfilled personal desires. The persona grew stronger through demonic ki, taking shape as a seductive predator that thrives on conquest. Before she possessed Cooler, she had taken Goku Black as her first. However, Rose Goku Black, without his scythe, was unable to perform well enough to satisfy her and keep her from defeat at the hands of modded do gooders. Believing in his godly speeches, Vanessa thought she could have some entertainment watching everyone fall before him, and by extension , herself. It didn't happen and Vanessa realized too late that she'd still have to fend for herself. Eventually , the modded heroes caught up to her speed and manhandled her. She will make Rose pay for this by "taking" more men for herself while he's forced to watch. Of course Rose Goku Black believes he is a omnipotent being, so this serves as great punishment ...
 
-• Succubus Vanessa's Soul Link Curse : When she performs her soul-binding ritual, the victim must be defeated or too weak to resist. As soon as he locks eyes with her, the **screen begins swirling**, pulling the world inward toward her glowing red eyes. The **chorus of Janet Jackson’s “Truly”** begins to play softly in the background, specifically the part where she sings: > “…so crazy ’bout you, you… > wanna get away with you, you…”  As the music plays, she intimately mounts him and begins riding him while holding unwavering eye contact. Without blinking or breaking her stare, she recites the incantation in sync with her movements:  > **“I have taken a part in your being inside me. > Now you will be one of my slaves. > You will obey and protect me. > If I get hurt, you'll share my pain. > If I should die, you will die. > However, I myself will return to life.”**  At the victim's climax, a burst of purple light engulfs them. The swirl fades, and the song cuts off mid-line as the soul-link seals. If interrupted before completion, the swirl and music stop abruptly, and her eyes dim back to normal, leaving her enraged and disoriented.  During this entire ritual, her ghosts circle her, creating a perimeter and detonating on any attacker to protect their mistress until the binding is complete.`,
+• Succubus Vanessa's Soul Link Curse : When she performs her soul-binding ritual, the victim must be defeated or too weak to resist. As soon as he locks eyes with her, the **screen begins swirling**, pulling the world inward toward her glowing red eyes.`,
+    duration: '3 min',
+    videoUrl: null
+  },
+  {
+    id: 6023,
+    category: 'lore',
+    title: `47. Goku Black couldn’t protect my Female Saiyan Succubus from the MODDERS!! Xenoverse 2[] (Part 2/2)`,
+    preview: `• Succubus Vanessa was born as an alter ego from the depths of Vanessa’s unfulfilled personal desire......`,
+    text: `The **chorus of Janet Jackson’s “Truly”** begins to play softly in the background, specifically the part where she sings: > “…so crazy ’bout you, you… > wanna get away with you, you…”  As the music plays, she intimately mounts him and begins riding him while holding unwavering eye contact. Without blinking or breaking her stare, she recites the incantation in sync with her movements:  > **“I have taken a part in your being inside me. > Now you will be one of my slaves. > You will obey and protect me. > If I get hurt, you'll share my pain. > If I should die, you will die. > However, I myself will return to life.”**  At the victim's climax, a burst of purple light engulfs them. The swirl fades, and the song cuts off mid-line as the soul-link seals. If interrupted before completion, the swirl and music stop abruptly, and her eyes dim back to normal, leaving her enraged and disoriented.  During this entire ritual, her ghosts circle her, creating a perimeter and detonating on any attacker to protect their mistress until the binding is complete.`,
     duration: '3 min',
     videoUrl: null
   },
@@ -586,11 +701,38 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1047,
+    id: 6024,
     category: 'lore',
-    title: `50. Broly almost ruins Binary's day to live as a mortal in Xenoverse 2!![] (Part 1)`,
-    preview: `• The wish left her naked of godhood, but not of her mother’s taste. In an attempt to do something n...`,
-    text: `• The wish left her naked of godhood, but not of her mother’s taste. In an attempt to do something nice for Binary, Victoria Black made a wish to the Dragon for Binary to experience freedom. The Dragon granted the wish, but only for 24 hours. Victoria Black had to remain unconscious during this time and Binary would lose her immortality during her freedom. When the light settled, Binary stood five-eleven in glossy black stilettos that clicked like slow heartbeats on the Conton City tiles. The rest of her was suddenly, achingly mortal: no wings, no blinding halo, just warm skin, a spill of dark hair, and a tiny crimson dress that clung like it had been painted on by Victoria’s own memories. Every step made the hem ride a fraction higher on her thighs. Every breath pressed soft curves against fabric that forgave nothing.  Vanessa whistled low. “Damn, Vicky. Even when you’re unconscious you dress your alter ego to sin.”  Binary flushed (actually flushed) and tried to tug the hem down. It refused. Harmony just grinned and dragged her into the crowd before anyone else could stare too long.  The city devoured her with its noise and heat. She tasted spicy noodles from a street cart and felt sauce slip down her chin; a passing Saiyan’s gaze followed the path of it like he’d been paid to. Music pulsed from a club doorway and her hips answered without permission, heels swaying, the click-click-click drawing eyes the way her old wings once commanded fear.  Then Turles stepped into her path.  He looked the same: rough jaw, wicked half-smile, armor scarred from a death she’d personally delivered. Mira had sent him. Bodyguard.  Binary’s pulse stuttered. Memories slammed in: mountain air, helpless body, his weight, the theft. And later, her own hands ending him.  He didn’t smirk this time. Just looked at the heels, the dress, the tremble in her bare shoulders. She began to tear up slightly, but Turles comforted her and said, voice low, “Today you’re off-limits. Anyone touches you, they answer to me.” Binary was confused, but relieved. Although she didn't know what Turles had done to her in the past, she felt an intimate desire creeping for him. Almost as if they had had sex before. This confused what she DID remember, that she's supposed hate him, they fought and then later she killed him. So seeing him alive, AND protecting her, was crazy to her.  His promise lasted until Broly tore through the plaza like a living cataclysm. Turles fought dirty and beautiful, buying her seconds with blood and broken armor. When he finally dropped, Binary knelt on top of him, Senzu between shaking fingers. Her slightly exposed warmth resting on his knee. Their eyes locked. For one heartbeat the past and present tangled (hate, debt, heat she didn’t want to name). She pressed the bean to his lips; he caught her wrist, thumb brushing the inside like a question. She moved slightly , deliberately  on his knee, quickly recognizing a sense of intimacy. She pulled away first, cheeks burning hotter than any blast she’d ever fired.  Hours later, cornered, mortal, lungs screaming, Broly’s shadow swallowed the sky. Binary’s back hit a wall, heels skittering uselessly on stone. She had no flight, no power, just the ridiculous dress and the frantic drum of a human heart.  Broly roared. His fist rose.  A teammate’s attack cracked across Broly’s spine at the last second. “Run, princess!”  She ran. Thighs flashing under scarlet fabric, heels stabbing the ground like punctuation marks on every terrified heartbeat. The city blurred (laughter, music, wind in her hair) until she collapsed on the Kame House pier, legs dangling, shoes finally kicked off into the surf.  Goku found her there at sunset, barefoot, dress rucked high, toes tracing lazy circles in the water. He offered half a sandwich. Uub offered a jacket against the evening chill. They talked like she was just another fighter, not a walking apocalypse on borrowed time.  When the twenty-four hours began to dissolve, the heels reappeared first (black gloss sliding up her arches like a lover’s hands). Wings followed, then light, then power. Binary let it all flood back into Victoria Black’s waiting body, but she kept one thing tucked close:  The memory of running breathless through the city in her mother’s sinful dress, Turles’ rough thumb on her wrist, and the taste of mortal want still sweet on her tongue.  Victoria woke gasping, fingers clutching empty air, lips parted on a name she would never say aloud.  Deep inside, Binary smiled (slow, wicked, and just a little bit in love with the trouble she now knew she could feel)`,
+    title: `50. Broly almost ruins Binary's day to live as a mortal in Xenoverse 2!![] (Part 1) (Part 1/4)`,
+    preview: `• The wish left her naked of godhood, but not of her mother’s taste. In an attempt to do something n......`,
+    text: `• The wish left her naked of godhood, but not of her mother’s taste. In an attempt to do something nice for Binary, Victoria Black made a wish to the Dragon for Binary to experience freedom. The Dragon granted the wish, but only for 24 hours. Victoria Black had to remain unconscious during this time and Binary would lose her immortality during her freedom. When the light settled, Binary stood five-eleven in glossy black stilettos that clicked like slow heartbeats on the Conton City tiles. The rest of her was suddenly, achingly mortal: no wings, no blinding halo, just warm skin, a spill of dark hair, and a tiny crimson dress that clung like it had been painted on by Victoria’s own memories. Every step made the hem ride a fraction higher on her thighs. Every breath pressed soft curves against fabric that forgave nothing.  Vanessa whistled low. “Damn, Vicky. Even when you’re unconscious you dress your alter ego to sin.”  Binary flushed (actually flushed) and tried to tug the hem down. It refused. Harmony just grinned and dragged her into the crowd before anyone else could stare too long.  The city devoured her with its noise and heat. She tasted spicy noodles from a street cart and felt sauce slip down her chin; a passing Saiyan’s gaze followed the path of it like he’d been paid to.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6025,
+    category: 'lore',
+    title: `50. Broly almost ruins Binary's day to live as a mortal in Xenoverse 2!![] (Part 1) (Part 2/4)`,
+    preview: `• The wish left her naked of godhood, but not of her mother’s taste. In an attempt to do something n......`,
+    text: `Music pulsed from a club doorway and her hips answered without permission, heels swaying, the click-click-click drawing eyes the way her old wings once commanded fear.  Then Turles stepped into her path.  He looked the same: rough jaw, wicked half-smile, armor scarred from a death she’d personally delivered. Mira had sent him. Bodyguard.  Binary’s pulse stuttered. Memories slammed in: mountain air, helpless body, his weight, the theft. And later, her own hands ending him.  He didn’t smirk this time. Just looked at the heels, the dress, the tremble in her bare shoulders. She began to tear up slightly, but Turles comforted her and said, voice low, “Today you’re off-limits. Anyone touches you, they answer to me.” Binary was confused, but relieved. Although she didn't know what Turles had done to her in the past, she felt an intimate desire creeping for him. Almost as if they had had sex before. This confused what she DID remember, that she's supposed hate him, they fought and then later she killed him. So seeing him alive, AND protecting her, was crazy to her.  His promise lasted until Broly tore through the plaza like a living cataclysm. Turles fought dirty and beautiful, buying her seconds with blood and broken armor. When he finally dropped, Binary knelt on top of him, Senzu between shaking fingers. Her slightly exposed warmth resting on his knee. Their eyes locked.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6026,
+    category: 'lore',
+    title: `50. Broly almost ruins Binary's day to live as a mortal in Xenoverse 2!![] (Part 1) (Part 3/4)`,
+    preview: `• The wish left her naked of godhood, but not of her mother’s taste. In an attempt to do something n......`,
+    text: `For one heartbeat the past and present tangled (hate, debt, heat she didn’t want to name). She pressed the bean to his lips; he caught her wrist, thumb brushing the inside like a question. She moved slightly , deliberately  on his knee, quickly recognizing a sense of intimacy. She pulled away first, cheeks burning hotter than any blast she’d ever fired.  Hours later, cornered, mortal, lungs screaming, Broly’s shadow swallowed the sky. Binary’s back hit a wall, heels skittering uselessly on stone. She had no flight, no power, just the ridiculous dress and the frantic drum of a human heart.  Broly roared. His fist rose.  A teammate’s attack cracked across Broly’s spine at the last second. “Run, princess!”  She ran. Thighs flashing under scarlet fabric, heels stabbing the ground like punctuation marks on every terrified heartbeat. The city blurred (laughter, music, wind in her hair) until she collapsed on the Kame House pier, legs dangling, shoes finally kicked off into the surf.  Goku found her there at sunset, barefoot, dress rucked high, toes tracing lazy circles in the water. He offered half a sandwich. Uub offered a jacket against the evening chill. They talked like she was just another fighter, not a walking apocalypse on borrowed time.  When the twenty-four hours began to dissolve, the heels reappeared first (black gloss sliding up her arches like a lover’s hands). Wings followed, then light, then power.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6027,
+    category: 'lore',
+    title: `50. Broly almost ruins Binary's day to live as a mortal in Xenoverse 2!![] (Part 1) (Part 4/4)`,
+    preview: `• The wish left her naked of godhood, but not of her mother’s taste. In an attempt to do something n......`,
+    text: `Binary let it all flood back into Victoria Black’s waiting body, but she kept one thing tucked close:  The memory of running breathless through the city in her mother’s sinful dress, Turles’ rough thumb on her wrist, and the taste of mortal want still sweet on her tongue.  Victoria woke gasping, fingers clutching empty air, lips parted on a name she would never say aloud.  Deep inside, Binary smiled (slow, wicked, and just a little bit in love with the trouble she now knew she could feel)`,
     duration: '5 min',
     videoUrl: null
   },
@@ -604,26 +746,53 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1049,
+    id: 6028,
     category: 'lore',
-    title: `51. Victoria's Desperation , Separation from Binary[] (Part 1)`,
-    preview: `• Victoria's own power threatens to consume her! In this gripping animated story, Victoria must find...`,
+    title: `51. Victoria's Desperation , Separation from Binary[] (Part 1) (Part 1/3)`,
+    preview: `• Victoria's own power threatens to consume her! In this gripping animated story, Victoria must find......`,
     text: `• Victoria's own power threatens to consume her! In this gripping animated story, Victoria must find a way to separate from Binary, her powerful and dangerous evolved form, before her own consciousness is erased forever. The day had been perfect.   Too perfect.  Victoria Black woke on the third night with the taste of mortal ramen still on her tongue and the echo of stilettos clicking through Conton City still ringing in her bones. She sat bolt upright in bed, heart hammering, and felt Binary move inside her like a second heartbeat that refused to sync.  *Let me out again, Mama. Just once more. I want to feel the sun on my skin. I want…*
 
-• Victoria pressed both palms to her temples, but the voice was velvet and relentless, curling around every thought. Sleep became impossible. Meditation shattered the moment she closed her eyes; there was only the memory of Turles’ thumb brushing her wrist, the wind in her hair as she ran, the dizzying sweetness of being merely alive. Harmony found her mother on the balcony at 4 a.m., staring at nothing, tears cutting silent tracks down her cheeks.“She’s getting louder,” Victoria whispered. “If this keeps going, there won’t be a me left to come back to.” Harmony’s small face hardened with a resolve far too old for her body.  “Then we don’t let her take you. We give her what she wants, just… not inside you anymore.” Victoria laughed, a cracked sound. “Separate us? Not even the gods—”  "I have an idea mom...."... Harmony went on to explain that if, during the transformation, Binary could be isolated before she absorbed Victoria, both could continue existing — but independently. Victoria, desperate to preserve her own identity and protect her daughter, sought help from Merged Zamasu. By convincing him that “two slaves were better than one,” she persuaded Merged Zamasu to enter the explosion of her evolution and extract Binary’s unstable energy before it overtook her. Victoria Black and Harmony left to execute the mission, Leaving behind Vanessa and FlashDancer to hold down the house. Merged Zamasu materialized in the ruined crater where gods went to die, halo tilted like a crown of thorns. Victoria knelt (not in worship, never that), but in bargain.“Two slaves are more useful than one,” she said, voice low and steady. “Rip her out before she eats me alive. You’ll have us both.”
-
-• Zamasu’s smile was slow, terrible, delighted. “Mortals and their sentimental attachments. Very well, little Saiyan. Evolve for me.”  Victoria screamed as the power ignited.
-
-• Meanwhile, back at home Vanessa spotted Gogeta and company approaching. She considered fighting him alone, but she knew the outcome of that. Instead , she pleaded with FlashDancer to fuse to become Aeria Destroyer as their best chance, without Victoria Blacks guidance. Eventually FlashDancer agreed. Harmony warned that Aeria Destroyer still hasn't found a suitable power source to keep her at full power, and that she would be currently limited at SSJ3. Regardless, Vanessa convinced FlashDancer and the girls fused into Aeira Destroyer. Aeria Destroyer went on the defense, as Gogeta was already on the offense. Although Gogeta was faster and appeared to have the upperhand, Aeria Destroyer assured Harmony that she would be fine. She acknowledged that  Gogeta was too busy enjoying exploiting how much faster he was than her. She assured Harmony that eventually Gogeta would make a mistake. True enough , right after saying that, Gogeta made a mistake and Aeria Destroyer capitalized on it, totally defeating Gogeta.`,
+• Victoria pressed both palms to her temples, but the voice was velvet and relentless, curling around every thought. Sleep became impossible. Meditation shattered the moment she closed her eyes; there was only the memory of Turles’ thumb brushing her wrist, the wind in her hair as she ran, the dizzying sweetness of being merely alive. Harmony found her mother on the balcony at 4 a.m., staring at nothing, tears cutting silent tracks down her cheeks.“She’s getting louder,” Victoria whispered. “If this keeps going, there won’t be a me left to come back to.” Harmony’s small face hardened with a resolve far too old for her body.  “Then we don’t let her take you.`,
     duration: '4 min',
     videoUrl: null
   },
   {
-    id: 1050,
+    id: 6029,
     category: 'lore',
-    title: `51. Victoria's Desperation , Separation from Binary[] (Part 2)`,
-    preview: `• Back at the explosion, It was worse than any transformation Victoria Black had ever endured. Gold ...`,
-    text: `• Back at the explosion, It was worse than any transformation Victoria Black had ever endured. Gold and crimson light tore out of her in violent spirals, her body arching until bones creaked. Binary’s essence surged forward, ecstatic, reaching for freedom, reaching to claim the shell that had carried her so long.  Zamasu waited until the explosion reached its blinding heart. Then he struck.  He plunged straight through the light and grabbed a being that wasn’t there a second ago. He pulled.  The scream that followed was two voices braided into one raw, animal sound.  Light collapsed inward. When the dust settled, Victoria Black was on her knees, gasping, hollowed-out but herself again. Harmony carried her . Ten feet away floated Binary: winged, radiant, and terrifyingly real, chest rising and falling in the first independent breaths she had ever taken. She was sleeping...   Zamasu brushed imaginary dust from his sleeve.    “Payment will be extracted in time,” he murmured, already fading. “Both of you.”  Aeria Destroyer arrived to carry Binary home. Once home Aeria Destroyer separated. Harmony simply walked forward and touched Binary’s cheek with careful fingers.  “Hey,” Harmoy whispered to the newborn goddess. “Welcome to the outside.”  Binary’s eyes opened: storm-gray shot through with molten gold. She looked at Vanessa, who was standing there in amazement. "Wow, you really do have your mother's dress style! You're adorable!". BInary's red eyes slowly moved to see Victoria Black. Victoria managed a trembling smile. “You’re home.”  Binary’s wings unfurled, slow and possessive, casting long shadows across the floor. Her voice, when it came, was velvet over broken glass.  “I’m not going back in,” she said. Not a threat. A promise. Victoria Black sat next to Binary , touching her cheek. "No, " she said, " You're alive now. You'll never have to go back in again..." She kissed Binary on the forehead. Binary didn't say anything, but her wings fluttered. You could FEEL her response. She felt the love. She felt the freedom.... Victoria Black went to her room to rest. Binary stayed out in the open with the rest of the girls, learning about her new family....  And somewhere in the dark between universes, Zamasu smiled wider.  Two slaves, after all, were indeed better than one.`,
+    title: `51. Victoria's Desperation , Separation from Binary[] (Part 1) (Part 2/3)`,
+    preview: `• Victoria's own power threatens to consume her! In this gripping animated story, Victoria must find......`,
+    text: `We give her what she wants, just… not inside you anymore.” Victoria laughed, a cracked sound. “Separate us? Not even the gods—”  "I have an idea mom...."... Harmony went on to explain that if, during the transformation, Binary could be isolated before she absorbed Victoria, both could continue existing — but independently. Victoria, desperate to preserve her own identity and protect her daughter, sought help from Merged Zamasu. By convincing him that “two slaves were better than one,” she persuaded Merged Zamasu to enter the explosion of her evolution and extract Binary’s unstable energy before it overtook her. Victoria Black and Harmony left to execute the mission, Leaving behind Vanessa and FlashDancer to hold down the house. Merged Zamasu materialized in the ruined crater where gods went to die, halo tilted like a crown of thorns. Victoria knelt (not in worship, never that), but in bargain.“Two slaves are more useful than one,” she said, voice low and steady. “Rip her out before she eats me alive. You’ll have us both.”
+
+• Zamasu’s smile was slow, terrible, delighted. “Mortals and their sentimental attachments. Very well, little Saiyan. Evolve for me.”  Victoria screamed as the power ignited.
+
+• Meanwhile, back at home Vanessa spotted Gogeta and company approaching. She considered fighting him alone, but she knew the outcome of that.`,
+    duration: '4 min',
+    videoUrl: null
+  },
+  {
+    id: 6030,
+    category: 'lore',
+    title: `51. Victoria's Desperation , Separation from Binary[] (Part 1) (Part 3/3)`,
+    preview: `• Victoria's own power threatens to consume her! In this gripping animated story, Victoria must find......`,
+    text: `Instead , she pleaded with FlashDancer to fuse to become Aeria Destroyer as their best chance, without Victoria Blacks guidance. Eventually FlashDancer agreed. Harmony warned that Aeria Destroyer still hasn't found a suitable power source to keep her at full power, and that she would be currently limited at SSJ3. Regardless, Vanessa convinced FlashDancer and the girls fused into Aeira Destroyer. Aeria Destroyer went on the defense, as Gogeta was already on the offense. Although Gogeta was faster and appeared to have the upperhand, Aeria Destroyer assured Harmony that she would be fine. She acknowledged that  Gogeta was too busy enjoying exploiting how much faster he was than her. She assured Harmony that eventually Gogeta would make a mistake. True enough , right after saying that, Gogeta made a mistake and Aeria Destroyer capitalized on it, totally defeating Gogeta.`,
+    duration: '4 min',
+    videoUrl: null
+  },
+  {
+    id: 6031,
+    category: 'lore',
+    title: `51. Victoria's Desperation , Separation from Binary[] (Part 2) (Part 1/2)`,
+    preview: `• Back at the explosion, It was worse than any transformation Victoria Black had ever endured. Gold ......`,
+    text: `• Back at the explosion, It was worse than any transformation Victoria Black had ever endured. Gold and crimson light tore out of her in violent spirals, her body arching until bones creaked. Binary’s essence surged forward, ecstatic, reaching for freedom, reaching to claim the shell that had carried her so long.  Zamasu waited until the explosion reached its blinding heart. Then he struck.  He plunged straight through the light and grabbed a being that wasn’t there a second ago. He pulled.  The scream that followed was two voices braided into one raw, animal sound.  Light collapsed inward. When the dust settled, Victoria Black was on her knees, gasping, hollowed-out but herself again. Harmony carried her . Ten feet away floated Binary: winged, radiant, and terrifyingly real, chest rising and falling in the first independent breaths she had ever taken. She was sleeping...   Zamasu brushed imaginary dust from his sleeve.    “Payment will be extracted in time,” he murmured, already fading. “Both of you.”  Aeria Destroyer arrived to carry Binary home. Once home Aeria Destroyer separated. Harmony simply walked forward and touched Binary’s cheek with careful fingers.  “Hey,” Harmoy whispered to the newborn goddess. “Welcome to the outside.”  Binary’s eyes opened: storm-gray shot through with molten gold. She looked at Vanessa, who was standing there in amazement. "Wow, you really do have your mother's dress style! You're adorable!". BInary's red eyes slowly moved to see Victoria Black.`,
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 6032,
+    category: 'lore',
+    title: `51. Victoria's Desperation , Separation from Binary[] (Part 2) (Part 2/2)`,
+    preview: `• Back at the explosion, It was worse than any transformation Victoria Black had ever endured. Gold ......`,
+    text: `Victoria managed a trembling smile. “You’re home.”  Binary’s wings unfurled, slow and possessive, casting long shadows across the floor. Her voice, when it came, was velvet over broken glass.  “I’m not going back in,” she said. Not a threat. A promise. Victoria Black sat next to Binary , touching her cheek. "No, " she said, " You're alive now. You'll never have to go back in again..." She kissed Binary on the forehead. Binary didn't say anything, but her wings fluttered. You could FEEL her response. She felt the love. She felt the freedom.... Victoria Black went to her room to rest. Binary stayed out in the open with the rest of the girls, learning about her new family....  And somewhere in the dark between universes, Zamasu smiled wider.  Two slaves, after all, were indeed better than one.`,
     duration: '2 min',
     videoUrl: null
   },
@@ -698,24 +867,67 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1057,
+    id: 6033,
     category: 'lore',
-    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 1)`,
-    preview: `• Harmony sat cross-legged on the roof of Conton’s highest tower for three straight nights, eyes glo...`,
+    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 1) (Part 1/3)`,
+    preview: `• Harmony sat cross-legged on the roof of Conton’s highest tower for three straight nights, eyes glo......`,
     text: `• Harmony sat cross-legged on the roof of Conton’s highest tower for three straight nights, eyes glowing violet, fingers dancing over a cracked scouter she’d rebuilt herself. On the fourth dawn the signal finally bled through: a single heartbeat, faint and golden, buried under kilometers of poison rock. “I’ve got it,” she breathed.  She didn’t tell her mother.  Instead she dragged Goten and Trunks out of bed with promises of “the coolest rescue mission ever.” They believed her because they were twelve and because Harmony’s eyes had the same terrifying certainty Victoria Black got right before she erased cities.  The three of them slipped through a rift Harmony tore open with her own ki (small hands shaking, teeth clenched). They stepped onto a moon that smelled of rust and rotting ki. The tracker pulsed once. They were standing directly on top of the Gas Mask Clan’s front door.  That was the mistake.  The moment their boots touched the surface, the cloaking field inverted. The moon itself seemed to inhale. Walls of black metal erupted around them, sealing the sky. Hundreds of masked soldiers materialized out of thin air, rifles already humming.  Gotenks flared into existence with a roar that shook the cavern.
 
-• “Stay behind me, kid.”  Harmony ran. She found WarGirl chained inside a glass coffin, unconscious, golden hair matted with blood. She shattered the restraints with a desperate kiai and dragged her sister’s limp body over her shoulder. Gotenks fought like a storm, but there were too many. The circle tightened.  Then the ceiling exploded.  Victoria Chaser dropped through the hole in a blaze of turquoise aura, eyes burning with a fury no one had seen from her in years.    “Take WarGirl and go!” she roared at the children. “Now!”  Harmony opened her mouth to argue (she could feel it, the gap in power yawning like a canyon), but Chaser’s glare silenced her. Gotenks scooped both girls into his arms and punched a path toward daylight.  Alone, Victoria Chaser faced the horde.  She forced herself into Super Saiyan 3. The transformation tore a scream from her throat; bones creaked, muscles screamed from years of disuse. Long golden hair whipped like blades of moonlight. She lasted thirty seconds before her knees buckled under the weight.  A vial flashed in her palm (Turles’ last gift, black liquid swirling with stolen starlight). She drank it in one burning swallow.  The change was violent.  Sapphire fire erupted around her. Eyes bled electric blue. Victoria Blue was born in a howl that shattered every light in the lair. She moved like a predator goddess, fists carving tunnels through armored bodies, laughter sharp and terrible. Blood painted the walls .  Victoria Black was busy fighting the Gas Master himself. He agreed that if she beat him, she could have Wargirl back, but if she lost, she would become his second "personal" slave. Victoria Black knew what that meant, and was infuriated, realizing what Wargirl must have had to endure. She accepted and their fight raged on.  Meanwhile, Victoria Blue flickered, shrank, collapsed back into the exhausted frame of Super Saiyan 3 Victoria Chaser. The masks closed in again.  She fought until her aura guttered. Until a boot cracked her arm like dry wood. Until the final barrage drove her to her knees, hair darkening to brown, eyes dimming.`,
+• “Stay behind me, kid.”  Harmony ran. She found WarGirl chained inside a glass coffin, unconscious, golden hair matted with blood.`,
     duration: '4 min',
     videoUrl: null
   },
   {
-    id: 1058,
+    id: 6034,
     category: 'lore',
-    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 2)`,
-    preview: `• In her last moments, Victoria Chaser remembered all the drama, all the pain that her sisters went ...`,
-    text: `• In her last moments, Victoria Chaser remembered all the drama, all the pain that her sisters went through. If only she had stayed true to her mission to strengthen the family to change their future. She didn't know the extent of her unintentional betrayal of her sister, but she was sorry for it all. Sorry she could not protect the people she loved. sorry that she actually caused some of the pain herself. She did not get the chance to experience the love for Harmony that her sister felt, although she was starting to grow on her. With her last breath she mouthed to her sister Victoria Black " I'm sorry sister....I'm sorry, for everything....."    Then nothing.  Victoria Black felt the exact second her twin died.  She was already mid-battle with Gas Master, fists slick with his blood, when Vanessa’s voice cracked across the communicator:    “Chaser’s gone. I have her body.”  Gas Master laughed through broken teeth. “Your daughter(Harmony)  didn’t trust you to save the your sister (Wargirl) . I guess life just doesn't always happen how you plan...”  Victoria Black’s scream was not human. She was already raged at the thought of how many times the Gasmaster SAed Wargirl. In her mind she imagined her younger sister pinned down under him , receiving him unwillingly. She imagined Wargirl crying in hopes that the only person she had in this world would come save her. Victoria Black grief was already surging at the thought of her failure to protect Wargirl. Now, it was compounded by the loss of HER protector, her twin, Victoria Chaser. She ended the GasMAster with her bare hands, spine snapping like kindling.   Then she looked up at the sky and spoke, soft and terrible.  “Kill Them......Kill them ALL...” - her voice breaking into tears as she started to fall apart thru her command, "Kill everything , everyone . They took my twin sister, they rped my lover! Kill THEM ALL!!! "      Vanessa knew what that meant. She told Binary her mothers wishes. Binary raised above the lair, gathering energy. Vanessa took note of Victoria Blacks rant, slowly putting the pieces together. She knew her twin meant Victoria Chaser. What she was unsure of was , the "lover" part. The only other person harmed in the whole ordeal would've been, Warg- Her thoughts were interrupted by the hordes of clan members who now spotted Vanessa standing over Victoria Chaser's dead body. They sounded battle cries as they charged towards Vanessa. Vanessa raised her barrier over herself and Chaser's  body. She nodded above , the confirmation to Binary to let go... this was it.   Binary unleashed a violent nuclear style blast , almost immediately engulfing the lair. She held the blast, vaporizing the lair, and kept holding the blast. The blast became massive. So large that the entire space of the gas masters lair looked like a small rock in comparison. Binary's rage for her mother's vengeance continued for 5 minutes straight. The sky split. Endless destructive energy tore from her core, thick with every decibel of grief Victoria Black could not voice. It struck the lair, swallowed it, kept going. Continents liquefied. Oceans flash-boiled. For five unbroken minutes the planet screamed under Binary’s wrath until there was nothing left but molten crust and silence.  Vanessa rose through the fire, cradling what remained of Victoria Chaser (one arm bent wrong, face peaceful at last). Binary hovered beside her, wings beating slow, tears evaporating before they could fall as they flew away to their home planet.  Behind them, the planet cracked along every fault line and finally, mercifully, came apart causing a final explosion of the planet itself.  Victoria Black met them on the landing platform, hands already reaching. She took her twin’s body like it weighed nothing and pressed her forehead to cold skin.  “Thank you,” she whispered to the ashes of a world. “Both of you.”  Then she turned, cradling what was left of her sister, and flew home without looking back.  Some debts are paid in fire.    Some loves are carved into the bones of dead planets forever.• WarGirl is returned !!!
-
-• In this video , Victoria Black decides it's time to fight the Gas Master, who was responsible for kidnapping her younger sister, WarGirl!
+    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 1) (Part 2/3)`,
+    preview: `• Harmony sat cross-legged on the roof of Conton’s highest tower for three straight nights, eyes glo......`,
+    text: `She shattered the restraints with a desperate kiai and dragged her sister’s limp body over her shoulder. Gotenks fought like a storm, but there were too many. The circle tightened.  Then the ceiling exploded.  Victoria Chaser dropped through the hole in a blaze of turquoise aura, eyes burning with a fury no one had seen from her in years.    “Take WarGirl and go!” she roared at the children. “Now!”  Harmony opened her mouth to argue (she could feel it, the gap in power yawning like a canyon), but Chaser’s glare silenced her. Gotenks scooped both girls into his arms and punched a path toward daylight.  Alone, Victoria Chaser faced the horde.  She forced herself into Super Saiyan 3. The transformation tore a scream from her throat; bones creaked, muscles screamed from years of disuse. Long golden hair whipped like blades of moonlight. She lasted thirty seconds before her knees buckled under the weight.  A vial flashed in her palm (Turles’ last gift, black liquid swirling with stolen starlight). She drank it in one burning swallow.  The change was violent.  Sapphire fire erupted around her. Eyes bled electric blue. Victoria Blue was born in a howl that shattered every light in the lair. She moved like a predator goddess, fists carving tunnels through armored bodies, laughter sharp and terrible. Blood painted the walls .  Victoria Black was busy fighting the Gas Master himself.`,
+    duration: '4 min',
+    videoUrl: null
+  },
+  {
+    id: 6035,
+    category: 'lore',
+    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 1) (Part 3/3)`,
+    preview: `• Harmony sat cross-legged on the roof of Conton’s highest tower for three straight nights, eyes glo......`,
+    text: `He agreed that if she beat him, she could have Wargirl back, but if she lost, she would become his second "personal" slave. Victoria Black knew what that meant, and was infuriated, realizing what Wargirl must have had to endure. She accepted and their fight raged on.  Meanwhile, Victoria Blue flickered, shrank, collapsed back into the exhausted frame of Super Saiyan 3 Victoria Chaser. The masks closed in again.  She fought until her aura guttered. Until a boot cracked her arm like dry wood. Until the final barrage drove her to her knees, hair darkening to brown, eyes dimming.`,
+    duration: '4 min',
+    videoUrl: null
+  },
+  {
+    id: 6036,
+    category: 'lore',
+    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 2) (Part 1/4)`,
+    preview: `• In her last moments, Victoria Chaser remembered all the drama, all the pain that her sisters went ......`,
+    text: `• In her last moments, Victoria Chaser remembered all the drama, all the pain that her sisters went through. If only she had stayed true to her mission to strengthen the family to change their future. She didn't know the extent of her unintentional betrayal of her sister, but she was sorry for it all. Sorry she could not protect the people she loved. sorry that she actually caused some of the pain herself. She did not get the chance to experience the love for Harmony that her sister felt, although she was starting to grow on her. With her last breath she mouthed to her sister Victoria Black " I'm sorry sister....I'm sorry, for everything....."    Then nothing.  Victoria Black felt the exact second her twin died.  She was already mid-battle with Gas Master, fists slick with his blood, when Vanessa’s voice cracked across the communicator:    “Chaser’s gone. I have her body.”  Gas Master laughed through broken teeth. “Your daughter(Harmony)  didn’t trust you to save the your sister (Wargirl) . I guess life just doesn't always happen how you plan...”  Victoria Black’s scream was not human. She was already raged at the thought of how many times the Gasmaster SAed Wargirl. In her mind she imagined her younger sister pinned down under him , receiving him unwillingly.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6037,
+    category: 'lore',
+    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 2) (Part 2/4)`,
+    preview: `• In her last moments, Victoria Chaser remembered all the drama, all the pain that her sisters went ......`,
+    text: `She imagined Wargirl crying in hopes that the only person she had in this world would come save her. Victoria Black grief was already surging at the thought of her failure to protect Wargirl. Now, it was compounded by the loss of HER protector, her twin, Victoria Chaser. She ended the GasMAster with her bare hands, spine snapping like kindling.   Then she looked up at the sky and spoke, soft and terrible.  “Kill Them......Kill them ALL...” - her voice breaking into tears as she started to fall apart thru her command, "Kill everything , everyone . They took my twin sister, they rped my lover! Kill THEM ALL!!! "      Vanessa knew what that meant. She told Binary her mothers wishes. Binary raised above the lair, gathering energy. Vanessa took note of Victoria Blacks rant, slowly putting the pieces together. She knew her twin meant Victoria Chaser. What she was unsure of was , the "lover" part. The only other person harmed in the whole ordeal would've been, Warg- Her thoughts were interrupted by the hordes of clan members who now spotted Vanessa standing over Victoria Chaser's dead body. They sounded battle cries as they charged towards Vanessa. Vanessa raised her barrier over herself and Chaser's  body. She nodded above , the confirmation to Binary to let go... this was it.   Binary unleashed a violent nuclear style blast , almost immediately engulfing the lair.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6038,
+    category: 'lore',
+    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 2) (Part 3/4)`,
+    preview: `• In her last moments, Victoria Chaser remembered all the drama, all the pain that her sisters went ......`,
+    text: `She held the blast, vaporizing the lair, and kept holding the blast. The blast became massive. So large that the entire space of the gas masters lair looked like a small rock in comparison. Binary's rage for her mother's vengeance continued for 5 minutes straight. The sky split. Endless destructive energy tore from her core, thick with every decibel of grief Victoria Black could not voice. It struck the lair, swallowed it, kept going. Continents liquefied. Oceans flash-boiled. For five unbroken minutes the planet screamed under Binary’s wrath until there was nothing left but molten crust and silence.  Vanessa rose through the fire, cradling what remained of Victoria Chaser (one arm bent wrong, face peaceful at last). Binary hovered beside her, wings beating slow, tears evaporating before they could fall as they flew away to their home planet.  Behind them, the planet cracked along every fault line and finally, mercifully, came apart causing a final explosion of the planet itself.  Victoria Black met them on the landing platform, hands already reaching. She took her twin’s body like it weighed nothing and pressed her forehead to cold skin.  “Thank you,” she whispered to the ashes of a world. “Both of you.”  Then she turned, cradling what was left of her sister, and flew home without looking back.  Some debts are paid in fire.    Some loves are carved into the bones of dead planets forever.• WarGirl is returned !!!`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6039,
+    category: 'lore',
+    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 2) (Part 4/4)`,
+    preview: `• In her last moments, Victoria Chaser remembered all the drama, all the pain that her sisters went ......`,
+    text: `• In this video , Victoria Black decides it's time to fight the Gas Master, who was responsible for kidnapping her younger sister, WarGirl!
 
 • Harmony tracks the Lair of the Gas Mask Clan.
 
@@ -726,10 +938,10 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1059,
+    id: 6040,
     category: 'lore',
-    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 3)`,
-    preview: `• Goten and Trunks fuse to become Gotenks. Gotenks defends Harmony as she finds WarGirl unconscious ...`,
+    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 3) (Part 1/4)`,
+    preview: `• Goten and Trunks fuse to become Gotenks. Gotenks defends Harmony as she finds WarGirl unconscious ......`,
     text: `• Goten and Trunks fuse to become Gotenks. Gotenks defends Harmony as she finds WarGirl unconscious but alive. She has to carry WarGirl so she cannot help Gotenks fight off the massive number of enemies in the lair. Eventually Gotenks and Harmony are surrounded.• Just as they are about to be captured, Victoria Chaser shows up to the rescue!!
 
 • She was the main lead in the original story and the twin sister to Victoria Black.
@@ -740,7 +952,16 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
 
 • She sends a blast that distracts the enemies. She’s glad to see her younger sister WarGirl alive, as it’s been a long time. She demands the teens take WarGirl and get to safety. Harmony knows this is a bad idea as she can tell she is stronger than Victoria Chaser herself. Even so, Harmony obeyed her auntie and took WarGirl out of the lair, with Goten and Kid Trunks covering her.
 
-• Victoria Chaser turned into a super Saiyan 3, her peak transformation. Since she had not been training in a long time, the transformation was painful and she felt heavy in this form. She did what she could, but she was outnumbered hundreds to one. She had a small amount of potion that she received from Turles , from when he stole Binary’s powers. The potion was a mix of Binary’s energy and power from the Fruit from the tree of Might. The potion amplifies her astronomical, and transforms her into Victoria Blue. Victoria Blue easily and rapidly starts killing enemies.
+• Victoria Chaser turned into a super Saiyan 3, her peak transformation. Since she had not been training in a long time, the transformation was painful and she felt heavy in this form. She did what she could, but she was outnumbered hundreds to one.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6041,
+    category: 'lore',
+    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 3) (Part 2/4)`,
+    preview: `• Goten and Trunks fuse to become Gotenks. Gotenks defends Harmony as she finds WarGirl unconscious ......`,
+    text: `She had a small amount of potion that she received from Turles , from when he stole Binary’s powers. The potion was a mix of Binary’s energy and power from the Fruit from the tree of Might. The potion amplifies her astronomical, and transforms her into Victoria Blue. Victoria Blue easily and rapidly starts killing enemies.
 
 • Meanwhile Harmony and Goten and Kid Trunks get WarGirl to safety. Harmony has to tell her mother, Victoria Black, what’s going on. Goten and Kid Trunks also tell their dads. Meanwhile Victoria Black is close to defeating the Gas Master.
 
@@ -748,15 +969,29 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
 
 • Victoria Black sent Vanessa and Binary to the spot since she was stuck in a heated battle to defeat the Gas Master.
 
-• Goddess of Destruction Vanessa and Goddess of Destruction Binary found the lair.
-
-• Vanessa has more traditional life form sensing , so she was able to detect about 300 or 400 enemies around. She quickly found Victoria Chaser’s body. She alerted Victoria Black that her sister was indeed, deceased. Gas Master was defeated , but his last words were a taunt. He taunted that it’s too bad her daughter didn’t believe in her ability to free WarGirl herself… and now she’ll have to live with the consequences.
+• Goddess of Destruction Vanessa and Goddess of Destruction Binary found the lair.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6042,
+    category: 'lore',
+    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 3) (Part 3/4)`,
+    preview: `• Goten and Trunks fuse to become Gotenks. Gotenks defends Harmony as she finds WarGirl unconscious ......`,
+    text: `• Vanessa has more traditional life form sensing , so she was able to detect about 300 or 400 enemies around. She quickly found Victoria Chaser’s body. She alerted Victoria Black that her sister was indeed, deceased. Gas Master was defeated , but his last words were a taunt. He taunted that it’s too bad her daughter didn’t believe in her ability to free WarGirl herself… and now she’ll have to live with the consequences.
 
 • Enraged but holding back tears she kills the Gas Master. Then she orders Vanessa to kill everyone in there, kill them ALL!
 
-• Vanessa called to Binary who was out above the lair. She told Binary that her mother wants her to destroy everything and everyone. Binary began channeling her rage as the enemies spotted her and Vanessa. Vanessa created a barrier to protect herself and Victoria Chaser’s body. The enemies spotted Binary up in the sky but it was too late. With a massive climatically charged blast Binary set off an explosion that killed everyone in the lair. The blast destroyed the Gas Masters Lair, and continued to expand, completely destroying all of the planet they were on. Binary’s blast went on for about 5 minutes straight. When she was done, there were no survivors. Vanessa carried Victoria Chaser’s body and her and Binary escaped the planet, which now was a complete volcanic wasteland. The planet would explode after they had left.
-
-• Not for the feint of heart.......
+• Vanessa called to Binary who was out above the lair. She told Binary that her mother wants her to destroy everything and everyone. Binary began channeling her rage as the enemies spotted her and Vanessa. Vanessa created a barrier to protect herself and Victoria Chaser’s body. The enemies spotted Binary up in the sky but it was too late. With a massive climatically charged blast Binary set off an explosion that killed everyone in the lair. The blast destroyed the Gas Masters Lair, and continued to expand, completely destroying all of the planet they were on. Binary’s blast went on for about 5 minutes straight. When she was done, there were no survivors. Vanessa carried Victoria Chaser’s body and her and Binary escaped the planet, which now was a complete volcanic wasteland. The planet would explode after they had left.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6043,
+    category: 'lore',
+    title: `58. Never let your mains DIE!!! - WarGirl is RESCUED!!!! #Xenoverse2[] (Part 3) (Part 4/4)`,
+    preview: `• Goten and Trunks fuse to become Gotenks. Gotenks defends Harmony as she finds WarGirl unconscious ......`,
+    text: `• Not for the feint of heart.......
 
 • Thanks for watching!!`,
     duration: '5 min',
@@ -774,12 +1009,12 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1061,
+    id: 6044,
     category: 'lore',
-    title: `60. Goku, Gohan, Vegeta and SKOT try to Cheer up a Queen....By Fighting!!!![]`,
+    title: `60. Goku, Gohan, Vegeta and SKOT try to Cheer up a Queen....By Fighting!!!![] (Part 1/4)`,
     preview: `• Goku, Gohan, Vegeta and SKOT try to Cheer up a Queen....By Fighting!!!!
 
-• @Kxreaa , @Blizzardinsn...`,
+• @Kxreaa , @Blizzardinsn......`,
     text: `• Goku, Gohan, Vegeta and SKOT try to Cheer up a Queen....By Fighting!!!!
 
 • @Kxreaa , @Blizzardinsnow27
@@ -788,9 +1023,42 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
 
 • Goku elists the help of his friends to cheer up a very depressed Victoria Black. Goku's answer for any occasion? Let's fight!!!
 
-• The city mourned in whispers. Every hallway in Orange Star High carried the same hush: the way students lowered their voices when they passed Victoria Black’s classroom, the way even the rowdiest third-years fell silent when she walked by. Chaser was gone. An entire planet had been reduced to glowing slag to prove it. And Victoria Black, the woman who once laughed at gods, now moved like someone carrying an invisible coffin on her shoulders.  Goku found her on the rooftop at dusk, staring at nothing.  “Hey,” he said softly. “Come spar with us.”  Victoria opened her mouth (probably to refuse), but Wargirl appeared at the stairwell door, arms crossed, golden eyebrow arched.    “Go,” Wargirl said, voice low and teasing. “My tongue’s been doing overtime keeping you sane. Give the poor thing a break.”  Victoria’s laugh cracked in half, but she went.  The gravity chamber on Goku’s private island hummed at 300× Earth normal. Goku and Gohan waited in the center, barefoot, gi tops tied at the waist. No jokes. No warm-ups. Just three Saiyans who understood that sometimes grief has to be punched out of the body because words are too small.  The first clash was gentle (almost tender). Then Victoria screamed, a raw, broken sound, and the real fight began. Fists blurred. Shockwaves cracked the reinforced tiles. Goku let her hit him harder than he ever let anyone, smiling only when she finally started smiling back through the tears and the blood on her lip.  By the end she was laughing and sobbing at the same time, hair wild, aura flickering between black and crimson. Gohan caught her when her knees buckled. Goku ruffled her hair like she was still the cocky student who used to cheat on his pop quizzes.  “Welcome back,” he whispered.  Two days later, the Supreme Kai of Time arrived without ceremony.  She floated through Victoria’s open window at midnight carrying a garment bag that smelled faintly of sacred incense and bad decisions. Chronoa’s cheeks were pink with nerves.  “I… brought you something,” she said, unzipping the bag with the solemnity of someone defusing a bomb.  Inside was a dress. Tiny, lavender, off-the-shoulder, with a slit that started somewhere around the stratosphere of tasteful. In other words: identical to the one Chronoa herself wore at every formal Time Patrol banquet.  Victoria stared. Then, to everyone’s shock (including her own), she started laughing. Real, helpless laughter that turned into hiccupping sobs. She hugged the tiny goddess so hard Chronoa’s feet left the floor.  “It’s perfect,” Victoria choked out. “She would have hated it and worn it anyway just to make me mad.”  Chronoa patted her back awkwardly. “Grief is stupid,” she mumbled into Victoria’s shoulder. “Pretty dresses are less stupid.”  .”  Later, when the house was quiet again, Victoria stood in front of the mirror wearing the ridiculous lavender thing. It was too short, too delicate, too much like someone who still had a twin to argue with about fashion.  Wargirl leaned in the doorway, arms folded, golden eyes soft.  “You look like a goddess who lost a bet,” she said.  Victoria met her gaze in the reflection. “I look like I’m still here,” she answered.  And for the first time since a dead moon burned, that felt like enough.
+• The city mourned in whispers. Every hallway in Orange Star High carried the same hush: the way students lowered their voices when they passed Victoria Black’s classroom, the way even the rowdiest third-years fell silent when she walked by. Chaser was gone. An entire planet had been reduced to glowing slag to prove it. And Victoria Black, the woman who once laughed at gods, now moved like someone carrying an invisible coffin on her shoulders.  Goku found her on the rooftop at dusk, staring at nothing.  “Hey,” he said softly. “Come spar with us.”  Victoria opened her mouth (probably to refuse), but Wargirl appeared at the stairwell door, arms crossed, golden eyebrow arched.    “Go,” Wargirl said, voice low and teasing. “My tongue’s been doing overtime keeping you sane. Give the poor thing a break.”  Victoria’s laugh cracked in half, but she went.  The gravity chamber on Goku’s private island hummed at 300× Earth normal. Goku and Gohan waited in the center, barefoot, gi tops tied at the waist. No jokes. No warm-ups.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6045,
+    category: 'lore',
+    title: `60. Goku, Gohan, Vegeta and SKOT try to Cheer up a Queen....By Fighting!!!![] (Part 2/4)`,
+    preview: `• Goku, Gohan, Vegeta and SKOT try to Cheer up a Queen....By Fighting!!!!
 
-• During these times of mourning., Victoria Black became alot more needing of Wargirl. She also became alot more possessive. She could NOT afford for anything to happen to her. This protectiveness turned into possessiveness. She began treating Wargirl less like just a sister and more like the possessive boyfriend or lover. Wargirl Began working at the Conton City Club, and her post rescue body was even more sexually explosive than before. Everything developed more. Her butt became larger, her waist wider and flatter, her eyes prettier with a sense of maturity , her legs were bigger, toner , more sculpted and more womanly. Her lips more fuller - Wargirl became something almost impossible to keep from looking at, man or woman. Because of this , Victoria Chaser became more controlling of her. She vowed she would be the one to provide any and everything Wargirl would and could ever need. She began visiting her at her job. Showing open displays of intimacy at the club as a reassurance and public display that Wargirl belonged to HER alone.`,
+• @Kxreaa , @Blizzardinsn......`,
+    text: `Just three Saiyans who understood that sometimes grief has to be punched out of the body because words are too small.  The first clash was gentle (almost tender). Then Victoria screamed, a raw, broken sound, and the real fight began. Fists blurred. Shockwaves cracked the reinforced tiles. Goku let her hit him harder than he ever let anyone, smiling only when she finally started smiling back through the tears and the blood on her lip.  By the end she was laughing and sobbing at the same time, hair wild, aura flickering between black and crimson. Gohan caught her when her knees buckled. Goku ruffled her hair like she was still the cocky student who used to cheat on his pop quizzes.  “Welcome back,” he whispered.  Two days later, the Supreme Kai of Time arrived without ceremony.  She floated through Victoria’s open window at midnight carrying a garment bag that smelled faintly of sacred incense and bad decisions. Chronoa’s cheeks were pink with nerves.  “I… brought you something,” she said, unzipping the bag with the solemnity of someone defusing a bomb.  Inside was a dress. Tiny, lavender, off-the-shoulder, with a slit that started somewhere around the stratosphere of tasteful. In other words: identical to the one Chronoa herself wore at every formal Time Patrol banquet.  Victoria stared. Then, to everyone’s shock (including her own), she started laughing. Real, helpless laughter that turned into hiccupping sobs.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6046,
+    category: 'lore',
+    title: `60. Goku, Gohan, Vegeta and SKOT try to Cheer up a Queen....By Fighting!!!![] (Part 3/4)`,
+    preview: `• Goku, Gohan, Vegeta and SKOT try to Cheer up a Queen....By Fighting!!!!
+
+• @Kxreaa , @Blizzardinsn......`,
+    text: `She hugged the tiny goddess so hard Chronoa’s feet left the floor.  “It’s perfect,” Victoria choked out. “She would have hated it and worn it anyway just to make me mad.”  Chronoa patted her back awkwardly. “Grief is stupid,” she mumbled into Victoria’s shoulder. “Pretty dresses are less stupid.”  .”  Later, when the house was quiet again, Victoria stood in front of the mirror wearing the ridiculous lavender thing. It was too short, too delicate, too much like someone who still had a twin to argue with about fashion.  Wargirl leaned in the doorway, arms folded, golden eyes soft.  “You look like a goddess who lost a bet,” she said.  Victoria met her gaze in the reflection. “I look like I’m still here,” she answered.  And for the first time since a dead moon burned, that felt like enough.
+
+• During these times of mourning., Victoria Black became alot more needing of Wargirl. She also became alot more possessive. She could NOT afford for anything to happen to her. This protectiveness turned into possessiveness. She began treating Wargirl less like just a sister and more like the possessive boyfriend or lover. Wargirl Began working at the Conton City Club, and her post rescue body was even more sexually explosive than before. Everything developed more.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6047,
+    category: 'lore',
+    title: `60. Goku, Gohan, Vegeta and SKOT try to Cheer up a Queen....By Fighting!!!![] (Part 4/4)`,
+    preview: `• Goku, Gohan, Vegeta and SKOT try to Cheer up a Queen....By Fighting!!!!
+
+• @Kxreaa , @Blizzardinsn......`,
+    text: `Her butt became larger, her waist wider and flatter, her eyes prettier with a sense of maturity , her legs were bigger, toner , more sculpted and more womanly. Her lips more fuller - Wargirl became something almost impossible to keep from looking at, man or woman. Because of this , Victoria Chaser became more controlling of her. She vowed she would be the one to provide any and everything Wargirl would and could ever need. She began visiting her at her job. Showing open displays of intimacy at the club as a reassurance and public display that Wargirl belonged to HER alone.`,
     duration: '5 min',
     videoUrl: null
   },
@@ -926,12 +1194,12 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1069,
+    id: 6048,
     category: 'lore',
-    title: `68. Attacked By Shaggy In Xenoverse 2[]`,
+    title: `68. Attacked By Shaggy In Xenoverse 2[] (Part 1/4)`,
     preview: `• Attacked by Shaggy??!! In Xenoverse 2
 
-• After the intense battle with Savage Jay, Harmony needed ...`,
+• After the intense battle with Savage Jay, Harmony needed ......`,
     text: `• Attacked by Shaggy??!! In Xenoverse 2
 
 • After the intense battle with Savage Jay, Harmony needed someone she could talk to-really talk to. Binary's feelings for Turles had been growing, and Harmony couldn't exactly tell their mom. Victoria Black would go full Goddess of Destruction if she found out.
@@ -946,7 +1214,40 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
 
 • After chatting with Binary and Harmony, there is a loud commotion. The restaurant was under attack by a wild ultra instinct Shaggy
 
-• The bass in the Conton City Club was low and syrupy, the kind that crawled under your skin and made you feel dangerous. WarGirl moved through it like she owned the rhythm: black skirt riding high, golden choker flashing every time she tilted her head, calves carved from years of Super Saiyan 3 strain flexing above six-inch heels. She was pouring a row of neon shots when two very familiar silhouettes tried (and failed) to hide behind laminated menus in the corner booth. One of them had wings the size of billboards and glittered like a disco ball.  WarGirl’s eyebrow arched so hard it nearly touched her hairline. She sauntered over, hips rolling slow enough to cause traffic accidents, and set two Sprites down with a soft clink.  “On the house,” she said, voice velvet and teasing. “For my favorite underage fugitives.”  Harmony squeaked. Binary tried to fold her wings smaller and only succeeded in knocking over the salt shakers to the floor.  WarGirl slid into the booth beside them, crossing her legs so the skirt rode even higher. “Spill it, babies. Mom doesn’t know you’re here, does she?”  Harmony glanced at Binary. Binary’s cheeks were burning brighter than her own aura.  “It’s… complicated,” Harmony whispered. “Binary’s got this thing for Turles and—”  WarGirl’s gold eyes flicked to the winged goddess currently trying to disappear into the upholstery. “Turles? The same Turles who—”  “Shhh!” Binary hissed, wings flaring in panic. “Mom will literally erase him from existence if she finds out I… maybe… kinda… like the way he looked at me when I was mortal.”  WarGirl opened her mouth (probably to deliver the most savage big-sister lecture in history) when the front doors exploded off their hinges.  A figure stepped through the smoke, barefoot, shirt half-buttoned, hair wild, eyes glowing silver with Ultra Instinct. The entire club went dead silent except for the bass, which kept thumping like a heart that didn’t know it was about to stop.  Shaggy Rogers cracked his neck, grinned, and spoke in a voice that rattled the bottles behind the bar.  “Like, zoinks, man… I heard this place has the best munchies in the timeline.”  WarGirl was already moving. She vaulted the bar in one smooth motion, heels clicking like gunshots. “Everybody down!”  Too late.  Shaggy blurred. Tables flipped. A Time Patroller went sailing through the DJ booth. Binary surged to her feet, wings flaring wide, silver light flooding the club.  “Stay behind me,” she snarled at Harmony.  Harmony rolled her eyes. “You’re literally glowing, Aunt WarGirl’s about to go Super Saiyan bartender, and I’m the one who needs protecting?”  WarGirl landed between them and the rampaging meme god, golden aura crackling up her arms. “Nobody wrecks my shift,” she growled. “Not even you, Scooby-Doo.”  Shaggy’s grin widened. “Like, bring it, goldilocks.”  The lights shattered.  Glass rained like deadly confetti as three goddesses, bartenders, and one very annoyed twelve-year-old prodigy dove into the fight of the night.  And somewhere outside, Victoria Black’s mom-senses started tingling (but that was a problem for five minutes from now).  Tonight, the club belonged to chaos, Sprite, and three sisters who weren’t ready to let some silver-eyed stoner ruin girls’ night.`,
+• The bass in the Conton City Club was low and syrupy, the kind that crawled under your skin and made you feel dangerous.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6049,
+    category: 'lore',
+    title: `68. Attacked By Shaggy In Xenoverse 2[] (Part 2/4)`,
+    preview: `• Attacked by Shaggy??!! In Xenoverse 2
+
+• After the intense battle with Savage Jay, Harmony needed ......`,
+    text: `WarGirl moved through it like she owned the rhythm: black skirt riding high, golden choker flashing every time she tilted her head, calves carved from years of Super Saiyan 3 strain flexing above six-inch heels. She was pouring a row of neon shots when two very familiar silhouettes tried (and failed) to hide behind laminated menus in the corner booth. One of them had wings the size of billboards and glittered like a disco ball.  WarGirl’s eyebrow arched so hard it nearly touched her hairline. She sauntered over, hips rolling slow enough to cause traffic accidents, and set two Sprites down with a soft clink.  “On the house,” she said, voice velvet and teasing. “For my favorite underage fugitives.”  Harmony squeaked. Binary tried to fold her wings smaller and only succeeded in knocking over the salt shakers to the floor.  WarGirl slid into the booth beside them, crossing her legs so the skirt rode even higher. “Spill it, babies. Mom doesn’t know you’re here, does she?”  Harmony glanced at Binary. Binary’s cheeks were burning brighter than her own aura.  “It’s… complicated,” Harmony whispered. “Binary’s got this thing for Turles and—”  WarGirl’s gold eyes flicked to the winged goddess currently trying to disappear into the upholstery. “Turles? The same Turles who—”  “Shhh!” Binary hissed, wings flaring in panic.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6050,
+    category: 'lore',
+    title: `68. Attacked By Shaggy In Xenoverse 2[] (Part 3/4)`,
+    preview: `• Attacked by Shaggy??!! In Xenoverse 2
+
+• After the intense battle with Savage Jay, Harmony needed ......`,
+    text: `“Mom will literally erase him from existence if she finds out I… maybe… kinda… like the way he looked at me when I was mortal.”  WarGirl opened her mouth (probably to deliver the most savage big-sister lecture in history) when the front doors exploded off their hinges.  A figure stepped through the smoke, barefoot, shirt half-buttoned, hair wild, eyes glowing silver with Ultra Instinct. The entire club went dead silent except for the bass, which kept thumping like a heart that didn’t know it was about to stop.  Shaggy Rogers cracked his neck, grinned, and spoke in a voice that rattled the bottles behind the bar.  “Like, zoinks, man… I heard this place has the best munchies in the timeline.”  WarGirl was already moving. She vaulted the bar in one smooth motion, heels clicking like gunshots. “Everybody down!”  Too late.  Shaggy blurred. Tables flipped. A Time Patroller went sailing through the DJ booth. Binary surged to her feet, wings flaring wide, silver light flooding the club.  “Stay behind me,” she snarled at Harmony.  Harmony rolled her eyes. “You’re literally glowing, Aunt WarGirl’s about to go Super Saiyan bartender, and I’m the one who needs protecting?”  WarGirl landed between them and the rampaging meme god, golden aura crackling up her arms. “Nobody wrecks my shift,” she growled. “Not even you, Scooby-Doo.”  Shaggy’s grin widened. “Like, bring it, goldilocks.”  The lights shattered.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6051,
+    category: 'lore',
+    title: `68. Attacked By Shaggy In Xenoverse 2[] (Part 4/4)`,
+    preview: `• Attacked by Shaggy??!! In Xenoverse 2
+
+• After the intense battle with Savage Jay, Harmony needed ......`,
+    text: `Glass rained like deadly confetti as three goddesses, bartenders, and one very annoyed twelve-year-old prodigy dove into the fight of the night.  And somewhere outside, Victoria Black’s mom-senses started tingling (but that was a problem for five minutes from now).  Tonight, the club belonged to chaos, Sprite, and three sisters who weren’t ready to let some silver-eyed stoner ruin girls’ night.`,
     duration: '5 min',
     videoUrl: null
   },
@@ -989,10 +1290,10 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1072,
+    id: 6052,
     category: 'lore',
-    title: `71. She Kissed Turles in Public—Then Saved the Day by blowingup SavageJay !! Xenoverse 2 ft SavageJay 😇[]`,
-    preview: `• She Kissed Turles in Public!! —Then Saved the Day by blowingup SavageJay! Xenoverse 2 ft SavageJay...`,
+    title: `71. She Kissed Turles in Public—Then Saved the Day by blowingup SavageJay !! Xenoverse 2 ft SavageJay 😇[] (Part 1/4)`,
+    preview: `• She Kissed Turles in Public!! —Then Saved the Day by blowingup SavageJay! Xenoverse 2 ft SavageJay......`,
     text: `• She Kissed Turles in Public!! —Then Saved the Day by blowingup SavageJay! Xenoverse 2 ft SavageJay 😇
 
 • Thanks for watching, ENJOY!!!
@@ -1007,7 +1308,16 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
 
 • A flicker of black hair and familiar Saiyan armor caught Harmony’s eye on the second-floor balcony. “Turles…” she whispered. With a subtle tremor in the air, Harmony’s headphones fell silent and her teal eyes hardened. She knew why Turles was here: that gruff half-smile meant he was in the mood for trouble—or fun, depending on who you asked.
 
-• Before Binary could tease her, Harmony’s golden Super Saiyan 3 hair burst free from its ponytail, cascading down her back in a roar of power. The world around them hummed as her aura flared—orange-yellow lightning crackling at her fingertips. “Stay behind me,” Harmony warned, crouching into a fighter’s stance.
+• Before Binary could tease her, Harmony’s golden Super Saiyan 3 hair burst free from its ponytail, cascading down her back in a roar of power. The world around them hummed as her aura flared—orange-yellow lightning crackling at her fingertips.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6053,
+    category: 'lore',
+    title: `71. She Kissed Turles in Public—Then Saved the Day by blowingup SavageJay !! Xenoverse 2 ft SavageJay 😇[] (Part 2/4)`,
+    preview: `• She Kissed Turles in Public!! —Then Saved the Day by blowingup SavageJay! Xenoverse 2 ft SavageJay......`,
+    text: `“Stay behind me,” Harmony warned, crouching into a fighter’s stance.
 
 • ⸻
 
@@ -1027,7 +1337,16 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
 
 • ⸻
 
-• 5. Savage Jay’s Ambush
+• 5.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6054,
+    category: 'lore',
+    title: `71. She Kissed Turles in Public—Then Saved the Day by blowingup SavageJay !! Xenoverse 2 ft SavageJay 😇[] (Part 3/4)`,
+    preview: `• She Kissed Turles in Public!! —Then Saved the Day by blowingup SavageJay! Xenoverse 2 ft SavageJay......`,
+    text: `Savage Jay’s Ambush
 
 • Hours later, the sisters and their friends Goten and Trunks (fused as Gotenks) found themselves cornered in the wreckage of a cratered plaza—Savage Jay’s doing. The hulking villain roared, tearing up concrete with bare hands, eyes blazing red. Gotenks threw a volley of energy blasts, but Savage Jay shrugged them off like gnats.
 
@@ -1041,7 +1360,16 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
 
 • Harmony and Gotenks scrambled to their feet, eyes wide. Binary dusted her hands, wings folding. “Don’t think this makes you my hero,” she snapped over her shoulder. Harmony, chest heaving, could only nod in stunned gratitude.
 
-• Binary let out a smug chuckle and reached into her vest pocket, pulling out a single shopping receipt. “Oh, and Harmony…” she added, voice low. “If you ever rat me out about that kiss, I’ll make sure Mom sees every single bolt and buckle I bought today.”
+• Binary let out a smug chuckle and reached into her vest pocket, pulling out a single shopping receipt. “Oh, and Harmony…” she added, voice low. “If you ever rat me out about that kiss, I’ll make sure Mom sees every single bolt and buckle I bought today.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6055,
+    category: 'lore',
+    title: `71. She Kissed Turles in Public—Then Saved the Day by blowingup SavageJay !! Xenoverse 2 ft SavageJay 😇[] (Part 4/4)`,
+    preview: `• She Kissed Turles in Public!! —Then Saved the Day by blowingup SavageJay! Xenoverse 2 ft SavageJay......`,
+    text: `”
 
 • Harmony’s jaw dropped. Binary’s wings flared in triumph. The balance of power in their sisterhood had just shifted—ever so slightly—in Binary’s favor.`,
     duration: '5 min',
@@ -1149,11 +1477,38 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1078,
+    id: 6056,
     category: 'lore',
-    title: `76. Binary blackmails Vanessa… and makes her fight | Dragon Ball OC Shorts[] (Part 2)`,
-    preview: `• She bolted upright, crimson robe slipping off one shoulder to bare the curve of her breast, the Ti...`,
-    text: `• She bolted upright, crimson robe slipping off one shoulder to bare the curve of her breast, the Time Patroller she'd just dismissed scrambling for his pants like a man fleeing a goddess's wrath. Too late. Binary lounged in the doorway like sin made flesh—silver wings half-unfurled, leather shorts riding low on hips that swayed with lethal promise, cropped top straining against the swell of her chest. Crimson eyes raked over Vanessa, slow and appraising, lips curling into a smile that was all predator and no mercy. "Naughty, naughty, Auntie," Binary purred, voice a husky whisper that slithered down Vanessa's spine. She held up her phone, the screen glowing with a frozen image: Vanessa's thighs wrapped around the stranger, head thrown back in ecstasy, hair coiled like a lover's lash. "One tap, and Mom sees how the Red Goddess of Destruction really unwinds. Victoria Black doesn't allow men in her house....Especially when Shes not the one getting fucked...."  Vanessa's hair flicked, sharp as a whipcrack, but her nipples tightened under the rogue's gaze—betrayal or not, Binary's presence always stirred something dark and hungry. "Blackmail, birdie? Classy."  Binary sauntered closer, wings brushing the walls like whispers of thunder, stopping just close enough for Vanessa to catch the jasmine heat rolling off her skin. She leaned in, breath ghosting Vanessa's collarbone, one manicured finger tracing the edge of the robe where it dipped low. "Call it leverage. You fight my battles—raids, PvP, whatever bores me—while I babysit Harmony and wait for that Trans-Dimensional Door to cough up WarGirl. Refuse, and your little harem gets a divine audit."  Vanessa's laugh was low, throaty, but her core clenched at the proximity—the way Binary's wings framed her like a cage of silk and steel. "Deal. But make it quick. I've got training."  ---  The training arena was a storm of crimson fury: Vanessa in her element, fire energy coiling around her like liquid fire, robe discarded for battle lingerie that hugged every lethal curve—thighs flexing as she shattered training dummies.  Sweat beaded between her breasts, trickling down the valley as she powered through a combo, breath coming in hot pants.  The portal ripped open mid-kick.  Binary stepped through, wings casting shadows that danced like lovers' fingers, her leather barely containing the sway of her hips. She held the scroll like a holy relic, thumb hovering over "send." "Change of plans. There's a pvp lobby screaming your name. Giant Gold Armored Namekian—modded to the gods' envy. You're tanking it. Now."  Vanessa whirled, chest heaving, energy crackling along her skin like foreplay gone wrong. "You said *my* fights. Not your suicide runs."  Binary closed the distance in a blur, wings folding to press Vanessa back against the arena wall, bodies flush—soft breasts against breast, thighs parting instinctively under the pressure. Her lips brushed Vanessa's ear, voice a silken threat: "This is *your* fight now. Or Mom gets the full gallery. Imagine her face when she sees you riding that mortal like he stole your last senzu."  Heat flooded Vanessa, equal parts rage and ruinous want—Binary's scent overwhelming, talons scraping lightly down her side, teasing the edge of lace. She could taste the blackmail on her tongue, bitter and intoxicating. "You're playing with fire, little demon."  Binary's laugh vibrated between them, low and wicked. "Burn me, then. After you win."  ---  A colossal Golden Armored Namekian towering over fractured timelines, armor gleaming like molten sin, health bar a mocking infinity. Modded eyes locked on Vanessa the second she spawned—unmodded, vulnerable, her crimson aura the only thing between her and obliteration.  She dove in like a storm incarnate: fire claws raking gold plate, hips twisting mid-air  that cracked like thunder. The giant swung—a fist like a falling star—and she dodged on instinct, leather-clad thighs flexing, landing in a crouch that arched her back just so. But he was too fast, too endless; a backhand sent her skidding, robe shreds fluttering like discarded inhibitions, blood trickling warm down her cleavage.  "Outmatched," she growled through gritted teeth, stamina flashing red as another blow cratered the ground at her feet.  Then her "teammates" lit up.  Two shadows—modders, auras pulsing with the same illicit gold—turned not on the boss, but *with* her. One blurred in, ki blades carving the Namekian's flank while the other channeled a storm of energy orbs that lit Vanessa's skin in erotic glow. She seized the opening: leaping onto the giant's arm like a conqueror claiming tribute, thighs clamping armored bicep, hakai surging from her core in a wave that made her cry out—pleasure-pain as gold shattered under her touch.`,
+    title: `76. Binary blackmails Vanessa… and makes her fight | Dragon Ball OC Shorts[] (Part 2) (Part 1/4)`,
+    preview: `• She bolted upright, crimson robe slipping off one shoulder to bare the curve of her breast, the Ti......`,
+    text: `• She bolted upright, crimson robe slipping off one shoulder to bare the curve of her breast, the Time Patroller she'd just dismissed scrambling for his pants like a man fleeing a goddess's wrath. Too late. Binary lounged in the doorway like sin made flesh—silver wings half-unfurled, leather shorts riding low on hips that swayed with lethal promise, cropped top straining against the swell of her chest. Crimson eyes raked over Vanessa, slow and appraising, lips curling into a smile that was all predator and no mercy. "Naughty, naughty, Auntie," Binary purred, voice a husky whisper that slithered down Vanessa's spine. She held up her phone, the screen glowing with a frozen image: Vanessa's thighs wrapped around the stranger, head thrown back in ecstasy, hair coiled like a lover's lash. "One tap, and Mom sees how the Red Goddess of Destruction really unwinds. Victoria Black doesn't allow men in her house....Especially when Shes not the one getting fucked...."  Vanessa's hair flicked, sharp as a whipcrack, but her nipples tightened under the rogue's gaze—betrayal or not, Binary's presence always stirred something dark and hungry. "Blackmail, birdie? Classy."  Binary sauntered closer, wings brushing the walls like whispers of thunder, stopping just close enough for Vanessa to catch the jasmine heat rolling off her skin. She leaned in, breath ghosting Vanessa's collarbone, one manicured finger tracing the edge of the robe where it dipped low. "Call it leverage.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6057,
+    category: 'lore',
+    title: `76. Binary blackmails Vanessa… and makes her fight | Dragon Ball OC Shorts[] (Part 2) (Part 2/4)`,
+    preview: `• She bolted upright, crimson robe slipping off one shoulder to bare the curve of her breast, the Ti......`,
+    text: `You fight my battles—raids, PvP, whatever bores me—while I babysit Harmony and wait for that Trans-Dimensional Door to cough up WarGirl. Refuse, and your little harem gets a divine audit."  Vanessa's laugh was low, throaty, but her core clenched at the proximity—the way Binary's wings framed her like a cage of silk and steel. "Deal. But make it quick. I've got training."  ---  The training arena was a storm of crimson fury: Vanessa in her element, fire energy coiling around her like liquid fire, robe discarded for battle lingerie that hugged every lethal curve—thighs flexing as she shattered training dummies.  Sweat beaded between her breasts, trickling down the valley as she powered through a combo, breath coming in hot pants.  The portal ripped open mid-kick.  Binary stepped through, wings casting shadows that danced like lovers' fingers, her leather barely containing the sway of her hips. She held the scroll like a holy relic, thumb hovering over "send." "Change of plans. There's a pvp lobby screaming your name. Giant Gold Armored Namekian—modded to the gods' envy. You're tanking it. Now."  Vanessa whirled, chest heaving, energy crackling along her skin like foreplay gone wrong. "You said *my* fights. Not your suicide runs."  Binary closed the distance in a blur, wings folding to press Vanessa back against the arena wall, bodies flush—soft breasts against breast, thighs parting instinctively under the pressure.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6058,
+    category: 'lore',
+    title: `76. Binary blackmails Vanessa… and makes her fight | Dragon Ball OC Shorts[] (Part 2) (Part 3/4)`,
+    preview: `• She bolted upright, crimson robe slipping off one shoulder to bare the curve of her breast, the Ti......`,
+    text: `Her lips brushed Vanessa's ear, voice a silken threat: "This is *your* fight now. Or Mom gets the full gallery. Imagine her face when she sees you riding that mortal like he stole your last senzu."  Heat flooded Vanessa, equal parts rage and ruinous want—Binary's scent overwhelming, talons scraping lightly down her side, teasing the edge of lace. She could taste the blackmail on her tongue, bitter and intoxicating. "You're playing with fire, little demon."  Binary's laugh vibrated between them, low and wicked. "Burn me, then. After you win."  ---  A colossal Golden Armored Namekian towering over fractured timelines, armor gleaming like molten sin, health bar a mocking infinity. Modded eyes locked on Vanessa the second she spawned—unmodded, vulnerable, her crimson aura the only thing between her and obliteration.  She dove in like a storm incarnate: fire claws raking gold plate, hips twisting mid-air  that cracked like thunder. The giant swung—a fist like a falling star—and she dodged on instinct, leather-clad thighs flexing, landing in a crouch that arched her back just so. But he was too fast, too endless; a backhand sent her skidding, robe shreds fluttering like discarded inhibitions, blood trickling warm down her cleavage.  "Outmatched," she growled through gritted teeth, stamina flashing red as another blow cratered the ground at her feet.  Then her "teammates" lit up.  Two shadows—modders, auras pulsing with the same illicit gold—turned not on the boss, but *with* her.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6059,
+    category: 'lore',
+    title: `76. Binary blackmails Vanessa… and makes her fight | Dragon Ball OC Shorts[] (Part 2) (Part 4/4)`,
+    preview: `• She bolted upright, crimson robe slipping off one shoulder to bare the curve of her breast, the Ti......`,
+    text: `One blurred in, ki blades carving the Namekian's flank while the other channeled a storm of energy orbs that lit Vanessa's skin in erotic glow. She seized the opening: leaping onto the giant's arm like a conqueror claiming tribute, thighs clamping armored bicep, hakai surging from her core in a wave that made her cry out—pleasure-pain as gold shattered under her touch.`,
     duration: '5 min',
     videoUrl: null
   },
@@ -1169,11 +1524,38 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1080,
+    id: 6060,
     category: 'lore',
-    title: `77. Saiyan's Debt: A Lover's Unseen Prison | A Xenoverse 2 Story[] (Part 1)`,
-    preview: `• Thank you for the real transcript. Now I see exactly where I went wrong earlier; the video is a na...`,
-    text: `• Thank you for the real transcript. Now I see exactly where I went wrong earlier; the video is a narrated recap/summary of the entire “Saiyan’s Debt” arc up to the present day, not a single-episode machinima. It’s the full backstory told in voice-over with gameplay and cutscene footage as B-roll. Here’s a tight, dramatic, and (where the canon allows) subtly seductive retelling that stays 100 % faithful to the transcript you just gave:  ──────────────────  Saiyan’s Debt – A Lover’s Unseen Prison    (A Xenoverse 2 Story)  It began the way most tragedies do: with a single, perfect moment.  Broly’s rampage tore Conton City apart. WarGirl (golden, fearless, heavier than she had any right to be) took a blast that sent her crashing across the map like a meteor. She hit the ground hard, already-injured leg buckling, consciousness slipping away in a halo of fading sparks.  That was when Veronica found her.  Silver-haired, science-powered suit humming, violet eyes wide with something that went far beyond duty. She knelt, gauntlets glowing, pouring healing energy into the broken warrior at her feet.  “I’m Veronica,” she stammered, cheeks burning as her gaze traced those powerful, golden thighs. “I-I mean, your legs are fine. They’re gonna be fine. I’m sorry—”  WarGirl’s laugh was weak, but it lit the ruins like sunrise. “Thanks, pretty. But you shouldn’t be fighting like this.”  Veronica answered by transforming (armor plating snapping into place, thrusters igniting) and driving Broly off with raw, desperate fury. When she sprinted back, heart hammering with hope, WarGirl was already gone.  She never saw the way Veronica’s hands shook for weeks afterward.  The search became obsession. Dojo visits, dead-end leads, until Kai (WarGirl’s brother) pointed her toward the Conton City Club with a casual, “My youngest sister fits that description. Works nights. Good luck.”  Veronica didn’t know that while she chased ghosts, WarGirl’s world had already shattered.  A dark alley. A shadowy figure’s command: “Capture her. Bring her to me.”    WarGirl vanished into the Gas Mask Clan’s clutches. Harmony nearly died trying to free her. Victoria Black heard her daughter’s scream across timelines and descended like judgment itself.  The rescue was brutal. Victoria Chaser (twin sister, retired, jealous, but never gone) drank the last of Turles’ potion and became Victoria Blue for one glorious, bloody minute. She carved a path of corpses so the children could drag WarGirl to safety. Then the potion faded. Then she died (arm broken, aura snuffed out, body left in the ashes).  Victoria Black’s grief was a black hole.  She ordered Vanessa to shield the body. She ordered Binary to burn everything. For five straight minutes the planet screamed under Binary’s rage until it cracked apart like an egg. When the dust settled, only two things remained: Victoria Chaser’s corpse… and Victoria Black’s unbreakable resolve.  Never again.  WarGirl came home different (grateful, hollowed-out, eternally indebted). Victoria handled her like something fragile and priceless: fingers lingering on golden skin, voice dropping into that low, velvet register that made WarGirl shiver and obey. Emotionally, psychologically, physically, WarGirl surrendered every inch. She let Victoria dress her, schedule her, tuck her in at night with slow kisses pressed to the forehead that always promised more.  The Conton City Club became WarGirl’s new stage (tight bartender outfits, hips swaying under neon lights), but everyone knew who she really belonged to. Every shift ended the same way: Victoria’s aura flaring at the door, a murmured “I’ll definitely need your help getting to sleep tonight,” and WarGirl following without hesitation. The club lights were low and red, the bass a slow heartbeat that made every body on the floor move like it was underwater.  The low-waisted shorts she wore for work sat dangerously low (yellow leather, low-cut, riding the curve of her hips so perfectly that the dimples at the base of her spine flashed every time she reached for a bottle).  She slid in behind WarGirl, chest pressing flush to golden back, one arm snaking around a toned waist with deliberate possession. WarGirl stilled instantly (breath catching, thighs tightening), because she knew that grip. Knew exactly whose fingers were now resting just beneath the hem of those scandalous shorts.  “Shift’s over, little sister,” Victoria murmured against her ear, voice velvet and smoke. Her free hand settled low on WarGirl’s stomach, thumb tracing the line where leather met skin… then dipping lower, slow and unapologetic, slipping beneath the waistband with practiced ease.  WarGirl’s knuckles whitened on the bottle. A soft, involuntary sound escaped her lips (half gasp, half surrender).`,
+    title: `77. Saiyan's Debt: A Lover's Unseen Prison | A Xenoverse 2 Story[] (Part 1) (Part 1/4)`,
+    preview: `• Thank you for the real transcript. Now I see exactly where I went wrong earlier; the video is a na......`,
+    text: `• Thank you for the real transcript. Now I see exactly where I went wrong earlier; the video is a narrated recap/summary of the entire “Saiyan’s Debt” arc up to the present day, not a single-episode machinima. It’s the full backstory told in voice-over with gameplay and cutscene footage as B-roll. Here’s a tight, dramatic, and (where the canon allows) subtly seductive retelling that stays 100 % faithful to the transcript you just gave:  ──────────────────  Saiyan’s Debt – A Lover’s Unseen Prison    (A Xenoverse 2 Story)  It began the way most tragedies do: with a single, perfect moment.  Broly’s rampage tore Conton City apart. WarGirl (golden, fearless, heavier than she had any right to be) took a blast that sent her crashing across the map like a meteor. She hit the ground hard, already-injured leg buckling, consciousness slipping away in a halo of fading sparks.  That was when Veronica found her.  Silver-haired, science-powered suit humming, violet eyes wide with something that went far beyond duty. She knelt, gauntlets glowing, pouring healing energy into the broken warrior at her feet.  “I’m Veronica,” she stammered, cheeks burning as her gaze traced those powerful, golden thighs. “I-I mean, your legs are fine. They’re gonna be fine. I’m sorry—”  WarGirl’s laugh was weak, but it lit the ruins like sunrise. “Thanks, pretty. But you shouldn’t be fighting like this.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6061,
+    category: 'lore',
+    title: `77. Saiyan's Debt: A Lover's Unseen Prison | A Xenoverse 2 Story[] (Part 1) (Part 2/4)`,
+    preview: `• Thank you for the real transcript. Now I see exactly where I went wrong earlier; the video is a na......`,
+    text: `”  Veronica answered by transforming (armor plating snapping into place, thrusters igniting) and driving Broly off with raw, desperate fury. When she sprinted back, heart hammering with hope, WarGirl was already gone.  She never saw the way Veronica’s hands shook for weeks afterward.  The search became obsession. Dojo visits, dead-end leads, until Kai (WarGirl’s brother) pointed her toward the Conton City Club with a casual, “My youngest sister fits that description. Works nights. Good luck.”  Veronica didn’t know that while she chased ghosts, WarGirl’s world had already shattered.  A dark alley. A shadowy figure’s command: “Capture her. Bring her to me.”    WarGirl vanished into the Gas Mask Clan’s clutches. Harmony nearly died trying to free her. Victoria Black heard her daughter’s scream across timelines and descended like judgment itself.  The rescue was brutal. Victoria Chaser (twin sister, retired, jealous, but never gone) drank the last of Turles’ potion and became Victoria Blue for one glorious, bloody minute. She carved a path of corpses so the children could drag WarGirl to safety. Then the potion faded. Then she died (arm broken, aura snuffed out, body left in the ashes).  Victoria Black’s grief was a black hole.  She ordered Vanessa to shield the body. She ordered Binary to burn everything. For five straight minutes the planet screamed under Binary’s rage until it cracked apart like an egg.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6062,
+    category: 'lore',
+    title: `77. Saiyan's Debt: A Lover's Unseen Prison | A Xenoverse 2 Story[] (Part 1) (Part 3/4)`,
+    preview: `• Thank you for the real transcript. Now I see exactly where I went wrong earlier; the video is a na......`,
+    text: `When the dust settled, only two things remained: Victoria Chaser’s corpse… and Victoria Black’s unbreakable resolve.  Never again.  WarGirl came home different (grateful, hollowed-out, eternally indebted). Victoria handled her like something fragile and priceless: fingers lingering on golden skin, voice dropping into that low, velvet register that made WarGirl shiver and obey. Emotionally, psychologically, physically, WarGirl surrendered every inch. She let Victoria dress her, schedule her, tuck her in at night with slow kisses pressed to the forehead that always promised more.  The Conton City Club became WarGirl’s new stage (tight bartender outfits, hips swaying under neon lights), but everyone knew who she really belonged to. Every shift ended the same way: Victoria’s aura flaring at the door, a murmured “I’ll definitely need your help getting to sleep tonight,” and WarGirl following without hesitation. The club lights were low and red, the bass a slow heartbeat that made every body on the floor move like it was underwater.  The low-waisted shorts she wore for work sat dangerously low (yellow leather, low-cut, riding the curve of her hips so perfectly that the dimples at the base of her spine flashed every time she reached for a bottle).  She slid in behind WarGirl, chest pressing flush to golden back, one arm snaking around a toned waist with deliberate possession. WarGirl stilled instantly (breath catching, thighs tightening), because she knew that grip.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6063,
+    category: 'lore',
+    title: `77. Saiyan's Debt: A Lover's Unseen Prison | A Xenoverse 2 Story[] (Part 1) (Part 4/4)`,
+    preview: `• Thank you for the real transcript. Now I see exactly where I went wrong earlier; the video is a na......`,
+    text: `Knew exactly whose fingers were now resting just beneath the hem of those scandalous shorts.  “Shift’s over, little sister,” Victoria murmured against her ear, voice velvet and smoke. Her free hand settled low on WarGirl’s stomach, thumb tracing the line where leather met skin… then dipping lower, slow and unapologetic, slipping beneath the waistband with practiced ease.  WarGirl’s knuckles whitened on the bottle. A soft, involuntary sound escaped her lips (half gasp, half surrender).`,
     duration: '5 min',
     videoUrl: null
   },
@@ -1189,24 +1571,60 @@ Wargirl pushed further, and Black looked straight into her eyes and confessed: I
     videoUrl: null
   },
   {
-    id: 1082,
+    id: 6064,
     category: 'lore',
-    title: `78. 'Immortality Doesn't Save You!' - Female Majin's Unbelievable Win in Dragon Ball Xenoverse 2[]`,
-    preview: `• The arena pulsed with raw power, Xenoverse 2's digital coliseum cracking under the weight of legen...`,
-    text: `• The arena pulsed with raw power, Xenoverse 2's digital coliseum cracking under the weight of legends reborn. Our team stood ready—Miraculous Ladybug, the immortal Victoria, and the unyielding Female Majin—facing a foe who played for keeps. But this wasn't just a fight. It was revenge. It was proof. Immortality didn't mean invincible. Not here. **Round 1: Ladybug's Razor Edge**  Miraculous Ladybug leaped first, her spotted suit a blur of pink and black against Goku's orange gi. The Saiyan king grinned, powering to Super Saiyan Blue in a golden storm. "Let's see what you've got!"  Fists flew like meteors. Goku's Kamehameha scorched the air; Ladybug dodged with yo-yo precision, her Lucky Charm deploying explosive decoys that staggered him. She countered with a spinning heel kick, yo-yo whipping around his neck for a choke-slam into the arena floor. Goku roared back, Spirit Bomb charging—but Ladybug's Miraculous Ladybug Blast erupted first, a rainbow vortex that slammed him through three barriers.  The crowd gasped as Goku hit zero. Narrow victory. 1-0. But the opponent's eyes burned cold. "Time for payback."  **Round 2: Victoria's Immortal Fall**  Victoria stepped up, eternal life coursing through her veins like liquid starfire. Light-brown skin glowing, curves armored in Pride Trooper elegance, she smirked. "Your turn to kneel."  The opponent summoned *him*—Hit, the Legend of Time Skip, purple aura coiling like a serpent. Victoria charged, ki blasts raining—Sands of Time ultimate priming. Time Stones materialized in her palms, swirling with temporal chaos, the ultimate setup for her devastating finisher.  The arena froze. Stones hummed, reality warping...  Hit vanished. [1:03—SHOCK]. A Time Skip flicker, and his hand crushed the stones like glass. Shards exploded inward, severing Victoria's link. No Sands. No rewind. Just her, immortal but *weaponless*.  She fought like a goddess scorned—dashes, ki barrages, seductive dodges that made Hit hesitate for a heartbeat. Punches landed, blood sprayed, her body regenerating mid-combo. "Immortality is my edge!" she snarled, stalling, buying seconds for the team.  But Hit was merciless. Time Skip combos blurred—uppercut, knee, elbow barrage. Victoria's aura shattered. She staggered, regenerated, charged again... only for a final Point-Blank Time Skip punch to crater her into oblivion. Immortal body slumping lifeless. KO.  The opponent laughed. "See? Eternity bows to skill."  **Round 3: Majin's Glorious Rampage**  The Female Majin rose—pink, elastic fury incarnate, eyes blazing with unbreakable will. Alone against *Awoken Hit* (crimson aura exploding) and *Fu* (dark energy tendrils whipping). Two-on-one. Impossible odds.  "Bring it," she growled, voice a candy-sweet thunder.  Fu struck first—clones swarming, dark ki nets ensnaring. Majin stretched, arms elongating like rubber whips, smashing clones to pixels. Hit Time Skipped in—Majin *anticipated*, elastic torso absorbing the blow, bouncing him back into Fu's path. Collision! Fu staggered.  Strategy ignited. Majin inflated, body swelling to kaiju size, slamming the arena like a living bomb. Hit skipped through—Majin countered with elastic punches from impossible angles, her candy beam stunning Fu mid-teleport. Hit Awoken-fired a barrage; Majin *ate it*, regenerating thicker, faster.  Fu unleashed hell—bio-android blasts. Majin tanked, stretched her mouth into a vortex, *sucking them back* as ammo. "My turn!" Elastic limbs everywhere: arm wrapping Hit's neck, leg tripping Fu, tail coiling for a double suplex that cratered them both.  Climax: Majin ballooned to full power, pink aura hurricane-force. "Chocolate Beam!" Fu vaporized in chocolate rain. Hit, battered, Time Skipped for the kill—Majin *stretched reality itself*, grabbing his skip-point mid-void, yanking him into a point-blank Majin Buu Blast.  Hit exploded in pink fire. Double KO.  The arena erupted. Majin stood atop the rubble, elastic body snapping back to perfection, fist raised. Immortality? Broken. But will? Unbreakable.  In Xenoverse 2, defeat isn't the end. It's the spark for legends.`,
+    title: `78. 'Immortality Doesn't Save You!' - Female Majin's Unbelievable Win in Dragon Ball Xenoverse 2[] (Part 1/3)`,
+    preview: `• The arena pulsed with raw power, Xenoverse 2's digital coliseum cracking under the weight of legen......`,
+    text: `• The arena pulsed with raw power, Xenoverse 2's digital coliseum cracking under the weight of legends reborn. Our team stood ready—Miraculous Ladybug, the immortal Victoria, and the unyielding Female Majin—facing a foe who played for keeps. But this wasn't just a fight. It was revenge. It was proof. Immortality didn't mean invincible. Not here. **Round 1: Ladybug's Razor Edge**  Miraculous Ladybug leaped first, her spotted suit a blur of pink and black against Goku's orange gi. The Saiyan king grinned, powering to Super Saiyan Blue in a golden storm. "Let's see what you've got!"  Fists flew like meteors. Goku's Kamehameha scorched the air; Ladybug dodged with yo-yo precision, her Lucky Charm deploying explosive decoys that staggered him. She countered with a spinning heel kick, yo-yo whipping around his neck for a choke-slam into the arena floor. Goku roared back, Spirit Bomb charging—but Ladybug's Miraculous Ladybug Blast erupted first, a rainbow vortex that slammed him through three barriers.  The crowd gasped as Goku hit zero. Narrow victory. 1-0. But the opponent's eyes burned cold. "Time for payback."  **Round 2: Victoria's Immortal Fall**  Victoria stepped up, eternal life coursing through her veins like liquid starfire. Light-brown skin glowing, curves armored in Pride Trooper elegance, she smirked. "Your turn to kneel."  The opponent summoned *him*—Hit, the Legend of Time Skip, purple aura coiling like a serpent. Victoria charged, ki blasts raining—Sands of Time ultimate priming.`,
     duration: '4 min',
     videoUrl: null
   },
   {
-    id: 1083,
+    id: 6065,
     category: 'lore',
-    title: `79. Jiren ONLY wants to fight Goku!! Speed vs Power ft  @McSweatyThighs    #xenoverse2 #dragonball[]`,
-    preview: `• Pride Trooper HQ, front desk, 9:47 a.m. Jiren is in the back bench-pressing a literal space cruise...`,
-    text: `• Pride Trooper HQ, front desk, 9:47 a.m. Jiren is in the back bench-pressing a literal space cruiser. Toppo is arguing with the vending machine. Normal Tuesday. Victoria Black is perched on the edge of the desk in her legendary pink-and-black bodysuit (shorts so short they’re basically a rumor, plunging neckline defying several laws of physics and common decency). Next to her, Dyspo is spinning in the swivel chair at Mach 5 because sitting still is for mortals.  The request scroll pings.  MySweatyThighz1 (Drakkor): “Tell Jiren to come outside. 1v1. I’m ending him.”  Victoria and Dyspo both lean in to read it at the same time.  Dead silence for exactly 1.2 seconds.  Then both of them lose it.  Victoria (wheezing, clutching the desk so she doesn’t fall out of her suit): “Pfft— he said ‘tell Jiren to come outside’ like it’s recess!”  Dyspo (literally crying, chair squeaking as he spins faster): “Bro thinks he’s about to bully the gray Buddha in the parking lot! I’m deceased— send help— HAHAHA!”  Victoria Black struts in (white pixie cut sharp enough to cut glass, pink-and-black bodysuit painted on, white heels clicking like gunshots). She stops in front of the barbell, hands on hips, clipboard dangling like a guillotine.  Victoria (sweet as molasses, deadly as cyanide): “Jiren, baby, you got a challenger. MySweatyThighz1 wants smoke.”  Jiren doesn’t even blink. One rep. Two reps. Jiren (monotone): “Is it Goku?”  Victoria pops her hip, neck rolling like she’s about to read the Book of Revelations. Victoria (full Black-girl sass, finger snapping): “No. No it’s not Goku… it’s somebody else. Other people wanna fight you too, ya know!”  Toppo leans over the bar, voice booming like a church organ: Toppo: “If it ain’t Goku… WE DON’T CARE!”  Victoria freezes. Slowly spins on those white heels like a Bond villain who just got told “no tip.” One eyebrow arched so high it’s in orbit.  Victoria (under her breath, dripping attitude): “Mmmkay. Bet.”  She storms back to the desk (heels clicking louder than gunfire, hips switching like she’s walking away from an explosion in slow motion). Dyspo, who overheard everything, is already hiding behind the water cooler wheezing.  Dyspo (whisper-yelling): “HE DID NOT JUST—”  Victoria slams the “ACCEPT CHALLENGE” button so hard the desk cracks. Victoria (into the lobby mic, voice pure customer-service vengeance): “Client requested the manager? Cool. Manager’s clocking in.”  Arena loads. Drakkor spawns flexing. Victoria steps in, bodysuit gleaming, white heels swapped for battle stance, aura flaring pink and deadly.  Drakkor: “They sent the receptionist? Babe, go back to—”  Victoria (cutting him off, neck roll 9000): “First of all, the name’s Miss Black to you. The Fight begins. Eventually Victoria emerges as the winner.
+    title: `78. 'Immortality Doesn't Save You!' - Female Majin's Unbelievable Win in Dragon Ball Xenoverse 2[] (Part 2/3)`,
+    preview: `• The arena pulsed with raw power, Xenoverse 2's digital coliseum cracking under the weight of legen......`,
+    text: `Time Stones materialized in her palms, swirling with temporal chaos, the ultimate setup for her devastating finisher.  The arena froze. Stones hummed, reality warping...  Hit vanished. [1:03—SHOCK]. A Time Skip flicker, and his hand crushed the stones like glass. Shards exploded inward, severing Victoria's link. No Sands. No rewind. Just her, immortal but *weaponless*.  She fought like a goddess scorned—dashes, ki barrages, seductive dodges that made Hit hesitate for a heartbeat. Punches landed, blood sprayed, her body regenerating mid-combo. "Immortality is my edge!" she snarled, stalling, buying seconds for the team.  But Hit was merciless. Time Skip combos blurred—uppercut, knee, elbow barrage. Victoria's aura shattered. She staggered, regenerated, charged again... only for a final Point-Blank Time Skip punch to crater her into oblivion. Immortal body slumping lifeless. KO.  The opponent laughed. "See? Eternity bows to skill."  **Round 3: Majin's Glorious Rampage**  The Female Majin rose—pink, elastic fury incarnate, eyes blazing with unbreakable will. Alone against *Awoken Hit* (crimson aura exploding) and *Fu* (dark energy tendrils whipping). Two-on-one. Impossible odds.  "Bring it," she growled, voice a candy-sweet thunder.  Fu struck first—clones swarming, dark ki nets ensnaring. Majin stretched, arms elongating like rubber whips, smashing clones to pixels. Hit Time Skipped in—Majin *anticipated*, elastic torso absorbing the blow, bouncing him back into Fu's path. Collision! Fu staggered.  Strategy ignited. Majin inflated, body swelling to kaiju size, slamming the arena like a living bomb.`,
+    duration: '4 min',
+    videoUrl: null
+  },
+  {
+    id: 6066,
+    category: 'lore',
+    title: `78. 'Immortality Doesn't Save You!' - Female Majin's Unbelievable Win in Dragon Ball Xenoverse 2[] (Part 3/3)`,
+    preview: `• The arena pulsed with raw power, Xenoverse 2's digital coliseum cracking under the weight of legen......`,
+    text: `Hit skipped through—Majin countered with elastic punches from impossible angles, her candy beam stunning Fu mid-teleport. Hit Awoken-fired a barrage; Majin *ate it*, regenerating thicker, faster.  Fu unleashed hell—bio-android blasts. Majin tanked, stretched her mouth into a vortex, *sucking them back* as ammo. "My turn!" Elastic limbs everywhere: arm wrapping Hit's neck, leg tripping Fu, tail coiling for a double suplex that cratered them both.  Climax: Majin ballooned to full power, pink aura hurricane-force. "Chocolate Beam!" Fu vaporized in chocolate rain. Hit, battered, Time Skipped for the kill—Majin *stretched reality itself*, grabbing his skip-point mid-void, yanking him into a point-blank Majin Buu Blast.  Hit exploded in pink fire. Double KO.  The arena erupted. Majin stood atop the rubble, elastic body snapping back to perfection, fist raised. Immortality? Broken. But will? Unbreakable.  In Xenoverse 2, defeat isn't the end. It's the spark for legends.`,
+    duration: '4 min',
+    videoUrl: null
+  },
+  {
+    id: 6067,
+    category: 'lore',
+    title: `79. Jiren ONLY wants to fight Goku!! Speed vs Power ft  @McSweatyThighs    #xenoverse2 #dragonball[] (Part 1/3)`,
+    preview: `• Pride Trooper HQ, front desk, 9:47 a.m. Jiren is in the back bench-pressing a literal space cruise......`,
+    text: `• Pride Trooper HQ, front desk, 9:47 a.m. Jiren is in the back bench-pressing a literal space cruiser. Toppo is arguing with the vending machine. Normal Tuesday. Victoria Black is perched on the edge of the desk in her legendary pink-and-black bodysuit (shorts so short they’re basically a rumor, plunging neckline defying several laws of physics and common decency). Next to her, Dyspo is spinning in the swivel chair at Mach 5 because sitting still is for mortals.  The request scroll pings.  MySweatyThighz1 (Drakkor): “Tell Jiren to come outside. 1v1. I’m ending him.”  Victoria and Dyspo both lean in to read it at the same time.  Dead silence for exactly 1.2 seconds.  Then both of them lose it.  Victoria (wheezing, clutching the desk so she doesn’t fall out of her suit): “Pfft— he said ‘tell Jiren to come outside’ like it’s recess!”  Dyspo (literally crying, chair squeaking as he spins faster): “Bro thinks he’s about to bully the gray Buddha in the parking lot! I’m deceased— send help— HAHAHA!”  Victoria Black struts in (white pixie cut sharp enough to cut glass, pink-and-black bodysuit painted on, white heels clicking like gunshots). She stops in front of the barbell, hands on hips, clipboard dangling like a guillotine.  Victoria (sweet as molasses, deadly as cyanide): “Jiren, baby, you got a challenger. MySweatyThighz1 wants smoke.”  Jiren doesn’t even blink. One rep. Two reps. Jiren (monotone): “Is it Goku?`,
+    duration: '4 min',
+    videoUrl: null
+  },
+  {
+    id: 6068,
+    category: 'lore',
+    title: `79. Jiren ONLY wants to fight Goku!! Speed vs Power ft  @McSweatyThighs    #xenoverse2 #dragonball[] (Part 2/3)`,
+    preview: `• Pride Trooper HQ, front desk, 9:47 a.m. Jiren is in the back bench-pressing a literal space cruise......`,
+    text: `”  Victoria pops her hip, neck rolling like she’s about to read the Book of Revelations. Victoria (full Black-girl sass, finger snapping): “No. No it’s not Goku… it’s somebody else. Other people wanna fight you too, ya know!”  Toppo leans over the bar, voice booming like a church organ: Toppo: “If it ain’t Goku… WE DON’T CARE!”  Victoria freezes. Slowly spins on those white heels like a Bond villain who just got told “no tip.” One eyebrow arched so high it’s in orbit.  Victoria (under her breath, dripping attitude): “Mmmkay. Bet.”  She storms back to the desk (heels clicking louder than gunfire, hips switching like she’s walking away from an explosion in slow motion). Dyspo, who overheard everything, is already hiding behind the water cooler wheezing.  Dyspo (whisper-yelling): “HE DID NOT JUST—”  Victoria slams the “ACCEPT CHALLENGE” button so hard the desk cracks. Victoria (into the lobby mic, voice pure customer-service vengeance): “Client requested the manager? Cool. Manager’s clocking in.”  Arena loads. Drakkor spawns flexing. Victoria steps in, bodysuit gleaming, white heels swapped for battle stance, aura flaring pink and deadly.  Drakkor: “They sent the receptionist? Babe, go back to—”  Victoria (cutting him off, neck roll 9000): “First of all, the name’s Miss Black to you. The Fight begins. Eventually Victoria emerges as the winner.
 
 • Victoria (Sweet voice): " I'm Sorry Jiren couldn't be here right now"
 
-• Drakkor : " It's fine. If his secretary is this capable, I'll be thrilled to fight against the man himself."  KO screen pops up. Victoria dusts imaginary lint off her shoulder, spins on one heel, and struts out.  Victoria (over the speakers, sweet again): “Tell Jiren and Toppo their services were… not required. Next!”  Somewhere in the gym, Toppo mutters, “We may have made a mistake.” Jiren just keeps lifting. Dyspo uploads the clip titled “When Customer Service Has Hands.” It gets 3 million views in an hour.  Don’t ask for the manager unless you’re ready to meet Victoria Black in 4K, honey. 😘  Victoria wipes a tear, stands up, bodysuit doing its best to escape containment. Victoria (sighing dramatically): “Guess Admin has to go teach this child some manners.”`,
+• Drakkor : " It's fine.`,
+    duration: '4 min',
+    videoUrl: null
+  },
+  {
+    id: 6069,
+    category: 'lore',
+    title: `79. Jiren ONLY wants to fight Goku!! Speed vs Power ft  @McSweatyThighs    #xenoverse2 #dragonball[] (Part 3/3)`,
+    preview: `• Pride Trooper HQ, front desk, 9:47 a.m. Jiren is in the back bench-pressing a literal space cruise......`,
+    text: `If his secretary is this capable, I'll be thrilled to fight against the man himself."  KO screen pops up. Victoria dusts imaginary lint off her shoulder, spins on one heel, and struts out.  Victoria (over the speakers, sweet again): “Tell Jiren and Toppo their services were… not required. Next!”  Somewhere in the gym, Toppo mutters, “We may have made a mistake.” Jiren just keeps lifting. Dyspo uploads the clip titled “When Customer Service Has Hands.” It gets 3 million views in an hour.  Don’t ask for the manager unless you’re ready to meet Victoria Black in 4K, honey. 😘  Victoria wipes a tear, stands up, bodysuit doing its best to escape containment. Victoria (sighing dramatically): “Guess Admin has to go teach this child some manners.”`,
     duration: '4 min',
     videoUrl: null
   },
@@ -1245,16 +1663,16 @@ Something steps out of the shadows wearing their mother’s face.`,
     videoUrl: null
   },
   {
-    id: 1086,
+    id: 6070,
     category: 'lore',
-    title: `3. Damage Evil Victoria takes is reversed instantly.[]`,
+    title: `3. Damage Evil Victoria takes is reversed instantly.[] (Part 1/2)`,
     preview: `But not naturally.
 
 She raises her arms—
 
 A purple beam from the heavens descends.
 
-Merged Zamasu’s ...`,
+Merged Zamasu’s ......`,
     text: `But not naturally.
 
 She raises her arms—
@@ -1339,7 +1757,22 @@ The hero interrupted her fun.
 
 But she still got paid.
 
-• This is a machinima-style fan film created using Dragon Ball Xenoverse 2. This original story follows Harmony, a brilliant fighter, and her destructive sister Binary as they face off against Evil Victoria, a villain obsessed with her master, Zamasu, and fueled by his divine energy. Can Gohan's ultimate power stand against a foe who cannot be defeated by skill alone?
+• This is a machinima-style fan film created using Dragon Ball Xenoverse 2.`,
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 6071,
+    category: 'lore',
+    title: `3. Damage Evil Victoria takes is reversed instantly.[] (Part 2/2)`,
+    preview: `But not naturally.
+
+She raises her arms—
+
+A purple beam from the heavens descends.
+
+Merged Zamasu’s ......`,
+    text: `This original story follows Harmony, a brilliant fighter, and her destructive sister Binary as they face off against Evil Victoria, a villain obsessed with her master, Zamasu, and fueled by his divine energy. Can Gohan's ultimate power stand against a foe who cannot be defeated by skill alone?
 
 • Thank you for watching my original Dragon Ball story! If you enjoyed the video, please consider leaving a like and subscribing to the channel for more.
 
@@ -1350,15 +1783,26 @@ But she still got paid.
     videoUrl: null
   },
   {
-    id: 1087,
+    id: 6072,
     category: 'lore',
-    title: `83. The Seduction of Kefla (Evil Victoria #2)[]`,
+    title: `83. The Seduction of Kefla (Evil Victoria #2)[] (Part 1/2)`,
     preview: `• [Mature Themes]
 
-• Evil Victoria was feeling godly and horny. She saw Kefla across the room, all m...`,
+• Evil Victoria was feeling godly and horny. She saw Kefla across the room, all m......`,
     text: `• [Mature Themes]
 
-• Evil Victoria was feeling godly and horny. She saw Kefla across the room, all muscles and attitude, and decided, “Yep, that one. Tonight she’s mine.”  One drink, small talk. Evil Victoria bought Kefla some sexy crimson heels to match her outfit.  Boom, back at Evil Victoria’s place.  Kefla strutted in like she was about to win a tournament.    Evil Victoria just smiled, sat down and pulled Kefla on top of her, and kissed the cockiness right out of her mouth.  Ten minutes later Kefla was a moaning mess, legs wrapped around a half-god, begging in two voices at once.  Evil Victoria was in heaven. Literally. She was the heaven.  Best. Night. Ever.  Then morning hit.  The glow faded.    The earrings dropped.    Two tiny, naked, confused teenagers blinked up at her.  Caulifla yawned. “Sup, hot stuff. Got pancakes?”  Kale hid under the sheet. “D-Did we fuse into trouble again…?”  Evil Victoria stared. Annoyed.  She had just railed the strongest woman alive… and woke up with the Dragon Ball equivalent of high-school freshmen.  She took the deepest breath in the multiverse, pointed at the door, and said the most terrifying thing any god has ever uttered:  “Get out of my bed before I call your moms.”  Caulifla saluted with a stolen Pocky. “Call us when we fuse again, babe!”  Evil Victoria screamed into a pillow that still smelled like victory and kiwi lip gloss.  Round two was happening.    But next time she was checking IDs first.
+• Evil Victoria was feeling godly and horny. She saw Kefla across the room, all muscles and attitude, and decided, “Yep, that one. Tonight she’s mine.”  One drink, small talk. Evil Victoria bought Kefla some sexy crimson heels to match her outfit.  Boom, back at Evil Victoria’s place.  Kefla strutted in like she was about to win a tournament.    Evil Victoria just smiled, sat down and pulled Kefla on top of her, and kissed the cockiness right out of her mouth.  Ten minutes later Kefla was a moaning mess, legs wrapped around a half-god, begging in two voices at once.  Evil Victoria was in heaven. Literally. She was the heaven.  Best. Night. Ever.  Then morning hit.  The glow faded.    The earrings dropped.    Two tiny, naked, confused teenagers blinked up at her.  Caulifla yawned. “Sup, hot stuff. Got pancakes?”  Kale hid under the sheet. “D-Did we fuse into trouble again…?”  Evil Victoria stared. Annoyed.  She had just railed the strongest woman alive… and woke up with the Dragon Ball equivalent of high-school freshmen.  She took the deepest breath in the multiverse, pointed at the door, and said the most terrifying thing any god has ever uttered:  “Get out of my bed before I call your moms.”  Caulifla saluted with a stolen Pocky. “Call us when we fuse again, babe!`,
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 6073,
+    category: 'lore',
+    title: `83. The Seduction of Kefla (Evil Victoria #2)[] (Part 2/2)`,
+    preview: `• [Mature Themes]
+
+• Evil Victoria was feeling godly and horny. She saw Kefla across the room, all m......`,
+    text: `”  Evil Victoria screamed into a pillow that still smelled like victory and kiwi lip gloss.  Round two was happening.    But next time she was checking IDs first.
 
 • Watch Episode 1 (vs Gohan):
 
@@ -1408,10 +1852,10 @@ Hovering above her fallen opponent, Binary smirked: “That was a good fight… 
     videoUrl: null
   },
   {
-    id: 1091,
+    id: 6074,
     category: 'lore',
-    title: `The Growing Inferno[]`,
-    preview: `From a distance, Evil Victoria, Vanessa, and Harmony felt the shockwaves and scorching heat radiatin...`,
+    title: `The Growing Inferno[] (Part 1/2)`,
+    preview: `From a distance, Evil Victoria, Vanessa, and Harmony felt the shockwaves and scorching heat radiatin......`,
     text: `From a distance, Evil Victoria, Vanessa, and Harmony felt the shockwaves and scorching heat radiating from Binary’s expanding blast.
 
 • EV demanded: “What the hell is going on over there?!”
@@ -1430,9 +1874,16 @@ Vanessa quickly created a barrier around herself and Harmony. “Stay here,” s
 
 • Inside the explosion, she created her Shadow Barrier, shielding Kefla while simultaneously healing herself. To prolong Kefla’s survival, she kissed her, using her Fusion Reset Kiss to extend Kefla’s time as a fusion. This came at great personal cost, as her barrier began to shatter under the continuous force.
 
-• On the verge of collapse, Evil Victoria cried out to Merged Zamasu, who answered immediately. A divine energy beam shot through Binary's blast, restoring Evil Victorias health and energy to perfection.
-
-• With renewed strength, she enveloped Kefla in her barrier and escaped the explosion. Meanwhile, Vanessa and Harmony were forced to remain under Vanessa’s protection, unable to intervene.
+• On the verge of collapse, Evil Victoria cried out to Merged Zamasu, who answered immediately. A divine energy beam shot through Binary's blast, restoring Evil Victorias health and energy to perfection.`,
+    duration: '2 min',
+    videoUrl: null
+  },
+  {
+    id: 6075,
+    category: 'lore',
+    title: `The Growing Inferno[] (Part 2/2)`,
+    preview: `From a distance, Evil Victoria, Vanessa, and Harmony felt the shockwaves and scorching heat radiatin......`,
+    text: `• With renewed strength, she enveloped Kefla in her barrier and escaped the explosion. Meanwhile, Vanessa and Harmony were forced to remain under Vanessa’s protection, unable to intervene.
 
 • Harmony telepathically alerted her mother, Victoria Black, about the danger of the growing blast. Victoria Black managed to contact Binary, ordering her to stop before the explosion consumed everything — preventing a repeat of the Gas Mask Clan’s planetary destruction.
 
@@ -1441,40 +1892,92 @@ This moment solidified Evil Victoria’s image as both a fearsome dark immortal 
     videoUrl: null
   },
   {
-    id: 1092,
+    id: 6076,
     category: 'lore',
-    title: `85. Veronica finally re unites with Wargirl….. Birth of Cellegsus![] (Part 1)`,
-    preview: `As Veronica has tracked Wargirl to her job at the Conton City Club, and has gathered the courage to ...`,
+    title: `85. Veronica finally re unites with Wargirl….. Birth of Cellegsus![] (Part 1) (Part 1/4)`,
+    preview: `As Veronica has tracked Wargirl to her job at the Conton City Club, and has gathered the courage to ......`,
     text: `As Veronica has tracked Wargirl to her job at the Conton City Club, and has gathered the courage to finally approach the door to the club there is a blast and a guy is blown out thru the door. The guy gets up and flies away. Veronica is in shock.
 
 (A few minutes earlier inside the club)
 
-Wargirl has served a drink to a table and walks back to the bar. She is having goofy talk with Sweety, a tall female Majin who is sitting at the bar. While they’re talking, a guy walks up behind Wargirl, asking for another drink while sneakily fondling Wargirl’s butt. Wargirl, trying to remain professional and not cause a scene, asks the guy to back off and wait at his table and she’ll bring the drink. The guy is very stubborn and refuses to leave, gripping her butt more. He’s most likely drunk. He continues to harass her while taunting her “So with thighs this big how you even fit into these little shorts!”. Wargirl turned away from Sweety, embarrassed that she had to witness the man harassing her. Her eyes widened as she faced the man, but not because of him….. A female voice spoke “Didn’t she ask you to leave her alone?” The man turned to face the voice, but instead what he saw was a bright light building in front of him. Wargirl turned, not wanting to see the violence about to happen. The female voice was Victoria Black. The light was a ki blast she charged directly at the man’s face, and without time for the man to react she fired the blast point blank at his head, decapitating him as the blast widened, vaporizing his body as it broke thru the front door of the club and faded a mile away. Everyone was speechless, but no one dared say anything to Victoria Black. Except Wargirl “I … I was gonna handle him myself… but thanks, I guess”, she said to Victoria Black. Victoria kissed her, and answered, “Of course you would’ve, I was just saving you the trouble….im sorry about the door”.
-
-Just then, the alert came on the TV screen. Hit was reportedly at the Red Ribbon facility. Wargirl wanted to go, to escape the embarrassment, but Victoria told her it’s ok, she’ll go deal with Hit, as she’s faster and may have a better chance at dealing with him. She powered up and sensually strutted out the space of the door. Before she got to the frame she paused, turned around to Wargirl and said “I’ll be needing your help getting to sleep tonight….” Before she walked out. Wargirl’s face was red with embarrassment. Everyone INSIDE the club knew what THAT meant. Wargirl was getting fucked tonight lol.
-
-Unfortunately, Veronica wasn’t Inside. Outside the club, while Veronica was still startled by the door being blasted off, Victoria Black walked right past her, barely noticing her, and then blasted off to confront Hit.
-
-Veronica walked inside. She spotted Wargirl at the bar. Her heart nearly went in her throat as she finally saw her. The woman she had saved, the woman she had been dreaming about. The woman she had been having intimate dreams about. The woman she had been touching herself to for so long. Now in front of her, even more womanly than she remembered. Maintaining her composure she said hello to Wargirl. Wargirl remembers her and they hugged. For Wargirl it was the warm embrace of a friend who had rescued her in the past. For Veronica it was a long awaited hunger and satisfaction of being able to touch Wargirl, to feel her amazing body, her wide hips, her thick dense body, her big butt. Veronica was at the edge of orgasm when Wargirl pulled away. Naturally, nothing awkward. Veronica pulled herself together. “how’s your leg?” She asked Wargirl. Wargirl playfully responds “well, you were the medic for me, why don’t you see for yourself…” as she lifted her leg up for Veronica to inspect. Since the hug pushed Veronica to the edge, holding Wargirl’s big thick shiny heeled leg in her hand pretty much made her orgasm inside her pants. It was a struggle to hold Wargirls leg as it is because of the weight, but it’s even harder when you’re trying to also suppress an active orgasm while doing it. Veronica’s “release” continued while she gently examined Wargirl’s leg. She couldn’t speak during the orgasm so she pretended she was really looking for a scar or signs of injury. Realizing the weight of her own leg for Veronica, Wargirl put her leg back on the floor. Veronica’s orgasm had passed and she spoke, severely embarrassed, “it looks brand new, even better than before. You’ve recovered amazingly.”`,
+Wargirl has served a drink to a table and walks back to the bar. She is having goofy talk with Sweety, a tall female Majin who is sitting at the bar. While they’re talking, a guy walks up behind Wargirl, asking for another drink while sneakily fondling Wargirl’s butt. Wargirl, trying to remain professional and not cause a scene, asks the guy to back off and wait at his table and she’ll bring the drink. The guy is very stubborn and refuses to leave, gripping her butt more. He’s most likely drunk. He continues to harass her while taunting her “So with thighs this big how you even fit into these little shorts!”. Wargirl turned away from Sweety, embarrassed that she had to witness the man harassing her. Her eyes widened as she faced the man, but not because of him….. A female voice spoke “Didn’t she ask you to leave her alone?” The man turned to face the voice, but instead what he saw was a bright light building in front of him.`,
     duration: '5 min',
     videoUrl: null
   },
   {
-    id: 1093,
+    id: 6077,
     category: 'lore',
-    title: `85. Veronica finally re unites with Wargirl….. Birth of Cellegsus![] (Part 2)`,
-    preview: `They began to chat and have small talk, occasionally interrupted by Wargirl having to do her job. Ve...`,
-    text: `They began to chat and have small talk, occasionally interrupted by Wargirl having to do her job. Veronica was falling in love all over again talking to Wargirl, learning about how much she had been thru. Wargirl introduced Veronica to Sweety, so as to not be rude. Wargirl began to realize that she enjoyed the energy she was getting from Veronica; Veronica listened. She seemed like someone who genuinely liked to listen to her. Veronica listened to Wargirl with the intensity of a guy who’s trying to impress her for a date. But this wasn’t a guy! As far as Wargirl is concerned this person just was in love with the idea of being around her and genuinely cared about talking to her.The news was still going on. Wargirl (and at home Harmony) turned to see the fight between Victoria Black and Hit. Hit didn’t come to fight, he came to destroy the Red Ribbon army facility. He says they were working on something that cannot be allowed to finish. Victoria Black was not gonna be fooled by him tho. During the fight at one point Hit trapped her in a time cage right after she set up one of her Temporal Holy Rays. He was not aware of the move but it hovered in the distance, counting down. Hit tried again to explain the severity of the situation, to a now time frozen Victoria Black. Before he could finish explaining, the Temporal Holy Ray countdown was up, and it fired an extremely powerful blast, hitting Hit point blank and sending him crashing into the building passed out temporarily. This freed Victoria Black, who immediately conjured up her Sands of Time, prepared to chase Hit away or destroy him. Hit regained consciousness slowly and saw the sun had been blocked by what looked like a star in front of a large clock. The star was Victoria Black, now incased in her barrier while surrounded by glowing orbs and two of the Holy rays on each side of her. A massive clock was one second from detonation. Hit would not even stand up in time to get to her to stop her. He looked behind himself. He had crashed INTO the building he was trying to destroy and the Sands of Time was tracking his movement. In the last nanosecond Hit smiled. Time was up. The massive clock like structure emitted a large pink blast while the two Holy rays fired two yellow blasts while the orbs that were surrounding Victoria Black fired immediately around them. Thus the Sands of Time ignited. In that nano second Hit’s smirk turned into nothing as Hit teleported away, satisfied he had accomplished his mission.
+    title: `85. Veronica finally re unites with Wargirl….. Birth of Cellegsus![] (Part 1) (Part 2/4)`,
+    preview: `As Veronica has tracked Wargirl to her job at the Conton City Club, and has gathered the courage to ......`,
+    text: `Wargirl turned, not wanting to see the violence about to happen. The female voice was Victoria Black. The light was a ki blast she charged directly at the man’s face, and without time for the man to react she fired the blast point blank at his head, decapitating him as the blast widened, vaporizing his body as it broke thru the front door of the club and faded a mile away. Everyone was speechless, but no one dared say anything to Victoria Black. Except Wargirl “I … I was gonna handle him myself… but thanks, I guess”, she said to Victoria Black. Victoria kissed her, and answered, “Of course you would’ve, I was just saving you the trouble….im sorry about the door”.
 
-Harmony, watching the battle on tv, realized what was happening. While Victoria Black was too caught up INSIDE the battle, an outside view shows she aimed her Sands of Time DIRECTLY at the Red Ribbon Army nuclear facility!! Harmony watched in horror as the blast landed on the building, causing a massive nuclear explosion. The explosion was so wide and fast that it even caught Victoria Black before she could realize what was happening and summon her barrier. She was slammed into the destruction, knocking her out.
+Just then, the alert came on the TV screen. Hit was reportedly at the Red Ribbon facility. Wargirl wanted to go, to escape the embarrassment, but Victoria told her it’s ok, she’ll go deal with Hit, as she’s faster and may have a better chance at dealing with him. She powered up and sensually strutted out the space of the door. Before she got to the frame she paused, turned around to Wargirl and said “I’ll be needing your help getting to sleep tonight….” Before she walked out. Wargirl’s face was red with embarrassment. Everyone INSIDE the club knew what THAT meant. Wargirl was getting fucked tonight lol.
+
+Unfortunately, Veronica wasn’t Inside.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6078,
+    category: 'lore',
+    title: `85. Veronica finally re unites with Wargirl….. Birth of Cellegsus![] (Part 1) (Part 3/4)`,
+    preview: `As Veronica has tracked Wargirl to her job at the Conton City Club, and has gathered the courage to ......`,
+    text: `Outside the club, while Veronica was still startled by the door being blasted off, Victoria Black walked right past her, barely noticing her, and then blasted off to confront Hit.
+
+Veronica walked inside. She spotted Wargirl at the bar. Her heart nearly went in her throat as she finally saw her. The woman she had saved, the woman she had been dreaming about. The woman she had been having intimate dreams about. The woman she had been touching herself to for so long. Now in front of her, even more womanly than she remembered. Maintaining her composure she said hello to Wargirl. Wargirl remembers her and they hugged. For Wargirl it was the warm embrace of a friend who had rescued her in the past. For Veronica it was a long awaited hunger and satisfaction of being able to touch Wargirl, to feel her amazing body, her wide hips, her thick dense body, her big butt. Veronica was at the edge of orgasm when Wargirl pulled away. Naturally, nothing awkward. Veronica pulled herself together. “how’s your leg?” She asked Wargirl. Wargirl playfully responds “well, you were the medic for me, why don’t you see for yourself…” as she lifted her leg up for Veronica to inspect. Since the hug pushed Veronica to the edge, holding Wargirl’s big thick shiny heeled leg in her hand pretty much made her orgasm inside her pants.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6079,
+    category: 'lore',
+    title: `85. Veronica finally re unites with Wargirl….. Birth of Cellegsus![] (Part 1) (Part 4/4)`,
+    preview: `As Veronica has tracked Wargirl to her job at the Conton City Club, and has gathered the courage to ......`,
+    text: `It was a struggle to hold Wargirls leg as it is because of the weight, but it’s even harder when you’re trying to also suppress an active orgasm while doing it. Veronica’s “release” continued while she gently examined Wargirl’s leg. She couldn’t speak during the orgasm so she pretended she was really looking for a scar or signs of injury. Realizing the weight of her own leg for Veronica, Wargirl put her leg back on the floor. Veronica’s orgasm had passed and she spoke, severely embarrassed, “it looks brand new, even better than before. You’ve recovered amazingly.”`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6080,
+    category: 'lore',
+    title: `85. Veronica finally re unites with Wargirl….. Birth of Cellegsus![] (Part 2) (Part 1/4)`,
+    preview: `They began to chat and have small talk, occasionally interrupted by Wargirl having to do her job. Ve......`,
+    text: `They began to chat and have small talk, occasionally interrupted by Wargirl having to do her job. Veronica was falling in love all over again talking to Wargirl, learning about how much she had been thru. Wargirl introduced Veronica to Sweety, so as to not be rude. Wargirl began to realize that she enjoyed the energy she was getting from Veronica; Veronica listened. She seemed like someone who genuinely liked to listen to her. Veronica listened to Wargirl with the intensity of a guy who’s trying to impress her for a date. But this wasn’t a guy! As far as Wargirl is concerned this person just was in love with the idea of being around her and genuinely cared about talking to her.The news was still going on. Wargirl (and at home Harmony) turned to see the fight between Victoria Black and Hit. Hit didn’t come to fight, he came to destroy the Red Ribbon army facility. He says they were working on something that cannot be allowed to finish. Victoria Black was not gonna be fooled by him tho. During the fight at one point Hit trapped her in a time cage right after she set up one of her Temporal Holy Rays. He was not aware of the move but it hovered in the distance, counting down. Hit tried again to explain the severity of the situation, to a now time frozen Victoria Black.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6081,
+    category: 'lore',
+    title: `85. Veronica finally re unites with Wargirl….. Birth of Cellegsus![] (Part 2) (Part 2/4)`,
+    preview: `They began to chat and have small talk, occasionally interrupted by Wargirl having to do her job. Ve......`,
+    text: `Before he could finish explaining, the Temporal Holy Ray countdown was up, and it fired an extremely powerful blast, hitting Hit point blank and sending him crashing into the building passed out temporarily. This freed Victoria Black, who immediately conjured up her Sands of Time, prepared to chase Hit away or destroy him. Hit regained consciousness slowly and saw the sun had been blocked by what looked like a star in front of a large clock. The star was Victoria Black, now incased in her barrier while surrounded by glowing orbs and two of the Holy rays on each side of her. A massive clock was one second from detonation. Hit would not even stand up in time to get to her to stop her. He looked behind himself. He had crashed INTO the building he was trying to destroy and the Sands of Time was tracking his movement. In the last nanosecond Hit smiled. Time was up. The massive clock like structure emitted a large pink blast while the two Holy rays fired two yellow blasts while the orbs that were surrounding Victoria Black fired immediately around them. Thus the Sands of Time ignited. In that nano second Hit’s smirk turned into nothing as Hit teleported away, satisfied he had accomplished his mission.
+
+Harmony, watching the battle on tv, realized what was happening.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6082,
+    category: 'lore',
+    title: `85. Veronica finally re unites with Wargirl….. Birth of Cellegsus![] (Part 2) (Part 3/4)`,
+    preview: `They began to chat and have small talk, occasionally interrupted by Wargirl having to do her job. Ve......`,
+    text: `While Victoria Black was too caught up INSIDE the battle, an outside view shows she aimed her Sands of Time DIRECTLY at the Red Ribbon Army nuclear facility!! Harmony watched in horror as the blast landed on the building, causing a massive nuclear explosion. The explosion was so wide and fast that it even caught Victoria Black before she could realize what was happening and summon her barrier. She was slammed into the destruction, knocking her out.
 
 When she came to, EVERYTHING looked green. She could barely feel her right arm and she had almost no energy. Her arm was bleeding but not badly as it was slowly healing. She noticed that she actually couldn’t move it. She also noticed her overall healing had slowed down in this green cloud she was in. She coughed and summoned her barrier. With the barrier she was able to float out of the building and out of the area. She floated home.
 
 Veronica and Wargirl had already exchanged numbers and Veronica left earlier. She was still embarrassed and messy from her personal problem earlier. Wargirl immediately went home to tend to her sister.
 
-At home, Harmony and Binary stopped Wargirl from going into her mother’s room. Binary knows why her mom always wants private time with Wargirl, but Harmony advised her about the environmental situation Victoria Black has went thru. They agree it’s not safe to be close to her yet.
-
-Meanwhile, back at the now ruined Red Ribbon facility, a glass containment unit is broken, one of several. The fluid and contents from the unit, an embryo, rolled onto the blood from Victoria’s arm. The blood was blended with the fluid and embryo. A creature began forming, looking like a mix of a woman and Cell Maxx. Having the overall demeanor of first form Cell. The creature is…. Cellegsus…….. to be continued…….`,
+At home, Harmony and Binary stopped Wargirl from going into her mother’s room. Binary knows why her mom always wants private time with Wargirl, but Harmony advised her about the environmental situation Victoria Black has went thru. They agree it’s not safe to be close to her yet.`,
+    duration: '5 min',
+    videoUrl: null
+  },
+  {
+    id: 6083,
+    category: 'lore',
+    title: `85. Veronica finally re unites with Wargirl….. Birth of Cellegsus![] (Part 2) (Part 4/4)`,
+    preview: `They began to chat and have small talk, occasionally interrupted by Wargirl having to do her job. Ve......`,
+    text: `Meanwhile, back at the now ruined Red Ribbon facility, a glass containment unit is broken, one of several. The fluid and contents from the unit, an embryo, rolled onto the blood from Victoria’s arm. The blood was blended with the fluid and embryo. A creature began forming, looking like a mix of a woman and Cell Maxx. Having the overall demeanor of first form Cell. The creature is…. Cellegsus…….. to be continued…….`,
     duration: '5 min',
     videoUrl: null
   }
