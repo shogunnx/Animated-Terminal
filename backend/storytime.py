@@ -291,6 +291,17 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
                 headers=headers
             )
 
+
+@router.get("/test-mode-status")
+async def get_test_mode_status():
+    """
+    Check if HeyGen test mode is enabled
+    """
+    return {
+        "test_mode_enabled": HEYGEN_TEST_MODE,
+        "message": "Using pre-recorded videos" if HEYGEN_TEST_MODE else "Using HeyGen API"
+    }
+
         response_data = response.json()
         
         if response.status_code != 200:
