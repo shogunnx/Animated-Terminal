@@ -579,9 +579,12 @@ async def get_dynamic_content():
 @router.get("/test-mode-status")
 async def get_test_mode_status():
     """
-    Check if HeyGen test mode or automation mode is enabled
+    Check current video generation mode
     """
-    if HEYGEN_AUTOMATION_MODE:
+    if TSVAVATAR_MODE:
+        mode = "tsvavatar"
+        message = "Using TSVAvatarGenerator service (your custom generator)"
+    elif HEYGEN_AUTOMATION_MODE:
         mode = "automation"
         message = "Using browser automation (no API credits)"
     elif HEYGEN_TEST_MODE:
@@ -594,6 +597,7 @@ async def get_test_mode_status():
     return {
         "test_mode_enabled": HEYGEN_TEST_MODE,
         "automation_mode_enabled": HEYGEN_AUTOMATION_MODE,
+        "tsvavatar_mode_enabled": TSVAVATAR_MODE,
         "mode": mode,
         "message": message
     }
