@@ -85,26 +85,19 @@ async def generate_video_with_tsvavatar(
             
             image_base64 = base64.b64encode(img_response.content).decode('utf-8')
         
-        # Prepare API request
-        api_keys = {}
-        if TSVAVATAR_RUNWAYML_KEY:
-            api_keys["runwayml"] = TSVAVATAR_RUNWAYML_KEY
-        if TSVAVATAR_ELEVENLABS_KEY:
-            api_keys["elevenlabs"] = TSVAVATAR_ELEVENLABS_KEY
-        
         # Build animation prompt based on character
-        animation_prompt = f"Character speaking and narrating the following story: {script_text[:200]}..."
+        animation_prompt = f"Animate {avatar_info['name']} speaking and narrating with natural expressions and lip sync"
         
+        # TSVAvatarGen has APIs configured, we just send the data
         payload = {
             "image_data": image_base64,
             "prompt_text": animation_prompt,
-            "video_engine": "runwayml",  # or "deepvid_fast", "deepvid_quality"
-            "voice_engine": "elevenlabs" if enable_audio else None,
+            "video_engine": "runwayml",  # TSVAvatarGen will use its configured RunwayML key
+            "voice_engine": "elevenlabs" if enable_audio else None,  # TSVAvatarGen will use its configured ElevenLabs key
             "audio_script": script_text if enable_audio else None,
             "duration": min(duration, 300),  # Max 5 minutes
             "user_id": "storytime",
-            "api_keys": api_keys,
-            "voice_id": voice_id  # Pass ElevenLabs voice ID
+            "voice_id": voice_id  # ElevenLabs voice ID for this character
         }
         
         logger.info(f"Sending video generation request to TSVAvatarGen for {avatar_info['name']}")
