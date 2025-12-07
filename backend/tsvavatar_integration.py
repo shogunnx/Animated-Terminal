@@ -18,28 +18,28 @@ logger = logging.getLogger(__name__)
 
 TSVAVATAR_BASE_URL = os.getenv("TSVAVATAR_BASE_URL", "https://lipsync-creator-3.emergent.host")
 
-# Map HeyGen avatar IDs to character names/identifiers
-# The TSVAvatarGenerator service uses these character names to look up the avatars
+# Map HeyGen avatar IDs to TSVAvatarGenerator character IDs
+# The TSVAvatarGenerator service uses short alphanumeric IDs
 AVATAR_CHARACTER_MAPPING = {
-    # Evil Victoria
-    "738db1645bc140beb1b476231a8b79f4": "Evil Victoria",
-    "d33267ddfad14fc2a8820f1d00eb713c": "Evil Victoria",
-    "94fd37e9ad0b42efb9d828edf5be22ee": "Evil Victoria",
-    
     # Binary
-    "d8d16687495340c5805ad9821046be3a": "Binary",
+    "d8d16687495340c5805ad9821046be3a": "9d2bce89",
     
-    # Harmony
-    "783e82f2b06948d5b2f882fa351337fd": "Harmony",
+    # Evil Victoria (TODO: get correct ID from user)
+    "738db1645bc140beb1b476231a8b79f4": "evil-victoria-id",
+    "d33267ddfad14fc2a8820f1d00eb713c": "evil-victoria-id",
+    "94fd37e9ad0b42efb9d828edf5be22ee": "evil-victoria-id",
     
-    # Victoria Black
-    "faa3f1fcdc0b49b79bb0a3fa11595754": "Victoria Black",
+    # Harmony (TODO: get correct ID from user)
+    "783e82f2b06948d5b2f882fa351337fd": "harmony-id",
     
-    # Wargirl
-    "c8680d9549744019809f0acc04faac65": "Wargirl",
+    # Victoria Black (TODO: get correct ID from user)
+    "faa3f1fcdc0b49b79bb0a3fa11595754": "victoria-black-id",
     
-    # Vanessa
-    "f81fa68314f84acb8fe6e527d90adc07": "Vanessa",
+    # Wargirl (TODO: get correct ID from user)
+    "c8680d9549744019809f0acc04faac65": "wargirl-id",
+    
+    # Vanessa (TODO: get correct ID from user)
+    "f81fa68314f84acb8fe6e527d90adc07": "vanessa-id",
 }
 
 
