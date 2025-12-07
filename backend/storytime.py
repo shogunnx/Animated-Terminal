@@ -230,27 +230,38 @@ async def generate_story_video(request: StoryGenerationRequest):
 @router.get("/status/{video_id}")
 async def check_video_status(video_id: str):
     """
-    Check the status of a HeyGen video generation
-    Returns the video URL when ready
+    Check video generation status from HeyGen API V2 or TSVAvatarGenerator
     """
     try:
-        status_url = f"https://api.heygen.com/v1/video_status.get?video_id={video_id}"
+        # Check if this is a TSVAvatarGen task (UUID format or starts with specific prefix)
+        if TSVAVATAR_MODE:
+            from tsvavatar_integration import check_tsvavatar_status
+            
+            tsv_result = await check_tsvavatar_status(video_id)
+            
+            # Convert to HeyGen format
+            return {
+                "data": {
+                    "video_id": video_id,
+                    "status": tsv_result.get("status", "processing"),
+                    "video_url": tsv_result.get("video_url", ""),
+                    "progress": tsv_result.get("progress", 0.0),
+                    "error": tsv_result.get("error")
+                }
+            }
+        
         headers = {
             "accept": "application/json",
             "x-api-key": HEYGEN_API_KEY
         }
 
         async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get(status_url, headers=headers)
+            response = await client.get(
+                f"{HEYGEN_API_URL.replace('/generate', '')}/status/{video_id}",
+                headers=headers
+            )
 
         response_data = response.json()
-        
-        if response.status_code != 200:
-            error_msg = response_data.get("error", {}).get("message", response.text) if isinstance(response_data, dict) else response.text
-            raise HTTPException(
-                status_code=response.status_code,
-                detail=f"Failed to check video status: {error_msg}"
-            )
 
         # HeyGen status response format:
         # {
