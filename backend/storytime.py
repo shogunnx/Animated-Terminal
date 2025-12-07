@@ -315,6 +315,54 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
                 status="processing"
             )
         
+        # TSVAVATAR MODE: Use TSVAvatarGenerator service
+        if TSVAVATAR_MODE:
+            from tsvavatar_integration import generate_video_with_tsvavatar
+            
+            # Rewrite story in character's voice if requested
+            final_story_text = request.story_text
+            if request.use_character_voice:
+                try:
+                    from storytime_qa import rewrite_story_in_character_voice
+                    final_story_text = await rewrite_story_in_character_voice(
+                        character_id=request.character_id,
+                        character_name=request.character_name,
+                        story_text=request.story_text,
+                        story_title=request.story_title
+                    )
+                    logger.info(f"TSVAVATAR MODE: Story rewritten in {request.character_name}'s voice")
+                except Exception as e:
+                    logger.warning(f"TSVAVATAR MODE: Character voice rewrite failed: {e}")
+            
+            voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
+            
+            logger.info(f"TSVAVATAR MODE: Generating narrated video via TSVAvatarGenerator")
+            result = await generate_video_with_tsvavatar(
+                avatar_id=request.avatar_id,
+                script_text=final_story_text,
+                voice_id=voice_id,
+                title=request.story_title,
+                duration=10,  # Default 10 seconds
+                enable_audio=True
+            )
+            
+            if result["success"] and result.get("task_id"):
+                return StoryGenerationResponse(
+                    video_url="",
+                    video_id=result["task_id"],
+                    status="processing"
+                )
+            else:
+                # Fallback to test mode if TSVAvatar fails
+                logger.warning(f"TSVAvatar failed: {result.get('error')} - falling back to test mode")
+                import random
+                test_video_id = random.choice(HEYGEN_TEST_VIDEOS)
+                return StoryGenerationResponse(
+                    video_url="",
+                    video_id=test_video_id,
+                    status="processing"
+                )
+        
         # AUTOMATION MODE: Use browser automation instead of API
         if HEYGEN_AUTOMATION_MODE:
             from heygen_automation import generate_video_via_automation
