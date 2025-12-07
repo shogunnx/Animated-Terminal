@@ -314,7 +314,8 @@ export default function StoryTime() {
           character_name: characterData?.name || currentNarratorData.name,
           avatar_id: currentNarratorData.id,
           question: qaQuestion,
-          video_url: qaVideoLink || null
+          video_url: qaVideoLink || null,
+          duration: 20  // 20-second video for Q&A responses
         })
       });
 
