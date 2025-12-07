@@ -18,6 +18,9 @@ HEYGEN_TEST_VIDEOS = [
     os.getenv("HEYGEN_TEST_VIDEO_3", "e08b1ee999ea4769bf3c738861e962b6")
 ]
 
+# TSVAvatarGenerator mode
+TSVAVATAR_MODE = os.getenv("TSVAVATAR_MODE", "false").lower() == "true"
+
 # Voice ID mappings for different avatars
 AVATAR_VOICE_MAPPING = {
     # Evil Victoria - Main avatar
