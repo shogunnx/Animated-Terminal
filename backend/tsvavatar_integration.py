@@ -18,32 +18,32 @@ logger = logging.getLogger(__name__)
 TSVAVATAR_BASE_URL = os.getenv("TSVAVATAR_BASE_URL", "https://lipsync-creator-3.emergent.host")
 TSVAVATAR_SYSTEM_KEY = os.getenv("TSVAVATAR_SYSTEM_KEY", "tsv-terminal-secure-key-2024")
 
-# Map HeyGen avatar IDs to TSVAvatarGenerator UUIDs
-# These UUIDs will be available after redeploying the TSVAvatarGenerator app
+# Map HeyGen avatar IDs to TSVAvatarGenerator UUIDs (PRODUCTION DEPLOYMENT)
+# Updated with actual deployed avatar UUIDs from https://lipsync-creator-3.emergent.host
 AVATAR_CHARACTER_MAPPING = {
-    # Binary
-    "d8d16687495340c5805ad9821046be3a": "31b5ad65-d654-4436-8cf1-163537df7bc5",
+    # Binary - DEPLOYED
+    "d8d16687495340c5805ad9821046be3a": "bada8764-29f8-4d7f-a914-5648c81fe6a4",
     
-    # Evil Victoria
-    "738db1645bc140beb1b476231a8b79f4": "0a50b0ea-c111-47df-83c7-d17b8a5abad3",
-    "d33267ddfad14fc2a8820f1d00eb713c": "0a50b0ea-c111-47df-83c7-d17b8a5abad3",
-    "94fd37e9ad0b42efb9d828edf5be22ee": "0a50b0ea-c111-47df-83c7-d17b8a5abad3",
+    # Victoria Black - DEPLOYED
+    "faa3f1fcdc0b49b79bb0a3fa11595754": "70b91dc1-ef08-423f-a87a-afb37cddaf52",
     
-    # Victoria Black
-    "faa3f1fcdc0b49b79bb0a3fa11595754": "829a9db9-c2fe-48ef-9436-5b81a8210ded",
+    # Veronica - DEPLOYED (mapped from Harmony, Wargirl, Vanessa)
+    "783e82f2b06948d5b2f882fa351337fd": "81653ecd-12be-486d-b43a-afcf871fdd6d",
+    "c8680d9549744019809f0acc04faac65": "81653ecd-12be-486d-b43a-afcf871fdd6d",
+    "f81fa68314f84acb8fe6e527d90adc07": "0ed38b72-75b9-4893-a236-cee13cc9031f",  # Vanessa
     
-    # Veronica (mapped from Harmony, Wargirl, Vanessa for now)
-    "783e82f2b06948d5b2f882fa351337fd": "bac2469c-f5dd-411c-851c-0a76e1fb6ed8",
-    "c8680d9549744019809f0acc04faac65": "bac2469c-f5dd-411c-851c-0a76e1fb6ed8",
-    "f81fa68314f84acb8fe6e527d90adc07": "bac2469c-f5dd-411c-851c-0a76e1fb6ed8",
+    # Evil Victoria - NOT YET DEPLOYED (need to add to TSVAvatarGenerator)
+    "738db1645bc140beb1b476231a8b79f4": "evil-victoria-placeholder",
+    "d33267ddfad14fc2a8820f1d00eb713c": "evil-victoria-placeholder",
+    "94fd37e9ad0b42efb9d828edf5be22ee": "evil-victoria-placeholder",
 }
 
 # Character name lookup (for logging purposes)
 AVATAR_NAMES = {
-    "31b5ad65-d654-4436-8cf1-163537df7bc5": "Binary",
-    "0a50b0ea-c111-47df-83c7-d17b8a5abad3": "Evil Victoria",
-    "829a9db9-c2fe-48ef-9436-5b81a8210ded": "Victoria Black",
-    "bac2469c-f5dd-411c-851c-0a76e1fb6ed8": "Veronica",
+    "bada8764-29f8-4d7f-a914-5648c81fe6a4": "Binary",
+    "70b91dc1-ef08-423f-a87a-afb37cddaf52": "Victoria Black",
+    "81653ecd-12be-486d-b43a-afcf871fdd6d": "Veronica",
+    "0ed38b72-75b9-4893-a236-cee13cc9031f": "Vanessa",
 }
 
 
