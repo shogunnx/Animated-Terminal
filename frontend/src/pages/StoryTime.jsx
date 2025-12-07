@@ -613,7 +613,7 @@ export default function StoryTime() {
               margin: '80px auto'
             }}>
               <div className="tsv-title" style={{ fontSize: 14, marginBottom: 12 }}>⚡ GENERATING STORY VIDEO...</div>
-              <div style={{ fontSize: 12, opacity: 0.7 }}>HeyGen AI is creating your personalized story experience</div>
+              <div style={{ fontSize: 12, opacity: 0.7 }}>TSVAvatarGenerator is creating your personalized story experience</div>
             </div>
           ) : generatedVideoUrl ? (
             <div style={{ maxWidth: 600, margin: '60px auto' }}>
