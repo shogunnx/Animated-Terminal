@@ -259,21 +259,25 @@ async def create_qa_video(
     question: str,
     avatar_id: str,
     heygen_api_key: str,
-    video_url: str = None
+    video_url: str = None,
+    duration: int = 10
 ) -> dict:
-    """Generate Q&A response and create video using existing story generation"""
+    """Generate Q&A response and create video using TSVAvatarGenerator"""
     
     # Generate character response using AI (with optional video analysis)
     response_text = await generate_character_response(character_id, character_name, question, video_url)
     
-    # Use the existing storytime generate endpoint which already has working HeyGen integration
+    # Use the narrated endpoint which supports TSVAvatarGenerator with custom duration
     async with httpx.AsyncClient() as client:
         story_response = await client.post(
-            "http://localhost:8001/api/storytime/generate",
+            "http://localhost:8001/api/storytime/generate-narrated",
             json={
                 "avatar_id": avatar_id,
+                "character_id": character_id,
+                "character_name": character_name,
                 "story_text": response_text,
-                "story_title": f"Q&A: {question[:50]}"
+                "story_title": f"Q&A: {question[:50]}",
+                "use_character_voice": False  # Already in character voice from LLM
             },
             timeout=30.0
         )
