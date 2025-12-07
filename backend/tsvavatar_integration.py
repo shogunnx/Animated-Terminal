@@ -80,10 +80,11 @@ async def generate_video_with_tsvavatar(
         }
     
     try:
-        # Simple payload: just character and script
+        # Build payload for TSVAvatarGenerator
+        # The API expects: character_id and prompt_text
         payload = {
             "character_id": character_name,
-            "script_text": script_text
+            "prompt_text": script_text
         }
         
         logger.info(f"🎬 Sending video generation request to TSVAvatarGen")
