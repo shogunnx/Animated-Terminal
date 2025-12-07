@@ -86,7 +86,7 @@ async def generate_story_video(request: StoryGenerationRequest):
             
             voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
             
-            logger.info(f"TSVAVATAR MODE: Generating video via TSVAvatarGenerator")
+            logger.info("TSVAVATAR MODE: Generating video via TSVAvatarGenerator")
             result = await generate_video_with_tsvavatar(
                 avatar_id=request.avatar_id,
                 script_text=request.story_text,
@@ -119,7 +119,7 @@ async def generate_story_video(request: StoryGenerationRequest):
             
             voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
             
-            logger.info(f"AUTOMATION MODE: Generating video via browser automation")
+            logger.info("AUTOMATION MODE: Generating video via browser automation")
             result = await generate_video_via_automation(
                 talking_photo_id=request.avatar_id,
                 script_text=request.story_text,
@@ -336,7 +336,7 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
             
             voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
             
-            logger.info(f"TSVAVATAR MODE: Generating narrated video via TSVAvatarGenerator")
+            logger.info("TSVAVATAR MODE: Generating narrated video via TSVAvatarGenerator")
             result = await generate_video_with_tsvavatar(
                 avatar_id=request.avatar_id,
                 script_text=final_story_text,
@@ -384,7 +384,7 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
             
             voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
             
-            logger.info(f"AUTOMATION MODE: Generating video via browser automation")
+            logger.info("AUTOMATION MODE: Generating video via browser automation")
             result = await generate_video_via_automation(
                 talking_photo_id=request.avatar_id,
                 script_text=final_story_text,
