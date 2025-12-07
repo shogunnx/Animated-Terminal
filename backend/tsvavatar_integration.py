@@ -90,6 +90,8 @@ async def generate_video_with_tsvavatar(
         logger.info(f"🎬 Sending video generation request to TSVAvatarGen")
         logger.info(f"   Character: {character_name}")
         logger.info(f"   Script length: {len(script_text)} chars")
+        logger.info(f"   Payload: {payload}")
+        logger.info(f"   Target URL: {TSVAVATAR_BASE_URL}/api/generate")
         
         # Call TSVAvatarGen API
         async with httpx.AsyncClient(timeout=60.0) as client:
