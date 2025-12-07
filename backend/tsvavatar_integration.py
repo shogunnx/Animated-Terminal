@@ -2,43 +2,44 @@
 TSVAvatarGenerator Integration
 Routes StoryTime video generation to your custom avatar generator service
 Hosted at: https://lipsync-creator-3.emergent.host/
+
+The TSVAvatarGenerator service already has the avatars stored on its end.
+We only need to send:
+1. Character identifier (which girl)
+2. Script text (what they're talking about)
 """
 
 import os
-import asyncio
 import logging
 from typing import Dict, Optional
 import httpx
-import base64
 
 logger = logging.getLogger(__name__)
 
 TSVAVATAR_BASE_URL = os.getenv("TSVAVATAR_BASE_URL", "https://lipsync-creator-3.emergent.host")
 
-# Map HeyGen avatar IDs to TSVAvatarGen avatar IDs (or image paths)
-# You'll need to upload your character images to TSVAvatarGen first
-AVATAR_IMAGE_MAPPING = {
+# Map HeyGen avatar IDs to character names/identifiers
+# The TSVAvatarGenerator service uses these character names to look up the avatars
+AVATAR_CHARACTER_MAPPING = {
     # Evil Victoria
-    "738db1645bc140beb1b476231a8b79f4": {
-        "name": "Evil Victoria",
-        "image_url": "https://your-storage/evil-victoria.png"  # UPDATE THIS
-    },
+    "738db1645bc140beb1b476231a8b79f4": "Evil Victoria",
+    "d33267ddfad14fc2a8820f1d00eb713c": "Evil Victoria",
+    "94fd37e9ad0b42efb9d828edf5be22ee": "Evil Victoria",
+    
     # Binary
-    "d8d16687495340c5805ad9821046be3a": {
-        "name": "Binary",
-        "image_url": "https://your-storage/binary.png"  # UPDATE THIS
-    },
+    "d8d16687495340c5805ad9821046be3a": "Binary",
+    
     # Harmony
-    "783e82f2b06948d5b2f882fa351337fd": {
-        "name": "Harmony",
-        "image_url": "https://your-storage/harmony.png"  # UPDATE THIS
-    },
+    "783e82f2b06948d5b2f882fa351337fd": "Harmony",
+    
     # Victoria Black
-    "faa3f1fcdc0b49b79bb0a3fa11595754": {
-        "name": "Victoria Black",
-        "image_url": "https://your-storage/victoria-black.png"  # UPDATE THIS
-    },
-    # Add other avatars here...
+    "faa3f1fcdc0b49b79bb0a3fa11595754": "Victoria Black",
+    
+    # Wargirl
+    "c8680d9549744019809f0acc04faac65": "Wargirl",
+    
+    # Vanessa
+    "f81fa68314f84acb8fe6e527d90adc07": "Vanessa",
 }
 
 
@@ -53,10 +54,14 @@ async def generate_video_with_tsvavatar(
     """
     Generate video using TSVAvatarGenerator service
     
+    The service already has the avatars, so we only send:
+    - character_id: Which character/girl to use
+    - script_text: What they're talking about
+    
     Args:
-        avatar_id: HeyGen avatar ID (will be mapped to TSVAvatar image)
+        avatar_id: HeyGen avatar ID (will be mapped to character name)
         script_text: Story text to narrate
-        voice_id: ElevenLabs voice ID (optional)
+        voice_id: ElevenLabs voice ID (optional, for future use)
         title: Video title
         duration: Video duration in seconds
         enable_audio: Whether to include voice narration
@@ -65,40 +70,25 @@ async def generate_video_with_tsvavatar(
         {"success": True/False, "task_id": str, "video_url": str, "error": str}
     """
     
-    # Get avatar image mapping
-    avatar_info = AVATAR_IMAGE_MAPPING.get(avatar_id)
-    if not avatar_info:
-        logger.error(f"Avatar ID {avatar_id} not found in mapping")
+    # Get character name from avatar ID
+    character_name = AVATAR_CHARACTER_MAPPING.get(avatar_id)
+    if not character_name:
+        logger.error(f"Avatar ID {avatar_id} not found in character mapping")
         return {
             "success": False,
             "error": f"Avatar {avatar_id} not configured in TSVAvatarGen mapping"
         }
     
     try:
-        # Fetch avatar image and convert to base64
-        async with httpx.AsyncClient() as client:
-            img_response = await client.get(avatar_info["image_url"], timeout=30.0)
-            if img_response.status_code != 200:
-                raise Exception(f"Failed to fetch avatar image: {img_response.status_code}")
-            
-            image_base64 = base64.b64encode(img_response.content).decode('utf-8')
-        
-        # Build animation prompt based on character
-        animation_prompt = f"Animate {avatar_info['name']} speaking and narrating with natural expressions and lip sync"
-        
-        # TSVAvatarGen has APIs configured, we just send the data
+        # Simple payload: just character and script
         payload = {
-            "image_data": image_base64,
-            "prompt_text": animation_prompt,
-            "video_engine": "runwayml",  # TSVAvatarGen will use its configured RunwayML key
-            "voice_engine": "elevenlabs" if enable_audio else None,  # TSVAvatarGen will use its configured ElevenLabs key
-            "audio_script": script_text if enable_audio else None,
-            "duration": min(duration, 300),  # Max 5 minutes
-            "user_id": "storytime",
-            "voice_id": voice_id  # ElevenLabs voice ID for this character
+            "character_id": character_name,
+            "script_text": script_text
         }
         
-        logger.info(f"Sending video generation request to TSVAvatarGen for {avatar_info['name']}")
+        logger.info(f"🎬 Sending video generation request to TSVAvatarGen")
+        logger.info(f"   Character: {character_name}")
+        logger.info(f"   Script length: {len(script_text)} chars")
         
         # Call TSVAvatarGen API
         async with httpx.AsyncClient(timeout=60.0) as client:
@@ -109,7 +99,7 @@ async def generate_video_with_tsvavatar(
             
             if response.status_code != 200:
                 error_text = response.text
-                logger.error(f"TSVAvatarGen API error: {response.status_code} - {error_text}")
+                logger.error(f"❌ TSVAvatarGen API error: {response.status_code} - {error_text}")
                 return {
                     "success": False,
                     "error": f"TSVAvatarGen API error: {error_text}"
@@ -119,6 +109,7 @@ async def generate_video_with_tsvavatar(
             task_id = result.get("task_id")
             
             if not task_id:
+                logger.error(f"❌ No task_id returned from TSVAvatarGen: {result}")
                 return {
                     "success": False,
                     "error": "No task_id returned from TSVAvatarGen"
@@ -133,8 +124,20 @@ async def generate_video_with_tsvavatar(
                 "status": "processing"
             }
     
+    except httpx.TimeoutException as e:
+        logger.error(f"⏱️ Timeout calling TSVAvatarGen: {e}")
+        return {
+            "success": False,
+            "error": f"Request timeout: {str(e)}"
+        }
+    except httpx.HTTPError as e:
+        logger.error(f"🌐 HTTP error calling TSVAvatarGen: {e}")
+        return {
+            "success": False,
+            "error": f"HTTP error: {str(e)}"
+        }
     except Exception as e:
-        logger.error(f"Error calling TSVAvatarGen: {e}")
+        logger.error(f"❌ Error calling TSVAvatarGen: {e}")
         return {
             "success": False,
             "error": str(e)
