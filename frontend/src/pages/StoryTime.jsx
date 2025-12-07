@@ -620,6 +620,8 @@ export default function StoryTime() {
               <video
                 ref={videoRef}
                 src={generatedVideoUrl}
+                controls
+                autoPlay
                 style={{ 
                   width: '100%', 
                   borderRadius: 16, 
