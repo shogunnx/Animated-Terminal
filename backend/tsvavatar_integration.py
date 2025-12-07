@@ -14,8 +14,6 @@ import base64
 logger = logging.getLogger(__name__)
 
 TSVAVATAR_BASE_URL = os.getenv("TSVAVATAR_BASE_URL", "https://lipsync-creator-3.emergent.host")
-TSVAVATAR_RUNWAYML_KEY = os.getenv("TSVAVATAR_RUNWAYML_KEY", "")
-TSVAVATAR_ELEVENLABS_KEY = os.getenv("TSVAVATAR_ELEVENLABS_KEY", "")
 
 # Map HeyGen avatar IDs to TSVAvatarGen avatar IDs (or image paths)
 # You'll need to upload your character images to TSVAvatarGen first
