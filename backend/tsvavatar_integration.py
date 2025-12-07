@@ -80,24 +80,32 @@ async def generate_video_with_tsvavatar(
         }
     
     try:
-        # Build payload for TSVAvatarGenerator
-        # The API expects: character_id and prompt_text
+        # Build payload for TSVAvatarGenerator /api/generate/system endpoint
+        # Expects: character_name, audio_script, duration (optional)
         payload = {
-            "character_id": character_name,
-            "prompt_text": script_text
+            "character_name": character_name,
+            "audio_script": script_text,
+            "duration": min(duration, 300) if duration else 10  # Default 10 seconds, max 300
+        }
+        
+        # Prepare headers with system authentication key
+        headers = {
+            "Content-Type": "application/json",
+            "X-System-Key": TSVAVATAR_SYSTEM_KEY
         }
         
         logger.info(f"🎬 Sending video generation request to TSVAvatarGen")
         logger.info(f"   Character: {character_name}")
         logger.info(f"   Script length: {len(script_text)} chars")
-        logger.info(f"   Payload: {payload}")
-        logger.info(f"   Target URL: {TSVAVATAR_BASE_URL}/api/generate")
+        logger.info(f"   Duration: {payload['duration']}s")
+        logger.info(f"   Target URL: {TSVAVATAR_BASE_URL}/api/generate/system")
         
-        # Call TSVAvatarGen API
+        # Call TSVAvatarGen API (system endpoint)
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
-                f"{TSVAVATAR_BASE_URL}/api/generate",
-                json=payload
+                f"{TSVAVATAR_BASE_URL}/api/generate/system",
+                json=payload,
+                headers=headers
             )
             
             if response.status_code != 200:
