@@ -4,9 +4,8 @@ Routes StoryTime video generation to your custom avatar generator service
 Hosted at: https://lipsync-creator-3.emergent.host/
 
 The TSVAvatarGenerator service already has the avatars stored on its end.
-We only need to send:
-1. Character identifier (which girl)
-2. Script text (what they're talking about)
+Endpoint: /api/generate/system (JSON endpoint for TSVTerminal integration)
+Authentication: X-System-Key header
 """
 
 import os
@@ -17,29 +16,30 @@ import httpx
 logger = logging.getLogger(__name__)
 
 TSVAVATAR_BASE_URL = os.getenv("TSVAVATAR_BASE_URL", "https://lipsync-creator-3.emergent.host")
+TSVAVATAR_SYSTEM_KEY = os.getenv("TSVAVATAR_SYSTEM_KEY", "tsv-terminal-secure-key-2024")
 
-# Map HeyGen avatar IDs to TSVAvatarGenerator character IDs
-# The TSVAvatarGenerator service uses short alphanumeric IDs
+# Map HeyGen avatar IDs to character names (for TSVAvatarGenerator)
+# The service uses character names like "Binary", "Evil Victoria", etc.
 AVATAR_CHARACTER_MAPPING = {
     # Binary
-    "d8d16687495340c5805ad9821046be3a": "9d2bce89",
+    "d8d16687495340c5805ad9821046be3a": "Binary",
     
-    # Evil Victoria (TODO: get correct ID from user)
-    "738db1645bc140beb1b476231a8b79f4": "evil-victoria-id",
-    "d33267ddfad14fc2a8820f1d00eb713c": "evil-victoria-id",
-    "94fd37e9ad0b42efb9d828edf5be22ee": "evil-victoria-id",
+    # Evil Victoria
+    "738db1645bc140beb1b476231a8b79f4": "Evil Victoria",
+    "d33267ddfad14fc2a8820f1d00eb713c": "Evil Victoria",
+    "94fd37e9ad0b42efb9d828edf5be22ee": "Evil Victoria",
     
-    # Harmony (TODO: get correct ID from user)
-    "783e82f2b06948d5b2f882fa351337fd": "harmony-id",
+    # Harmony
+    "783e82f2b06948d5b2f882fa351337fd": "Harmony",
     
-    # Victoria Black (TODO: get correct ID from user)
-    "faa3f1fcdc0b49b79bb0a3fa11595754": "victoria-black-id",
+    # Victoria Black
+    "faa3f1fcdc0b49b79bb0a3fa11595754": "Victoria Black",
     
-    # Wargirl (TODO: get correct ID from user)
-    "c8680d9549744019809f0acc04faac65": "wargirl-id",
+    # Wargirl
+    "c8680d9549744019809f0acc04faac65": "Wargirl",
     
-    # Vanessa (TODO: get correct ID from user)
-    "f81fa68314f84acb8fe6e527d90adc07": "vanessa-id",
+    # Vanessa
+    "f81fa68314f84acb8fe6e527d90adc07": "Vanessa",
 }
 
 
