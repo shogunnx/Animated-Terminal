@@ -10,7 +10,7 @@ import httpx
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 # Emergent LLM key
-EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY", "sk-emergent-3A6Ea89Ad00D72b461")
+EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY", "")
 GIRLSMIND_API_KEY = os.getenv("GIRLSMIND_API_KEY", "")
 
 # Character lore summaries with strong personalities
