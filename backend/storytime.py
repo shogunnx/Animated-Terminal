@@ -512,11 +512,13 @@ class QARequest(BaseModel):
     avatar_id: str
     question: str
     video_url: str = None  # Optional YouTube or video URL for analysis
+    duration: int = 10  # Video duration in seconds (default 10)
 
 @router.post("/qa")
 async def generate_qa_response(request: QARequest):
     """
     Generate Q&A video response using character lore + AI (with optional video analysis)
+    Now supports custom video duration for TSVAvatarGenerator
     """
     try:
         from storytime_qa import create_qa_video
@@ -527,7 +529,8 @@ async def generate_qa_response(request: QARequest):
             question=request.question,
             avatar_id=request.avatar_id,
             heygen_api_key=HEYGEN_API_KEY,
-            video_url=request.video_url
+            video_url=request.video_url,
+            duration=request.duration
         )
         
         return {
