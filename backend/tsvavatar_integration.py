@@ -68,23 +68,20 @@ async def generate_video_with_tsvavatar(
         {"success": True/False, "task_id": str, "video_url": str, "error": str}
     """
     
-    # Get character UUID from avatar ID
-    character_uuid = AVATAR_CHARACTER_MAPPING.get(avatar_id)
-    if not character_uuid:
+    # Get character name from avatar ID
+    character_name = AVATAR_CHARACTER_MAPPING.get(avatar_id)
+    if not character_name:
         logger.error(f"Avatar ID {avatar_id} not found in character mapping")
         return {
             "success": False,
             "error": f"Avatar {avatar_id} not configured in TSVAvatarGen mapping"
         }
     
-    # Get character name for logging
-    character_display_name = AVATAR_NAMES.get(character_uuid, character_uuid)
-    
     try:
         # Build payload for TSVAvatarGenerator /api/generate/system endpoint
-        # Expects: character_name (UUID), audio_script, duration (optional)
+        # Expects: character_name (string like "Binary"), audio_script, duration (optional)
         payload = {
-            "character_name": character_uuid,
+            "character_name": character_name,
             "audio_script": script_text,
             "duration": min(duration, 300) if duration else 10  # Default 10 seconds, max 300
         }
@@ -96,7 +93,7 @@ async def generate_video_with_tsvavatar(
         }
         
         logger.info(f"🎬 Sending video generation request to TSVAvatarGen")
-        logger.info(f"   Character: {character_display_name} ({character_uuid})")
+        logger.info(f"   Character: {character_name}")
         logger.info(f"   Script length: {len(script_text)} chars")
         logger.info(f"   Duration: {payload['duration']}s")
         logger.info(f"   Target URL: {TSVAVATAR_BASE_URL}/api/generate/system")
