@@ -190,6 +190,7 @@ async def generate_video_with_tsvavatar(
 async def check_tsvavatar_status(task_id: str) -> Dict:
     """
     Check video generation status from TSVAvatarGen
+    Uses /api/tasks?user_id=storytime_terminal to get task status
     
     Returns:
         {"status": str, "progress": float, "video_url": str, "error": str}
@@ -197,7 +198,7 @@ async def check_tsvavatar_status(task_id: str) -> Dict:
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(
-                f"{TSVAVATAR_BASE_URL}/api/status/{task_id}"
+                f"{TSVAVATAR_BASE_URL}/api/tasks?user_id=storytime_terminal"
             )
             
             if response.status_code != 200:
@@ -207,25 +208,36 @@ async def check_tsvavatar_status(task_id: str) -> Dict:
                 }
             
             data = response.json()
+            tasks = data.get("tasks", [])
+            
+            # Find the task with matching task_id
+            task = next((t for t in tasks if t.get("task_id") == task_id), None)
+            
+            if not task:
+                return {
+                    "status": "processing",
+                    "progress": 0.0,
+                    "video_url": "",
+                    "error": None
+                }
             
             # Map TSVAvatarGen status to HeyGen-like status
-            tsv_status = data.get("status", "pending")
-            video_url = data.get("final_video_url") or data.get("video_url", "")
+            tsv_status = task.get("status", "queued")
+            video_url = task.get("final_video_url") or task.get("video_url", "")
             
             status_mapping = {
-                "pending": "processing",
-                "processing_video": "processing",
+                "queued": "processing",
                 "processing_audio": "processing",
-                "merging": "processing",
+                "lip_syncing": "processing",
                 "completed": "completed",
                 "failed": "failed"
             }
             
             return {
                 "status": status_mapping.get(tsv_status, "processing"),
-                "progress": data.get("progress", 0.0),
+                "progress": task.get("progress", 0.0),
                 "video_url": video_url,
-                "error": data.get("error")
+                "error": task.get("error")
             }
     
     except Exception as e:
