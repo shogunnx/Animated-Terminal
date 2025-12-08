@@ -133,12 +133,11 @@ async def generate_video_with_tsvavatar(
         logger.info(f"   Video engine: {form_data['video_engine']}")
         logger.info(f"   Target URL: {TSVAVATAR_BASE_URL}/api/generate/system")
         
-        # Call TSVAvatarGen API with MULTIPART FORM DATA
-        # Using 'files' with None values creates multipart/form-data without actual files
+        # Call TSVAvatarGen API with JSON
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
                 f"{TSVAVATAR_BASE_URL}/api/generate/system",
-                files={key: (None, value) for key, value in form_data.items()}
+                json=form_data
             )
             
             if response.status_code != 200:
