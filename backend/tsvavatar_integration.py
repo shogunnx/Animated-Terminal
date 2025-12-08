@@ -21,10 +21,10 @@ TSVAVATAR_SYSTEM_KEY = os.getenv("TSVAVATAR_SYSTEM_KEY", "tsv-terminal-secure-ke
 
 # Map HeyGen avatar IDs to TSVAvatarGenerator 3D avatar IDs and voice IDs
 AVATAR_CHARACTER_MAPPING = {
-    # Binary - 3D avatar
+    # Binary - 3D avatar (CORRECT ID)
     "d8d16687495340c5805ad9821046be3a": {
-        "avatar3d_id": "23ab515d-6f40-4e46-8d42-93f2bad1fd40",
-        "voice_id": "binary-real-voice-2024",
+        "avatar3d_id": "325aa060-9a99-4c27-9140-d2f33f88100a",
+        "voice_id": "binary-voice",
         "name": "Binary"
     },
     
