@@ -100,42 +100,44 @@ async def generate_video_with_tsvavatar(
         {"success": True/False, "task_id": str, "video_url": str, "error": str}
     """
     
-    # Get character name from avatar ID
-    character_name = AVATAR_CHARACTER_MAPPING.get(avatar_id)
-    if not character_name:
+    # Get character data from avatar ID
+    character_data = AVATAR_CHARACTER_MAPPING.get(avatar_id)
+    if not character_data:
         logger.error(f"Avatar ID {avatar_id} not found in character mapping")
         return {
             "success": False,
             "error": f"Avatar {avatar_id} not configured in TSVAvatarGen mapping"
         }
     
+    avatar3d_id = character_data["avatar3d_id"]
+    voice_id = character_data["voice_id"]
+    character_name = character_data["name"]
+    
     try:
-        # Build payload for TSVAvatarGenerator /api/generate/system endpoint
-        # Expects: character_name (string like "Binary"), audio_script, duration (optional)
-        payload = {
-            "character_name": character_name,
+        # Build FORM DATA payload for TSVAvatarGenerator /api/generate/system endpoint
+        # Uses multipart/form-data, NOT JSON
+        form_data = {
+            "avatar3d_id": avatar3d_id,
+            "voice_id": voice_id,
             "audio_script": script_text,
-            "duration": min(duration, 300) if duration else 10  # Default 10 seconds, max 300
-        }
-        
-        # Prepare headers with system authentication key
-        headers = {
-            "Content-Type": "application/json",
-            "X-System-Key": TSVAVATAR_SYSTEM_KEY
+            "video_engine": "omnihuman" if duration > 15 else "sadtalker",  # omnihuman for longer videos
+            "system_api_key": TSVAVATAR_SYSTEM_KEY,
+            "user_id": "storytime_terminal"
         }
         
         logger.info(f"🎬 Sending video generation request to TSVAvatarGen")
         logger.info(f"   Character: {character_name}")
+        logger.info(f"   Avatar3D ID: {avatar3d_id}")
+        logger.info(f"   Voice ID: {voice_id}")
         logger.info(f"   Script length: {len(script_text)} chars")
-        logger.info(f"   Duration: {payload['duration']}s")
+        logger.info(f"   Video engine: {form_data['video_engine']}")
         logger.info(f"   Target URL: {TSVAVATAR_BASE_URL}/api/generate/system")
         
-        # Call TSVAvatarGen API (system endpoint)
+        # Call TSVAvatarGen API with FORM DATA
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
                 f"{TSVAVATAR_BASE_URL}/api/generate/system",
-                json=payload,
-                headers=headers
+                data=form_data  # Use 'data' for form data, not 'json'
             )
             
             if response.status_code != 200:
