@@ -3,9 +3,10 @@ TSVAvatarGenerator Integration
 Routes StoryTime video generation to your custom avatar generator service
 Hosted at: https://lipsync-creator-3.emergent.host/
 
-The TSVAvatarGenerator service already has the avatars stored on its end.
-Endpoint: /api/generate/system (JSON endpoint for TSVTerminal integration)
-Authentication: X-System-Key header
+Integration Specs:
+- Endpoint: /api/generate/system (FORM DATA, not JSON)
+- Authentication: system_api_key in form data
+- Status Check: /api/tasks?user_id={user_id}
 """
 
 import os
@@ -18,26 +19,57 @@ logger = logging.getLogger(__name__)
 TSVAVATAR_BASE_URL = os.getenv("TSVAVATAR_BASE_URL", "https://lipsync-creator-3.emergent.host")
 TSVAVATAR_SYSTEM_KEY = os.getenv("TSVAVATAR_SYSTEM_KEY", "tsv-terminal-secure-key-2024")
 
-# Map HeyGen avatar IDs to TSVAvatarGenerator character NAMES (PRODUCTION DEPLOYMENT)
-# The API expects character names like "Binary", "Victoria Black", etc.
+# Map HeyGen avatar IDs to TSVAvatarGenerator 3D avatar IDs and voice IDs
 AVATAR_CHARACTER_MAPPING = {
-    # Binary - DEPLOYED
-    "d8d16687495340c5805ad9821046be3a": "Binary",
+    # Binary - 3D avatar
+    "d8d16687495340c5805ad9821046be3a": {
+        "avatar3d_id": "23ab515d-6f40-4e46-8d42-93f2bad1fd40",
+        "voice_id": "binary-real-voice-2024",
+        "name": "Binary"
+    },
     
-    # Victoria Black - DEPLOYED
-    "faa3f1fcdc0b49b79bb0a3fa11595754": "Victoria Black",
+    # Victoria Black - needs 3D avatar setup
+    "faa3f1fcdc0b49b79bb0a3fa11595754": {
+        "avatar3d_id": "victoria-black-3d-id",  # TODO: Get from TSVAvatarGenerator
+        "voice_id": "victoria-black-voice",
+        "name": "Victoria Black"
+    },
     
-    # Veronica - DEPLOYED
-    "783e82f2b06948d5b2f882fa351337fd": "Veronica",
-    "c8680d9549744019809f0acc04faac65": "Veronica",
+    # Veronica
+    "783e82f2b06948d5b2f882fa351337fd": {
+        "avatar3d_id": "veronica-3d-id",
+        "voice_id": "veronica-voice",
+        "name": "Veronica"
+    },
+    "c8680d9549744019809f0acc04faac65": {
+        "avatar3d_id": "veronica-3d-id",
+        "voice_id": "veronica-voice",
+        "name": "Veronica"
+    },
     
-    # Vanessa - DEPLOYED  
-    "f81fa68314f84acb8fe6e527d90adc07": "Vanessa",
+    # Vanessa
+    "f81fa68314f84acb8fe6e527d90adc07": {
+        "avatar3d_id": "vanessa-3d-id",
+        "voice_id": "vanessa-voice",
+        "name": "Vanessa"
+    },
     
-    # Evil Victoria - NOT YET DEPLOYED (need to add to TSVAvatarGenerator)
-    "738db1645bc140beb1b476231a8b79f4": "Evil Victoria",
-    "d33267ddfad14fc2a8820f1d00eb713c": "Evil Victoria",
-    "94fd37e9ad0b42efb9d828edf5be22ee": "Evil Victoria",
+    # Evil Victoria
+    "738db1645bc140beb1b476231a8b79f4": {
+        "avatar3d_id": "evil-victoria-3d-id",
+        "voice_id": "evil-victoria-voice",
+        "name": "Evil Victoria"
+    },
+    "d33267ddfad14fc2a8820f1d00eb713c": {
+        "avatar3d_id": "evil-victoria-3d-id",
+        "voice_id": "evil-victoria-voice",
+        "name": "Evil Victoria"
+    },
+    "94fd37e9ad0b42efb9d828edf5be22ee": {
+        "avatar3d_id": "evil-victoria-3d-id",
+        "voice_id": "evil-victoria-voice",
+        "name": "Evil Victoria"
+    },
 }
 
 
