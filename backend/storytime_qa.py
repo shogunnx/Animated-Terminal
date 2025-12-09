@@ -268,17 +268,10 @@ async def create_qa_video(
     response_text = await generate_character_response(character_id, character_name, question, video_url)
     
     # Use the narrated endpoint which supports TSVAvatarGenerator with custom duration
-    # Use public URL for production deployment or localhost for local dev
-    backend_url = os.getenv("BACKEND_URL", "http://localhost:8001")
-    # If BACKEND_URL is set to localhost but we're in production, use the frontend URL
-    if backend_url == "http://localhost:8001":
-        frontend_url = os.getenv("FRONTEND_URL", "")
-        if frontend_url and "localhost" not in frontend_url:
-            backend_url = frontend_url
-    
+    # Use localhost since this is internal backend-to-backend call within the same pod
     async with httpx.AsyncClient() as client:
         story_response = await client.post(
-            f"{backend_url}/api/storytime/generate-narrated",
+            "http://127.0.0.1:8001/api/storytime/generate-narrated",
             json={
                 "avatar_id": avatar_id,
                 "character_id": character_id,
