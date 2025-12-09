@@ -285,10 +285,17 @@ async def create_qa_video(
         )
         
         if story_response.status_code != 200:
-            error_data = story_response.json()
-            raise Exception(f"Video generation error: {error_data.get('detail', story_response.text)}")
+            try:
+                error_data = story_response.json()
+                raise Exception(f"Video generation error: {error_data.get('detail', story_response.text)}")
+            except:
+                raise Exception(f"Video generation error: HTTP {story_response.status_code} - {story_response.text[:200]}")
         
-        story_data = story_response.json()
+        try:
+            story_data = story_response.json()
+        except Exception as e:
+            raise Exception(f"Failed to parse response: {str(e)} - Response text: {story_response.text[:200]}")
+        
         video_id = story_data.get("video_id")
         
         return {
