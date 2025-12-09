@@ -133,12 +133,15 @@ async def generate_video_with_tsvavatar(
         logger.info(f"   Video engine: {form_data['video_engine']}")
         logger.info(f"   Target URL: {TSVAVATAR_BASE_URL}/api/generate/system")
         
-        # Call TSVAvatarGen API with FORM DATA (multipart/form-data)
-        # httpx automatically sets Content-Type: multipart/form-data when using 'data'
+        # Call TSVAvatarGen API with MULTIPART FORM DATA
+        # Using 'files' parameter with text-only fields creates multipart/form-data
+        # This is equivalent to curl's -F flag
+        files_data = {key: (None, str(value)) for key, value in form_data.items()}
+        
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
                 f"{TSVAVATAR_BASE_URL}/api/generate/system",
-                data=form_data  # Use 'data' for form data, httpx handles it correctly
+                files=files_data  # Creates multipart/form-data format
             )
             
             if response.status_code != 200:
