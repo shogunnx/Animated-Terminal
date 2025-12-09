@@ -19,55 +19,58 @@ logger = logging.getLogger(__name__)
 TSVAVATAR_BASE_URL = os.getenv("TSVAVATAR_BASE_URL", "https://lipsync-creator-3.emergent.host")
 TSVAVATAR_SYSTEM_KEY = os.getenv("TSVAVATAR_SYSTEM_KEY", "tsv-terminal-secure-key-2024")
 
-# Map HeyGen avatar IDs to TSVAvatarGenerator 3D avatar IDs and voice IDs
+# Map HeyGen avatar IDs to TSVAvatarGenerator avatar IDs and voice IDs
+# IDs from TSVTERMINAL_COMPLETE_API_GUIDE.md (Production)
 AVATAR_CHARACTER_MAPPING = {
-    # Binary - 3D avatar (CORRECT ID)
+    # Binary - 2D Full Body (PRODUCTION READY)
     "d8d16687495340c5805ad9821046be3a": {
-        "avatar3d_id": "325aa060-9a99-4c27-9140-d2f33f88100a",
-        "voice_id": "binary-voice",
+        "avatar3d_id": "5580e460-dd4b-44d8-bf47-cdfcf56493cf",  # Binary Full Body
+        "voice_id": "bb47e1fa-132e-479b-8a02-7d84c665f646",  # Binaryvoice
         "name": "Binary"
     },
     
-    # Victoria Black - needs 3D avatar setup
+    # Victoria Black - 3D Full Body (PRODUCTION READY)
     "faa3f1fcdc0b49b79bb0a3fa11595754": {
-        "avatar3d_id": "victoria-black-3d-id",  # TODO: Get from TSVAvatarGenerator
-        "voice_id": "victoria-black-voice",
+        "avatar3d_id": "dc6190a9-106f-4665-891f-c9a71ec6c79e",  # Victoria Black 3D
+        "voice_id": "bb47e1fa-132e-479b-8a02-7d84c665f646",  # Binaryvoice
         "name": "Victoria Black"
     },
     
-    # Veronica
-    "783e82f2b06948d5b2f882fa351337fd": {
-        "avatar3d_id": "veronica-3d-id",
-        "voice_id": "veronica-voice",
-        "name": "Veronica"
-    },
+    # Wargirl - 3D Full Body (PRODUCTION READY)
     "c8680d9549744019809f0acc04faac65": {
-        "avatar3d_id": "veronica-3d-id",
-        "voice_id": "veronica-voice",
-        "name": "Veronica"
+        "avatar3d_id": "c2c68f73-244e-46cf-b787-01a71725b343",  # Wargirl 3D
+        "voice_id": "bb47e1fa-132e-479b-8a02-7d84c665f646",  # Binaryvoice
+        "name": "Wargirl"
     },
     
-    # Vanessa
+    # Vanessa - 2D Full Body (PRODUCTION READY)
     "f81fa68314f84acb8fe6e527d90adc07": {
-        "avatar3d_id": "vanessa-3d-id",
-        "voice_id": "vanessa-voice",
+        "avatar3d_id": "1c3bcf5b-f950-48ab-84dd-0e56fcad0b68",  # Vanessa Full Body
+        "voice_id": "default_bella",  # Default voice
         "name": "Vanessa"
     },
     
-    # Evil Victoria
+    # Veronica - Map to Wargirl for now
+    "783e82f2b06948d5b2f882fa351337fd": {
+        "avatar3d_id": "c2c68f73-244e-46cf-b787-01a71725b343",  # Wargirl 3D
+        "voice_id": "default_rachel",
+        "name": "Veronica"
+    },
+    
+    # Evil Victoria - Map to Victoria Black for now
     "738db1645bc140beb1b476231a8b79f4": {
-        "avatar3d_id": "evil-victoria-3d-id",
-        "voice_id": "evil-victoria-voice",
+        "avatar3d_id": "dc6190a9-106f-4665-891f-c9a71ec6c79e",  # Victoria Black 3D
+        "voice_id": "bb47e1fa-132e-479b-8a02-7d84c665f646",
         "name": "Evil Victoria"
     },
     "d33267ddfad14fc2a8820f1d00eb713c": {
-        "avatar3d_id": "evil-victoria-3d-id",
-        "voice_id": "evil-victoria-voice",
+        "avatar3d_id": "dc6190a9-106f-4665-891f-c9a71ec6c79e",
+        "voice_id": "bb47e1fa-132e-479b-8a02-7d84c665f646",
         "name": "Evil Victoria"
     },
     "94fd37e9ad0b42efb9d828edf5be22ee": {
-        "avatar3d_id": "evil-victoria-3d-id",
-        "voice_id": "evil-victoria-voice",
+        "avatar3d_id": "dc6190a9-106f-4665-891f-c9a71ec6c79e",
+        "voice_id": "bb47e1fa-132e-479b-8a02-7d84c665f646",
         "name": "Evil Victoria"
     },
 }
