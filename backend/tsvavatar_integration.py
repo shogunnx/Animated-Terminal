@@ -36,6 +36,20 @@ AVATAR_CHARACTER_MAPPING = {
         "name": "Victoria Black"
     },
     
+    # Victoria Black Blaster - Power Version (PRODUCTION READY)
+    "1992da07-01f4-44da-b1f5-918144391d90": {
+        "avatar3d_id": "1992da07-01f4-44da-b1f5-918144391d90",  # Victoria Black Blaster
+        "voice_id": "bb47e1fa-132e-479b-8a02-7d84c665f646",  # Binaryvoice
+        "name": "Victoria Black Blaster"
+    },
+    
+    # Victoria Black Goddess - Divine Version (PRODUCTION READY)
+    "1afb71c7-2353-4252-bdc9-87bfb2f47423": {
+        "avatar3d_id": "1afb71c7-2353-4252-bdc9-87bfb2f47423",  # Victoria Black Goddess
+        "voice_id": "bb47e1fa-132e-479b-8a02-7d84c665f646",  # Binaryvoice
+        "name": "Victoria Black Goddess"
+    },
+    
     # Wargirl - 3D Full Body (PRODUCTION READY)
     "c8680d9549744019809f0acc04faac65": {
         "avatar3d_id": "c2c68f73-244e-46cf-b787-01a71725b343",  # Wargirl 3D
