@@ -783,8 +783,65 @@ export default function StoryTime() {
           </div>
         </div>
 
+        {/* Video History Section */}
+        {showHistory && (
+          <div style={{ marginBottom: 16 }}>
+            <div className="tsv-title" style={{ fontSize: 11, marginBottom: 8, color: '#ff69b4' }}>
+              🎬 COMPLETED VIDEOS
+            </div>
+            {historyLoading ? (
+              <div style={{ textAlign: 'center', padding: 20, opacity: 0.7 }}>Loading video history...</div>
+            ) : videoHistory.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: 20, opacity: 0.7 }}>No videos yet</div>
+            ) : (
+              <div style={{ display: 'grid', gap: 8, maxHeight: 400, overflowY: 'auto' }}>
+                {videoHistory.map((video) => (
+                  <div
+                    key={video.video_id}
+                    className="tsv-glass"
+                    onClick={() => {
+                      setGeneratedVideoUrl(video.video_url);
+                      setCurrentStory(null);
+                      setIsPlaying(false);
+                    }}
+                    style={{
+                      padding: 12,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      border: '2px solid rgba(255,105,180,0.2)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#ff69b4';
+                      e.currentTarget.style.transform = 'translateX(4px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(255,105,180,0.2)';
+                      e.currentTarget.style.transform = 'translateX(0)';
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+                      <div style={{ fontSize: 11, fontWeight: 'bold', color: '#ff69b4' }}>
+                        {video.character}
+                      </div>
+                      <div style={{ fontSize: 9, opacity: 0.6 }}>
+                        {new Date(video.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 10, opacity: 0.8, lineHeight: 1.4 }}>
+                      {video.script.substring(0, 120)}...
+                    </div>
+                    <div style={{ marginTop: 8, fontSize: 9, opacity: 0.6 }}>
+                      ⏱️ {video.duration}s • 🎬 Click to play
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Category Tabs */}
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+        {!showHistory && <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
           {Object.entries(STORY_CATEGORIES).map(([key, label]) => (
             <button
               key={key}
