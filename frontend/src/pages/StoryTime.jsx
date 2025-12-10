@@ -437,7 +437,7 @@ export default function StoryTime() {
       <div className="tsv-glass" style={{ padding: 14, marginBottom: 14 }}>
         <div className="tsv-title" style={{ fontSize: 12, marginBottom: 12 }}>SELECT YOUR NARRATOR</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
-          {Object.entries(HEYGEN_AVATARS).map(([id, avatar]) => {
+          {Object.entries(AVATARS).map(([id, avatar]) => {
             const char = TSV_CHARACTERS.find(c => c.id === id);
             const isSelected = selectedNarrator === id;
             return (
