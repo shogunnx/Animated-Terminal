@@ -56,6 +56,13 @@ CHARACTER_LORE = {
     Not afraid to challenge others but maintains composure."""
 }
 
+def normalize_character_id(character_id: str) -> str:
+    """
+    Normalize character ID to use base personality
+    All Victoria Black variants use the same personality
+    """
+    return CHARACTER_ID_MAPPING.get(character_id, character_id)
+
 async def fetch_girlsmind_personality(character_id: str) -> Optional[dict]:
     """Fetch character personality from GirlsMind API"""
     try:
