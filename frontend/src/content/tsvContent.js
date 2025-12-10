@@ -1,5 +1,7 @@
 export const TSV_CHARACTERS = [
   { id:"victoria_black", name:"Victoria Black", subtitle:"Goddess-tier archive profile", accent:"#76FFE1", glow:"#8C50FF", portrait:"/assets/portraits/victoria_black.png" },
+  { id:"victoria_black_blaster", name:"Victoria Black Blaster", subtitle:"Power & fury unleashed", accent:"#FF0000", glow:"#FFD700", portrait:"/assets/portraits/victoria_black.png" },
+  { id:"victoria_black_goddess", name:"Victoria Black Goddess", subtitle:"Divine elegance supreme", accent:"#FFD700", glow:"#FF69B4", portrait:"/assets/portraits/victoria_black.png" },
   { id:"wargirl", name:"Wargirl", subtitle:"SSJ3 raid specialist", accent:"#FF66C4", glow:"#FFD64D", portrait:"/assets/portraits/wargirl.png" },
   { id:"binary", name:"Binary", subtitle:"Core reactor entity", accent:"#C7A4FF", glow:"#7B2DFF", portrait:"/assets/portraits/binary.png" },
   { id:"vanessa", name:"Vanessa", subtitle:"Pinup warrior suite", accent:"#FF3D5A", glow:"#FFCC4D", portrait:"/assets/portraits/vanessa.png" },
