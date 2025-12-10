@@ -13,7 +13,7 @@ import os
 import re
 
 # Get backend URL from environment
-BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://paginate-stories.preview.emergentagent.com')
+BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://storytime-fix.preview.emergentagent.com')
 
 # Q&A Test Characters with their avatar IDs (from review request)
 QA_TEST_CHARACTERS = {
