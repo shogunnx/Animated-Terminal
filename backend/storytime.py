@@ -52,53 +52,34 @@ class NarratedStoryRequest(BaseModel):
 @router.post("/generate", response_model=StoryGenerationResponse)
 async def generate_story_video(request: StoryGenerationRequest):
     """
-    Generate a story video using HeyGen API V2
-    If HEYGEN_TEST_MODE is enabled, returns pre-recorded video without API call
+    Generate a story video using TSVAvatarGenerator
     """
     try:
-        # TEST MODE: Return pre-recorded video without API call
-        if HEYGEN_TEST_MODE:
-            import random
-            test_video_id = random.choice(HEYGEN_TEST_VIDEOS)
-            logger.info(f"TEST MODE: Using pre-recorded video {test_video_id}")
+        from tsvavatar_integration import generate_video_with_tsvavatar
+        
+        voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
+        
+        logger.info("Generating video via TSVAvatarGenerator")
+        result = await generate_video_with_tsvavatar(
+            avatar_id=request.avatar_id,
+            script_text=request.story_text,
+            voice_id=voice_id,
+            title=request.story_title,
+            duration=10,  # Default 10 seconds
+            enable_audio=True
+        )
+        
+        if result["success"] and result.get("task_id"):
             return StoryGenerationResponse(
                 video_url="",
-                video_id=test_video_id,
+                video_id=result["task_id"],
                 status="processing"
             )
-        
-        # TSVAVATAR MODE: Use TSVAvatarGenerator service
-        if TSVAVATAR_MODE:
-            from tsvavatar_integration import generate_video_with_tsvavatar
-            
-            voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
-            
-            logger.info("TSVAVATAR MODE: Generating video via TSVAvatarGenerator")
-            result = await generate_video_with_tsvavatar(
-                avatar_id=request.avatar_id,
-                script_text=request.story_text,
-                voice_id=voice_id,
-                title=request.story_title,
-                duration=10,  # Default 10 seconds
-                enable_audio=True
+        else:
+            raise HTTPException(
+                status_code=500,
+                detail=f"TSVAvatarGenerator failed: {result.get('error', 'Unknown error')}"
             )
-            
-            if result["success"] and result.get("task_id"):
-                return StoryGenerationResponse(
-                    video_url="",
-                    video_id=result["task_id"],
-                    status="processing"
-                )
-            else:
-                # Fallback to test mode if TSVAvatar fails
-                logger.warning(f"TSVAvatar failed: {result.get('error')} - falling back to test mode")
-                import random
-                test_video_id = random.choice(HEYGEN_TEST_VIDEOS)
-                return StoryGenerationResponse(
-                    video_url="",
-                    video_id=test_video_id,
-                    status="processing"
-                )
         
         # AUTOMATION MODE: Use browser automation instead of API
         if HEYGEN_AUTOMATION_MODE:
