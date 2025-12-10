@@ -103,6 +103,21 @@ export default function StoryTime() {
   const [mode, setMode] = useState('api');
   const [modeMessage, setModeMessage] = useState('');
   
+  // Fetch video history
+  const fetchVideoHistory = async () => {
+    try {
+      const response = await fetch('/api/storytime/video-history');
+      if (response.ok) {
+        const data = await response.json();
+        setVideoHistory(data.videos || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch video history:', error);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
   // Fetch dynamic content and check mode on mount
   useEffect(() => {
     const fetchDynamicContent = async () => {
