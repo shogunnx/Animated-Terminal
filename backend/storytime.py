@@ -8,19 +8,6 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/storytime", tags=["storytime"])
 
-HEYGEN_API_KEY = os.getenv("HEYGEN_API_KEY", "")
-HEYGEN_API_URL = "https://api.heygen.com/v2/video/generate"
-HEYGEN_TEST_MODE = os.getenv("HEYGEN_TEST_MODE", "false").lower() == "true"
-HEYGEN_AUTOMATION_MODE = os.getenv("HEYGEN_AUTOMATION_MODE", "false").lower() == "true"
-HEYGEN_TEST_VIDEOS = [
-    os.getenv("HEYGEN_TEST_VIDEO_1", "6f57658f511c42a28c2b53e3ccdda965"),
-    os.getenv("HEYGEN_TEST_VIDEO_2", "b9ef2dc39adf44feaa760b60e42cfb37"),
-    os.getenv("HEYGEN_TEST_VIDEO_3", "e08b1ee999ea4769bf3c738861e962b6")
-]
-
-# TSVAvatarGenerator mode
-TSVAVATAR_MODE = os.getenv("TSVAVATAR_MODE", "false").lower() == "true"
-
 # Voice ID mappings for different avatars
 AVATAR_VOICE_MAPPING = {
     # Evil Victoria - Main avatar
