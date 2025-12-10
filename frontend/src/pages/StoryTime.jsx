@@ -765,13 +765,22 @@ export default function StoryTime() {
       <div className="tsv-glass" style={{ padding: 14 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <div className="tsv-title" style={{ fontSize: 12 }}>📚 STORY LIBRARY</div>
-          <button 
-            className="tsv-btn"
-            onClick={() => nav('/')}
-            style={{ fontSize: 11, padding: '6px 12px' }}
-          >
-            🚪 EXIT CHAMBER
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button 
+              className="tsv-btn"
+              onClick={() => setShowHistory(!showHistory)}
+              style={{ fontSize: 11, padding: '6px 12px', background: showHistory ? 'rgba(255,105,180,0.3)' : 'rgba(255,255,255,0.08)' }}
+            >
+              🎬 VIDEO HISTORY ({videoHistory.length})
+            </button>
+            <button 
+              className="tsv-btn"
+              onClick={() => nav('/')}
+              style={{ fontSize: 11, padding: '6px 12px' }}
+            >
+              🚪 EXIT CHAMBER
+            </button>
+          </div>
         </div>
 
         {/* Category Tabs */}
