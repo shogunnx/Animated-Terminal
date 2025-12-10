@@ -951,6 +951,7 @@ export default function StoryTime() {
             </motion.div>
           )}
         </AnimatePresence>
+        )}
       </div>
 
       {/* Q&A Section */}
