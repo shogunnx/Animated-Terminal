@@ -184,7 +184,7 @@ export default function StoryTime() {
     setIsLoading(true);
     try {
       // Get the current narrator
-      const currentNarratorData = HEYGEN_AVATARS[selectedNarrator];
+      const currentNarratorData = AVATARS[selectedNarrator];
       
       // Use the selected narrator's avatar ID
       const avatarIdForGeneration = currentNarratorData.id;
@@ -301,7 +301,7 @@ export default function StoryTime() {
     setIsPlaying(false);
 
     try {
-      const currentNarratorData = HEYGEN_AVATARS[selectedNarrator];
+      const currentNarratorData = AVATARS[selectedNarrator];
       const characterLookupId = selectedNarrator === 'evil_victoria_alt' ? 'evil_victoria' : selectedNarrator;
       const characterData = TSV_CHARACTERS.find(c => c.id === characterLookupId);
 
