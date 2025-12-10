@@ -171,7 +171,13 @@ export default function StoryTime() {
     
     fetchDynamicContent();
     fetchVideoHistory();
+    fetchCreditStatus();
     checkMode();
+    
+    // Refresh credit status every 2 minutes
+    const creditInterval = setInterval(fetchCreditStatus, 120000);
+    
+    return () => clearInterval(creditInterval);
   }, []);
 
   const handleNarratorChange = (narratorId) => {
