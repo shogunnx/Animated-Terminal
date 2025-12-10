@@ -88,6 +88,11 @@ export default function StoryTime() {
   const [dynamicStories, setDynamicStories] = useState([]);
   const [contentLoading, setContentLoading] = useState(true);
   
+  // Video History State
+  const [videoHistory, setVideoHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [showHistory, setShowHistory] = useState(false);
+  
   // Pagination state for lore stories
   const [loreDisplayCount, setLoreDisplayCount] = useState(10);
   
