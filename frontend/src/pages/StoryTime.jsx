@@ -952,7 +952,8 @@ export default function StoryTime() {
               </div>
             </motion.div>
           )}
-        </AnimatePresence>
+            </AnimatePresence>
+          </>
         )}
       </div>
 
