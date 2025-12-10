@@ -841,29 +841,31 @@ export default function StoryTime() {
         )}
 
         {/* Category Tabs */}
-        {!showHistory && <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-          {Object.entries(STORY_CATEGORIES).map(([key, label]) => (
-            <button
-              key={key}
-              onClick={() => {
-                setExpandedCategory(expandedCategory === key ? null : key);
-                if (key === 'lore') setLoreDisplayCount(10); // Reset pagination when opening lore
-              }}
-              className="tsv-btn"
-              style={{
-                fontSize: 11,
-                padding: '6px 12px',
-                background: expandedCategory === key ? 'rgba(255,105,180,0.3)' : 'rgba(255,255,255,0.08)',
-                borderColor: expandedCategory === key ? '#ff69b4' : 'rgba(255,255,255,0.14)'
-              }}
-            >
-              {label} ({SAMPLE_STORIES.filter(s => s.category === key).length})
-            </button>
-          ))}
-        </div>
+        {!showHistory && (
+          <>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+              {Object.entries(STORY_CATEGORIES).map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setExpandedCategory(expandedCategory === key ? null : key);
+                    if (key === 'lore') setLoreDisplayCount(10); // Reset pagination when opening lore
+                  }}
+                  className="tsv-btn"
+                  style={{
+                    fontSize: 11,
+                    padding: '6px 12px',
+                    background: expandedCategory === key ? 'rgba(255,105,180,0.3)' : 'rgba(255,255,255,0.08)',
+                    borderColor: expandedCategory === key ? '#ff69b4' : 'rgba(255,255,255,0.14)'
+                  }}
+                >
+                  {label} ({SAMPLE_STORIES.filter(s => s.category === key).length})
+                </button>
+              ))}
+            </div>
 
-        {/* Story Items */}
-        <AnimatePresence>
+            {/* Story Items */}
+            <AnimatePresence>
           {expandedCategory && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
