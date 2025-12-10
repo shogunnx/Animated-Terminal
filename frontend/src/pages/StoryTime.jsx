@@ -55,7 +55,7 @@ const TEST_STORIES = [
   }
 ];
 
-const HEYGEN_AVATARS = {
+const AVATARS = {
   'evil_victoria': { id: '738db1645bc140beb1b476231a8b79f4', name: 'Evil Victoria', portrait: null, isPreRecorded: false, isGroupId: true },
   'evil_victoria_alt': { id: 'd33267ddfad14fc2a8820f1d00eb713c', name: 'Evil Victoria (Alt)', portrait: 'https://customer-assets.emergentagent.com/job_char-chat-world/artifacts/jvbc12fl_evilviccourt.png', isPreRecorded: false },
   'evil_victoria_talking_head': { id: '94fd37e9ad0b42efb9d828edf5be22ee', name: 'Evil Victoria Talking Head', portrait: 'https://customer-assets.emergentagent.com/job_avatar-realm-5/artifacts/d5pdq5ky_evilsmile.jpg', isPreRecorded: false },
