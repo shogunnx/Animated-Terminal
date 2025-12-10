@@ -148,6 +148,7 @@ export default function StoryTime() {
     };
     
     fetchDynamicContent();
+    fetchVideoHistory();
     checkMode();
   }, []);
 
