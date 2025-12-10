@@ -65,15 +65,18 @@ def normalize_character_id(character_id: str) -> str:
 
 async def fetch_girlsmind_personality(character_id: str) -> Optional[dict]:
     """Fetch character personality from GirlsMind API"""
+    # Normalize character ID (e.g., victoria_black_blaster -> victoria_black)
+    normalized_id = normalize_character_id(character_id)
+    
     try:
         headers = {}
         if GIRLSMIND_API_KEY:
             headers["Authorization"] = f"Bearer {GIRLSMIND_API_KEY}"
         
         async with httpx.AsyncClient() as client:
-            # Try to get character from GirlsMind
+            # Try to get character from GirlsMind using normalized ID
             response = await client.get(
-                f"{os.getenv('GIRLSMIND_BASE_URL', 'https://girlsmind-1.emergent.host')}/api/girls/{character_id}",
+                f"{os.getenv('GIRLSMIND_BASE_URL', 'https://girlsmind-1.emergent.host')}/api/girls/{normalized_id}",
                 headers=headers,
                 timeout=5.0
             )
@@ -85,11 +88,14 @@ async def fetch_girlsmind_personality(character_id: str) -> Optional[dict]:
 
 def build_character_context(character_id: str, girlsmind_data: Optional[dict]) -> str:
     """Build character context from lore + GirlsMind personality"""
+    # Normalize character ID for lore lookup
+    normalized_id = normalize_character_id(character_id)
+    
     context_parts = []
     
-    # Add lore context
-    if character_id in CHARACTER_LORE:
-        context_parts.append(f"Character Lore:\n{CHARACTER_LORE[character_id]}")
+    # Add lore context using normalized ID
+    if normalized_id in CHARACTER_LORE:
+        context_parts.append(f"Character Lore:\n{CHARACTER_LORE[normalized_id]}")
     
     # Add GirlsMind personality if available
     if girlsmind_data:
