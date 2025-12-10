@@ -13,6 +13,14 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY", "")
 GIRLSMIND_API_KEY = os.getenv("GIRLSMIND_API_KEY", "")
 
+# Character ID mapping - all Victoria Black variants use the same personality
+CHARACTER_ID_MAPPING = {
+    "victoria_black_blaster": "victoria_black",
+    "victoria_black_goddess": "victoria_black",
+    "evil_victoria_alt": "evil_victoria",
+    "evil_victoria_talking_head": "evil_victoria"
+}
+
 # Character lore summaries with strong personalities
 CHARACTER_LORE = {
     "victoria_black": """Victoria Black: Seductive twin of Victoria Chaser. Uses charm over combat. 
