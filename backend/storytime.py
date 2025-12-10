@@ -90,48 +90,23 @@ async def generate_story_video(request: StoryGenerationRequest):
 @router.get("/status/{video_id}")
 async def check_video_status(video_id: str):
     """
-    Check video generation status from HeyGen API V2 or TSVAvatarGenerator
+    Check video generation status from TSVAvatarGenerator
     """
     try:
-        # Check if this is a TSVAvatarGen task (UUID format or starts with specific prefix)
-        if TSVAVATAR_MODE:
-            from tsvavatar_integration import check_tsvavatar_status
-            
-            tsv_result = await check_tsvavatar_status(video_id)
-            
-            # Convert to HeyGen format
-            return {
-                "data": {
-                    "video_id": video_id,
-                    "status": tsv_result.get("status", "processing"),
-                    "video_url": tsv_result.get("video_url", ""),
-                    "progress": tsv_result.get("progress", 0.0),
-                    "error": tsv_result.get("error")
-                }
-            }
+        from tsvavatar_integration import check_tsvavatar_status
         
-        headers = {
-            "accept": "application/json",
-            "x-api-key": HEYGEN_API_KEY
+        tsv_result = await check_tsvavatar_status(video_id)
+        
+        # Return in standard format
+        return {
+            "data": {
+                "video_id": video_id,
+                "status": tsv_result.get("status", "processing"),
+                "video_url": tsv_result.get("video_url", ""),
+                "progress": tsv_result.get("progress", 0.0),
+                "error": tsv_result.get("error")
+            }
         }
-
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get(
-                f"{HEYGEN_API_URL.replace('/generate', '')}/status/{video_id}",
-                headers=headers
-            )
-
-        response_data = response.json()
-
-        # HeyGen status response format:
-        # {
-        #   "data": {
-        #     "video_id": "...",
-        #     "status": "processing" | "completed" | "failed",
-        #     "video_url": "..." (only when completed)
-        #   }
-        # }
-        return response_data
 
     except Exception as e:
         logger.error(f"Error checking video status: {str(e)}")
