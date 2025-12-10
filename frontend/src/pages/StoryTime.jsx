@@ -122,6 +122,24 @@ export default function StoryTime() {
     }
   };
 
+  // Fetch credit status
+  const fetchCreditStatus = async () => {
+    try {
+      const response = await fetch('/api/storytime/credit-status');
+      if (response.ok) {
+        const data = await response.json();
+        setCreditStatus(data);
+        
+        // Show warning if credits are low
+        if (data.credits_low) {
+          setShowCreditWarning(true);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch credit status:', error);
+    }
+  };
+
   // Fetch dynamic content and check mode on mount
   useEffect(() => {
     const fetchDynamicContent = async () => {
