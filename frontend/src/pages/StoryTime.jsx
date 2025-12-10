@@ -93,6 +93,10 @@ export default function StoryTime() {
   const [historyLoading, setHistoryLoading] = useState(true);
   const [showHistory, setShowHistory] = useState(false);
   
+  // Credit Status State
+  const [creditStatus, setCreditStatus] = useState(null);
+  const [showCreditWarning, setShowCreditWarning] = useState(false);
+  
   // Pagination state for lore stories
   const [loreDisplayCount, setLoreDisplayCount] = useState(10);
   
