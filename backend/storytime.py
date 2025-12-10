@@ -213,6 +213,53 @@ async def generate_qa_response(request: QARequest):
         )
 
 
+@router.get("/video-history")
+async def get_video_history():
+    """
+    Fetch completed video history from TSVAvatarGenerator
+    Returns list of all completed videos
+    """
+    try:
+        tsvavatar_base_url = os.getenv("TSVAVATAR_BASE_URL", "https://lipsync-creator-3.emergent.host")
+        
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{tsvavatar_base_url}/api/tasks")
+            
+            if response.status_code != 200:
+                raise HTTPException(status_code=500, detail="Failed to fetch video history")
+            
+            data = response.json()
+            tasks = data.get("tasks", [])
+            
+            # Filter only completed videos and format them
+            completed_videos = []
+            for task in tasks:
+                if task.get("status") == "completed" and task.get("final_video_url"):
+                    completed_videos.append({
+                        "video_id": task.get("task_id"),
+                        "video_url": task.get("final_video_url"),
+                        "created_at": task.get("created_at"),
+                        "character": task.get("ai_interpretation", {}).get("avatar_name", "Unknown"),
+                        "script": task.get("ai_interpretation", {}).get("audio_script", ""),
+                        "duration": task.get("ai_interpretation", {}).get("duration", 10)
+                    })
+            
+            # Sort by created_at descending (newest first)
+            completed_videos.sort(key=lambda x: x["created_at"], reverse=True)
+            
+            return {
+                "success": True,
+                "total_videos": len(completed_videos),
+                "videos": completed_videos
+            }
+    
+    except Exception as e:
+        logger.error(f"Error fetching video history: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to fetch video history: {str(e)}"
+        )
+
 @router.get("/dynamic-content")
 async def get_dynamic_content():
     """
