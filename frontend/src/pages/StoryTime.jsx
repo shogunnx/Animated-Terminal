@@ -442,10 +442,93 @@ export default function StoryTime() {
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh' }}>
+      {/* Credit Warning Banner */}
+      {creditStatus?.credits_low && showCreditWarning && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            background: 'linear-gradient(135deg, rgba(255,0,0,0.95), rgba(255,100,0,0.95))',
+            color: 'white',
+            padding: '12px 20px',
+            zIndex: 9999,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            boxShadow: '0 4px 12px rgba(255,0,0,0.4)',
+            borderBottom: '2px solid #ff0000',
+            animation: 'pulse 2s ease-in-out infinite'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ fontSize: 24 }}>⚠️</div>
+            <div>
+              <div style={{ fontWeight: 'bold', fontSize: 14 }}>
+                {creditStatus.message}
+              </div>
+              <div style={{ fontSize: 11, opacity: 0.9, marginTop: 2 }}>
+                Recent failures: {creditStatus.failed_count} / {creditStatus.total_recent_tasks} tasks
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowCreditWarning(false)}
+            style={{
+              background: 'rgba(255,255,255,0.2)',
+              border: '1px solid rgba(255,255,255,0.4)',
+              borderRadius: 4,
+              padding: '6px 12px',
+              color: 'white',
+              cursor: 'pointer',
+              fontSize: 11,
+              fontWeight: 'bold'
+            }}
+          >
+            DISMISS
+          </button>
+        </div>
+      )}
+      
       {/* Header */}
-      <div className="tsv-glass tsv-glow tsv-scanlines" style={{ padding: 16, marginBottom: 14 }}>
+      <div className="tsv-glass tsv-glow tsv-scanlines" style={{ padding: 16, marginBottom: 14, marginTop: creditStatus?.credits_low && showCreditWarning ? 60 : 0 }}>
         <div className="tsv-title" style={{ fontSize: 14, position: 'relative' }}>
           📖 STORYTIME CHAMBER
+          
+          {/* Credit Status Indicator */}
+          {creditStatus && (
+            <div style={{
+              position: 'absolute',
+              top: -8,
+              right: 10,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: 11,
+              padding: '4px 10px',
+              borderRadius: 12,
+              background: creditStatus.credits_low 
+                ? 'rgba(255,0,0,0.2)' 
+                : creditStatus.status === 'ok' 
+                  ? 'rgba(0,255,0,0.2)' 
+                  : 'rgba(255,140,0,0.2)',
+              border: `2px solid ${
+                creditStatus.credits_low 
+                  ? '#ff0000' 
+                  : creditStatus.status === 'ok' 
+                    ? '#00ff00' 
+                    : '#ff8c00'
+              }`
+            }}>
+              <span style={{ fontSize: 14 }}>
+                {creditStatus.credits_low ? '🔴' : creditStatus.status === 'ok' ? '🟢' : '🟡'}
+              </span>
+              <span style={{ fontWeight: 'bold' }}>
+                {creditStatus.credits_low ? 'CREDITS LOW' : creditStatus.status === 'ok' ? 'CREDITS OK' : 'WARNING'}
+              </span>
+            </div>
+          )}
           {mode !== 'api' && (
             <div style={{
               position: 'absolute',
