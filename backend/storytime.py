@@ -363,7 +363,6 @@ async def generate_qa_response(request: QARequest):
             character_name=request.character_name,
             question=request.question,
             avatar_id=request.avatar_id,
-            heygen_api_key=HEYGEN_API_KEY,
             video_url=request.video_url,
             duration=request.duration
         )
