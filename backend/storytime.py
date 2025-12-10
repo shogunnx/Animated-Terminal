@@ -299,3 +299,78 @@ async def get_test_mode_status():
         "mode": "tsvavatar",
         "message": "Using TSVAvatarGenerator service (your custom generator)"
     }
+
+@router.get("/credit-status")
+async def get_credit_status():
+    """
+    Check TSVAvatarGenerator credit status by analyzing recent task failures
+    Returns warning if credits are low based on rate limit errors
+    """
+    try:
+        tsvavatar_base_url = os.getenv("TSVAVATAR_BASE_URL", "https://lipsync-creator-3.emergent.host")
+        
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.get(f"{tsvavatar_base_url}/api/tasks")
+            
+            if response.status_code != 200:
+                return {
+                    "status": "unknown",
+                    "message": "Unable to check credit status",
+                    "credits_low": False
+                }
+            
+            data = response.json()
+            tasks = data.get("tasks", [])
+            
+            # Check recent 20 tasks for rate limit errors
+            recent_tasks = tasks[:20]
+            failed_tasks = [t for t in recent_tasks if t.get("status") == "failed"]
+            
+            # Look for credit/rate limit errors in failed tasks
+            credit_errors = []
+            for task in failed_tasks:
+                error_msg = task.get("error_message", "").lower()
+                if any(keyword in error_msg for keyword in ["credit", "rate limit", "throttled", "$5"]):
+                    credit_errors.append({
+                        "task_id": task.get("task_id"),
+                        "error": task.get("error_message"),
+                        "created_at": task.get("created_at")
+                    })
+            
+            # Determine status
+            if len(credit_errors) > 0:
+                # Credits are low
+                return {
+                    "status": "low",
+                    "message": "⚠️ TSVAvatarGenerator credits are LOW! Video generation is rate-limited.",
+                    "credits_low": True,
+                    "failed_count": len(credit_errors),
+                    "total_recent_tasks": len(recent_tasks),
+                    "recent_errors": credit_errors[:3]  # Show last 3 errors
+                }
+            elif len(failed_tasks) > 10:
+                # Many failures but not credit-related
+                return {
+                    "status": "warning",
+                    "message": "⚠️ High failure rate detected in video generation",
+                    "credits_low": False,
+                    "failed_count": len(failed_tasks),
+                    "total_recent_tasks": len(recent_tasks)
+                }
+            else:
+                # Everything looks good
+                return {
+                    "status": "ok",
+                    "message": "✅ TSVAvatarGenerator credits are OK",
+                    "credits_low": False,
+                    "failed_count": len(failed_tasks),
+                    "total_recent_tasks": len(recent_tasks)
+                }
+    
+    except Exception as e:
+        logger.error(f"Error checking credit status: {str(e)}")
+        return {
+            "status": "error",
+            "message": f"Error checking credit status: {str(e)}",
+            "credits_low": False
+        }
