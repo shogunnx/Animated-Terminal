@@ -258,7 +258,6 @@ async def create_qa_video(
     character_name: str,
     question: str,
     avatar_id: str,
-    heygen_api_key: str,
     video_url: str = None,
     duration: int = 10
 ) -> dict:
