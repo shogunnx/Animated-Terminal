@@ -163,8 +163,7 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
                 detail=f"TSVAvatarGenerator failed: {result.get('error', 'Unknown error')}"
             )
         
-        # Remove all HeyGen automation code below this point
-            from heygen_automation import generate_video_via_automation
+    # All HeyGen code removed - TSVAvatarGenerator only
             
             # Rewrite story in character's voice if requested
             final_story_text = request.story_text
