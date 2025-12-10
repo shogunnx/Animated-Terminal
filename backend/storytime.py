@@ -118,88 +118,52 @@ async def check_video_status(video_id: str):
 @router.post("/generate-narrated", response_model=StoryGenerationResponse)
 async def generate_narrated_story_video(request: NarratedStoryRequest):
     """
-    Generate a story video with in-character narration using HeyGen API V2
+    Generate a story video with in-character narration using TSVAvatarGenerator
     Rewrites the story in the character's voice before generating video
-    If HEYGEN_TEST_MODE is enabled, returns pre-recorded video without API call
     """
     try:
-        # TEST MODE: Return pre-recorded video without API call (still do LLM rewrite for testing)
-        if HEYGEN_TEST_MODE:
-            import random
-            
-            # Still perform character voice rewrite to test that functionality
-            final_story_text = request.story_text
-            if request.use_character_voice:
-                try:
-                    from storytime_qa import rewrite_story_in_character_voice
-                    final_story_text = await rewrite_story_in_character_voice(
-                        character_id=request.character_id,
-                        character_name=request.character_name,
-                        story_text=request.story_text,
-                        story_title=request.story_title
-                    )
-                    logger.info(f"TEST MODE: Story rewritten in {request.character_name}'s voice (length: {len(final_story_text)} chars)")
-                except Exception as e:
-                    logger.warning(f"TEST MODE: Character voice rewrite failed: {e}")
-            
-            test_video_id = random.choice(HEYGEN_TEST_VIDEOS)
-            logger.info(f"TEST MODE: Using pre-recorded video {test_video_id}")
+        from tsvavatar_integration import generate_video_with_tsvavatar
+        
+        # Rewrite story in character's voice if requested
+        final_story_text = request.story_text
+        if request.use_character_voice:
+            try:
+                from storytime_qa import rewrite_story_in_character_voice
+                final_story_text = await rewrite_story_in_character_voice(
+                    character_id=request.character_id,
+                    character_name=request.character_name,
+                    story_text=request.story_text,
+                    story_title=request.story_title
+                )
+                logger.info(f"Story rewritten in {request.character_name}'s voice")
+            except Exception as e:
+                logger.warning(f"Character voice rewrite failed: {e}")
+        
+        voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
+        
+        logger.info("Generating narrated video via TSVAvatarGenerator")
+        result = await generate_video_with_tsvavatar(
+            avatar_id=request.avatar_id,
+            script_text=final_story_text,
+            voice_id=voice_id,
+            title=request.story_title,
+            duration=10,  # Default 10 seconds
+            enable_audio=True
+        )
+        
+        if result["success"] and result.get("task_id"):
             return StoryGenerationResponse(
                 video_url="",
-                video_id=test_video_id,
+                video_id=result["task_id"],
                 status="processing"
             )
-        
-        # TSVAVATAR MODE: Use TSVAvatarGenerator service
-        if TSVAVATAR_MODE:
-            from tsvavatar_integration import generate_video_with_tsvavatar
-            
-            # Rewrite story in character's voice if requested
-            final_story_text = request.story_text
-            if request.use_character_voice:
-                try:
-                    from storytime_qa import rewrite_story_in_character_voice
-                    final_story_text = await rewrite_story_in_character_voice(
-                        character_id=request.character_id,
-                        character_name=request.character_name,
-                        story_text=request.story_text,
-                        story_title=request.story_title
-                    )
-                    logger.info(f"TSVAVATAR MODE: Story rewritten in {request.character_name}'s voice")
-                except Exception as e:
-                    logger.warning(f"TSVAVATAR MODE: Character voice rewrite failed: {e}")
-            
-            voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
-            
-            logger.info("TSVAVATAR MODE: Generating narrated video via TSVAvatarGenerator")
-            result = await generate_video_with_tsvavatar(
-                avatar_id=request.avatar_id,
-                script_text=final_story_text,
-                voice_id=voice_id,
-                title=request.story_title,
-                duration=10,  # Default 10 seconds
-                enable_audio=True
+        else:
+            raise HTTPException(
+                status_code=500,
+                detail=f"TSVAvatarGenerator failed: {result.get('error', 'Unknown error')}"
             )
-            
-            if result["success"] and result.get("task_id"):
-                return StoryGenerationResponse(
-                    video_url="",
-                    video_id=result["task_id"],
-                    status="processing"
-                )
-            else:
-                # Fallback to test mode if TSVAvatar fails
-                logger.warning(f"TSVAvatar failed: {result.get('error')} - falling back to test mode")
-                import random
-                test_video_id = random.choice(HEYGEN_TEST_VIDEOS)
-                return StoryGenerationResponse(
-                    video_url="",
-                    video_id=test_video_id,
-                    status="processing"
-                )
         
-        # AUTOMATION MODE: Use browser automation instead of API
-        if HEYGEN_AUTOMATION_MODE:
+        # Remove all HeyGen automation code below this point
             from heygen_automation import generate_video_via_automation
             
             # Rewrite story in character's voice if requested
