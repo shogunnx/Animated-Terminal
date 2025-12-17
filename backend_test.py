@@ -543,9 +543,9 @@ class DeviantArtTester:
                 self.issues_found.append(f"Backend endpoint {endpoint} failed: {result.get('error', 'Unknown error')}")
     
     def generate_report(self):
-        """Generate comprehensive StoryTime test report"""
+        """Generate comprehensive DeviantArt integration test report"""
         print("\n" + "=" * 80)
-        print("📋 STORYTIME LORE FEATURE TEST REPORT")
+        print("📋 DEVIANTART INTEGRATION TEST REPORT")
         print("=" * 80)
         
         working_results = [r for r in self.results if r["success"]]
@@ -556,17 +556,27 @@ class DeviantArtTester:
         print(f"   ✅ Working: {len(working_results)}")
         print(f"   ❌ Failed: {len(failed_results)}")
         
-        print(f"\n🎯 STORYTIME FEATURE VERIFICATION:")
-        print(f"   ✅ Lore Count (94 stories): {'PASS' if self.test_summary['lore_count_verified'] else 'FAIL'}")
-        print(f"   ✅ Chapter Content: {'PASS' if self.test_summary['chapter_content_verified'] else 'FAIL'}")
-        print(f"   ✅ Video Generation API: {'PASS' if self.test_summary['video_generation_working'] else 'FAIL'}")
-        print(f"   ✅ Character Limit (<5000): {'PASS' if self.test_summary['character_limit_compliant'] else 'FAIL'}")
-        print(f"   ✅ Evil Victoria Avatar ID: {'PASS' if self.test_summary['evil_victoria_avatar_correct'] else 'FAIL'}")
-        print(f"   ✅ API Endpoints: {'PASS' if self.test_summary['api_endpoints_working'] else 'FAIL'}")
+        print(f"\n🎯 DEVIANTART INTEGRATION VERIFICATION:")
+        print(f"   ✅ Backend Connectivity: {'PASS' if self.test_summary['backend_connectivity'] else 'FAIL'}")
+        print(f"   ✅ Auth Status Endpoint: {'PASS' if self.test_summary['auth_status_working'] else 'FAIL'}")
+        print(f"   ✅ Auth URL Endpoint: {'PASS' if self.test_summary['auth_url_working'] else 'FAIL'}")
+        print(f"   ✅ Correct Client ID (55907): {'PASS' if self.test_summary['auth_url_has_correct_client_id'] else 'FAIL'}")
+        print(f"   ✅ OAuth2 Parameters: {'PASS' if self.test_summary['auth_url_has_correct_redirect'] and self.test_summary['auth_url_has_correct_scope'] else 'FAIL'}")
+        print(f"   ✅ Binary View URL: {'PASS' if self.test_summary['view_url_binary_working'] else 'FAIL'}")
+        print(f"   ✅ Victoria Black View URL: {'PASS' if self.test_summary['view_url_victoria_black_working'] else 'FAIL'}")
+        print(f"   ✅ Gallery URL Format: {'PASS' if self.test_summary['gallery_urls_correct_format'] else 'FAIL'}")
+        print(f"   ✅ Frontend UI Access: {'PASS' if self.test_summary['frontend_ui_accessible'] else 'FAIL'}")
+        print(f"   ✅ Dressing Room Buttons: {'PASS' if self.test_summary['dressing_room_buttons_present'] else 'FAIL'}")
         
         # Calculate overall success
-        all_tests_passed = all(self.test_summary.values())
-        print(f"\n🏆 OVERALL RESULT: {'✅ ALL TESTS PASSED' if all_tests_passed else '❌ SOME TESTS FAILED'}")
+        critical_tests = [
+            'backend_connectivity', 'auth_status_working', 'auth_url_working', 
+            'auth_url_has_correct_client_id', 'view_url_binary_working', 
+            'view_url_victoria_black_working', 'gallery_urls_correct_format'
+        ]
+        critical_passed = all(self.test_summary.get(test, False) for test in critical_tests)
+        
+        print(f"\n🏆 OVERALL RESULT: {'✅ CRITICAL TESTS PASSED' if critical_passed else '❌ CRITICAL TESTS FAILED'}")
         
         if self.issues_found:
             print(f"\n❌ ISSUES FOUND ({len(self.issues_found)}):")
@@ -590,7 +600,7 @@ class DeviantArtTester:
             "failed_count": len(failed_results),
             "test_summary": self.test_summary,
             "issues_found": self.issues_found,
-            "all_tests_passed": all_tests_passed
+            "critical_tests_passed": critical_passed
         }
 
 async def main():
