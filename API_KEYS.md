@@ -43,6 +43,18 @@ This document stores all API keys used in the application for easy reference.
 - **Location:** `/app/backend/.env` → `NEXUS_BASE_URL`
 - **Used For:** Fetching character personalities for Q&A
 
+## DeviantArt Integration
+
+### DeviantArt OAuth2 API
+- **Service:** DeviantArt gallery posting and management
+- **Client ID:** `55907`
+- **Client Secret:** `a6ae27af8e845474c18109e6a4372c29`
+- **Username:** `TheSaiyanVictoria`
+- **Redirect URI:** `https://TheSaiyanVictoria.com/api/deviantart/callback`
+- **Location:** `/app/backend/.env` → `DEVIANTART_CLIENT_ID`, `DEVIANTART_CLIENT_SECRET`, `DEVIANTART_USERNAME`
+- **Dashboard:** https://www.deviantart.com/developers/apps
+- **Used For:** Posting generated outfits to character-specific galleries on DeviantArt
+
 ## Database
 
 ### MongoDB
