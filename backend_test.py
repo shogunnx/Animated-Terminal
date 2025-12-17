@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-StoryTime Q&A Feature Comprehensive Testing Script
-Tests the StoryTime Q&A system with AI-generated video responses
+DeviantArt Integration Testing Script
+Tests the DeviantArt OAuth2 integration and gallery view functionality for TSV Terminal Dressing Room
 """
 
 import asyncio
@@ -11,9 +11,16 @@ from typing import Dict, List, Any, Optional
 import time
 import os
 import re
+import urllib.parse
 
-# Get backend URL from environment
-BACKEND_URL = os.getenv('REACT_APP_BACKEND_URL', 'https://victoria-nexus.preview.emergentagent.com')
+# Get backend URL from frontend environment
+with open('/app/frontend/.env', 'r') as f:
+    for line in f:
+        if line.startswith('REACT_APP_BACKEND_URL='):
+            BACKEND_URL = line.split('=', 1)[1].strip()
+            break
+else:
+    BACKEND_URL = 'https://victoria-nexus.preview.emergentagent.com'
 
 # Q&A Test Characters with their avatar IDs (from review request)
 QA_TEST_CHARACTERS = {
