@@ -45,22 +45,21 @@ TEST_CHARACTERS = [
 # Expected gallery URL pattern
 EXPECTED_GALLERY_URL_PATTERN = f"https://www.deviantart.com/{EXPECTED_USERNAME}/gallery/0/"
 
-class StoryTimeTester:
+class DeviantArtTester:
     def __init__(self):
         self.results = []
-        self.qa_results = []
         self.test_summary = {
-            "lore_count_verified": False,
-            "chapter_content_verified": False,
-            "video_generation_working": False,
-            "character_limit_compliant": True,
-            "evil_victoria_avatar_correct": False,
-            "api_endpoints_working": False,
-            "qa_endpoint_working": False,
-            "ai_response_quality": False,
-            "video_generation_integration": False,
-            "multiple_characters_working": False,
-            "error_handling_working": False
+            "auth_status_working": False,
+            "auth_url_working": False,
+            "auth_url_has_correct_client_id": False,
+            "auth_url_has_correct_redirect": False,
+            "auth_url_has_correct_scope": False,
+            "view_url_binary_working": False,
+            "view_url_victoria_black_working": False,
+            "gallery_urls_correct_format": False,
+            "backend_connectivity": False,
+            "frontend_ui_accessible": False,
+            "dressing_room_buttons_present": False
         }
         self.issues_found = []
         
