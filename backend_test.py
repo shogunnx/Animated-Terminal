@@ -14,13 +14,15 @@ import re
 import urllib.parse
 
 # Get backend URL from frontend environment
-with open('/app/frontend/.env', 'r') as f:
-    for line in f:
-        if line.startswith('REACT_APP_BACKEND_URL='):
-            BACKEND_URL = line.split('=', 1)[1].strip()
-            break
-else:
-    BACKEND_URL = 'https://victoria-nexus.preview.emergentagent.com'
+BACKEND_URL = 'https://victoria-nexus.preview.emergentagent.com'  # Default
+try:
+    with open('/app/frontend/.env', 'r') as f:
+        for line in f:
+            if line.startswith('REACT_APP_BACKEND_URL='):
+                BACKEND_URL = line.split('=', 1)[1].strip()
+                break
+except FileNotFoundError:
+    pass
 
 # DeviantArt Integration Test Configuration
 DEVIANTART_ENDPOINTS = [
