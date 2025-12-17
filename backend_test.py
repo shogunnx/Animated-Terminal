@@ -412,47 +412,41 @@ class DeviantArtTester:
             print(f"❌ Error accessing dressing room page: {str(e)}")
             self.issues_found.append(f"Error accessing dressing room page: {str(e)}")
 
-    async def test_multiple_characters(self):
-        """Test Q&A with different characters"""
-        print("\n👥 TESTING MULTIPLE CHARACTERS...")
+    async def test_deviantart_configuration(self):
+        """Test DeviantArt configuration and environment variables"""
+        print("\n⚙️ TESTING DEVIANTART CONFIGURATION...")
         print("=" * 60)
         
-        working_characters = 0
+        # Test status endpoint to check configuration
+        status_url = f"{BACKEND_URL}/api/status"
+        result = await self.test_endpoint("GET", status_url)
         
-        for char_id, char_data in QA_TEST_CHARACTERS.items():
-            print(f"\n🎭 Testing character: {char_data['character_name']} ({char_id})")
+        if result["success"] and result["full_response"]:
+            status_data = result["full_response"]
             
-            test_payload = {
-                "character_id": char_id,
-                "character_name": char_data["character_name"],
-                "avatar_id": char_data["avatar_id"], 
-                "question": "Tell me about your role in the story."
-            }
-            
-            qa_url = f"{BACKEND_URL}/api/storytime/qa"
-            result = await self.test_endpoint("POST", qa_url, data=test_payload)
-            self.qa_results.append(result)
-            
-            if result["success"] and result.get("full_response", {}).get("video_id"):
-                print(f"✅ {char_data['character_name']}: Working")
-                working_characters += 1
+            # Check DeviantArt configuration in status
+            if "deviantart" in status_data:
+                da_config = status_data["deviantart"]
                 
-                # Check character-specific response
-                response_text = result["full_response"].get("response_text", "").lower()
-                if char_id in response_text or char_data["character_name"].lower() in response_text:
-                    print(f"✅ Response stays in character")
+                if da_config.get("configured"):
+                    print(f"✅ DeviantArt is configured in backend")
+                    
+                    # Check RSS URL format
+                    rss_url = da_config.get("rss", "")
+                    if EXPECTED_USERNAME in rss_url:
+                        print(f"✅ DeviantArt RSS URL contains expected username: {EXPECTED_USERNAME}")
+                    else:
+                        print(f"⚠️ DeviantArt RSS URL may not contain expected username")
+                        self.issues_found.append(f"DeviantArt RSS URL doesn't contain expected username: {EXPECTED_USERNAME}")
                 else:
-                    print(f"⚠️ Response may not be character-specific")
+                    print(f"❌ DeviantArt not configured in backend")
+                    self.issues_found.append("DeviantArt not configured in backend")
             else:
-                print(f"❌ {char_data['character_name']}: Failed")
-                error_msg = result.get('error', f"HTTP {result['status_code']}")
-                self.issues_found.append(f"Character {char_data['character_name']} Q&A failed: {error_msg}")
-        
-        if working_characters == len(QA_TEST_CHARACTERS):
-            print(f"\n✅ All {len(QA_TEST_CHARACTERS)} characters working correctly")
-            self.test_summary["multiple_characters_working"] = True
+                print(f"❌ DeviantArt configuration not found in status")
+                self.issues_found.append("DeviantArt configuration not found in status")
         else:
-            print(f"\n❌ Only {working_characters}/{len(QA_TEST_CHARACTERS)} characters working")
+            print(f"❌ Could not check DeviantArt configuration")
+            self.issues_found.append("Could not check DeviantArt configuration")
 
     async def test_video_generation_integration(self, video_id: str = None):
         """Test HeyGen video generation integration"""
