@@ -12,7 +12,11 @@ from dotenv import load_dotenv
 
 from dressing_room import generate_outfit_image, OutfitRequest, BaseImageRequest
 from teach_mode_routes import router as teach_mode_router
+from fastapi import HTTPException
 import base64
+
+# DeviantArt Integration
+import deviantart
 
 # -----------------------
 # Settings
@@ -270,6 +274,70 @@ async def deviantart_latest(limit: int = 10):
     _rss_cache["at"] = time.time()
     _rss_cache["data"] = items
     return {"rss": rss, "items": items[:limit]}
+
+# -----------------------
+# DeviantArt OAuth & Posting API
+# -----------------------
+@api.get("/deviantart/auth-status")
+async def deviantart_auth_status():
+    """Check if DeviantArt is authenticated"""
+    return deviantart.is_authenticated()
+
+@api.get("/deviantart/auth-url")
+async def get_deviantart_auth_url():
+    """Get DeviantArt OAuth2 authorization URL"""
+    return deviantart.get_authorization_url()
+
+@api.get("/deviantart/callback")
+async def deviantart_oauth_callback(code: str = None, state: str = None, error: str = None):
+    """Handle OAuth2 callback from DeviantArt"""
+    if error:
+        return JSONResponse({"error": error}, status_code=400)
+    
+    if not code:
+        return JSONResponse({"error": "No authorization code received"}, status_code=400)
+    
+    result = await deviantart.exchange_code_for_token(code)
+    
+    # Return HTML that closes the popup and notifies the parent
+    html_response = f"""
+    <!DOCTYPE html>
+    <html>
+    <head><title>DeviantArt Authorization</title></head>
+    <body>
+        <h2>Authorization Successful!</h2>
+        <p>You can close this window now.</p>
+        <script>
+            if (window.opener) {{
+                window.opener.postMessage({{ type: 'deviantart_auth_success' }}, '*');
+                setTimeout(() => window.close(), 1500);
+            }}
+        </script>
+    </body>
+    </html>
+    """
+    return Response(content=html_response, media_type="text/html")
+
+@api.get("/deviantart/galleries")
+async def get_deviantart_galleries():
+    """Get list of user galleries"""
+    galleries = await deviantart.get_user_galleries()
+    return {"galleries": galleries}
+
+@api.post("/deviantart/galleries/create")
+async def create_deviantart_gallery(request: deviantart.DeviantArtGalleryCreate):
+    """Create a new DeviantArt gallery"""
+    return await deviantart.create_gallery(request.name, request.description)
+
+@api.post("/deviantart/post-outfit")
+async def post_outfit_to_deviantart(request: deviantart.DeviantArtPostRequest):
+    """Post a generated outfit to DeviantArt"""
+    return await deviantart.post_outfit_to_deviantart(request)
+
+@api.get("/deviantart/view-url/{character_name}")
+async def get_deviantart_view_url(character_name: str):
+    """Get the DeviantArt gallery URL for a character"""
+    return await deviantart.get_deviation_url(character_name)
 
 app.include_router(api)
 
