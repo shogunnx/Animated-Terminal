@@ -161,7 +161,108 @@ export default function DressingRoom() {
         setLikeCount(getLikes(char.id));
       }
     }
+    
+    // Check DeviantArt auth status
+    checkDeviantArtAuth();
+    
+    // Listen for DeviantArt OAuth callback
+    const handleMessage = (event) => {
+      if (event.data?.type === 'deviantart_auth_success') {
+        setDaAuthenticated(true);
+        setDaError(null);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, [id]);
+  
+  const checkDeviantArtAuth = async () => {
+    try {
+      const response = await fetch('/api/deviantart/auth-status');
+      const data = await response.json();
+      setDaAuthenticated(data.authenticated);
+    } catch (err) {
+      console.error("Failed to check DA auth status:", err);
+    }
+  };
+  
+  const handleDeviantArtAuth = async () => {
+    try {
+      const response = await fetch('/api/deviantart/auth-url');
+      const data = await response.json();
+      
+      if (data.auth_url) {
+        // Open OAuth popup
+        const popup = window.open(
+          data.auth_url,
+          'DeviantArt Authorization',
+          'width=600,height=700,scrollbars=yes'
+        );
+        
+        // Check if popup was blocked
+        if (!popup) {
+          setDaError("Popup blocked! Please allow popups for this site.");
+        }
+      }
+    } catch (err) {
+      setDaError("Failed to start DeviantArt authorization");
+    }
+  };
+  
+  const handlePostToDeviantArt = async () => {
+    if (!generatedImage || !selectedCharacter) return;
+    
+    setDaPosting(true);
+    setDaError(null);
+    setDaPostResult(null);
+    
+    try {
+      // Generate a title based on outfit
+      const outfitDesc = generateOutfitPrompt();
+      const title = `${selectedCharacter.name} - ${outfitDesc.slice(0, 50)}${outfitDesc.length > 50 ? '...' : ''}`;
+      
+      const response = await fetch('/api/deviantart/post-outfit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image_base64: generatedImage,
+          character_name: selectedCharacter.name,
+          title: title,
+          description: `AI-generated outfit for ${selectedCharacter.name} from TSV Terminal Dressing Room.\n\nOutfit: ${outfitDesc}`,
+          tags: ['ai-art', 'digital-art', selectedCharacter.name.toLowerCase().replace(/\s+/g, '-'), 'tsv-terminal', 'character-outfit'],
+          is_mature: false
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        setDaPostResult(data);
+      } else {
+        setDaError(data.detail || 'Failed to post to DeviantArt');
+      }
+    } catch (err) {
+      setDaError(err.message || 'Network error');
+    } finally {
+      setDaPosting(false);
+    }
+  };
+  
+  const handleViewOnDeviantArt = async () => {
+    if (!selectedCharacter) return;
+    
+    try {
+      const response = await fetch(`/api/deviantart/view-url/${encodeURIComponent(selectedCharacter.name)}`);
+      const data = await response.json();
+      
+      if (data.gallery_url) {
+        window.open(data.gallery_url, '_blank');
+      }
+    } catch (err) {
+      // Fallback to generic profile
+      window.open('https://www.deviantart.com/thesaiyanvictoria', '_blank');
+    }
+  };
 
   const handleLike = () => {
     if (selectedCharacter && !liked) {
