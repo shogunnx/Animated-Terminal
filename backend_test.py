@@ -604,20 +604,23 @@ class DeviantArtTester:
         }
 
 async def main():
-    """Main StoryTime testing function"""
-    print("🚀 STORYTIME LORE FEATURE COMPREHENSIVE TESTING")
+    """Main DeviantArt integration testing function"""
+    print("🚀 DEVIANTART INTEGRATION COMPREHENSIVE TESTING")
     print(f"🎯 Backend URL: {BACKEND_URL}")
     print(f"📅 Started: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 80)
     
-    tester = StoryTimeTester()
+    tester = DeviantArtTester()
     
     # Run all test phases
     await tester.test_backend_connectivity()
-    await tester.test_lore_story_data()
-    await tester.test_evil_victoria_avatar()
-    await tester.test_storytime_api_endpoints()
-    await tester.test_video_generation_flow()
+    await tester.test_deviantart_configuration()
+    await tester.test_deviantart_auth_status()
+    await tester.test_deviantart_auth_url()
+    await tester.test_deviantart_view_urls()
+    await tester.test_oauth_flow_preparation()
+    await tester.test_deviantart_error_handling()
+    await tester.test_frontend_dressing_room_ui()
     
     # Generate final report
     report = tester.generate_report()
