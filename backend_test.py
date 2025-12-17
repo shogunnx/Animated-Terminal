@@ -22,60 +22,28 @@ with open('/app/frontend/.env', 'r') as f:
 else:
     BACKEND_URL = 'https://victoria-nexus.preview.emergentagent.com'
 
-# Q&A Test Characters with their avatar IDs (from review request)
-QA_TEST_CHARACTERS = {
-    "wargirl": {
-        "character_name": "Wargirl",
-        "avatar_id": "1a9bfb4ec9bc43d59ab64a4e66fe467c"
-    },
-    "evil_victoria": {
-        "character_name": "Evil Victoria", 
-        "avatar_id": "130c202a4e7a47898dfc6f434c86dc24"
-    },
-    "victoria_black": {
-        "character_name": "Victoria Black",
-        "avatar_id": "84516b469b1f44dbb126c40aa24b2df0"
-    }
-}
-
-# Test questions for Q&A system
-QA_TEST_QUESTIONS = [
-    "How was Binary created?",  # Lore-specific question from review
-    "What happened during your escape from Black Frieza?",
-    "Tell me about your relationship with the other characters.",
-    "What are your greatest strengths and abilities?",
-    ""  # Empty question for error testing
+# DeviantArt Integration Test Configuration
+DEVIANTART_ENDPOINTS = [
+    "/api/deviantart/auth-status",
+    "/api/deviantart/auth-url", 
+    "/api/deviantart/view-url/Binary",
+    "/api/deviantart/view-url/Victoria%20Black"
 ]
 
-# Expected Evil Victoria Avatar ID from review request
-EXPECTED_EVIL_VICTORIA_AVATAR_ID = "45ac5eccd176497998afb3e9e508fad1"
+# Expected DeviantArt configuration from review request
+EXPECTED_CLIENT_ID = "55907"
+EXPECTED_USERNAME = "TheSaiyanVictoria"
 
-# Expected lore story count from review request
-EXPECTED_LORE_COUNT = 94
-
-# Expected chapter titles to verify
-EXPECTED_CHAPTERS = [
-    "Chapter 1: A Saiyan's Fate",
-    "2. A New Fighter Joins the team! Harmony Blaster!",
-    "Chapter 1: A Saiyan's Fate—Captivity, Rebellion, and a New Beginning (Part 1)"
+# Test characters for DeviantArt gallery URLs
+TEST_CHARACTERS = [
+    {"name": "Binary", "expected_slug": "binary"},
+    {"name": "Victoria Black", "expected_slug": "victoria-black"},
+    {"name": "Wargirl", "expected_slug": "wargirl"},
+    {"name": "Evil Victoria", "expected_slug": "evil-victoria"}
 ]
 
-# Character limit for HeyGen API
-HEYGEN_CHARACTER_LIMIT = 5000
-
-# StoryTime API endpoints to test
-STORYTIME_ENDPOINTS = [
-    "/api/storytime/generate",
-    "/api/storytime/status",
-    "/api/storytime/qa"  # New Q&A endpoint
-]
-
-# Test story data for API testing
-TEST_STORY_DATA = {
-    "avatar_id": EXPECTED_EVIL_VICTORIA_AVATAR_ID,
-    "story_text": "This is a test story for Evil Victoria. The story should be engaging and demonstrate the video generation capabilities of the StoryTime feature.",
-    "story_title": "Test Story - Evil Victoria"
-}
+# Expected gallery URL pattern
+EXPECTED_GALLERY_URL_PATTERN = f"https://www.deviantart.com/{EXPECTED_USERNAME}/gallery/0/"
 
 class StoryTimeTester:
     def __init__(self):
