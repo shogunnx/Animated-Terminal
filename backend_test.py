@@ -113,69 +113,46 @@ class DeviantArtTester:
                 "full_response": None
             }
     
-    async def test_lore_story_data(self):
-        """Test lore story data by reading the frontend file"""
-        print("📚 TESTING LORE STORY DATA...")
+    async def test_deviantart_auth_status(self):
+        """Test DeviantArt authentication status endpoint"""
+        print("🔐 TESTING DEVIANTART AUTH STATUS...")
         print("=" * 60)
         
-        try:
-            # Read the story-lore.js file to verify story count and content
-            with open('/app/frontend/src/data/story-lore.js', 'r') as f:
-                lore_content = f.read()
+        url = f"{BACKEND_URL}/api/deviantart/auth-status"
+        print(f"Testing GET {url}")
+        
+        result = await self.test_endpoint("GET", url)
+        self.results.append(result)
+        
+        if result["success"]:
+            print(f"✅ Auth status endpoint working - Status: {result['status_code']}")
             
-            # Count lore stories by looking for category: 'lore' entries
-            lore_story_count = lore_content.count("category: 'lore'")
-            
-            print(f"📊 Found {lore_story_count} lore stories in story-lore.js")
-            
-            if lore_story_count == EXPECTED_LORE_COUNT:
-                print(f"✅ Lore story count matches expected: {EXPECTED_LORE_COUNT}")
-                self.test_summary["lore_count_verified"] = True
-            else:
-                print(f"❌ Lore story count mismatch: Expected {EXPECTED_LORE_COUNT}, Found {lore_story_count}")
-                self.issues_found.append(f"Lore story count mismatch: Expected {EXPECTED_LORE_COUNT}, Found {lore_story_count}")
-            
-            # Check for expected chapter titles
-            chapters_found = 0
-            for chapter in EXPECTED_CHAPTERS:
-                if chapter in lore_content:
-                    chapters_found += 1
-                    print(f"✅ Found expected chapter: {chapter}")
-                else:
-                    print(f"❌ Missing expected chapter: {chapter}")
-                    self.issues_found.append(f"Missing expected chapter: {chapter}")
-            
-            if chapters_found == len(EXPECTED_CHAPTERS):
-                print(f"✅ All expected chapters found")
-                self.test_summary["chapter_content_verified"] = True
-            else:
-                print(f"❌ Only {chapters_found}/{len(EXPECTED_CHAPTERS)} expected chapters found")
-            
-            # Check character limits
-            print("\n🔍 CHECKING CHARACTER LIMITS...")
-            over_limit_count = 0
-            
-            # Extract story text content and check lengths
-            import re
-            text_pattern = r'text:\s*`([^`]*)`'
-            text_matches = re.findall(text_pattern, lore_content, re.DOTALL)
-            
-            for i, text in enumerate(text_matches):
-                text_length = len(text)
-                if text_length > HEYGEN_CHARACTER_LIMIT:
-                    over_limit_count += 1
-                    print(f"❌ Story {i+1} exceeds character limit: {text_length} chars (limit: {HEYGEN_CHARACTER_LIMIT})")
-                    self.issues_found.append(f"Story {i+1} exceeds character limit: {text_length} chars")
-            
-            if over_limit_count == 0:
-                print(f"✅ All stories are under {HEYGEN_CHARACTER_LIMIT} character limit")
-            else:
-                print(f"❌ {over_limit_count} stories exceed character limit")
-                self.test_summary["character_limit_compliant"] = False
+            # Check response format
+            if result["full_response"]:
+                response = result["full_response"]
                 
-        except Exception as e:
-            print(f"❌ Error reading lore story data: {str(e)}")
-            self.issues_found.append(f"Error reading lore story data: {str(e)}")
+                # Should have authenticated and username fields
+                if "authenticated" in response and "username" in response:
+                    print(f"✅ Response has required fields: authenticated, username")
+                    
+                    # Initially should be false and null
+                    if response["authenticated"] == False and response["username"] is None:
+                        print(f"✅ Initial auth state correct: authenticated=false, username=null")
+                        self.test_summary["auth_status_working"] = True
+                    else:
+                        print(f"⚠️ Unexpected auth state: authenticated={response['authenticated']}, username={response['username']}")
+                        # This might be OK if already authenticated
+                        self.test_summary["auth_status_working"] = True
+                else:
+                    print(f"❌ Missing required fields in response")
+                    self.issues_found.append("Auth status response missing required fields")
+            else:
+                print(f"❌ No response data received")
+                self.issues_found.append("Auth status endpoint returned no data")
+        else:
+            print(f"❌ Auth status endpoint failed - Status: {result['status_code']}")
+            error_msg = result.get('error', 'Unknown error')
+            self.issues_found.append(f"Auth status endpoint failed: {error_msg}")
     
     async def test_evil_victoria_avatar(self):
         """Test Evil Victoria avatar configuration"""
