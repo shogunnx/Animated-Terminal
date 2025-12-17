@@ -448,62 +448,36 @@ class DeviantArtTester:
             print(f"❌ Could not check DeviantArt configuration")
             self.issues_found.append("Could not check DeviantArt configuration")
 
-    async def test_video_generation_integration(self, video_id: str = None):
-        """Test HeyGen video generation integration"""
-        print("\n🎬 TESTING VIDEO GENERATION INTEGRATION...")
+    async def test_oauth_flow_preparation(self):
+        """Test OAuth flow preparation (without actual user interaction)"""
+        print("\n🔐 TESTING OAUTH FLOW PREPARATION...")
         print("=" * 60)
         
-        if not video_id:
-            print("❌ No video_id available for testing - skipping integration test")
-            return
-            
-        # Test status polling
-        status_url = f"{BACKEND_URL}/api/storytime/status/{video_id}"
-        print(f"Testing video status polling: {status_url}")
+        print("ℹ️ Note: Full OAuth flow requires user interaction with DeviantArt")
+        print("ℹ️ Testing OAuth preparation and callback endpoint availability")
         
-        max_polls = 3
-        for poll_count in range(max_polls):
-            print(f"📊 Status poll {poll_count + 1}/{max_polls}")
+        # Test callback endpoint exists (should return error without code)
+        callback_url = f"{BACKEND_URL}/api/deviantart/callback"
+        print(f"Testing callback endpoint: {callback_url}")
+        
+        result = await self.test_endpoint("GET", callback_url)
+        self.results.append(result)
+        
+        # Callback should return 400 without code parameter
+        if result["status_code"] == 400:
+            print(f"✅ OAuth callback endpoint exists and handles missing code correctly")
             
-            result = await self.test_endpoint("GET", status_url)
-            self.results.append(result)
-            
-            if result["success"]:
-                print(f"✅ Status endpoint working - Status: {result['status_code']}")
-                
-                if result["full_response"] and "data" in result["full_response"]:
-                    status_data = result["full_response"]["data"]
-                    video_status = status_data.get("status", "unknown")
-                    print(f"📹 Video status: {video_status}")
-                    
-                    if video_status == "completed":
-                        video_url = status_data.get("video_url")
-                        if video_url:
-                            print(f"✅ Video completed with URL: {video_url[:50]}...")
-                            self.test_summary["video_generation_integration"] = True
-                            return
-                        else:
-                            print(f"❌ Video completed but no URL provided")
-                    elif video_status == "failed":
-                        print(f"❌ Video generation failed")
-                        self.issues_found.append("HeyGen video generation failed")
-                        return
-                    elif video_status in ["processing", "pending"]:
-                        print(f"⏳ Video still processing...")
-                        if poll_count < max_polls - 1:
-                            await asyncio.sleep(10)  # Wait before next poll
-                    else:
-                        print(f"⚠️ Unknown video status: {video_status}")
+            if result["full_response"] and "error" in result["full_response"]:
+                error_msg = result["full_response"]["error"]
+                if "authorization code" in error_msg.lower():
+                    print(f"✅ Callback returns appropriate error message: {error_msg}")
                 else:
-                    print(f"❌ Invalid status response format")
-                    self.issues_found.append("Invalid video status response format")
-                    return
-            else:
-                print(f"❌ Status endpoint failed - Status: {result['status_code']}")
-                self.issues_found.append(f"Video status check failed: {result.get('error', 'Unknown error')}")
-                return
+                    print(f"⚠️ Callback error message may be unclear: {error_msg}")
+        else:
+            print(f"⚠️ OAuth callback endpoint response unexpected: {result['status_code']}")
+            self.issues_found.append(f"OAuth callback endpoint returned unexpected status: {result['status_code']}")
         
-        print(f"⏳ Video still processing after {max_polls} polls - integration test incomplete")
+        print(f"✅ OAuth flow preparation complete - ready for user authentication")
 
     async def test_error_handling(self):
         """Test Q&A error handling"""
