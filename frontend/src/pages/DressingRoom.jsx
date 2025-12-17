@@ -144,6 +144,12 @@ export default function DressingRoom() {
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  
+  // DeviantArt state
+  const [daAuthenticated, setDaAuthenticated] = useState(false);
+  const [daPosting, setDaPosting] = useState(false);
+  const [daPostResult, setDaPostResult] = useState(null);
+  const [daError, setDaError] = useState(null);
 
   useEffect(() => {
     if (id) {
