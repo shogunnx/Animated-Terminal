@@ -232,67 +232,103 @@ class DeviantArtTester:
             error_msg = result.get('error', 'Unknown error')
             self.issues_found.append(f"Auth URL endpoint failed: {error_msg}")
     
-    async def test_storytime_api_endpoints(self):
-        """Test StoryTime API endpoints"""
-        print("\n🎬 TESTING STORYTIME API ENDPOINTS...")
+    async def test_deviantart_view_urls(self):
+        """Test DeviantArt gallery view URL endpoints"""
+        print("\n👁️ TESTING DEVIANTART VIEW URL ENDPOINTS...")
         print("=" * 60)
         
-        # Test video generation endpoint
-        generate_url = f"{BACKEND_URL}/api/storytime/generate"
-        print(f"Testing POST {generate_url}")
+        # Test Binary character view URL
+        binary_url = f"{BACKEND_URL}/api/deviantart/view-url/Binary"
+        print(f"Testing GET {binary_url}")
         
-        result = await self.test_endpoint("POST", generate_url, data=TEST_STORY_DATA)
+        result = await self.test_endpoint("GET", binary_url)
         self.results.append(result)
         
         if result["success"]:
-            print(f"✅ Video generation endpoint working - Status: {result['status_code']}")
+            print(f"✅ Binary view URL endpoint working - Status: {result['status_code']}")
             
-            # Check if we got a video_id back
-            if result["full_response"] and "video_id" in result["full_response"]:
-                video_id = result["full_response"]["video_id"]
-                print(f"✅ Received video_id: {video_id}")
+            if result["full_response"]:
+                response = result["full_response"]
                 
-                # Test status endpoint with the video_id
-                status_url = f"{BACKEND_URL}/api/storytime/status/{video_id}"
-                print(f"Testing GET {status_url}")
-                
-                status_result = await self.test_endpoint("GET", status_url)
-                self.results.append(status_result)
-                
-                if status_result["success"]:
-                    print(f"✅ Video status endpoint working - Status: {status_result['status_code']}")
-                    self.test_summary["api_endpoints_working"] = True
+                if "gallery_url" in response:
+                    gallery_url = response["gallery_url"]
+                    expected_binary_url = f"{EXPECTED_GALLERY_URL_PATTERN}binary"
                     
-                    # Check status response format
-                    if status_result["full_response"] and "data" in status_result["full_response"]:
-                        status_data = status_result["full_response"]["data"]
-                        print(f"✅ Status response format correct: {status_data}")
+                    if gallery_url == expected_binary_url:
+                        print(f"✅ Binary gallery URL correct: {gallery_url}")
+                        self.test_summary["view_url_binary_working"] = True
                     else:
-                        print(f"❌ Invalid status response format")
-                        self.issues_found.append("Invalid status response format")
+                        print(f"❌ Binary gallery URL incorrect: Expected {expected_binary_url}, Got {gallery_url}")
+                        self.issues_found.append(f"Binary gallery URL incorrect: Expected {expected_binary_url}, Got {gallery_url}")
                 else:
-                    print(f"❌ Video status endpoint failed - Status: {status_result['status_code']}")
-                    self.issues_found.append(f"Video status endpoint failed: {status_result.get('error', 'Unknown error')}")
-            else:
-                print(f"❌ No video_id in generation response")
-                self.issues_found.append("No video_id in generation response")
+                    print(f"❌ Binary view URL response missing gallery_url field")
+                    self.issues_found.append("Binary view URL response missing gallery_url field")
         else:
-            print(f"❌ Video generation endpoint failed - Status: {result['status_code']}")
-            error_msg = result.get('error', 'Unknown error')
-            if result.get('full_response'):
-                error_msg = result['full_response'].get('detail', error_msg)
-            self.issues_found.append(f"Video generation endpoint failed: {error_msg}")
-            
-        # Test health endpoint
-        health_url = f"{BACKEND_URL}/api/health"
-        health_result = await self.test_endpoint("GET", health_url)
-        self.results.append(health_result)
+            print(f"❌ Binary view URL endpoint failed - Status: {result['status_code']}")
+            self.issues_found.append(f"Binary view URL endpoint failed: {result.get('error', 'Unknown error')}")
         
-        if health_result["success"]:
-            print(f"✅ Health endpoint working - Status: {health_result['status_code']}")
+        # Test Victoria Black character view URL
+        victoria_url = f"{BACKEND_URL}/api/deviantart/view-url/Victoria%20Black"
+        print(f"Testing GET {victoria_url}")
+        
+        result = await self.test_endpoint("GET", victoria_url)
+        self.results.append(result)
+        
+        if result["success"]:
+            print(f"✅ Victoria Black view URL endpoint working - Status: {result['status_code']}")
+            
+            if result["full_response"]:
+                response = result["full_response"]
+                
+                if "gallery_url" in response:
+                    gallery_url = response["gallery_url"]
+                    expected_victoria_url = f"{EXPECTED_GALLERY_URL_PATTERN}victoria-black"
+                    
+                    if gallery_url == expected_victoria_url:
+                        print(f"✅ Victoria Black gallery URL correct: {gallery_url}")
+                        self.test_summary["view_url_victoria_black_working"] = True
+                    else:
+                        print(f"❌ Victoria Black gallery URL incorrect: Expected {expected_victoria_url}, Got {gallery_url}")
+                        self.issues_found.append(f"Victoria Black gallery URL incorrect: Expected {expected_victoria_url}, Got {gallery_url}")
+                else:
+                    print(f"❌ Victoria Black view URL response missing gallery_url field")
+                    self.issues_found.append("Victoria Black view URL response missing gallery_url field")
         else:
-            print(f"❌ Health endpoint failed - Status: {health_result['status_code']}")
-            self.issues_found.append(f"Health endpoint failed: {health_result.get('error', 'Unknown error')}")
+            print(f"❌ Victoria Black view URL endpoint failed - Status: {result['status_code']}")
+            self.issues_found.append(f"Victoria Black view URL endpoint failed: {result.get('error', 'Unknown error')}")
+        
+        # Test all characters for URL format consistency
+        print(f"\n🔍 TESTING ALL CHARACTER GALLERY URL FORMATS...")
+        all_urls_correct = True
+        
+        for character in TEST_CHARACTERS:
+            char_name = character["name"]
+            expected_slug = character["expected_slug"]
+            
+            encoded_name = urllib.parse.quote(char_name)
+            test_url = f"{BACKEND_URL}/api/deviantart/view-url/{encoded_name}"
+            
+            result = await self.test_endpoint("GET", test_url)
+            self.results.append(result)
+            
+            if result["success"] and result["full_response"] and "gallery_url" in result["full_response"]:
+                gallery_url = result["full_response"]["gallery_url"]
+                expected_url = f"{EXPECTED_GALLERY_URL_PATTERN}{expected_slug}"
+                
+                if gallery_url == expected_url:
+                    print(f"✅ {char_name}: {gallery_url}")
+                else:
+                    print(f"❌ {char_name}: Expected {expected_url}, Got {gallery_url}")
+                    all_urls_correct = False
+                    self.issues_found.append(f"{char_name} gallery URL format incorrect")
+            else:
+                print(f"❌ {char_name}: Failed to get gallery URL")
+                all_urls_correct = False
+                self.issues_found.append(f"{char_name} view URL endpoint failed")
+        
+        if all_urls_correct:
+            print(f"✅ All character gallery URLs have correct format")
+            self.test_summary["gallery_urls_correct_format"] = True
     
     async def test_video_generation_flow(self):
         """Test complete video generation flow"""
