@@ -418,10 +418,10 @@ metadata:
 
 test_plan:
   current_focus: 
-    - "StoryTime Feature End-to-End Testing"
+    - "DeviantArt Post & View Integration"
   stuck_tasks: []
-  test_all: true
-  test_priority: "storytime_integration"
+  test_all: false
+  test_priority: "deviantart_integration"
 
 agent_communication:
     - agent: "testing"
