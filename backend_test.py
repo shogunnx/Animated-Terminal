@@ -154,36 +154,83 @@ class DeviantArtTester:
             error_msg = result.get('error', 'Unknown error')
             self.issues_found.append(f"Auth status endpoint failed: {error_msg}")
     
-    async def test_evil_victoria_avatar(self):
-        """Test Evil Victoria avatar configuration"""
-        print("\n👹 TESTING EVIL VICTORIA AVATAR CONFIGURATION...")
+    async def test_deviantart_auth_url(self):
+        """Test DeviantArt OAuth2 authorization URL endpoint"""
+        print("\n🔗 TESTING DEVIANTART AUTH URL...")
         print("=" * 60)
         
-        try:
-            # Read the StoryTime.jsx file to verify avatar ID
-            with open('/app/frontend/src/pages/StoryTime.jsx', 'r') as f:
-                storytime_content = f.read()
+        url = f"{BACKEND_URL}/api/deviantart/auth-url"
+        print(f"Testing GET {url}")
+        
+        result = await self.test_endpoint("GET", url)
+        self.results.append(result)
+        
+        if result["success"]:
+            print(f"✅ Auth URL endpoint working - Status: {result['status_code']}")
             
-            # Check if the correct Evil Victoria avatar ID is present
-            if EXPECTED_EVIL_VICTORIA_AVATAR_ID in storytime_content:
-                print(f"✅ Evil Victoria avatar ID found: {EXPECTED_EVIL_VICTORIA_AVATAR_ID}")
-                self.test_summary["evil_victoria_avatar_correct"] = True
+            if result["full_response"]:
+                response = result["full_response"]
+                
+                # Check for required fields
+                required_fields = ["auth_url", "client_id", "redirect_uri"]
+                missing_fields = [field for field in required_fields if field not in response]
+                
+                if not missing_fields:
+                    print(f"✅ Response has all required fields: {required_fields}")
+                    self.test_summary["auth_url_working"] = True
+                    
+                    # Check client_id
+                    if response["client_id"] == EXPECTED_CLIENT_ID:
+                        print(f"✅ Client ID correct: {EXPECTED_CLIENT_ID}")
+                        self.test_summary["auth_url_has_correct_client_id"] = True
+                    else:
+                        print(f"❌ Client ID mismatch: Expected {EXPECTED_CLIENT_ID}, Got {response['client_id']}")
+                        self.issues_found.append(f"Client ID mismatch: Expected {EXPECTED_CLIENT_ID}, Got {response['client_id']}")
+                    
+                    # Check auth_url format and parameters
+                    auth_url = response["auth_url"]
+                    if "deviantart.com/oauth2/authorize" in auth_url:
+                        print(f"✅ Auth URL has correct DeviantArt OAuth2 endpoint")
+                        
+                        # Parse URL parameters
+                        parsed_url = urllib.parse.urlparse(auth_url)
+                        params = urllib.parse.parse_qs(parsed_url.query)
+                        
+                        # Check required OAuth2 parameters
+                        if "client_id" in params and params["client_id"][0] == EXPECTED_CLIENT_ID:
+                            print(f"✅ Auth URL contains correct client_id parameter")
+                        else:
+                            print(f"❌ Auth URL missing or incorrect client_id parameter")
+                            self.issues_found.append("Auth URL missing correct client_id parameter")
+                        
+                        if "redirect_uri" in params:
+                            redirect_uri = params["redirect_uri"][0]
+                            print(f"✅ Auth URL contains redirect_uri: {redirect_uri}")
+                            self.test_summary["auth_url_has_correct_redirect"] = True
+                        else:
+                            print(f"❌ Auth URL missing redirect_uri parameter")
+                            self.issues_found.append("Auth URL missing redirect_uri parameter")
+                        
+                        if "scope" in params:
+                            scope = params["scope"][0]
+                            print(f"✅ Auth URL contains scope: {scope}")
+                            self.test_summary["auth_url_has_correct_scope"] = True
+                        else:
+                            print(f"❌ Auth URL missing scope parameter")
+                            self.issues_found.append("Auth URL missing scope parameter")
+                    else:
+                        print(f"❌ Auth URL doesn't point to DeviantArt OAuth2 endpoint")
+                        self.issues_found.append("Auth URL doesn't point to DeviantArt OAuth2 endpoint")
+                else:
+                    print(f"❌ Missing required fields: {missing_fields}")
+                    self.issues_found.append(f"Auth URL response missing fields: {missing_fields}")
             else:
-                print(f"❌ Evil Victoria avatar ID not found: {EXPECTED_EVIL_VICTORIA_AVATAR_ID}")
-                self.issues_found.append(f"Evil Victoria avatar ID not found: {EXPECTED_EVIL_VICTORIA_AVATAR_ID}")
-                
-                # Look for other avatar IDs that might be used instead
-                import re
-                avatar_pattern = r"'evil_victoria':\s*{\s*id:\s*'([^']+)'"
-                matches = re.findall(avatar_pattern, storytime_content)
-                if matches:
-                    actual_id = matches[0]
-                    print(f"❌ Found different avatar ID: {actual_id}")
-                    self.issues_found.append(f"Wrong Evil Victoria avatar ID: {actual_id} (expected: {EXPECTED_EVIL_VICTORIA_AVATAR_ID})")
-                
-        except Exception as e:
-            print(f"❌ Error checking Evil Victoria avatar: {str(e)}")
-            self.issues_found.append(f"Error checking Evil Victoria avatar: {str(e)}")
+                print(f"❌ No response data received")
+                self.issues_found.append("Auth URL endpoint returned no data")
+        else:
+            print(f"❌ Auth URL endpoint failed - Status: {result['status_code']}")
+            error_msg = result.get('error', 'Unknown error')
+            self.issues_found.append(f"Auth URL endpoint failed: {error_msg}")
     
     async def test_storytime_api_endpoints(self):
         """Test StoryTime API endpoints"""
