@@ -360,83 +360,57 @@ class DeviantArtTester:
         if connectivity_working:
             self.test_summary["backend_connectivity"] = True
     
-    async def test_qa_endpoint_basic(self):
-        """Test Q&A endpoint with basic functionality"""
-        print("\n🤖 TESTING Q&A ENDPOINT BASIC FUNCTIONALITY...")
+    async def test_frontend_dressing_room_ui(self):
+        """Test frontend dressing room UI for Binary character"""
+        print("\n🎨 TESTING FRONTEND DRESSING ROOM UI...")
         print("=" * 60)
         
-        # Test with Wargirl and Binary creation question (from review request)
-        test_payload = {
-            "character_id": "wargirl",
-            "character_name": "Wargirl", 
-            "avatar_id": "1a9bfb4ec9bc43d59ab64a4e66fe467c",
-            "question": "How was Binary created?"
-        }
+        # Test if we can access the dressing room page for Binary
+        dressing_room_url = f"{BACKEND_URL}/dressing-room/binary"
+        print(f"Testing frontend access: {dressing_room_url}")
         
-        qa_url = f"{BACKEND_URL}/api/storytime/qa"
-        print(f"Testing POST {qa_url}")
-        print(f"Payload: {json.dumps(test_payload, indent=2)}")
-        
-        result = await self.test_endpoint("POST", qa_url, data=test_payload)
-        self.qa_results.append(result)
-        
-        if result["success"]:
-            print(f"✅ Q&A endpoint working - Status: {result['status_code']}")
-            
-            # Verify response structure
-            if result["full_response"]:
-                response = result["full_response"]
-                required_fields = ["video_id", "response_text", "question", "character_name"]
-                missing_fields = [field for field in required_fields if field not in response]
+        try:
+            async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
+                response = await client.get(dressing_room_url)
                 
-                if not missing_fields:
-                    print(f"✅ Response contains all required fields: {required_fields}")
-                    self.test_summary["qa_endpoint_working"] = True
+                if response.status_code == 200:
+                    print(f"✅ Dressing room page accessible - Status: {response.status_code}")
+                    self.test_summary["frontend_ui_accessible"] = True
                     
-                    # Check response text length (400-600 words for 1-2 minute video)
-                    response_text = response.get("response_text", "")
-                    word_count = len(response_text.split())
-                    print(f"📝 Response text length: {word_count} words ({len(response_text)} characters)")
-                    
-                    if 400 <= word_count <= 600:
-                        print(f"✅ Response length appropriate for video (400-600 words)")
-                        self.test_summary["ai_response_quality"] = True
+                    # Check if it's HTML content (not JSON error)
+                    content_type = response.headers.get("content-type", "")
+                    if "text/html" in content_type:
+                        print(f"✅ Received HTML content (frontend page)")
+                        
+                        # Look for key elements in the HTML
+                        html_content = response.text.lower()
+                        
+                        # Check for Binary character reference
+                        if "binary" in html_content:
+                            print(f"✅ Page contains Binary character reference")
+                        else:
+                            print(f"⚠️ Page may not contain Binary character reference")
+                        
+                        # Check for button-related text (this is a basic check)
+                        button_indicators = ["save", "post", "view", "connect", "deviantart"]
+                        found_buttons = [btn for btn in button_indicators if btn in html_content]
+                        
+                        if len(found_buttons) >= 3:
+                            print(f"✅ Page likely contains expected buttons: {found_buttons}")
+                            self.test_summary["dressing_room_buttons_present"] = True
+                        else:
+                            print(f"⚠️ Page may be missing some buttons. Found: {found_buttons}")
+                            self.issues_found.append(f"Dressing room page may be missing buttons. Found: {found_buttons}")
                     else:
-                        print(f"⚠️ Response length outside optimal range: {word_count} words")
-                        if word_count < 200:
-                            self.issues_found.append(f"Response too short: {word_count} words (expected 400-600)")
-                        elif word_count > 800:
-                            self.issues_found.append(f"Response too long: {word_count} words (expected 400-600)")
-                    
-                    # Check if response mentions Binary creation (lore accuracy)
-                    if any(keyword in response_text.lower() for keyword in ["binary", "victoria black", "vegeta", "deal"]):
-                        print(f"✅ Response references Binary creation lore")
-                    else:
-                        print(f"⚠️ Response may not reference Binary creation lore accurately")
-                        self.issues_found.append("Response doesn't reference expected Binary creation lore")
-                    
-                    # Check video_id format
-                    video_id = response.get("video_id")
-                    if video_id and len(video_id) > 10:
-                        print(f"✅ Video ID received: {video_id}")
-                        return video_id
-                    else:
-                        print(f"❌ Invalid video_id: {video_id}")
-                        self.issues_found.append(f"Invalid video_id format: {video_id}")
+                        print(f"❌ Received non-HTML content: {content_type}")
+                        self.issues_found.append(f"Dressing room page returned non-HTML content: {content_type}")
                 else:
-                    print(f"❌ Missing required fields: {missing_fields}")
-                    self.issues_found.append(f"Q&A response missing fields: {missing_fields}")
-            else:
-                print(f"❌ No response data received")
-                self.issues_found.append("Q&A endpoint returned no response data")
-        else:
-            print(f"❌ Q&A endpoint failed - Status: {result['status_code']}")
-            error_msg = result.get('error', 'Unknown error')
-            if result.get('full_response'):
-                error_msg = result['full_response'].get('detail', error_msg)
-            self.issues_found.append(f"Q&A endpoint failed: {error_msg}")
-            
-        return None
+                    print(f"❌ Dressing room page not accessible - Status: {response.status_code}")
+                    self.issues_found.append(f"Dressing room page returned status {response.status_code}")
+                    
+        except Exception as e:
+            print(f"❌ Error accessing dressing room page: {str(e)}")
+            self.issues_found.append(f"Error accessing dressing room page: {str(e)}")
 
     async def test_multiple_characters(self):
         """Test Q&A with different characters"""
