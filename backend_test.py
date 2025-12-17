@@ -479,67 +479,44 @@ class DeviantArtTester:
         
         print(f"✅ OAuth flow preparation complete - ready for user authentication")
 
-    async def test_error_handling(self):
-        """Test Q&A error handling"""
-        print("\n🚨 TESTING ERROR HANDLING...")
+    async def test_deviantart_error_handling(self):
+        """Test DeviantArt API error handling"""
+        print("\n🚨 TESTING DEVIANTART ERROR HANDLING...")
         print("=" * 60)
         
-        error_tests = [
-            {
-                "name": "Empty question",
-                "payload": {
-                    "character_id": "wargirl",
-                    "character_name": "Wargirl",
-                    "avatar_id": "1a9bfb4ec9bc43d59ab64a4e66fe467c",
-                    "question": ""
-                },
-                "expected_error": True
-            },
-            {
-                "name": "Invalid character_id", 
-                "payload": {
-                    "character_id": "invalid_character",
-                    "character_name": "Invalid Character",
-                    "avatar_id": "1a9bfb4ec9bc43d59ab64a4e66fe467c",
-                    "question": "Test question"
-                },
-                "expected_error": False  # Should still work, just use default lore
-            },
-            {
-                "name": "Missing required fields",
-                "payload": {
-                    "character_id": "wargirl",
-                    "question": "Test question"
-                    # Missing character_name and avatar_id
-                },
-                "expected_error": True
-            }
-        ]
+        # Test invalid character name
+        invalid_char_url = f"{BACKEND_URL}/api/deviantart/view-url/InvalidCharacter123"
+        print(f"Testing invalid character: {invalid_char_url}")
         
-        qa_url = f"{BACKEND_URL}/api/storytime/qa"
-        error_handling_working = True
+        result = await self.test_endpoint("GET", invalid_char_url)
+        self.results.append(result)
         
-        for test_case in error_tests:
-            print(f"\n🧪 Testing: {test_case['name']}")
+        if result["success"]:
+            print(f"✅ Invalid character handled gracefully - Status: {result['status_code']}")
             
-            result = await self.test_endpoint("POST", qa_url, data=test_case["payload"])
-            self.qa_results.append(result)
-            
-            if test_case["expected_error"]:
-                if not result["success"]:
-                    print(f"✅ Correctly rejected invalid request")
+            if result["full_response"] and "gallery_url" in result["full_response"]:
+                gallery_url = result["full_response"]["gallery_url"]
+                # Should still return a URL with the character name slugified
+                if "invalidcharacter123" in gallery_url.lower():
+                    print(f"✅ Invalid character name properly slugified in URL")
                 else:
-                    print(f"❌ Should have rejected invalid request")
-                    error_handling_working = False
-                    self.issues_found.append(f"Error handling failed for: {test_case['name']}")
-            else:
-                if result["success"]:
-                    print(f"✅ Handled edge case gracefully")
-                else:
-                    print(f"⚠️ Failed to handle edge case: {test_case['name']}")
+                    print(f"⚠️ Character name handling may need improvement")
+        else:
+            print(f"⚠️ Invalid character caused error - Status: {result['status_code']}")
+            # This might be acceptable depending on implementation
         
-        if error_handling_working:
-            self.test_summary["error_handling_working"] = True
+        # Test special characters in character name
+        special_char_url = f"{BACKEND_URL}/api/deviantart/view-url/Test%20Character%20%26%20Special"
+        print(f"Testing special characters: {special_char_url}")
+        
+        result = await self.test_endpoint("GET", special_char_url)
+        self.results.append(result)
+        
+        if result["success"]:
+            print(f"✅ Special characters handled - Status: {result['status_code']}")
+        else:
+            print(f"⚠️ Special characters caused error - Status: {result['status_code']}")
+            self.issues_found.append("Special characters in character names not handled properly")
 
     async def test_backend_connectivity(self):
         """Test basic backend connectivity"""
