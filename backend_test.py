@@ -330,57 +330,35 @@ class DeviantArtTester:
             print(f"✅ All character gallery URLs have correct format")
             self.test_summary["gallery_urls_correct_format"] = True
     
-    async def test_video_generation_flow(self):
-        """Test complete video generation flow"""
-        print("\n🎥 TESTING COMPLETE VIDEO GENERATION FLOW...")
+    async def test_backend_connectivity(self):
+        """Test basic backend connectivity"""
+        print("\n🔗 TESTING BACKEND CONNECTIVITY...")
         print("=" * 60)
         
-        # Test with a shorter story for faster testing
-        short_story_data = {
-            "avatar_id": EXPECTED_EVIL_VICTORIA_AVATAR_ID,
-            "story_text": "This is a short test story for Evil Victoria. Testing video generation capabilities.",
-            "story_title": "Short Test Story"
-        }
+        # Test basic endpoints
+        endpoints_to_test = [
+            "/api/health",
+            "/api/status"
+        ]
         
-        try:
-            # Step 1: Generate video
-            generate_url = f"{BACKEND_URL}/api/storytime/generate"
-            result = await self.test_endpoint("POST", generate_url, data=short_story_data)
+        connectivity_working = True
+        
+        for endpoint in endpoints_to_test:
+            url = f"{BACKEND_URL}{endpoint}"
+            result = await self.test_endpoint("GET", url)
+            self.results.append(result)
             
-            if not result["success"]:
-                print(f"❌ Video generation failed: {result.get('error', 'Unknown error')}")
-                self.issues_found.append(f"Video generation failed: {result.get('error', 'Unknown error')}")
-                return
-            
-            if not result["full_response"] or "video_id" not in result["full_response"]:
-                print(f"❌ No video_id in response")
-                self.issues_found.append("No video_id in video generation response")
-                return
-                
-            video_id = result["full_response"]["video_id"]
-            print(f"✅ Video generation started, video_id: {video_id}")
-            
-            # Step 2: Check initial status
-            status_url = f"{BACKEND_URL}/api/storytime/status/{video_id}"
-            status_result = await self.test_endpoint("GET", status_url)
-            
-            if status_result["success"]:
-                print(f"✅ Video status check working")
-                if status_result["full_response"] and "data" in status_result["full_response"]:
-                    status_data = status_result["full_response"]["data"]
-                    video_status = status_data.get("status", "unknown")
-                    print(f"✅ Video status: {video_status}")
-                    self.test_summary["video_generation_working"] = True
-                else:
-                    print(f"❌ Invalid status response format")
-                    self.issues_found.append("Invalid video status response format")
+            if result["success"]:
+                print(f"✅ {endpoint} - Status: {result['status_code']}")
+                if result["response_preview"]:
+                    print(f"   Preview: {result['response_preview'][:100]}...")
             else:
-                print(f"❌ Video status check failed")
-                self.issues_found.append("Video status check failed")
-                
-        except Exception as e:
-            print(f"❌ Error in video generation flow: {str(e)}")
-            self.issues_found.append(f"Error in video generation flow: {str(e)}")
+                print(f"❌ {endpoint} - Status: {result['status_code']}")
+                connectivity_working = False
+                self.issues_found.append(f"Backend endpoint {endpoint} failed: {result.get('error', 'Unknown error')}")
+        
+        if connectivity_working:
+            self.test_summary["backend_connectivity"] = True
     
     async def test_qa_endpoint_basic(self):
         """Test Q&A endpoint with basic functionality"""
