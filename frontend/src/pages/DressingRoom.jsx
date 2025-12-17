@@ -624,7 +624,7 @@ export default function DressingRoom() {
             </div>
             
             {/* Action Buttons */}
-            <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
               <button 
                 className="tsv-btn"
                 onClick={() => {
@@ -642,16 +642,103 @@ export default function DressingRoom() {
               >
                 💾 SAVE
               </button>
+              
+              {/* DeviantArt POST Button */}
+              {daAuthenticated ? (
+                <button 
+                  className="tsv-btn"
+                  onClick={handlePostToDeviantArt}
+                  disabled={daPosting}
+                  style={{ 
+                    fontSize: 11, 
+                    padding: "8px",
+                    background: daPosting 
+                      ? "rgba(100,100,100,.3)" 
+                      : "linear-gradient(135deg, #00d46a40, #05cc4730)",
+                    borderColor: "#00d46a",
+                    cursor: daPosting ? "not-allowed" : "pointer"
+                  }}
+                >
+                  {daPosting ? "⏳ POSTING..." : "🎨 POST"}
+                </button>
+              ) : (
+                <button 
+                  className="tsv-btn"
+                  onClick={handleDeviantArtAuth}
+                  style={{ 
+                    fontSize: 11, 
+                    padding: "8px",
+                    background: "linear-gradient(135deg, #ff990040, #ff660030)",
+                    borderColor: "#ff9900"
+                  }}
+                >
+                  🔐 CONNECT DA
+                </button>
+              )}
+              
+              {/* DeviantArt VIEW Button */}
               <button 
                 className="tsv-btn"
-                onClick={() => {
-                  alert('DeviantArt integration coming soon!');
+                onClick={handleViewOnDeviantArt}
+                style={{ 
+                  fontSize: 11, 
+                  padding: "8px",
+                  background: "linear-gradient(135deg, #05cc4740, #00d46a30)",
+                  borderColor: "#05cc47"
                 }}
-                style={{ fontSize: 11, padding: "8px", opacity: 0.6 }}
               >
-                🎨 POST TO DA
+                👁️ VIEW
               </button>
             </div>
+            
+            {/* DeviantArt Post Result/Error */}
+            {daPostResult && (
+              <div style={{ 
+                marginTop: 10, 
+                padding: 10, 
+                borderRadius: 8, 
+                background: "rgba(0,212,106,.1)",
+                border: "1px solid rgba(0,212,106,.4)",
+                fontSize: 11
+              }}>
+                <div style={{ color: "#00d46a", marginBottom: 6 }}>✅ Posted to DeviantArt!</div>
+                {daPostResult.deviation_url && (
+                  <a 
+                    href={daPostResult.deviation_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{ color: "#05cc47", textDecoration: "underline" }}
+                  >
+                    View on DeviantArt →
+                  </a>
+                )}
+              </div>
+            )}
+            
+            {daError && (
+              <div style={{ 
+                marginTop: 10, 
+                padding: 10, 
+                borderRadius: 8, 
+                background: "rgba(255,153,0,.1)",
+                border: "1px solid rgba(255,153,0,.4)",
+                fontSize: 11,
+                color: "#ff9900"
+              }}>
+                ⚠️ {daError}
+                {!daAuthenticated && (
+                  <div style={{ marginTop: 6 }}>
+                    <button 
+                      className="tsv-btn"
+                      onClick={handleDeviantArtAuth}
+                      style={{ fontSize: 10, padding: "4px 8px" }}
+                    >
+                      🔐 Connect DeviantArt
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
