@@ -332,7 +332,7 @@ async def upload_deviation(image_base64: str, title: str, gallery_id: str, descr
                 "success": True,
                 "deviation_url": publish_data.get("url"),
                 "deviationid": publish_data.get("deviationid"),
-                "message": f"Successfully posted to DeviantArt!"
+                "message": "Successfully posted to DeviantArt!"
             }
             
         except httpx.TimeoutException:

@@ -118,7 +118,7 @@ async def save_base_image_endpoint(request: BaseImageRequest):
     from dressing_room import save_base_image
     try:
         image_data = base64.b64decode(request.image_base64.split(',')[-1])
-        file_path = save_base_image(request.character_id, image_data)
+        save_base_image(request.character_id, image_data)
         return {"success": True, "message": f"Base image saved for {request.character_id}"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save base image: {str(e)}")
@@ -297,10 +297,10 @@ async def deviantart_oauth_callback(code: str = None, state: str = None, error: 
     if not code:
         return JSONResponse({"error": "No authorization code received"}, status_code=400)
     
-    result = await deviantart.exchange_code_for_token(code)
+    await deviantart.exchange_code_for_token(code)
     
     # Return HTML that closes the popup and notifies the parent
-    html_response = f"""
+    html_response = """
     <!DOCTYPE html>
     <html>
     <head><title>DeviantArt Authorization</title></head>
