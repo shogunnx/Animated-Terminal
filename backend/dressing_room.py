@@ -216,28 +216,73 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
         char1_appearance = get_character_appearance(request.character_id, request.character_name)
         char2_appearance = get_character_appearance(request.second_character_id, request.second_character_name)
         
-        prompt = f"""Two distinct anime women together in the same scene:
-
-LEFT CHARACTER: {char1_appearance}
-
-RIGHT CHARACTER: {char2_appearance}
-
-SCENE: {request.outfit_description}
-
-Both characters are clearly visible side by side in the frame. Each character has their unique appearance as described. High quality anime art style, detailed faces, vibrant colors, professional illustration."""
+        # Try to get base images for both characters to use as reference
+        char1_base = get_base_image(request.character_id)
+        char2_base = get_base_image(request.second_character_id)
         
-        # Use text-to-image generation for Pairs mode
+        prompt = f"""Two anime women together in the same scene, side by side:
+Left: {request.character_name} - {char1_appearance}
+Right: {request.second_character_name} - {char2_appearance}
+Scene: {request.outfit_description}
+Both characters visible, high quality anime art, detailed, vibrant colors."""
+
         try:
-            handler = await fal_client.submit_async(
-                "fal-ai/flux/dev",  # Use FLUX dev for text-to-image
-                arguments={
-                    "prompt": prompt,
-                    "image_size": "landscape_16_9",  # Better for two characters
-                    "num_inference_steps": 35,  # More steps for better quality
-                    "guidance_scale": 4.0,  # Higher guidance for more prompt adherence
-                    "enable_safety_checker": True
-                }
-            )
+            # If we have BOTH base images, create a composite reference and use IP-Adapter
+            if char1_base and char2_base:
+                # Create side-by-side composite of both characters as reference
+                img1 = Image.open(io.BytesIO(char1_base)).convert('RGB')
+                img2 = Image.open(io.BytesIO(char2_base)).convert('RGB')
+                
+                # Resize to same height
+                target_height = 512
+                img1_ratio = target_height / img1.height
+                img2_ratio = target_height / img2.height
+                img1 = img1.resize((int(img1.width * img1_ratio), target_height), Image.Resampling.LANCZOS)
+                img2 = img2.resize((int(img2.width * img2_ratio), target_height), Image.Resampling.LANCZOS)
+                
+                # Create composite (side by side)
+                total_width = img1.width + img2.width
+                composite = Image.new('RGB', (total_width, target_height))
+                composite.paste(img1, (0, 0))
+                composite.paste(img2, (img1.width, 0))
+                
+                # Convert to base64
+                composite_buffer = io.BytesIO()
+                composite.save(composite_buffer, format='PNG')
+                composite_bytes = composite_buffer.getvalue()
+                composite_base64 = base64.b64encode(composite_bytes).decode('utf-8')
+                composite_url = f"data:image/png;base64,{composite_base64}"
+                
+                # Use FLUX image-to-image with IP-Adapter for character consistency
+                handler = await fal_client.submit_async(
+                    "fal-ai/flux-general/image-to-image",
+                    arguments={
+                        "prompt": prompt,
+                        "image_url": composite_url,  # Use composite as base
+                        "strength": 0.65,  # Lower strength to preserve more of reference
+                        "num_inference_steps": 35,
+                        "guidance_scale": 4.0,
+                        "enable_safety_checker": True,
+                        "ip_adapters": [{
+                            "path": "InstantX/FLUX.1-dev-IP-Adapter",
+                            "image_encoder_path": "google/siglip-so400m-patch14-384",
+                            "image_url": composite_url,
+                            "scale": 0.7  # Strong IP-Adapter influence
+                        }]
+                    }
+                )
+            else:
+                # Fallback to text-to-image if no base images
+                handler = await fal_client.submit_async(
+                    "fal-ai/flux/dev",
+                    arguments={
+                        "prompt": prompt,
+                        "image_size": "landscape_16_9",
+                        "num_inference_steps": 35,
+                        "guidance_scale": 4.0,
+                        "enable_safety_checker": True
+                    }
+                )
             
             result = await handler.get()
             
@@ -255,10 +300,11 @@ Both characters are clearly visible side by side in the frame. Each character ha
                     "success": True,
                     "image_base64": image_base64,
                     "prompt_used": prompt,
-                    "image_source": "pairs_generation",
+                    "image_source": "pairs_generation_ip_adapter" if (char1_base and char2_base) else "pairs_generation_text",
                     "base_image_saved": False,
-                    "model": "fal-ai/flux/dev",
-                    "is_pairs": True
+                    "model": "fal-ai/flux-general/image-to-image" if (char1_base and char2_base) else "fal-ai/flux/dev",
+                    "is_pairs": True,
+                    "used_reference_images": bool(char1_base and char2_base)
                 }
             else:
                 raise HTTPException(status_code=500, detail="No image was generated for pairs mode")
