@@ -314,12 +314,12 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
     
     # Step 2: Generate a SMART prompt that describes both characters interacting
     # The key is to identify each character by their distinctive visual features (hair, etc.)
-    smart_prompt = f"""Two beautiful anime women together in an intimate scene, {activity}.
-On the left is {char1_identifier} with {char1_hair}.
-On the right is {char2_identifier} with {char2_hair}.
-They are interacting together in the scene - facing each other, close together, {activity}.
-Keep their exact hair colors, facial features, and distinctive appearances.
-High quality anime art, detailed faces, vibrant colors, romantic composition, beautiful lighting."""
+    # and describe them ACTIVELY INTERACTING in a unified scene
+    smart_prompt = f"""Two beautiful anime women in an intimate romantic scene together, {activity}.
+{char1_identifier} with {char1_hair} and {char2_identifier} with {char2_hair} are together in the same room.
+They are facing each other, close together, touching and interacting romantically.
+Keep their exact distinctive hair colors and styles - one with {char1_hair}, one with {char2_hair}.
+Single unified scene with both women interacting together, high quality anime art, detailed faces, vibrant colors, intimate romantic composition, beautiful soft lighting."""
 
     print(f"[PAIRS MODE] Smart prompt: {smart_prompt}")
     
