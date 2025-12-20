@@ -1,5 +1,67 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+
+// Stat Card Component
+const StatCard = ({ title, value, icon, color = "#00ffff" }) => (
+  <div className="tsv-glass" style={{ 
+    padding: 16, 
+    borderRadius: 12,
+    border: `1px solid ${color}30`,
+    background: `linear-gradient(135deg, ${color}10, transparent)`
+  }}>
+    <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
+    <div style={{ fontSize: 28, fontWeight: "bold", color }}>{value}</div>
+    <div style={{ fontSize: 11, opacity: 0.7, marginTop: 4 }}>{title}</div>
+  </div>
+);
+
+// Top Items List Component
+const TopItemsList = ({ title, items, color = "#00ffff", icon = "📊" }) => (
+  <div className="tsv-glass" style={{ 
+    padding: 14, 
+    borderRadius: 12,
+    border: `1px solid ${color}30`
+  }}>
+    <div className="tsv-title" style={{ fontSize: 12, marginBottom: 12, color }}>
+      {icon} {title}
+    </div>
+    {items && items.length > 0 ? (
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {items.map((item, i) => (
+          <div key={i} style={{ 
+            display: "flex", 
+            justifyContent: "space-between", 
+            alignItems: "center",
+            padding: "6px 10px",
+            background: i === 0 ? `${color}20` : "rgba(255,255,255,.05)",
+            borderRadius: 6,
+            fontSize: 11
+          }}>
+            <span style={{ opacity: 0.9 }}>
+              {i === 0 && "🥇 "}
+              {i === 1 && "🥈 "}
+              {i === 2 && "🥉 "}
+              {item.item}
+            </span>
+            <span style={{ 
+              color, 
+              fontWeight: "bold",
+              background: `${color}30`,
+              padding: "2px 8px",
+              borderRadius: 4
+            }}>
+              {item.count}
+            </span>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div style={{ fontSize: 11, opacity: 0.5, textAlign: "center", padding: 20 }}>
+        No data yet
+      </div>
+    )}
+  </div>
+);
 
 export default function DressingRoomAnalytics() {
   const nav = useNavigate();
@@ -8,11 +70,7 @@ export default function DressingRoomAnalytics() {
   const [error, setError] = useState(null);
   const [days, setDays] = useState(30);
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, [days]);
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/dressing-room/analytics?days=${days}`);
@@ -24,67 +82,11 @@ export default function DressingRoomAnalytics() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [days]);
 
-  const StatCard = ({ title, value, icon, color = "#00ffff" }) => (
-    <div className="tsv-glass" style={{ 
-      padding: 16, 
-      borderRadius: 12,
-      border: `1px solid ${color}30`,
-      background: `linear-gradient(135deg, ${color}10, transparent)`
-    }}>
-      <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
-      <div style={{ fontSize: 28, fontWeight: "bold", color }}>{value}</div>
-      <div style={{ fontSize: 11, opacity: 0.7, marginTop: 4 }}>{title}</div>
-    </div>
-  );
-
-  const TopItemsList = ({ title, items, color = "#00ffff", icon = "📊" }) => (
-    <div className="tsv-glass" style={{ 
-      padding: 14, 
-      borderRadius: 12,
-      border: `1px solid ${color}30`
-    }}>
-      <div className="tsv-title" style={{ fontSize: 12, marginBottom: 12, color }}>
-        {icon} {title}
-      </div>
-      {items && items.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          {items.map((item, i) => (
-            <div key={i} style={{ 
-              display: "flex", 
-              justifyContent: "space-between", 
-              alignItems: "center",
-              padding: "6px 10px",
-              background: i === 0 ? `${color}20` : "rgba(255,255,255,.05)",
-              borderRadius: 6,
-              fontSize: 11
-            }}>
-              <span style={{ opacity: 0.9 }}>
-                {i === 0 && "🥇 "}
-                {i === 1 && "🥈 "}
-                {i === 2 && "🥉 "}
-                {item.item}
-              </span>
-              <span style={{ 
-                color, 
-                fontWeight: "bold",
-                background: `${color}30`,
-                padding: "2px 8px",
-                borderRadius: 4
-              }}>
-                {item.count}
-              </span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div style={{ fontSize: 11, opacity: 0.5, textAlign: "center", padding: 20 }}>
-          No data yet
-        </div>
-      )}
-    </div>
-  );
+  useEffect(() => {
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
   if (loading) {
     return (
