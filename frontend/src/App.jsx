@@ -12,6 +12,7 @@ import DeviantArt from "./pages/DeviantArt.jsx";
 import GameRoom from "./pages/GameRoom.jsx";
 import GamePlayer from "./pages/GamePlayer.jsx";
 import DressingRoom from "./pages/DressingRoom.jsx";
+import DressingRoomAnalytics from "./pages/DressingRoomAnalytics.jsx";
 import TerminalPolish from "./components/TerminalPolish.jsx";
 import CursorBlink from "./components/CursorBlink.jsx";
 
@@ -32,6 +33,7 @@ function AnimatedRoutes() {
         <Route path="/game/:gameId" element={<GamePlayer />} />
         <Route path="/dressing-room" element={<DressingRoom />} />
         <Route path="/dressing-room/:id" element={<DressingRoom />} />
+        <Route path="/dressing-room-analytics" element={<DressingRoomAnalytics />} />
         <Route path="/deviantart" element={<DeviantArt />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
