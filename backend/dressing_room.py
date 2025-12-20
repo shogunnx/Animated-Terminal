@@ -286,9 +286,10 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
     activity = request.outfit_description
     
     # Step 1: Create a composite of both base images as reference
+    # Position them OVERLAPPING so they appear in the same scene
     try:
-        img1 = Image.open(io.BytesIO(char1_base)).convert('RGB')
-        img2 = Image.open(io.BytesIO(char2_base)).convert('RGB')
+        img1 = Image.open(io.BytesIO(char1_base)).convert('RGBA')
+        img2 = Image.open(io.BytesIO(char2_base)).convert('RGBA')
         
         # Resize to same height
         target_height = 768
@@ -297,20 +298,31 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
         img1 = img1.resize((int(img1.width * img1_ratio), target_height), Image.Resampling.LANCZOS)
         img2 = img2.resize((int(img2.width * img2_ratio), target_height), Image.Resampling.LANCZOS)
         
-        # Create composite - position them closer together for interaction
-        gap = -100  # Negative gap = overlap for closeness
-        total_width = img1.width + img2.width + gap
-        composite = Image.new('RGB', (total_width, target_height), (40, 30, 50))  # Dark background
-        composite.paste(img1, (0, 0))
-        composite.paste(img2, (img1.width + gap, 0))
+        # Create composite with SIGNIFICANT overlap to force same scene
+        # Overlap them by 30% so they appear to be in same space
+        overlap = int(min(img1.width, img2.width) * 0.35)
+        total_width = img1.width + img2.width - overlap
+        
+        # Create background
+        composite = Image.new('RGBA', (total_width, target_height), (50, 40, 60, 255))
+        
+        # Paste first character
+        composite.paste(img1, (0, 0), img1)
+        
+        # Paste second character with overlap (use alpha for blending)
+        composite.paste(img2, (img1.width - overlap, 0), img2)
+        
+        # Convert to RGB
+        final_composite = Image.new('RGB', composite.size, (50, 40, 60))
+        final_composite.paste(composite, mask=composite.split()[3])
         
         # Convert to base64 for upload
         composite_buffer = io.BytesIO()
-        composite.save(composite_buffer, format='PNG')
+        final_composite.save(composite_buffer, format='PNG')
         composite_bytes = composite_buffer.getvalue()
         composite_url = await upload_image_to_fal(composite_bytes)
         
-        print(f"[PAIRS MODE] Created composite reference: {total_width}x{target_height}")
+        print(f"[PAIRS MODE] Created overlapping composite: {total_width}x{target_height} with {overlap}px overlap")
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create composite: {str(e)}")
