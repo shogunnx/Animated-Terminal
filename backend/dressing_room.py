@@ -339,16 +339,16 @@ High quality anime art, single unified scene, one room."""
 
     print(f"[PAIRS MODE] Smart prompt: {smart_prompt[:300]}...")
     
-    # Step 3: Use image-to-image with balanced strength
+    # Step 3: Use image-to-image with higher strength to unify the scene
     try:
         handler = await fal_client.submit_async(
             "fal-ai/flux/dev/image-to-image",
             arguments={
                 "prompt": smart_prompt,
                 "image_url": composite_url,
-                "strength": 0.52,  # Balanced - preserve characters but unify scene
+                "strength": 0.62,  # Higher to unify backgrounds while keeping character features
                 "num_inference_steps": 40,
-                "guidance_scale": 4.5,
+                "guidance_scale": 5.0,
                 "enable_safety_checker": False
             }
         )
