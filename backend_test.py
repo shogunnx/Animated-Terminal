@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-DeviantArt Integration Testing Script
-Tests the DeviantArt OAuth2 integration and gallery view functionality for TSV Terminal Dressing Room
+Pairs Mode Image Generation Testing Script
+Tests the newly implemented 3-step Pairs Mode image generation in the Dressing Room feature
 """
 
 import asyncio
