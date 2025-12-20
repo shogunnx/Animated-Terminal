@@ -334,20 +334,23 @@ High quality anime art, detailed faces, vibrant colors, romantic composition, be
                 "strength": 0.50,  # Moderate strength - enough to change scene but preserve characters
                 "num_inference_steps": 35,
                 "guidance_scale": 4.0,
-                "enable_safety_checker": True
+                "enable_safety_checker": False  # Disable safety checker for anime content
             }
         )
         
         result = await handler.get()
+        print(f"[PAIRS MODE] Fal.ai result keys: {result.keys() if result else 'None'}")
         
         if result and result.get("images") and len(result["images"]) > 0:
             generated_image_url = result["images"][0]["url"]
+            print(f"[PAIRS MODE] Generated image URL: {generated_image_url[:100]}...")
             
             async with httpx.AsyncClient() as http_client:
                 img_response = await http_client.get(generated_image_url, timeout=30.0)
                 img_response.raise_for_status()
                 generated_image_bytes = img_response.content
             
+            print(f"[PAIRS MODE] Downloaded image size: {len(generated_image_bytes)} bytes")
             image_base64 = base64.b64encode(generated_image_bytes).decode('utf-8')
             
             print("[PAIRS MODE] Generated unified scene successfully!")
