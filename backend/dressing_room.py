@@ -210,12 +210,21 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
     # Create editing instruction for FLUX.2 Edit
-    # For Pairs mode, generate both characters together
+    # For Pairs mode, generate both characters together with detailed descriptions
     if request.is_pairs_mode and request.second_character_name:
-        prompt = f"""Two beautiful anime girls together in one scene: {request.character_name} and {request.second_character_name}.
-{request.outfit_description}.
-Both characters are clearly visible side by side, facing the viewer.
-High quality anime art style, detailed, vibrant colors."""
+        # Get detailed appearance descriptions for both characters
+        char1_appearance = get_character_appearance(request.character_id, request.character_name)
+        char2_appearance = get_character_appearance(request.second_character_id, request.second_character_name)
+        
+        prompt = f"""Two distinct anime women together in the same scene:
+
+LEFT CHARACTER: {char1_appearance}
+
+RIGHT CHARACTER: {char2_appearance}
+
+SCENE: {request.outfit_description}
+
+Both characters are clearly visible side by side in the frame. Each character has their unique appearance as described. High quality anime art style, detailed faces, vibrant colors, professional illustration."""
         
         # Use text-to-image generation for Pairs mode
         try:
@@ -224,8 +233,8 @@ High quality anime art style, detailed, vibrant colors."""
                 arguments={
                     "prompt": prompt,
                     "image_size": "landscape_16_9",  # Better for two characters
-                    "num_inference_steps": 28,
-                    "guidance_scale": 3.5,
+                    "num_inference_steps": 35,  # More steps for better quality
+                    "guidance_scale": 4.0,  # Higher guidance for more prompt adherence
                     "enable_safety_checker": True
                 }
             )
