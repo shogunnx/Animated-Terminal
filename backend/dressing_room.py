@@ -340,16 +340,16 @@ Preserve exact character appearances. High quality anime art, unified scene."""
 
     print(f"[PAIRS MODE] Smart prompt: {smart_prompt[:300]}...")
     
-    # Step 3: Use image-to-image with lower strength to preserve character likeness
+    # Step 3: Use image-to-image with balanced strength
     try:
         handler = await fal_client.submit_async(
             "fal-ai/flux/dev/image-to-image",
             arguments={
                 "prompt": smart_prompt,
                 "image_url": composite_url,
-                "strength": 0.38,  # Even lower to preserve more original appearance
-                "num_inference_steps": 35,
-                "guidance_scale": 3.5,
+                "strength": 0.52,  # Balanced - preserve characters but unify scene
+                "num_inference_steps": 40,
+                "guidance_scale": 4.5,
                 "enable_safety_checker": False
             }
         )
