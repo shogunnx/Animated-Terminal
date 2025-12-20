@@ -504,12 +504,48 @@ export default function DressingRoom() {
       const data = await response.json();
       setGeneratedImage(`data:image/png;base64,${data.image_base64}`);
       
+      // Track usage analytics
+      trackUsage(outfitDesc, true);
+      
       // Dispatch event for TerminalPolish component
       window.dispatchEvent(new Event('tsv_outfit_generated'));
     } catch (err) {
       setError(err.message);
+      // Track failed generation
+      trackUsage(outfitDesc, false);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Track usage for analytics
+  const trackUsage = async (outfitDesc, success) => {
+    try {
+      // Get or create session ID
+      let sessionId = sessionStorage.getItem('tsv_session_id');
+      if (!sessionId) {
+        sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        sessionStorage.setItem('tsv_session_id', sessionId);
+      }
+
+      await fetch("/api/dressing-room/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          character_id: selectedCharacter.id,
+          character_name: selectedCharacter.name,
+          outfit_description: outfitDesc,
+          selections: selectedItems,
+          has_second_character: showPairsMode && !!secondImage,
+          second_character_name: secondCharacter?.name || null,
+          pair_activity: selectedItems.pairsMature || selectedItems.pairsFun || null,
+          generated_successfully: success,
+          user_agent: navigator.userAgent,
+          session_id: sessionId
+        })
+      });
+    } catch (err) {
+      console.error("Failed to track usage:", err);
     }
   };
 
