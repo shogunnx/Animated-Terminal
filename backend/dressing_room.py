@@ -285,8 +285,8 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
     # Parse the activity from the request
     activity = request.outfit_description
     
-    # Step 1: Create a composite of both base images as reference
-    # Position them OVERLAPPING so they appear in the same scene
+    # Step 1: Create a composite with characters on NEUTRAL background
+    # This forces AI to generate ONE unified background
     try:
         img1 = Image.open(io.BytesIO(char1_base)).convert('RGBA')
         img2 = Image.open(io.BytesIO(char2_base)).convert('RGBA')
@@ -298,23 +298,31 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
         img1 = img1.resize((int(img1.width * img1_ratio), target_height), Image.Resampling.LANCZOS)
         img2 = img2.resize((int(img2.width * img2_ratio), target_height), Image.Resampling.LANCZOS)
         
-        # Create composite with SIGNIFICANT overlap to force same scene
-        # Overlap them by 30% so they appear to be in same space
-        overlap = int(min(img1.width, img2.width) * 0.35)
-        total_width = img1.width + img2.width - overlap
+        # Create a wide canvas with neutral/gradient background
+        total_width = int((img1.width + img2.width) * 0.8)  # Closer together
         
-        # Create background
-        composite = Image.new('RGBA', (total_width, target_height), (50, 40, 60, 255))
+        # Create gradient background (dark purple to encourage cozy scene)
+        from PIL import ImageDraw
+        composite = Image.new('RGB', (total_width, target_height), (40, 30, 50))
+        draw = ImageDraw.Draw(composite)
+        # Simple gradient
+        for y in range(target_height):
+            r = int(40 + (y / target_height) * 20)
+            g = int(30 + (y / target_height) * 15)
+            b = int(50 + (y / target_height) * 25)
+            draw.line([(0, y), (total_width, y)], fill=(r, g, b))
+        composite = composite.convert('RGBA')
         
-        # Paste first character
-        composite.paste(img1, (0, 0), img1)
+        # Position characters closer together, overlapping
+        char1_x = 0
+        char2_x = total_width - img2.width
         
-        # Paste second character with overlap (use alpha for blending)
-        composite.paste(img2, (img1.width - overlap, 0), img2)
+        # Paste characters (without their backgrounds ideally, but we work with what we have)
+        composite.paste(img1, (char1_x, 0), img1)
+        composite.paste(img2, (char2_x, 0), img2)
         
         # Convert to RGB
-        final_composite = Image.new('RGB', composite.size, (50, 40, 60))
-        final_composite.paste(composite, mask=composite.split()[3])
+        final_composite = composite.convert('RGB')
         
         # Convert to base64 for upload
         composite_buffer = io.BytesIO()
@@ -322,7 +330,7 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
         composite_bytes = composite_buffer.getvalue()
         composite_url = await upload_image_to_fal(composite_bytes)
         
-        print(f"[PAIRS MODE] Created overlapping composite: {total_width}x{target_height} with {overlap}px overlap")
+        print(f"[PAIRS MODE] Created overlapping composite on gradient: {total_width}x{target_height}")
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create composite: {str(e)}")
