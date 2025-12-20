@@ -331,9 +331,9 @@ Single unified scene with both women interacting together, high quality anime ar
             arguments={
                 "prompt": smart_prompt,
                 "image_url": composite_url,
-                "strength": 0.50,  # Moderate strength - enough to change scene but preserve characters
+                "strength": 0.65,  # Higher strength to transform scene into unified interaction
                 "num_inference_steps": 35,
-                "guidance_scale": 4.0,
+                "guidance_scale": 4.5,
                 "enable_safety_checker": False  # Disable safety checker for anime content
             }
         )
