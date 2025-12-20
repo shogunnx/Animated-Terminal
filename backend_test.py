@@ -63,7 +63,6 @@ SINGLE_CHARACTER_TEST = {
 }
 
 class PairsModeImageTester:
-class PairsModeImageTester:
     def __init__(self):
         self.results = []
         self.test_summary = {
@@ -499,6 +498,7 @@ class PairsModeImageTester:
             "critical_tests_passed": critical_passed,
             "generation_times": self.generation_times
         }
+
 async def main():
     """Main Pairs Mode testing function"""
     print("🚀 PAIRS MODE IMAGE GENERATION COMPREHENSIVE TESTING")
