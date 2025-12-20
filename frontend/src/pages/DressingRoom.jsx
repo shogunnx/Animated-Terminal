@@ -722,7 +722,34 @@ export default function DressingRoom() {
             </div>
             
             {!secondImage ? (
-              <div style={{ display: "flex", gap: 8 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {/* Select from existing characters */}
+                <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 4 }}>Select a character:</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {TSV_CHARACTERS.filter(c => !c.isSpecial && c.id !== selectedCharacter?.id).map((char) => (
+                    <button
+                      key={char.id}
+                      className="tsv-btn"
+                      onClick={() => {
+                        setSecondCharacter(char);
+                        setSecondImage(char.portrait || `https://nexus-multiverse.emergent.host/characters/${char.id}`);
+                        setSecondImageSource("character");
+                        setShowPairsMode(true);
+                      }}
+                      style={{ 
+                        fontSize: 9, 
+                        padding: "6px 10px", 
+                        background: "rgba(255,105,180,.15)", 
+                        borderColor: char.accent || "#ff69b4"
+                      }}
+                    >
+                      {char.name}
+                    </button>
+                  ))}
+                </div>
+                
+                {/* Or upload custom image */}
+                <div style={{ fontSize: 10, opacity: 0.7, marginTop: 8 }}>Or upload custom:</div>
                 <label style={{ flex: 1 }}>
                   <input
                     type="file"
@@ -733,7 +760,7 @@ export default function DressingRoom() {
                   <button
                     className="tsv-btn"
                     style={{ fontSize: 10, padding: "8px", width: "100%", background: "rgba(255,105,180,.15)", borderColor: "#ff69b4" }}
-                    onClick={(e) => { e.preventDefault(); e.target.previousSibling.click(); }}
+                    onClick={(e) => { e.preventDefault(); e.target.closest('label').querySelector('input').click(); }}
                   >
                     📁 Upload 2nd Character
                   </button>
