@@ -335,9 +335,9 @@ Preserve their exact looks. High quality anime art."""
             arguments={
                 "prompt": smart_prompt,
                 "image_url": composite_url,
-                "strength": 0.45,  # Lower strength to preserve more of original appearance
+                "strength": 0.38,  # Even lower to preserve more original appearance
                 "num_inference_steps": 35,
-                "guidance_scale": 4.0,
+                "guidance_scale": 3.5,
                 "enable_safety_checker": False
             }
         )
