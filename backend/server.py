@@ -18,6 +18,9 @@ import base64
 # DeviantArt Integration
 import deviantart
 
+# Dressing Room Analytics
+import dressing_room_analytics
+
 # -----------------------
 # Settings
 # -----------------------
