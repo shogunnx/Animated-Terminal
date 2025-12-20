@@ -401,6 +401,26 @@ export default function DressingRoom() {
       basePrompt = parts.join(", ");
     }
 
+    // Add background if selected
+    if (selectedItems.backgrounds) {
+      basePrompt = basePrompt ? `${basePrompt}, in ${selectedItems.backgrounds} background` : `in ${selectedItems.backgrounds} background`;
+    }
+
+    // Add gesture if selected
+    if (selectedItems.gestures) {
+      basePrompt = basePrompt ? `${basePrompt}, ${selectedItems.gestures}` : selectedItems.gestures;
+    }
+
+    // Add pairs activity if in pairs mode
+    if (showPairsMode && secondImage) {
+      if (selectedItems.pairsMature) {
+        basePrompt = basePrompt ? `${basePrompt}, two people ${selectedItems.pairsMature}` : `two people ${selectedItems.pairsMature}`;
+      }
+      if (selectedItems.pairsFun) {
+        basePrompt = basePrompt ? `${basePrompt}, two people ${selectedItems.pairsFun}` : `two people ${selectedItems.pairsFun}`;
+      }
+    }
+
     // Add art style as a suffix if selected
     if (selectedItems.artStyles && basePrompt) {
       basePrompt = `${basePrompt}, rendered in ${selectedItems.artStyles}`;
@@ -409,6 +429,36 @@ export default function DressingRoom() {
     }
 
     return basePrompt;
+  };
+
+  const handleSecondImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSecondImage(reader.result);
+        setSecondImageSource("upload");
+        setShowPairsMode(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSelectSecondCharacter = (char) => {
+    setSecondCharacter(char);
+    // Try to load base image for second character
+    const charFile = `/app/backend/base_images/${char.id}.png`;
+    setSecondImage(char.portrait || null);
+    setSecondImageSource("character");
+    setShowPairsMode(true);
+  };
+
+  const clearSecondImage = () => {
+    setSecondImage(null);
+    setSecondImageSource("none");
+    setSecondCharacter(null);
+    setShowPairsMode(false);
+    setSelectedItems(prev => ({ ...prev, pairsMature: "", pairsFun: "" }));
   };
 
   const handleGenerate = async () => {
