@@ -259,13 +259,13 @@ High quality anime art style, detailed, vibrant colors, beautiful composition.""
 
 async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
     """
-    Generate Pairs Mode image using smart composite approach:
-    1. Create a side-by-side composite of both base images
-    2. Generate an intelligent prompt describing both characters by their visual features
-    3. Use image-to-image on the composite to create a unified scene with both characters interacting
+    Generate Pairs Mode image using smart text-to-image approach:
+    1. Get the distinctive visual features for each character
+    2. Generate an intelligent prompt describing both characters interacting together
+    3. Use text-to-image to create a unified scene with both characters
     """
     
-    # Get base images for both characters
+    # Get base images for both characters (for validation)
     char1_base = get_base_image(request.character_id)
     char2_base = get_base_image(request.second_character_id)
     
@@ -279,62 +279,40 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
     char2_identifier = get_character_identifier(request.second_character_id)
     char1_hair = get_character_hair(request.character_id)
     char2_hair = get_character_hair(request.second_character_id)
+    char1_full = get_character_appearance(request.character_id, request.character_name)
+    char2_full = get_character_appearance(request.second_character_id, request.second_character_name)
     
     # Parse the activity from the request
     activity = request.outfit_description
     
-    # Step 1: Create a side-by-side composite of both base images
-    try:
-        img1 = Image.open(io.BytesIO(char1_base)).convert('RGB')
-        img2 = Image.open(io.BytesIO(char2_base)).convert('RGB')
-        
-        # Resize to same height for consistent composite
-        target_height = 768
-        img1_ratio = target_height / img1.height
-        img2_ratio = target_height / img2.height
-        img1 = img1.resize((int(img1.width * img1_ratio), target_height), Image.Resampling.LANCZOS)
-        img2 = img2.resize((int(img2.width * img2_ratio), target_height), Image.Resampling.LANCZOS)
-        
-        # Create landscape composite (side by side)
-        total_width = img1.width + img2.width
-        composite = Image.new('RGB', (total_width, target_height), (0, 0, 0))
-        composite.paste(img1, (0, 0))
-        composite.paste(img2, (img1.width, 0))
-        
-        # Convert to base64 for upload
-        composite_buffer = io.BytesIO()
-        composite.save(composite_buffer, format='PNG')
-        composite_bytes = composite_buffer.getvalue()
-        composite_url = await upload_image_to_fal(composite_bytes)
-        
-        print(f"[PAIRS MODE] Created composite reference image: {total_width}x{target_height}")
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to create composite: {str(e)}")
-    
-    # Step 2: Generate a SMART prompt that describes both characters interacting
-    # The key is to identify each character by their distinctive visual features (hair, etc.)
-    # and describe them ACTIVELY INTERACTING in a unified scene
-    smart_prompt = f"""Two beautiful anime women in an intimate romantic scene together, {activity}.
-{char1_identifier} with {char1_hair} and {char2_identifier} with {char2_hair} are together in the same room.
-They are facing each other, close together, touching and interacting romantically.
-Keep their exact distinctive hair colors and styles - one with {char1_hair}, one with {char2_hair}.
-Single unified scene with both women interacting together, high quality anime art, detailed faces, vibrant colors, intimate romantic composition, beautiful soft lighting."""
+    # Generate a detailed prompt that describes BOTH characters TOGETHER in ONE scene
+    # Key: Use specific identifying features to differentiate them
+    smart_prompt = f"""A single unified scene showing two beautiful anime women together intimately, {activity}.
 
-    print(f"[PAIRS MODE] Smart prompt: {smart_prompt}")
+First woman: {char1_full}
+Second woman: {char2_full}
+
+They are in the SAME scene, facing each other, close together, their bodies touching. 
+The woman with {char1_hair} is on one side, the woman with {char2_hair} is on the other side.
+They are {activity}, looking at each other with affection.
+
+High quality anime illustration, detailed faces, expressive eyes, vibrant colors, 
+beautiful composition showing both characters together in ONE frame, intimate lighting,
+masterpiece quality artwork."""
+
+    print(f"[PAIRS MODE] Using text-to-image with smart prompt")
+    print(f"[PAIRS MODE] Smart prompt: {smart_prompt[:500]}...")
     
-    # Step 3: Use image-to-image on the composite with moderate strength
-    # This will transform the scene while preserving character likenesses
+    # Use text-to-image for complete creative freedom in positioning
     try:
         handler = await fal_client.submit_async(
-            "fal-ai/flux/dev/image-to-image",
+            "fal-ai/flux/dev",
             arguments={
                 "prompt": smart_prompt,
-                "image_url": composite_url,
-                "strength": 0.65,  # Higher strength to transform scene into unified interaction
-                "num_inference_steps": 35,
-                "guidance_scale": 4.5,
-                "enable_safety_checker": False  # Disable safety checker for anime content
+                "image_size": "landscape_16_9",  # Wide format for two characters
+                "num_inference_steps": 40,
+                "guidance_scale": 5.0,
+                "enable_safety_checker": False
             }
         )
         
@@ -359,12 +337,12 @@ Single unified scene with both women interacting together, high quality anime ar
                 "success": True,
                 "image_base64": image_base64,
                 "prompt_used": smart_prompt,
-                "image_source": "pairs_smart_composite",
+                "image_source": "pairs_text2img",
                 "base_image_saved": False,
-                "model": "fal-ai/flux/dev/image-to-image",
+                "model": "fal-ai/flux/dev",
                 "is_pairs": True,
-                "used_reference_images": True,
-                "generation_method": "smart_composite_transform",
+                "used_reference_images": False,
+                "generation_method": "smart_text_to_image",
                 "char1_identifier": char1_identifier,
                 "char2_identifier": char2_identifier
             }
