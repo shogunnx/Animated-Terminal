@@ -556,9 +556,25 @@ export default function DressingRoom() {
     return (
       <div>
         <div className="tsv-glass tsv-glow" style={{ padding: 14, marginBottom: 14 }}>
-          <div className="tsv-title" style={{ fontSize: 14 }}>DRESSING ROOM</div>
-          <div style={{ fontSize: 12, opacity:.72, marginTop: 8 }}>
-            Select a character to dress up with AI-generated outfits
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <div className="tsv-title" style={{ fontSize: 14 }}>DRESSING ROOM</div>
+              <div style={{ fontSize: 12, opacity:.72, marginTop: 8 }}>
+                Select a character to dress up with AI-generated outfits
+              </div>
+            </div>
+            <button
+              className="tsv-btn"
+              onClick={() => nav("/dressing-room-analytics")}
+              style={{ 
+                fontSize: 10, 
+                padding: "8px 12px",
+                background: "linear-gradient(135deg, rgba(0,255,255,.2), rgba(0,191,255,.1))",
+                borderColor: "#00bfff"
+              }}
+            >
+              📊 Analytics
+            </button>
           </div>
         </div>
 
