@@ -144,6 +144,26 @@ async def get_base_image_endpoint(character_id: str):
         raise HTTPException(status_code=404, detail="No base image found for this character")
 
 # -----------------------
+# Dressing Room - Usage Analytics
+# -----------------------
+@api.post("/dressing-room/track")
+async def track_dressing_room_usage(event: dressing_room_analytics.UsageEvent, request: Request):
+    """Track a dressing room usage event"""
+    ip_address = request.client.host if request.client else None
+    return await dressing_room_analytics.track_usage(event, ip_address)
+
+@api.get("/dressing-room/analytics")
+async def get_dressing_room_analytics(days: int = 30):
+    """Get dressing room usage analytics summary"""
+    return await dressing_room_analytics.get_analytics_summary(days)
+
+@api.get("/dressing-room/analytics/events")
+async def get_dressing_room_events(limit: int = 100, skip: int = 0):
+    """Get all dressing room usage events with pagination"""
+    return await dressing_room_analytics.get_all_events(limit, skip)
+
+
+# -----------------------
 # Generic proxy helper
 # -----------------------
 async def proxy_request(request: Request, target_base: str, path: str, inject_headers: Optional[dict] = None) -> Response:
