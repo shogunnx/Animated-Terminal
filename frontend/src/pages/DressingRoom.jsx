@@ -411,13 +411,21 @@ export default function DressingRoom() {
       basePrompt = basePrompt ? `${basePrompt}, ${selectedItems.gestures}` : selectedItems.gestures;
     }
 
-    // Add pairs activity if in pairs mode
-    if (showPairsMode && secondImage) {
+    // Add pairs mode - include BOTH character names explicitly
+    if (showPairsMode && secondCharacter) {
+      const char1Name = selectedCharacter?.name || "first character";
+      const char2Name = secondCharacter?.name || "second character";
+      
+      // Prepend the two characters to the prompt
+      const pairsPrefix = `${char1Name} and ${char2Name} together`;
+      basePrompt = basePrompt ? `${pairsPrefix}, ${basePrompt}` : pairsPrefix;
+      
+      // Add pairs activity if selected
       if (selectedItems.pairsMature) {
-        basePrompt = basePrompt ? `${basePrompt}, two people ${selectedItems.pairsMature}` : `two people ${selectedItems.pairsMature}`;
+        basePrompt = `${basePrompt}, ${selectedItems.pairsMature}`;
       }
       if (selectedItems.pairsFun) {
-        basePrompt = basePrompt ? `${basePrompt}, two people ${selectedItems.pairsFun}` : `two people ${selectedItems.pairsFun}`;
+        basePrompt = `${basePrompt}, ${selectedItems.pairsFun}`;
       }
     }
 
