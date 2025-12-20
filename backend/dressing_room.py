@@ -350,7 +350,7 @@ High quality anime art, detailed faces, vibrant colors, romantic composition, be
             
             image_base64 = base64.b64encode(generated_image_bytes).decode('utf-8')
             
-            print(f"[PAIRS MODE] Generated unified scene successfully!")
+            print("[PAIRS MODE] Generated unified scene successfully!")
             
             return {
                 "success": True,
