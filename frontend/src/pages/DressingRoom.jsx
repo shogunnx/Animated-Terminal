@@ -626,7 +626,7 @@ export default function DressingRoom() {
             border: "1px solid rgba(255,255,255,.10)", 
             overflow: "hidden",
             position: "relative",
-            minHeight: 400
+            minHeight: 300
           }}>
             {baseImage ? (
               <img 
@@ -639,12 +639,81 @@ export default function DressingRoom() {
                 display: "flex", 
                 alignItems: "center", 
                 justifyContent: "center",
-                minHeight: 400,
+                minHeight: 300,
                 opacity: 0.5
               }}>
                 <div className="tsv-title" style={{ fontSize: 12 }}>
                   No base image available
                 </div>
+              </div>
+            )}
+          </div>
+
+          {/* Second Image for Pairs */}
+          <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "rgba(255,105,180,.08)", border: "1px solid rgba(255,105,180,.25)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div className="tsv-title" style={{ fontSize: 11, opacity:.85, color: "#ff69b4" }}>
+                💕 SECOND CHARACTER (PAIRS MODE)
+              </div>
+              {secondImage && (
+                <button
+                  className="tsv-btn"
+                  onClick={clearSecondImage}
+                  style={{ fontSize: 9, padding: "4px 8px", background: "rgba(255,0,0,.2)", borderColor: "#ff4444" }}
+                >
+                  ✕ Remove
+                </button>
+              )}
+            </div>
+            <div style={{ fontSize: 9, opacity: 0.6, marginBottom: 10 }}>
+              Add a second character to create couple/duo images with the Pairs activities below
+            </div>
+            
+            {!secondImage ? (
+              <div style={{ display: "flex", gap: 8 }}>
+                <label style={{ flex: 1 }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleSecondImageUpload}
+                    style={{ display: "none" }}
+                  />
+                  <button
+                    className="tsv-btn"
+                    style={{ fontSize: 10, padding: "8px", width: "100%", background: "rgba(255,105,180,.15)", borderColor: "#ff69b4" }}
+                    onClick={(e) => { e.preventDefault(); e.target.previousSibling.click(); }}
+                  >
+                    📁 Upload 2nd Character
+                  </button>
+                </label>
+              </div>
+            ) : (
+              <div style={{ 
+                borderRadius: 12, 
+                border: "2px solid #ff69b4",
+                overflow: "hidden",
+                position: "relative",
+                maxHeight: 200
+              }}>
+                <img 
+                  src={secondImage} 
+                  alt="Second character"
+                  style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+                />
+                {secondCharacter && (
+                  <div style={{ 
+                    position: "absolute", 
+                    bottom: 0, 
+                    left: 0, 
+                    right: 0, 
+                    padding: "4px 8px", 
+                    background: "rgba(0,0,0,.7)",
+                    fontSize: 10,
+                    color: "#ff69b4"
+                  }}>
+                    {secondCharacter.name}
+                  </div>
+                )}
               </div>
             )}
           </div>
