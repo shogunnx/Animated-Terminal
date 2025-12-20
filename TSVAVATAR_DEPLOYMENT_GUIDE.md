@@ -5,7 +5,7 @@
 ### Two Separate Environments:
 
 **1. Preview Environment** (Development)
-- URL: `https://victoria-nexus.preview.emergentagent.com`
+- URL: `https://outfit-generator-18.preview.emergentagent.com`
 - Status: ✅ Working perfectly
 - Avatars: 4 avatars with working images
 - Database: Contains all latest data
