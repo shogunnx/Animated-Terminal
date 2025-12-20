@@ -195,12 +195,53 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     # Create editing instruction for FLUX.2 Edit
     # For Pairs mode, generate both characters together
     if request.is_pairs_mode and request.second_character_name:
-        prompt = f"""Generate an image showing TWO anime characters together: {request.character_name} and {request.second_character_name}.
-Scene description: {request.outfit_description}.
-Both characters should be clearly visible in the same image, interacting together.
-Keep the anime art style consistent for both characters."""
-    else:
-        prompt = f"""Change this person's outfit to: {request.outfit_description}.
+        prompt = f"""Two beautiful anime girls together in one scene: {request.character_name} and {request.second_character_name}.
+{request.outfit_description}.
+Both characters are clearly visible side by side, facing the viewer.
+High quality anime art style, detailed, vibrant colors."""
+        
+        # Use text-to-image generation for Pairs mode
+        try:
+            handler = await fal_client.submit_async(
+                "fal-ai/flux/dev",  # Use FLUX dev for text-to-image
+                arguments={
+                    "prompt": prompt,
+                    "image_size": "landscape_16_9",  # Better for two characters
+                    "num_inference_steps": 28,
+                    "guidance_scale": 3.5,
+                    "enable_safety_checker": True
+                }
+            )
+            
+            result = await handler.get()
+            
+            if result and result.get("images") and len(result["images"]) > 0:
+                generated_image_url = result["images"][0]["url"]
+                
+                async with httpx.AsyncClient() as http_client:
+                    img_response = await http_client.get(generated_image_url, timeout=30.0)
+                    img_response.raise_for_status()
+                    generated_image_bytes = img_response.content
+                
+                image_base64 = base64.b64encode(generated_image_bytes).decode('utf-8')
+                
+                return {
+                    "success": True,
+                    "image_base64": image_base64,
+                    "prompt_used": prompt,
+                    "image_source": "pairs_generation",
+                    "base_image_saved": False,
+                    "model": "fal-ai/flux/dev",
+                    "is_pairs": True
+                }
+            else:
+                raise HTTPException(status_code=500, detail="No image was generated for pairs mode")
+                
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Pairs image generation failed: {str(e)}")
+    
+    # Regular single character editing mode
+    prompt = f"""Change this person's outfit to: {request.outfit_description}.
 Keep everything else the same - same face, same hair, same background, same pose.
 Only change the clothing."""
     
