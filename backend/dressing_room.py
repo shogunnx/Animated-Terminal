@@ -162,11 +162,171 @@ async def upload_image_to_fal(image_bytes: bytes) -> str:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to prepare image for upload: {str(e)}")
 
+async def generate_single_character_image(character_id: str, character_name: str, outfit_description: str, base_image_bytes: bytes) -> bytes:
+    """Generate a single character image using their base image as reference.
+    Uses very low strength to preserve character likeness."""
+    
+    # Prepare the base image
+    prepared_image = prepare_image_for_openai(base_image_bytes)
+    image_url = await upload_image_to_fal(prepared_image)
+    
+    # Get character appearance for prompt
+    char_appearance = get_character_appearance(character_id, character_name)
+    
+    # Create prompt that emphasizes keeping the character's likeness
+    prompt = f"""{char_appearance}, {outfit_description}.
+Maintain exact facial features, hair color, eye color, and overall appearance.
+High quality anime art style, detailed, vibrant colors, beautiful composition."""
+
+    # Use image-to-image with very low strength to preserve character likeness
+    handler = await fal_client.submit_async(
+        "fal-ai/flux/dev/image-to-image",
+        arguments={
+            "prompt": prompt,
+            "image_url": image_url,
+            "strength": 0.35,  # Very low strength to preserve original character appearance
+            "num_inference_steps": 30,
+            "guidance_scale": 3.5,
+            "enable_safety_checker": True
+        }
+    )
+    
+    result = await handler.get()
+    
+    if result and result.get("images") and len(result["images"]) > 0:
+        generated_image_url = result["images"][0]["url"]
+        
+        async with httpx.AsyncClient() as http_client:
+            img_response = await http_client.get(generated_image_url, timeout=30.0)
+            img_response.raise_for_status()
+            return img_response.content
+    
+    raise HTTPException(status_code=500, detail=f"Failed to generate image for {character_name}")
+
+
+async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
+    """
+    Generate Pairs Mode image using 3-step approach:
+    1. Generate first character image (preserving likeness)
+    2. Generate second character image (preserving likeness)
+    3. Blend both images together into final composite
+    """
+    
+    # Get base images for both characters
+    char1_base = get_base_image(request.character_id)
+    char2_base = get_base_image(request.second_character_id)
+    
+    if not char1_base:
+        raise HTTPException(status_code=400, detail=f"No base image found for {request.character_name}. Please upload one first.")
+    if not char2_base:
+        raise HTTPException(status_code=400, detail=f"No base image found for {request.second_character_name}. Please upload one first.")
+    
+    # Parse the outfit description to extract the activity/scene
+    activity = request.outfit_description
+    
+    # Generate individual prompts for each character
+    # We'll make each character doing their part of the activity
+    char1_prompt = f"posing for a photo, {activity}"
+    char2_prompt = f"posing for a photo, {activity}"
+    
+    print(f"[PAIRS MODE] Generating {request.character_name} with prompt: {char1_prompt}")
+    print(f"[PAIRS MODE] Generating {request.second_character_name} with prompt: {char2_prompt}")
+    
+    # Step 1 & 2: Generate both characters in parallel for speed
+    import asyncio
+    
+    try:
+        char1_task = generate_single_character_image(
+            request.character_id,
+            request.character_name,
+            char1_prompt,
+            char1_base
+        )
+        
+        char2_task = generate_single_character_image(
+            request.second_character_id,
+            request.second_character_name,
+            char2_prompt,
+            char2_base
+        )
+        
+        # Run both generations in parallel
+        char1_image_bytes, char2_image_bytes = await asyncio.gather(char1_task, char2_task)
+        
+        print(f"[PAIRS MODE] Both characters generated successfully!")
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Character generation failed: {str(e)}")
+    
+    # Step 3: Blend/Composite both images together
+    try:
+        img1 = Image.open(io.BytesIO(char1_image_bytes)).convert('RGBA')
+        img2 = Image.open(io.BytesIO(char2_image_bytes)).convert('RGBA')
+        
+        # Target height for consistency
+        target_height = 1024
+        
+        # Resize both images to same height while maintaining aspect ratio
+        img1_ratio = target_height / img1.height
+        img2_ratio = target_height / img2.height
+        
+        new_width1 = int(img1.width * img1_ratio)
+        new_width2 = int(img2.width * img2_ratio)
+        
+        img1 = img1.resize((new_width1, target_height), Image.Resampling.LANCZOS)
+        img2 = img2.resize((new_width2, target_height), Image.Resampling.LANCZOS)
+        
+        # Create landscape composite (side by side)
+        # Add a small overlap/gap for more natural look
+        overlap = 50  # Pixels of overlap
+        total_width = new_width1 + new_width2 - overlap
+        
+        composite = Image.new('RGBA', (total_width, target_height), (0, 0, 0, 255))
+        
+        # Paste first character on left
+        composite.paste(img1, (0, 0))
+        
+        # Paste second character on right with overlap
+        # Use alpha compositing for smooth blending at overlap
+        composite.paste(img2, (new_width1 - overlap, 0), img2)
+        
+        # Convert to RGB for final output
+        final_image = composite.convert('RGB')
+        
+        # Save to bytes
+        output_buffer = io.BytesIO()
+        final_image.save(output_buffer, format='PNG', quality=95)
+        final_bytes = output_buffer.getvalue()
+        
+        image_base64 = base64.b64encode(final_bytes).decode('utf-8')
+        
+        print(f"[PAIRS MODE] Final composite created: {total_width}x{target_height}")
+        
+        return {
+            "success": True,
+            "image_base64": image_base64,
+            "prompt_used": f"Pairs: {request.character_name} & {request.second_character_name} - {activity}",
+            "image_source": "pairs_blended",
+            "base_image_saved": False,
+            "model": "fal-ai/flux/dev/image-to-image (x2) + PIL composite",
+            "is_pairs": True,
+            "used_reference_images": True,
+            "generation_method": "individual_then_blend"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to composite images: {str(e)}")
+
+
 async def generate_outfit_image(request: OutfitRequest) -> dict:
     """Generate an image of a character in a specific outfit using Fal.ai image editing"""
     
     if not FAL_KEY:
         raise HTTPException(status_code=500, detail="FAL_KEY not configured")
+    
+    # For Pairs mode, use the new 3-step blended approach
+    if request.is_pairs_mode and request.second_character_name and request.second_character_id:
+        return await generate_pairs_image_blended(request)
     
     # Priority system for base images:
     # 1. Nexus API (if reference_image_url provided)
@@ -208,103 +368,6 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
         image_url = await upload_image_to_fal(base_image_bytes)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
-    
-    # Create editing instruction for FLUX.2 Edit
-    # For Pairs mode, generate both characters together with detailed descriptions
-    if request.is_pairs_mode and request.second_character_name:
-        # Get detailed appearance descriptions for both characters
-        char1_appearance = get_character_appearance(request.character_id, request.character_name)
-        char2_appearance = get_character_appearance(request.second_character_id, request.second_character_name)
-        
-        # Try to get base images for both characters to use as reference
-        char1_base = get_base_image(request.character_id)
-        char2_base = get_base_image(request.second_character_id)
-        
-        prompt = f"""Two anime women together in the same scene, side by side:
-Left: {request.character_name} - {char1_appearance}
-Right: {request.second_character_name} - {char2_appearance}
-Scene: {request.outfit_description}
-Both characters visible, high quality anime art, detailed, vibrant colors."""
-
-        try:
-            # If we have BOTH base images, create a composite reference for image-to-image
-            if char1_base and char2_base:
-                # Create side-by-side composite of both characters as reference
-                img1 = Image.open(io.BytesIO(char1_base)).convert('RGB')
-                img2 = Image.open(io.BytesIO(char2_base)).convert('RGB')
-                
-                # Resize to same height
-                target_height = 768
-                img1_ratio = target_height / img1.height
-                img2_ratio = target_height / img2.height
-                img1 = img1.resize((int(img1.width * img1_ratio), target_height), Image.Resampling.LANCZOS)
-                img2 = img2.resize((int(img2.width * img2_ratio), target_height), Image.Resampling.LANCZOS)
-                
-                # Create composite (side by side) in landscape format
-                total_width = img1.width + img2.width
-                composite = Image.new('RGB', (total_width, target_height))
-                composite.paste(img1, (0, 0))
-                composite.paste(img2, (img1.width, 0))
-                
-                # Convert to base64
-                composite_buffer = io.BytesIO()
-                composite.save(composite_buffer, format='PNG')
-                composite_bytes = composite_buffer.getvalue()
-                composite_base64 = base64.b64encode(composite_bytes).decode('utf-8')
-                composite_url = f"data:image/png;base64,{composite_base64}"
-                
-                # Use FLUX image-to-image to transform the composite while preserving characters
-                handler = await fal_client.submit_async(
-                    "fal-ai/flux/dev/image-to-image",
-                    arguments={
-                        "prompt": prompt,
-                        "image_url": composite_url,
-                        "strength": 0.55,  # Lower strength to preserve more of the original characters
-                        "num_inference_steps": 35,
-                        "guidance_scale": 3.5,
-                        "enable_safety_checker": True
-                    }
-                )
-            else:
-                # Fallback to text-to-image if no base images
-                handler = await fal_client.submit_async(
-                    "fal-ai/flux/dev",
-                    arguments={
-                        "prompt": prompt,
-                        "image_size": "landscape_16_9",
-                        "num_inference_steps": 35,
-                        "guidance_scale": 4.0,
-                        "enable_safety_checker": True
-                    }
-                )
-            
-            result = await handler.get()
-            
-            if result and result.get("images") and len(result["images"]) > 0:
-                generated_image_url = result["images"][0]["url"]
-                
-                async with httpx.AsyncClient() as http_client:
-                    img_response = await http_client.get(generated_image_url, timeout=30.0)
-                    img_response.raise_for_status()
-                    generated_image_bytes = img_response.content
-                
-                image_base64 = base64.b64encode(generated_image_bytes).decode('utf-8')
-                
-                return {
-                    "success": True,
-                    "image_base64": image_base64,
-                    "prompt_used": prompt,
-                    "image_source": "pairs_img2img" if (char1_base and char2_base) else "pairs_text2img",
-                    "base_image_saved": False,
-                    "model": "fal-ai/flux/dev/image-to-image" if (char1_base and char2_base) else "fal-ai/flux/dev",
-                    "is_pairs": True,
-                    "used_reference_images": bool(char1_base and char2_base)
-                }
-            else:
-                raise HTTPException(status_code=500, detail="No image was generated for pairs mode")
-                
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Pairs image generation failed: {str(e)}")
     
     # Regular single character editing mode
     prompt = f"""Change this person's outfit to: {request.outfit_description}.
