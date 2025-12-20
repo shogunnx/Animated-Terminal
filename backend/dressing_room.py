@@ -253,7 +253,7 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
         # Run both generations in parallel
         char1_image_bytes, char2_image_bytes = await asyncio.gather(char1_task, char2_task)
         
-        print(f"[PAIRS MODE] Both characters generated successfully!")
+        print("[PAIRS MODE] Both characters generated successfully!")
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Character generation failed: {str(e)}")
