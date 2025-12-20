@@ -152,13 +152,23 @@ export default function DressingRoom() {
     accessories: "",
     positions: "",
     presetCostumes: "",
-    artStyles: ""
+    artStyles: "",
+    backgrounds: "",
+    gestures: "",
+    pairsMature: "",
+    pairsFun: ""
   });
   const [generatedImage, setGeneratedImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  
+  // Second image for pairs
+  const [secondImage, setSecondImage] = useState(null);
+  const [secondImageSource, setSecondImageSource] = useState("none"); // none, upload, character
+  const [secondCharacter, setSecondCharacter] = useState(null);
+  const [showPairsMode, setShowPairsMode] = useState(false);
   
   // DeviantArt state
   const [daAuthenticated, setDaAuthenticated] = useState(false);
