@@ -24,30 +24,45 @@ try:
 except FileNotFoundError:
     pass
 
-# DeviantArt Integration Test Configuration
-DEVIANTART_ENDPOINTS = [
-    "/api/deviantart/auth-status",
-    "/api/deviantart/auth-url", 
-    "/api/deviantart/view-url/Binary",
-    "/api/deviantart/view-url/Victoria%20Black"
+# Pairs Mode Test Configuration
+PAIRS_MODE_ENDPOINT = "/api/dressing-room/generate"
+
+# Available base images for testing (from review request)
+AVAILABLE_BASE_IMAGES = ["binary", "vanessa", "victoria_black", "wargirl", "harmony", "evil_victoria", "veronica"]
+
+# Test scenarios for Pairs Mode
+PAIRS_TEST_SCENARIOS = [
+    {
+        "name": "Binary + Vanessa - Sitting in bed",
+        "character_id": "binary",
+        "character_name": "Binary",
+        "character_description": "digital goddess",
+        "outfit_description": "sitting in bed waving happily",
+        "second_character_id": "vanessa",
+        "second_character_name": "Vanessa",
+        "is_pairs_mode": True
+    },
+    {
+        "name": "Wargirl + Victoria Black - Dancing",
+        "character_id": "wargirl",
+        "character_name": "Wargirl",
+        "character_description": "warrior princess",
+        "outfit_description": "dancing together at a party",
+        "second_character_id": "victoria_black",
+        "second_character_name": "Victoria Black",
+        "is_pairs_mode": True
+    }
 ]
 
-# Expected DeviantArt configuration from review request
-EXPECTED_CLIENT_ID = "55907"
-EXPECTED_USERNAME = "TheSaiyanVictoria"
+# Single character test for comparison
+SINGLE_CHARACTER_TEST = {
+    "character_id": "binary",
+    "character_name": "Binary",
+    "character_description": "digital goddess",
+    "outfit_description": "casual outfit for a day out"
+}
 
-# Test characters for DeviantArt gallery URLs
-TEST_CHARACTERS = [
-    {"name": "Binary", "expected_slug": "binary"},
-    {"name": "Victoria Black", "expected_slug": "victoria-black"},
-    {"name": "Wargirl", "expected_slug": "wargirl"},
-    {"name": "Evil Victoria", "expected_slug": "evil-victoria"}
-]
-
-# Expected gallery URL pattern
-EXPECTED_GALLERY_URL_PATTERN = f"https://www.deviantart.com/{EXPECTED_USERNAME}/gallery/0/"
-
-class DeviantArtTester:
+class PairsModeImageTester:
     def __init__(self):
         self.results = []
         self.test_summary = {
