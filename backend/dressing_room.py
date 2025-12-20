@@ -259,13 +259,13 @@ High quality anime art style, detailed, vibrant colors, beautiful composition.""
 
 async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
     """
-    Generate Pairs Mode image using smart text-to-image approach:
-    1. Get the distinctive visual features for each character
-    2. Generate an intelligent prompt describing both characters interacting together
-    3. Use text-to-image to create a unified scene with both characters
+    Generate Pairs Mode image using hybrid approach:
+    1. Create a composite of both base images as reference
+    2. Generate a smart prompt describing them interacting
+    3. Use image-to-image with moderate strength to preserve likeness while enabling interaction
     """
     
-    # Get base images for both characters (for validation)
+    # Get base images for both characters
     char1_base = get_base_image(request.character_id)
     char2_base = get_base_image(request.second_character_id)
     
@@ -285,33 +285,59 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
     # Parse the activity from the request
     activity = request.outfit_description
     
-    # Generate a detailed prompt that describes BOTH characters TOGETHER in ONE scene
-    # Key: Use specific identifying features to differentiate them
-    smart_prompt = f"""A single unified scene showing two beautiful anime women together intimately, {activity}.
-
-First woman: {char1_full}
-Second woman: {char2_full}
-
-They are in the SAME scene, facing each other, close together, their bodies touching. 
-The woman with {char1_hair} is on one side, the woman with {char2_hair} is on the other side.
-They are {activity}, looking at each other with affection.
-
-High quality anime illustration, detailed faces, expressive eyes, vibrant colors, 
-beautiful composition showing both characters together in ONE frame, intimate lighting,
-masterpiece quality artwork."""
-
-    print(f"[PAIRS MODE] Using text-to-image with smart prompt")
-    print(f"[PAIRS MODE] Smart prompt: {smart_prompt[:500]}...")
+    # Step 1: Create a composite of both base images as reference
+    try:
+        img1 = Image.open(io.BytesIO(char1_base)).convert('RGB')
+        img2 = Image.open(io.BytesIO(char2_base)).convert('RGB')
+        
+        # Resize to same height
+        target_height = 768
+        img1_ratio = target_height / img1.height
+        img2_ratio = target_height / img2.height
+        img1 = img1.resize((int(img1.width * img1_ratio), target_height), Image.Resampling.LANCZOS)
+        img2 = img2.resize((int(img2.width * img2_ratio), target_height), Image.Resampling.LANCZOS)
+        
+        # Create composite - position them closer together for interaction
+        gap = -100  # Negative gap = overlap for closeness
+        total_width = img1.width + img2.width + gap
+        composite = Image.new('RGB', (total_width, target_height), (40, 30, 50))  # Dark background
+        composite.paste(img1, (0, 0))
+        composite.paste(img2, (img1.width + gap, 0))
+        
+        # Convert to base64 for upload
+        composite_buffer = io.BytesIO()
+        composite.save(composite_buffer, format='PNG')
+        composite_bytes = composite_buffer.getvalue()
+        composite_url = await upload_image_to_fal(composite_bytes)
+        
+        print(f"[PAIRS MODE] Created composite reference: {total_width}x{target_height}")
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create composite: {str(e)}")
     
-    # Use text-to-image for complete creative freedom in positioning
+    # Step 2: Smart prompt that describes interaction while preserving their looks
+    smart_prompt = f"""Transform this image of two anime women into a romantic scene where they are {activity}.
+
+Keep the EXACT appearance of both women - their faces, hair colors, eye colors, and features must stay the same.
+The woman on the left has {char1_hair} - keep her exact look.
+The woman on the right has {char2_hair} - keep her exact look.
+
+Make them face each other, lean closer together, interacting romantically while {activity}.
+Preserve their distinctive features exactly. Same faces, same hair, same eyes.
+High quality anime art, intimate romantic scene, beautiful lighting."""
+
+    print(f"[PAIRS MODE] Smart prompt: {smart_prompt[:300]}...")
+    
+    # Step 3: Use image-to-image with lower strength to preserve character likeness
     try:
         handler = await fal_client.submit_async(
-            "fal-ai/flux/dev",
+            "fal-ai/flux/dev/image-to-image",
             arguments={
                 "prompt": smart_prompt,
-                "image_size": "landscape_16_9",  # Wide format for two characters
-                "num_inference_steps": 40,
-                "guidance_scale": 5.0,
+                "image_url": composite_url,
+                "strength": 0.45,  # Lower strength to preserve more of original appearance
+                "num_inference_steps": 35,
+                "guidance_scale": 4.0,
                 "enable_safety_checker": False
             }
         )
@@ -337,12 +363,12 @@ masterpiece quality artwork."""
                 "success": True,
                 "image_base64": image_base64,
                 "prompt_used": smart_prompt,
-                "image_source": "pairs_text2img",
+                "image_source": "pairs_img2img_hybrid",
                 "base_image_saved": False,
-                "model": "fal-ai/flux/dev",
+                "model": "fal-ai/flux/dev/image-to-image",
                 "is_pairs": True,
-                "used_reference_images": False,
-                "generation_method": "smart_text_to_image",
+                "used_reference_images": True,
+                "generation_method": "hybrid_composite_transform",
                 "char1_identifier": char1_identifier,
                 "char2_identifier": char2_identifier
             }
