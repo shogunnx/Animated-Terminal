@@ -328,15 +328,14 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
         raise HTTPException(status_code=500, detail=f"Failed to create composite: {str(e)}")
     
     # Step 2: Smart prompt that describes interaction while preserving their looks
-    smart_prompt = f"""These two anime women together in the same room, {activity}.
+    # Focus on UNIFIED BACKGROUND more strongly
+    smart_prompt = f"""Two anime women {activity} in a SINGLE cozy living room with ONE unified background.
 
-Keep their EXACT faces, hair colors, and distinctive features.
-Left: {char1_hair}
-Right: {char2_hair}
-
-They share ONE background - same room, same lighting. 
-They are close together, {activity}.
-Preserve exact character appearances. High quality anime art, unified scene."""
+Keep their hair: Left has {char1_hair}. Right has {char2_hair}.
+They sit together on the SAME couch in the SAME room with SAME lighting.
+ONE continuous background behind both of them - no split screen.
+They are close, interacting, {activity}.
+High quality anime art, single unified scene, one room."""
 
     print(f"[PAIRS MODE] Smart prompt: {smart_prompt[:300]}...")
     
