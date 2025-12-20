@@ -227,20 +227,20 @@ Scene: {request.outfit_description}
 Both characters visible, high quality anime art, detailed, vibrant colors."""
 
         try:
-            # If we have BOTH base images, create a composite reference and use IP-Adapter
+            # If we have BOTH base images, create a composite reference for image-to-image
             if char1_base and char2_base:
                 # Create side-by-side composite of both characters as reference
                 img1 = Image.open(io.BytesIO(char1_base)).convert('RGB')
                 img2 = Image.open(io.BytesIO(char2_base)).convert('RGB')
                 
                 # Resize to same height
-                target_height = 512
+                target_height = 768
                 img1_ratio = target_height / img1.height
                 img2_ratio = target_height / img2.height
                 img1 = img1.resize((int(img1.width * img1_ratio), target_height), Image.Resampling.LANCZOS)
                 img2 = img2.resize((int(img2.width * img2_ratio), target_height), Image.Resampling.LANCZOS)
                 
-                # Create composite (side by side)
+                # Create composite (side by side) in landscape format
                 total_width = img1.width + img2.width
                 composite = Image.new('RGB', (total_width, target_height))
                 composite.paste(img1, (0, 0))
@@ -253,22 +253,16 @@ Both characters visible, high quality anime art, detailed, vibrant colors."""
                 composite_base64 = base64.b64encode(composite_bytes).decode('utf-8')
                 composite_url = f"data:image/png;base64,{composite_base64}"
                 
-                # Use FLUX image-to-image with IP-Adapter for character consistency
+                # Use FLUX image-to-image to transform the composite while preserving characters
                 handler = await fal_client.submit_async(
-                    "fal-ai/flux-general/image-to-image",
+                    "fal-ai/flux/dev/image-to-image",
                     arguments={
                         "prompt": prompt,
-                        "image_url": composite_url,  # Use composite as base
-                        "strength": 0.65,  # Lower strength to preserve more of reference
+                        "image_url": composite_url,
+                        "strength": 0.55,  # Lower strength to preserve more of the original characters
                         "num_inference_steps": 35,
-                        "guidance_scale": 4.0,
-                        "enable_safety_checker": True,
-                        "ip_adapters": [{
-                            "path": "InstantX/FLUX.1-dev-IP-Adapter",
-                            "image_encoder_path": "google/siglip-so400m-patch14-384",
-                            "image_url": composite_url,
-                            "scale": 0.7  # Strong IP-Adapter influence
-                        }]
+                        "guidance_scale": 3.5,
+                        "enable_safety_checker": True
                     }
                 )
             else:
@@ -300,9 +294,9 @@ Both characters visible, high quality anime art, detailed, vibrant colors."""
                     "success": True,
                     "image_base64": image_base64,
                     "prompt_used": prompt,
-                    "image_source": "pairs_generation_ip_adapter" if (char1_base and char2_base) else "pairs_generation_text",
+                    "image_source": "pairs_img2img" if (char1_base and char2_base) else "pairs_text2img",
                     "base_image_saved": False,
-                    "model": "fal-ai/flux-general/image-to-image" if (char1_base and char2_base) else "fal-ai/flux/dev",
+                    "model": "fal-ai/flux/dev/image-to-image" if (char1_base and char2_base) else "fal-ai/flux/dev",
                     "is_pairs": True,
                     "used_reference_images": bool(char1_base and char2_base)
                 }
