@@ -10,88 +10,65 @@ const CLOTHING_CATEGORIES = {
     "Camisole", "Bodysuit", "Corset", "Kimono", "Wrap Top", "Peasant Top", "Peplum Top", "Bell Sleeve",
     "Cold Shoulder", "Polo Shirt", "Henley", "Sports Bra", "Leather Jacket", "Denim Jacket", "Bomber Jacket",
     "Trench Coat", "Peacoat", "Windbreaker", "Puffer Jacket", "Flannel", "Mesh Top", "Lace Top",
-    "Crop Hoodie", "Longline T-Shirt", "Asymmetric Top", "Sequin Top", "Silk Blouse", "Cashmere Sweater", "Zip-Up Hoodie", "Ribbed Tank",
-    "Satin Camisole", "Cut-Out Top", "Bandeau Top", "Backless Top", "One-Shoulder Top", "Cape Top", "Bolero Jacket", "Moto Jacket",
-    "Varsity Jacket", "Shearling Jacket", "Suede Jacket", "Quilted Jacket", "Cropped Blazer", "Oversized Blazer", "Utility Vest", "Puffer Vest",
-    "Racerback Tank", "Muscle Tee", "Baseball Jersey", "Graphic Tee", "Tie-Dye Top", "Velvet Top",
-    // 30 More Sexy Tops
-    "Sheer Mesh Top", "Fishnet Top", "Latex Top", "PVC Bodysuit", "Leather Bustier", "Strappy Bra Top", "Chain Mail Top", "Deep V Crop",
-    "Side Boob Top", "Underboob Crop", "Nipple Cover Top", "Body Harness", "Cupless Corset", "Wet Look Top", "Snakeskin Top", "Feather Top",
-    "Jeweled Bra Top", "Crystal Chainmail", "Barely There Halter", "String Bikini Top", "Micro Crop", "Navel Tie Top", "Open Back Bodysuit", "Caged Bralette",
-    "Shredded Top", "Net Sleeve Top", "Transparent Blouse", "Liquid Metal Top", "Holographic Crop", "LED Light-Up Top"
+    "Crop Hoodie", "Longline T-Shirt", "Asymmetric Top", "Sequin Top", "Silk Blouse", "Cashmere Sweater",
+    // Sexy Tops
+    "Sheer Mesh Top", "Fishnet Top", "Latex Top", "PVC Bodysuit", "Leather Bustier", "Strappy Bra Top", 
+    "Chain Mail Top", "Deep V Crop", "Side Boob Top", "Underboob Crop", "Body Harness", "Cupless Corset", 
+    "Wet Look Top", "Snakeskin Top", "Feather Top", "Jeweled Bra Top", "Crystal Chainmail", "Barely There Halter", 
+    "String Bikini Top", "Micro Crop", "Navel Tie Top", "Open Back Bodysuit", "Caged Bralette", "Shredded Top", 
+    "Net Sleeve Top", "Transparent Blouse", "Liquid Metal Top", "Holographic Crop", "Satin Slip Top", "Velvet Bustier"
   ],
   bottoms: [
     "Jeans", "Shorts", "Skirt", "Leggings", "Dress Pants", "Cargo Pants", "Mini Skirt",
     "Maxi Skirt", "Midi Skirt", "Pencil Skirt", "A-Line Skirt", "Pleated Skirt", "Jean Shorts", "Bike Shorts",
     "High-Waisted Pants", "Low-Rise Jeans", "Wide Leg Pants", "Capri Pants", "Joggers", "Sweatpants", "Leather Pants",
     "Palazzo Pants", "Culottes", "Flare Jeans", "Bootcut Jeans", "Skinny Jeans", "Mom Jeans", "Boyfriend Jeans",
-    "Ripped Jeans", "Denim Skirt", "Wrap Skirt", "Tennis Skirt", "Cargo Skirt", "Yoga Pants", "Track Pants",
-    "Dress Shorts", "Bermuda Shorts", "Hot Pants",
-    "Leather Skirt", "Suede Skirt", "Tulle Skirt", "Asymmetric Skirt", "Tiered Skirt", "Button-Front Skirt", "Slit Skirt", "Circle Skirt",
-    "Cargo Shorts", "Running Shorts", "Board Shorts", "Paper Bag Pants", "Harem Pants", "Straight Leg Jeans", "Barrel Leg Jeans", "White Jeans",
-    "Black Jeans", "Distressed Jeans", "Embroidered Jeans", "Coated Jeans", "Jeggings", "Faux Leather Pants", "Velvet Pants", "Corduroy Pants",
-    "Cropped Pants", "Ankle Pants", "Bell Bottom Pants", "Satin Pants", "Plaid Skirt", "Sequin Skirt",
-    // 30 More Sexy Bottoms
-    "Micro Mini Skirt", "High Slit Skirt", "Sheer Skirt", "Latex Skirt", "PVC Skirt", "Chain Skirt", "Barely There Skirt", "Thong Skirt",
-    "Cutout Skirt", "Strappy Skirt", "Fishnet Skirt", "See-Through Pants", "Assless Chaps", "Leather Hot Pants", "Latex Leggings", "Wet Look Leggings",
-    "Crotchless Leggings", "Ripped Fishnets", "Garter Belt Bottom", "Suspender Shorts", "Booty Shorts", "Cheeky Shorts", "Brazilian Cut Shorts", "Low Rise Thong Jeans",
-    "Hip Hugger Jeans", "Painted-On Jeans", "Liquid Latex Pants", "Body Paint Pants", "Holographic Shorts", "LED Skirt"
+    // Sexy Bottoms
+    "Micro Mini Skirt", "High Slit Skirt", "Sheer Skirt", "Latex Skirt", "PVC Skirt", "Chain Skirt", 
+    "Barely There Skirt", "Thong Skirt", "Cutout Skirt", "Strappy Skirt", "Fishnet Skirt", "See-Through Pants", 
+    "Leather Hot Pants", "Latex Leggings", "Wet Look Leggings", "Garter Belt Bottom", "Suspender Shorts", 
+    "Booty Shorts", "Cheeky Shorts", "Brazilian Cut Shorts", "Hip Hugger Jeans", "Painted-On Jeans", 
+    "Liquid Latex Pants", "Body Paint Pants", "Holographic Shorts", "Satin Mini Skirt", "Velvet Hot Pants",
+    "Lace Pencil Skirt", "Mesh Leggings", "Bodycon Skirt"
   ],
   shoes: [
     "Sneakers", "Heels", "Boots", "Sandals", "Wedges", "Flats", "Combat Boots",
-    "Stiletto Heels", "Platform Heels", "Ankle Boots", "Knee-High Boots", "Thigh-High Boots", "Chelsea Boots", "Cowboy Boots",
-    "Rain Boots", "Loafers", "Oxfords", "Mary Janes", "Mules", "Slides", "Flip Flops", "Espadrilles",
-    "Ballet Flats", "Pointed Flats", "Gladiator Sandals", "Strappy Heels", "Slingback Heels", "Kitten Heels", "Block Heels",
-    "Chunky Sneakers", "High-Top Sneakers", "Slip-On Shoes", "Canvas Shoes", "Running Shoes", "Court Shoes", "Pumps",
-    "Peep-Toe Heels", "Ankle Strap Heels",
-    "Over-the-Knee Boots", "Lace-Up Boots", "Sock Boots", "Western Boots", "Hiking Boots", "Platform Sneakers", "Designer Sneakers", "Retro Sneakers",
-    "Velvet Heels", "Metallic Heels", "Clear Heels", "Embellished Heels", "T-Strap Heels", "D'Orsay Heels", "Cone Heels", "Stiletto Boots",
-    "Fur-Lined Boots", "Studded Boots", "Snake Print Heels", "Leopard Print Flats", "Embroidered Flats", "Driving Moccasins", "Boat Shoes", "Platform Sandals",
-    "Jelly Sandals", "Sport Sandals", "Fisherman Sandals", "Strappy Sandals", "Toe Ring Sandals", "Clogs",
-    "Red Bottom Heels", "Glitter Heels", "Holographic Heels", "Transparent Heels", "Lucite Heels", "Crystal Heels", "Pearl Heels", "Feather Heels",
-    "Bow Heels", "Ankle Wrap Heels", "Lace-Up Heels", "Cut-Out Heels", "Geometric Heels", "Sculptured Heels", "Wedge Heels", "Cork Heels",
-    "Espadrille Wedges", "Mule Heels", "Pointed Toe Pumps", "Almond Toe Heels",
-    // 30 More Sexy Shoes
-    "Stripper Heels", "Pole Dancing Boots", "Fetish Heels", "Extreme Platform Heels", "10 Inch Stilettos", "Thigh High Stiletto Boots", "Lace-Up Thigh Highs", "Dominatrix Boots",
-    "Latex Boots", "PVC Heels", "Chain Heels", "Spiked Heels", "Lock & Key Heels", "Ankle Cuff Heels", "Strappy Platform Boots", "Clear Platform Heels",
-    "LED Light-Up Heels", "Neon Heels", "Reflective Heels", "Chrome Heels", "Mirror Heels", "Diamond Studded Heels", "Gold Chain Heels", "Barely There Sandals",
-    "Invisible Strap Heels", "Glass Slipper Heels", "Cinderella Heels", "Fantasy Heels", "Showgirl Heels", "Burlesque Boots"
+    "Stiletto Heels", "Platform Heels", "Ankle Boots", "Knee-High Boots", "Thigh-High Boots", "Chelsea Boots",
+    "Cowboy Boots", "Loafers", "Oxfords", "Mary Janes", "Mules", "Slides", "Espadrilles",
+    "Ballet Flats", "Pointed Flats", "Gladiator Sandals", "Strappy Heels", "Slingback Heels", "Kitten Heels",
+    // Sexy Homely Shoes
+    "Fuzzy Slippers", "Silk House Slippers", "Feather Mules", "Satin Slides", "Velvet Loafers", "Marabou Heels",
+    "Bedroom Heels", "Peep-Toe Slippers", "Lace Flats", "Cozy UGG Boots", "Fluffy Platform Slippers", 
+    "Satin Ballet Slippers", "Sheer Stockings Barefoot", "Anklet Barefoot", "Toe Ring Barefoot", "Silk Socks",
+    "Fishnet Ankle Socks", "Lace Socks with Heels", "Barefoot with Anklets", "House Wedges", "Indoor Stilettos",
+    "Chenille Slippers", "Memory Foam Slides", "Cashmere Socks", "Silk Bed Socks", "Boudoir Heels",
+    "Ribbon Tie Flats", "Faux Fur Slides", "Satin Kitten Heels", "Pearl Strap Sandals"
   ],
   hairstyles: [
     "Long", "Short", "Ponytail", "Bun", "Braided", "Wavy", "Straight", "Curly",
     "Bob", "Pixie Cut", "Shaggy", "Layered", "Bangs", "Side Swept", "Updo", "Half-Up Half-Down",
     "Messy Bun", "Top Knot", "French Braid", "Fishtail Braid", "Dutch Braid", "Crown Braid", "Space Buns", "Pigtails",
     "Beach Waves", "Loose Curls", "Tight Curls", "Afro", "Locs", "Twists", "Cornrows", "High Ponytail",
-    "Low Ponytail", "Side Ponytail", "Slicked Back", "Mohawk", "Undercut", "Asymmetric Cut",
-    "Blunt Cut Bob", "Lob (Long Bob)", "Shag Cut", "Wolf Cut", "Butterfly Cut", "Curtain Bangs", "Micro Bangs", "Wispy Bangs",
-    "Pin Curls", "Finger Waves", "Victory Rolls", "Gibson Tuck", "Chignon", "Waterfall Braid", "Rope Braid", "Halo Braid",
-    "Boxer Braids", "Pull-Through Braid", "Milkmaid Braids", "Bubble Ponytail", "Twisted Ponytail", "Wrapped Ponytail", "Braided Updo", "Twisted Updo",
-    "Sleek Bun", "Textured Bun", "Ballerina Bun", "Dreadlocks", "Faux Hawk", "Buzz Cut",
-    "Vintage Waves", "Hollywood Curls", "Retro Flip", "Bouffant", "Beehive", "Rachel Cut", "Farrah Fawcett Feathered", "Mullet",
-    "Karen Cut", "E-Girl Hair", "Anime Protagonist Spikes", "Two-Tone Hair", "Ombre", "Balayage", "Highlights", "Money Pieces",
-    "Face-Framing Layers", "Curtain Layers", "Shaggy Layers", "Wet Look Slick",
-    // 30 More Sexy Hairstyles
-    "Bombshell Waves", "Pin-Up Curls", "Sultry Side Sweep", "Tousled Bedroom Hair", "Windswept Waves", "Seductive Low Ponytail", "High Fashion Ponytail", "Sleek Straight Middle Part",
-    "Messy Sex Hair", "Wet Look Waves", "Glossy Straight", "Siren Curls", "Vixen Waves", "Goddess Braids", "Mermaid Waves", "Long Flowing Hair",
-    "Super Long Hair", "Hip Length Hair", "Rapunzel Length", "Cascading Curls", "Voluminous Blowout", "Big Hair Energy", "Teased Crown", "80s Big Hair",
-    "Glamour Waves", "Red Carpet Updo", "Elegant Chignon", "Sexy Messy Bun", "Half-Up Goddess", "Crown Braid Goddess"
+    "Bombshell Waves", "Pin-Up Curls", "Sultry Side Sweep", "Tousled Bedroom Hair", "Windswept Waves",
+    "Messy Sex Hair", "Wet Look Waves", "Glossy Straight", "Siren Curls", "Vixen Waves", "Goddess Braids",
+    "Mermaid Waves", "Long Flowing Hair", "Cascading Curls", "Voluminous Blowout", "Big Hair Energy"
   ],
   accessories: [
     "Belt", "Necklace", "Earrings", "Watch", "Bracelet", "Hat", "Sunglasses", "Bag",
-    "Choker", "Pendant", "Chain Necklace", "Hoop Earrings", "Stud Earrings", "Drop Earrings", "Cuff Bracelet", "Bangle",
-    "Anklet", "Ring", "Hair Clip", "Headband", "Scrunchie", "Bow", "Beanie", "Baseball Cap", "Bucket Hat",
-    "Fedora", "Wide Brim Hat", "Beret", "Backpack", "Crossbody Bag", "Clutch", "Tote Bag", "Hobo Bag",
-    "Satchel", "Fanny Pack", "Scarf", "Bandana", "Gloves",
-    // 30 New Additions
-    "Statement Belt", "Chain Belt", "Western Belt", "Waist Bag", "Layered Necklaces", "Pearl Necklace", "Statement Necklace", "Body Chain",
-    "Tassel Earrings", "Chandelier Earrings", "Huggie Earrings", "Ear Cuff", "Stackable Rings", "Midi Rings", "Cocktail Ring", "Smart Watch",
-    "Leather Bracelet", "Charm Bracelet", "Tennis Bracelet", "Visor", "Newsboy Cap", "Panama Hat", "Sun Hat", "Aviator Sunglasses",
-    "Cat-Eye Sunglasses", "Round Sunglasses", "Mini Bag", "Chain Bag", "Bucket Bag", "Woven Bag"
+    "Choker", "Pendant", "Chain Necklace", "Hoop Earrings", "Stud Earrings", "Drop Earrings", "Cuff Bracelet",
+    "Anklet", "Ring", "Hair Clip", "Headband", "Scrunchie", "Bow", "Body Chain", "Layered Necklaces",
+    "Pearl Necklace", "Statement Necklace", "Tassel Earrings", "Chandelier Earrings", "Ear Cuff"
   ],
   positions: [
     "Standing", "Sitting", "Laying on Stomach", "Laying on Back", "Kneeling", "Squatting", "Leaning Forward", "Leaning Back",
     "Arms Crossed", "Hands on Hips", "One Hand on Hip", "Peace Sign", "Waving", "Pointing", "Thumbs Up", "Heart Hands",
-    "Looking Over Shoulder", "Side Profile", "Three-Quarter View", "Full Frontal"
+    "Looking Over Shoulder", "Side Profile", "Three-Quarter View", "Full Frontal",
+    // 30 More Positions
+    "Sprawled Out", "Curled Up", "Stretching", "Arching Back", "On All Fours", "Crawling", "Crouching",
+    "Legs Spread", "Legs Crossed", "One Leg Up", "Hands Behind Head", "Hands on Knees", "Hands on Face",
+    "Touching Hair", "Blowing Kiss", "Finger on Lips", "Hand on Chest", "Hand on Hip Turned", "Dancing Pose",
+    "Jumping", "Floating", "Hovering", "Flying Pose", "Action Stance", "Fighting Stance", "Yoga Pose",
+    "Meditation Pose", "Sleeping Position", "Sensual Recline", "Pin-Up Pose"
   ],
   presetCostumes: [
     "School Uniform", "Gothic Lolita", "Maid Outfit", "Nurse Uniform", "Police Officer", "Military Uniform",
@@ -99,18 +76,17 @@ const CLOTHING_CATEGORIES = {
     "Bunny Suit", "Cheerleader", "Rockstar Outfit", "Cyberpunk Street", "Steampunk Victorian", "Medieval Knight",
     "Samurai Warrior", "Ninja Assassin", "Cowgirl Western", "1950s Pin-Up", "1920s Flapper", "1980s Retro",
     "Beach Summer", "Winter Wonderland", "Formal Evening Gown", "Casual Street Style", "Business Professional", "Athleisure Sports",
-    // 30 More Presets - Power Rangers
-    "Mighty Morphin Red Ranger", "Mighty Morphin Pink Ranger", "Mighty Morphin Blue Ranger", "Mighty Morphin Yellow Ranger", "Mighty Morphin Black Ranger", "Mighty Morphin Green Ranger",
-    "Power Rangers Zeo Red", "Power Rangers Zeo Pink", "Power Rangers Zeo Blue", "Power Rangers Zeo Yellow", "Power Rangers Zeo Green",
-    // Marvel Heroes & Villains
-    "Iron Man Suit", "Captain America", "Thor Asgardian", "Black Widow Spy", "Spider-Man Web Slinger", "Scarlet Witch", "Black Panther", "Doctor Strange Sorcerer",
-    "Thanos Titan", "Loki God of Mischief", "Hela Goddess of Death",
-    // DC Heroes & Villains
-    "Superman Classic", "Batman Dark Knight", "Wonder Woman Amazonian", "The Flash Speedster", "Aquaman Atlantean", "Harley Quinn", "Joker Clown Prince", "Poison Ivy",
-    // 20 Meme Presets
-    "Distracted Boyfriend", "Woman Yelling at Cat", "Hide the Pain Harold", "Surprised Pikachu", "Doge Shiba", "Pepe the Frog", "Wojak Doomer",
-    "Chad Gigachad", "Karen Wants Manager", "Boomer Sipping Coffee", "Zoomer E-Boy/E-Girl", "NPC Grey Face", "Big Brain Time",
-    "This is Fine Dog", "Stonks Guy", "Trade Offer", "Bernie Sanders Mittens", "Success Kid", "Bad Luck Brian", "Overly Attached Girlfriend"
+    // Power Rangers
+    "Mighty Morphin Red Ranger", "Mighty Morphin Pink Ranger", "Mighty Morphin Blue Ranger", "Mighty Morphin Yellow Ranger",
+    // Marvel & DC
+    "Iron Man Suit", "Captain America", "Black Widow Spy", "Scarlet Witch", "Wonder Woman Amazonian", "Harley Quinn",
+    // 40 Popular Presets
+    "Catwoman Suit", "Princess Leia", "Sailor Moon", "Lara Croft", "Kim Possible", "Elastigirl", "Jessica Rabbit",
+    "Bayonetta", "2B NieR", "Tifa Lockhart", "Chun-Li", "Cammy White", "Mai Shiranui", "D.Va Overwatch",
+    "Widowmaker", "Loba Apex", "Ahri League", "Jinx Arcane", "Raven Teen Titans", "Starfire", "Poison Ivy",
+    "Catwoman Classic", "Storm X-Men", "Jean Grey Phoenix", "Black Cat Marvel", "Elektra", "Psylocke",
+    "Emma Frost", "Mystique", "She-Hulk", "Gamora", "Nebula", "Mantis", "Wanda Vision", "Agatha Harkness",
+    "Daenerys Targaryen", "Cersei Lannister", "Yennefer Witcher", "Triss Merigold", "Ciri Witcher", "Geralt Armor"
   ],
   artStyles: [
     "Anime Style", "Manga Style", "Semi-Realistic Anime", "Chibi Style", "Kawaii Style", "Western Animation",
@@ -118,6 +94,45 @@ const CLOTHING_CATEGORIES = {
     "DC Comics Style", "Graphic Novel", "Noir Style", "Cel Shaded", "Watercolor Painting", "Oil Painting",
     "Digital Art", "Concept Art", "Fantasy Art", "Sci-Fi Art", "Cyberpunk Aesthetic", "Vaporwave",
     "Retro 80s", "Retro 90s", "Art Nouveau", "Art Deco", "Pop Art", "Minimalist"
+  ],
+  backgrounds: [
+    // 30 Backgrounds
+    "Bedroom", "Living Room", "Kitchen", "Bathroom", "Luxury Penthouse", "Cozy Cabin", "Beach House",
+    "Rooftop Terrace", "Garden Patio", "Swimming Pool", "Hot Tub", "Sauna", "Gym", "Dance Studio",
+    "Photography Studio", "Red Carpet", "Nightclub", "Bar Lounge", "Restaurant", "Hotel Suite",
+    "Spa Room", "Massage Table", "Yoga Studio", "Boxing Ring", "Racing Track", "Concert Stage",
+    "Forest Clearing", "Mountain Peak", "Desert Sunset", "Underwater Fantasy"
+  ],
+  gestures: [
+    // 30 Gestures
+    "Winking", "Blowing a Kiss", "Licking Lips", "Biting Lip", "Smiling Seductively", "Smirking", "Pouting",
+    "Sticking Tongue Out", "Finger on Chin", "Hand Under Chin", "Playing with Hair", "Twirling Hair",
+    "Brushing Hair Back", "Covering Mouth", "Whispering", "Shushing", "Come Hither Finger", "Beckoning",
+    "Waving Goodbye", "Throwing Kiss", "Making Heart with Hands", "Peace Sign Near Face", "Flexing",
+    "Showing Off Nails", "Applying Lipstick", "Looking in Mirror", "Taking Selfie", "Blowing Smoke",
+    "Sipping Drink", "Eating Seductively"
+  ],
+  pairsMature: [
+    // 40 Mature Pair Activities
+    "Passionate Embrace", "Slow Dancing Together", "Gazing Into Eyes", "Whispering Secrets", "Feeding Each Other",
+    "Sharing Wine", "Candlelit Dinner", "Bubble Bath Together", "Massage Exchange", "Cuddling on Couch",
+    "Spooning in Bed", "Forehead Kiss", "Neck Kiss", "Hand Holding Walk", "Piggyback Ride",
+    "Carrying Bridal Style", "Sitting on Lap", "Straddling", "Back Hug", "Front Embrace",
+    "Nose to Nose", "Eskimo Kiss", "Butterfly Kisses", "Tangled Legs", "Intertwined Fingers",
+    "Playing Footsie", "Pillow Fight", "Tickle Fight", "Wrestling Playfully", "Pinning Down",
+    "Being Pinned", "Tied Up", "Blindfolded", "Handcuffed", "Collar and Leash",
+    "Dominating Pose", "Submissive Pose", "Power Exchange", "Mirror Pose", "Symmetrical Pose"
+  ],
+  pairsFun: [
+    // 40 Fun Pair Activities
+    "High Five", "Fist Bump", "Victory Pose Together", "Jumping Together", "Running Together",
+    "Racing Each Other", "Playing Video Games", "Board Game Battle", "Cooking Together", "Baking Together",
+    "Making Pizza", "Food Fight", "Snowball Fight", "Water Balloon Fight", "Paintball Battle",
+    "Nerf Gun War", "Hide and Seek", "Tag You're It", "Thumb Wrestling", "Arm Wrestling",
+    "Dance Battle", "Karaoke Duet", "Singing Together", "Playing Instruments", "Jamming Session",
+    "Yoga Partner Pose", "Acro Yoga", "Trust Fall", "Lift and Spin", "Dip Dance Move",
+    "Tango Pose", "Salsa Move", "Breakdance Battle", "TikTok Dance", "Photobooth Poses",
+    "Silly Faces", "Matching Outfits", "Cosplay Together", "Halloween Costumes", "Best Friends Pose"
   ]
 };
 
