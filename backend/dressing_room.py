@@ -25,6 +25,10 @@ class OutfitRequest(BaseModel):
     reference_image_url: Optional[str] = None
     reference_image_base64: Optional[str] = None
     save_as_base: Optional[bool] = False
+    # Pairs mode fields
+    second_character_id: Optional[str] = None
+    second_character_name: Optional[str] = None
+    is_pairs_mode: Optional[bool] = False
 
 class BaseImageRequest(BaseModel):
     character_id: str
