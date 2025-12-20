@@ -888,7 +888,7 @@ export default function DressingRoom() {
       </div>
 
       {/* Right Panel - Clothing Selection */}
-      <div className="tsv-glass tsv-glow" style={{ padding: 14 }}>
+      <div className="tsv-glass tsv-glow" style={{ padding: 14, maxHeight: "90vh", overflowY: "auto" }}>
         <div className="tsv-title" style={{ fontSize: 13, opacity:.88 }}>
           WARDROBE SELECTION
         </div>
@@ -897,12 +897,12 @@ export default function DressingRoom() {
         {CLOTHING_CATEGORIES.presetCostumes && (
           <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.08)" }}>
             <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10 }}>
-              ⭐ PRESET COSTUMES
+              ⭐ PRESET COSTUMES ({CLOTHING_CATEGORIES.presetCostumes.length})
             </div>
             <div style={{ fontSize: 9, opacity: 0.6, marginBottom: 10 }}>
               Quick outfit presets - select one for instant transformation!
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, maxHeight: 150, overflowY: "auto" }}>
               {CLOTHING_CATEGORIES.presetCostumes.map((item) => (
                 <button
                   key={item}
@@ -926,11 +926,138 @@ export default function DressingRoom() {
           </div>
         )}
 
+        {/* Backgrounds Section */}
+        {CLOTHING_CATEGORIES.backgrounds && (
+          <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "rgba(0,191,255,.05)", border: "1px solid rgba(0,191,255,.2)" }}>
+            <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10, color: "#00bfff" }}>
+              🏠 BACKGROUNDS ({CLOTHING_CATEGORIES.backgrounds.length})
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {CLOTHING_CATEGORIES.backgrounds.map((item) => (
+                <button
+                  key={item}
+                  onClick={() => handleItemToggle("backgrounds", item)}
+                  className="tsv-pill"
+                  style={{
+                    fontSize: 10,
+                    padding: "5px 12px",
+                    cursor: "pointer",
+                    borderColor: selectedItems.backgrounds === item ? "#00bfff" : "rgba(0,191,255,.3)",
+                    background: selectedItems.backgrounds === item 
+                      ? "linear-gradient(135deg, rgba(0,191,255,.35), rgba(135,206,250,.2))"
+                      : "rgba(0,191,255,.1)",
+                    boxShadow: selectedItems.backgrounds === item ? "0 0 12px rgba(0,191,255,.4)" : "none"
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Gestures Section */}
+        {CLOTHING_CATEGORIES.gestures && (
+          <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "rgba(255,215,0,.05)", border: "1px solid rgba(255,215,0,.2)" }}>
+            <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10, color: "#ffd700" }}>
+              🤟 GESTURES ({CLOTHING_CATEGORIES.gestures.length})
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {CLOTHING_CATEGORIES.gestures.map((item) => (
+                <button
+                  key={item}
+                  onClick={() => handleItemToggle("gestures", item)}
+                  className="tsv-pill"
+                  style={{
+                    fontSize: 10,
+                    padding: "5px 12px",
+                    cursor: "pointer",
+                    borderColor: selectedItems.gestures === item ? "#ffd700" : "rgba(255,215,0,.3)",
+                    background: selectedItems.gestures === item 
+                      ? "linear-gradient(135deg, rgba(255,215,0,.35), rgba(255,255,150,.2))"
+                      : "rgba(255,215,0,.1)",
+                    boxShadow: selectedItems.gestures === item ? "0 0 12px rgba(255,215,0,.4)" : "none"
+                  }}
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Pairs Section - Only show if second image is uploaded */}
+        {showPairsMode && secondImage && (
+          <>
+            {/* Pairs Mature */}
+            <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "rgba(255,20,147,.08)", border: "1px solid rgba(255,20,147,.3)" }}>
+              <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10, color: "#ff1493" }}>
+                💋 PAIRS - MATURE ({CLOTHING_CATEGORIES.pairsMature.length})
+              </div>
+              <div style={{ fontSize: 9, opacity: 0.6, marginBottom: 10 }}>
+                Romantic & intimate activities for two characters
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, maxHeight: 120, overflowY: "auto" }}>
+                {CLOTHING_CATEGORIES.pairsMature.map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => handleItemToggle("pairsMature", item)}
+                    className="tsv-pill"
+                    style={{
+                      fontSize: 10,
+                      padding: "5px 12px",
+                      cursor: "pointer",
+                      borderColor: selectedItems.pairsMature === item ? "#ff1493" : "rgba(255,20,147,.3)",
+                      background: selectedItems.pairsMature === item 
+                        ? "linear-gradient(135deg, rgba(255,20,147,.35), rgba(255,182,193,.2))"
+                        : "rgba(255,20,147,.1)",
+                      boxShadow: selectedItems.pairsMature === item ? "0 0 12px rgba(255,20,147,.4)" : "none"
+                    }}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Pairs Fun */}
+            <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "rgba(50,205,50,.08)", border: "1px solid rgba(50,205,50,.3)" }}>
+              <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10, color: "#32cd32" }}>
+                🎉 PAIRS - FUN ({CLOTHING_CATEGORIES.pairsFun.length})
+              </div>
+              <div style={{ fontSize: 9, opacity: 0.6, marginBottom: 10 }}>
+                Fun & playful activities for two characters
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, maxHeight: 120, overflowY: "auto" }}>
+                {CLOTHING_CATEGORIES.pairsFun.map((item) => (
+                  <button
+                    key={item}
+                    onClick={() => handleItemToggle("pairsFun", item)}
+                    className="tsv-pill"
+                    style={{
+                      fontSize: 10,
+                      padding: "5px 12px",
+                      cursor: "pointer",
+                      borderColor: selectedItems.pairsFun === item ? "#32cd32" : "rgba(50,205,50,.3)",
+                      background: selectedItems.pairsFun === item 
+                        ? "linear-gradient(135deg, rgba(50,205,50,.35), rgba(144,238,144,.2))"
+                        : "rgba(50,205,50,.1)",
+                      boxShadow: selectedItems.pairsFun === item ? "0 0 12px rgba(50,205,50,.4)" : "none"
+                    }}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
         {/* Art Styles - Featured Section */}
         {CLOTHING_CATEGORIES.artStyles && (
           <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "rgba(138,43,226,.05)", border: "1px solid rgba(138,43,226,.2)" }}>
             <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10 }}>
-              🎨 ART STYLES
+              🎨 ART STYLES ({CLOTHING_CATEGORIES.artStyles.length})
             </div>
             <div style={{ fontSize: 9, opacity: 0.6, marginBottom: 10 }}>
               Choose rendering style for your outfit (anime, realistic, comic, etc.)
@@ -960,12 +1087,12 @@ export default function DressingRoom() {
         )}
 
         {/* Regular Clothing Categories */}
-        {Object.entries(CLOTHING_CATEGORIES).filter(([cat]) => cat !== 'presetCostumes' && cat !== 'artStyles').map(([category, items]) => (
+        {Object.entries(CLOTHING_CATEGORIES).filter(([cat]) => !['presetCostumes', 'artStyles', 'backgrounds', 'gestures', 'pairsMature', 'pairsFun'].includes(cat)).map(([category, items]) => (
           <div key={category} style={{ marginTop: 14 }}>
             <div className="tsv-title" style={{ fontSize: 11, opacity:.75, marginBottom: 8, textTransform: "uppercase" }}>
-              {category}
+              {category} ({items.length})
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, maxHeight: 120, overflowY: "auto" }}>
               {items.map((item) => (
                 <button
                   key={item}
