@@ -17,6 +17,23 @@ os.environ["FAL_KEY"] = FAL_KEY  # Ensure fal_client can access it
 BASE_IMAGES_DIR = Path("/app/backend/base_images")
 BASE_IMAGES_DIR.mkdir(exist_ok=True)
 
+# Character appearance descriptions for Pairs mode
+CHARACTER_APPEARANCES = {
+    "victoria_black": "Victoria Black, a stunning anime woman with long flowing black hair with teal highlights, piercing violet eyes, wearing elegant goddess attire, teal and purple color scheme, confident powerful pose",
+    "victoria_black_blaster": "Victoria Black Blaster, fierce anime woman with wild black and red hair, glowing golden eyes, wearing battle armor with red and gold accents, explosive energy aura",
+    "victoria_black_goddess": "Victoria Black Goddess, divine anime woman with ethereal golden-white hair, radiant eyes, wearing ornate golden goddess robes with pink accents, heavenly glow",
+    "wargirl": "Wargirl, energetic anime woman with super long spiky blonde SSJ3 hair reaching her legs, fierce pink eyes, wearing pink and gold battle outfit, warrior princess aesthetic",
+    "binary": "Binary, beautiful anime woman with long purple-silver hair with glitch effects, glowing lavender eyes, angel wings, wearing futuristic purple bodysuit with silver accents, digital goddess aesthetic",
+    "vanessa": "Vanessa, bold sexy anime pinup woman with fiery red-orange hair, confident amber eyes, wearing red and gold warrior bikini armor, sword warrior aesthetic",
+    "harmony": "Harmony, cute anime woman with short blue hair with cyan highlights, bright blue eyes, wearing tech-style blue outfit with neon accents, DJ headphones, futuristic vibe",
+    "evil_victoria": "Evil Victoria, seductive dark anime woman with long black hair with red streaks, menacing red glowing eyes, wearing revealing black and red gothic outfit, dark queen aesthetic, silver eye marking",
+    "veronica": "Veronica, warm friendly anime woman with wavy orange-brown hair, kind hazel eyes, wearing casual orange and blue outfit, human ally aesthetic"
+}
+
+def get_character_appearance(character_id: str, character_name: str) -> str:
+    """Get detailed appearance description for a character"""
+    return CHARACTER_APPEARANCES.get(character_id, f"{character_name}, beautiful anime woman")
+
 class OutfitRequest(BaseModel):
     character_name: str
     character_id: str
