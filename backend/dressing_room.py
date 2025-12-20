@@ -193,7 +193,14 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
     # Create editing instruction for FLUX.2 Edit
-    prompt = f"""Change this person's outfit to: {request.outfit_description}.
+    # For Pairs mode, generate both characters together
+    if request.is_pairs_mode and request.second_character_name:
+        prompt = f"""Generate an image showing TWO anime characters together: {request.character_name} and {request.second_character_name}.
+Scene description: {request.outfit_description}.
+Both characters should be clearly visible in the same image, interacting together.
+Keep the anime art style consistent for both characters."""
+    else:
+        prompt = f"""Change this person's outfit to: {request.outfit_description}.
 Keep everything else the same - same face, same hair, same background, same pose.
 Only change the clothing."""
     
