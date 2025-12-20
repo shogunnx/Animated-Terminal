@@ -490,18 +490,28 @@ export default function DressingRoom() {
     setError(null);
 
     try {
+      // Build request body
+      const requestBody = {
+        character_id: selectedCharacter.id,
+        character_name: selectedCharacter.name,
+        character_description: selectedCharacter.subtitle || "anime character",
+        outfit_description: outfitDesc,
+        reference_image_url: baseImageSource === "nexus" ? baseImage : null,
+        reference_image_base64: baseImageSource === "upload" ? baseImage : null,
+        save_as_base: baseImageSource === "upload"
+      };
+      
+      // Add second character info for Pairs mode
+      if (showPairsMode && secondCharacter) {
+        requestBody.second_character_id = secondCharacter.id;
+        requestBody.second_character_name = secondCharacter.name;
+        requestBody.is_pairs_mode = true;
+      }
+      
       const response = await fetch("/api/dressing-room/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          character_id: selectedCharacter.id,
-          character_name: selectedCharacter.name,
-          character_description: selectedCharacter.subtitle || "anime character",
-          outfit_description: outfitDesc,
-          reference_image_url: baseImageSource === "nexus" ? baseImage : null,
-          reference_image_base64: baseImageSource === "upload" ? baseImage : null,
-          save_as_base: baseImageSource === "upload"  // Auto-save uploaded images
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
