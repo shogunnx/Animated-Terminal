@@ -8,7 +8,21 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+// Get API URL - handle both CRA and Vite environments
+const getApiUrl = () => {
+  // Try Vite env first, then CRA, then empty string
+  if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_BACKEND_URL) {
+    return import.meta.env.VITE_BACKEND_URL;
+  }
+  // For CRA or if REACT_APP_BACKEND_URL is set at build time
+  if (typeof window !== 'undefined' && window.__ENV__?.REACT_APP_BACKEND_URL) {
+    return window.__ENV__.REACT_APP_BACKEND_URL;
+  }
+  // Default empty - will use relative paths
+  return '';
+};
+
+const API_URL = getApiUrl();
 
 // Generate or retrieve session ID
 const getSessionId = () => {
