@@ -259,10 +259,8 @@ High quality anime art style, detailed, vibrant colors, beautiful composition.""
 
 async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
     """
-    Generate Pairs Mode image using hybrid approach:
-    1. Create a composite of both base images as reference
-    2. Generate a smart prompt describing them interacting
-    3. Use image-to-image with moderate strength to preserve likeness while enabling interaction
+    Generate Pairs Mode image using FLUX.2 Pro Edit with multi-reference support.
+    This model can combine multiple images into ONE unified scene.
     """
     
     # Get base images for both characters
@@ -279,82 +277,39 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
     char2_identifier = get_character_identifier(request.second_character_id)
     char1_hair = get_character_hair(request.character_id)
     char2_hair = get_character_hair(request.second_character_id)
-    char1_full = get_character_appearance(request.character_id, request.character_name)
-    char2_full = get_character_appearance(request.second_character_id, request.second_character_name)
     
     # Parse the activity from the request
     activity = request.outfit_description
     
-    # Step 1: Create a composite with characters on NEUTRAL background
-    # This forces AI to generate ONE unified background
+    # Upload both base images
     try:
-        img1 = Image.open(io.BytesIO(char1_base)).convert('RGBA')
-        img2 = Image.open(io.BytesIO(char2_base)).convert('RGBA')
-        
-        # Resize to same height
-        target_height = 768
-        img1_ratio = target_height / img1.height
-        img2_ratio = target_height / img2.height
-        img1 = img1.resize((int(img1.width * img1_ratio), target_height), Image.Resampling.LANCZOS)
-        img2 = img2.resize((int(img2.width * img2_ratio), target_height), Image.Resampling.LANCZOS)
-        
-        # Create a wide canvas with neutral/gradient background
-        total_width = int((img1.width + img2.width) * 0.8)  # Closer together
-        
-        # Create gradient background (dark purple to encourage cozy scene)
-        from PIL import ImageDraw
-        composite = Image.new('RGB', (total_width, target_height), (40, 30, 50))
-        draw = ImageDraw.Draw(composite)
-        # Simple gradient
-        for y in range(target_height):
-            r = int(40 + (y / target_height) * 20)
-            g = int(30 + (y / target_height) * 15)
-            b = int(50 + (y / target_height) * 25)
-            draw.line([(0, y), (total_width, y)], fill=(r, g, b))
-        composite = composite.convert('RGBA')
-        
-        # Position characters closer together, overlapping
-        char1_x = 0
-        char2_x = total_width - img2.width
-        
-        # Paste characters (without their backgrounds ideally, but we work with what we have)
-        composite.paste(img1, (char1_x, 0), img1)
-        composite.paste(img2, (char2_x, 0), img2)
-        
-        # Convert to RGB
-        final_composite = composite.convert('RGB')
-        
-        # Convert to base64 for upload
-        composite_buffer = io.BytesIO()
-        final_composite.save(composite_buffer, format='PNG')
-        composite_bytes = composite_buffer.getvalue()
-        composite_url = await upload_image_to_fal(composite_bytes)
-        
-        print(f"[PAIRS MODE] Created overlapping composite on gradient: {total_width}x{target_height}")
-        
+        img1_url = await upload_image_to_fal(char1_base)
+        img2_url = await upload_image_to_fal(char2_base)
+        print(f"[PAIRS MODE] Uploaded both character images")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to create composite: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to upload images: {str(e)}")
     
-    # Step 2: Smart prompt that describes interaction while preserving their looks
-    # Focus on UNIFIED BACKGROUND more strongly
-    smart_prompt = f"""Two anime women {activity} in a SINGLE cozy living room with ONE unified background.
+    # Create prompt that references both images and asks for unified scene
+    smart_prompt = f"""Combine these two anime women into ONE unified scene where they are {activity}.
 
-Keep their hair: Left has {char1_hair}. Right has {char2_hair}.
-They sit together on the SAME couch in the SAME room with SAME lighting.
-ONE continuous background behind both of them - no split screen.
-They are close, interacting, {activity}.
-High quality anime art, single unified scene, one room."""
+The woman from image 1 has {char1_hair}.
+The woman from image 2 has {char2_hair}.
 
-    print(f"[PAIRS MODE] Smart prompt: {smart_prompt[:300]}...")
+Put them TOGETHER in the SAME room with ONE continuous background.
+They should be close together, interacting, {activity}.
+Keep their exact faces, hair colors, and distinctive features from the reference images.
+Single unified scene, same lighting, high quality anime art."""
+
+    print(f"[PAIRS MODE] Using FLUX.2 Pro Edit with multi-reference")
+    print(f"[PAIRS MODE] Prompt: {smart_prompt[:200]}...")
     
-    # Step 3: Use image-to-image with higher strength to unify the scene
+    # Try FLUX.2 Pro Edit with multiple images
     try:
         handler = await fal_client.submit_async(
-            "fal-ai/flux/dev/image-to-image",
+            "fal-ai/flux-2-pro/edit",
             arguments={
+                "image_urls": [img1_url, img2_url],  # Multiple reference images
                 "prompt": smart_prompt,
-                "image_url": composite_url,
-                "strength": 0.62,  # Higher to unify backgrounds while keeping character features
                 "num_inference_steps": 40,
                 "guidance_scale": 5.0,
                 "enable_safety_checker": False
@@ -382,12 +337,12 @@ High quality anime art, single unified scene, one room."""
                 "success": True,
                 "image_base64": image_base64,
                 "prompt_used": smart_prompt,
-                "image_source": "pairs_img2img_hybrid",
+                "image_source": "pairs_flux2_pro_edit",
                 "base_image_saved": False,
-                "model": "fal-ai/flux/dev/image-to-image",
+                "model": "fal-ai/flux-2-pro/edit",
                 "is_pairs": True,
                 "used_reference_images": True,
-                "generation_method": "hybrid_composite_transform",
+                "generation_method": "multi_reference_edit",
                 "char1_identifier": char1_identifier,
                 "char2_identifier": char2_identifier
             }
@@ -395,7 +350,77 @@ High quality anime art, single unified scene, one room."""
             raise HTTPException(status_code=500, detail="No image was generated for pairs mode")
             
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Pairs image generation failed: {str(e)}")
+        error_msg = str(e)
+        print(f"[PAIRS MODE] FLUX.2 Pro Edit failed: {error_msg}")
+        
+        # Fallback to regular image-to-image with composite
+        print("[PAIRS MODE] Falling back to composite approach...")
+        return await generate_pairs_fallback(request, char1_base, char2_base, char1_hair, char2_hair, activity, char1_identifier, char2_identifier)
+
+
+async def generate_pairs_fallback(request, char1_base, char2_base, char1_hair, char2_hair, activity, char1_identifier, char2_identifier):
+    """Fallback method using composite image-to-image"""
+    
+    # Create composite
+    img1 = Image.open(io.BytesIO(char1_base)).convert('RGBA')
+    img2 = Image.open(io.BytesIO(char2_base)).convert('RGBA')
+    
+    target_height = 768
+    img1_ratio = target_height / img1.height
+    img2_ratio = target_height / img2.height
+    img1 = img1.resize((int(img1.width * img1_ratio), target_height), Image.Resampling.LANCZOS)
+    img2 = img2.resize((int(img2.width * img2_ratio), target_height), Image.Resampling.LANCZOS)
+    
+    # Significant overlap
+    overlap = int(min(img1.width, img2.width) * 0.4)
+    total_width = img1.width + img2.width - overlap
+    
+    composite = Image.new('RGBA', (total_width, target_height), (50, 40, 60, 255))
+    composite.paste(img1, (0, 0), img1)
+    composite.paste(img2, (img1.width - overlap, 0), img2)
+    final_composite = composite.convert('RGB')
+    
+    composite_buffer = io.BytesIO()
+    final_composite.save(composite_buffer, format='PNG')
+    composite_url = await upload_image_to_fal(composite_buffer.getvalue())
+    
+    smart_prompt = f"""Two anime women {activity} in ONE room with unified background.
+Left: {char1_hair}. Right: {char2_hair}.
+Same room, same lighting, interacting together.
+High quality anime art, single unified scene."""
+
+    handler = await fal_client.submit_async(
+        "fal-ai/flux/dev/image-to-image",
+        arguments={
+            "prompt": smart_prompt,
+            "image_url": composite_url,
+            "strength": 0.55,
+            "num_inference_steps": 40,
+            "guidance_scale": 4.5,
+            "enable_safety_checker": False
+        }
+    )
+    
+    result = await handler.get()
+    
+    if result and result.get("images") and len(result["images"]) > 0:
+        generated_image_url = result["images"][0]["url"]
+        async with httpx.AsyncClient() as http_client:
+            img_response = await http_client.get(generated_image_url, timeout=30.0)
+            generated_image_bytes = img_response.content
+        
+        return {
+            "success": True,
+            "image_base64": base64.b64encode(generated_image_bytes).decode('utf-8'),
+            "prompt_used": smart_prompt,
+            "image_source": "pairs_fallback_composite",
+            "model": "fal-ai/flux/dev/image-to-image",
+            "is_pairs": True,
+            "used_reference_images": True,
+            "generation_method": "fallback_composite"
+        }
+    
+    raise HTTPException(status_code=500, detail="Pairs generation failed")
 
 
 async def generate_outfit_image(request: OutfitRequest) -> dict:
