@@ -21,6 +21,9 @@ import deviantart
 # Dressing Room Analytics
 import dressing_room_analytics
 
+# Terminal Analytics
+import terminal_analytics
+
 # -----------------------
 # Settings
 # -----------------------
