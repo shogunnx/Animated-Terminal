@@ -15,7 +15,8 @@ import {
   Monitor
 } from 'lucide-react';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+// Get API URL - using the same pattern as other pages
+const API_URL = '';  // Empty string uses relative paths which work with proxy
 
 const TerminalAnalytics = () => {
   const [analytics, setAnalytics] = useState(null);
