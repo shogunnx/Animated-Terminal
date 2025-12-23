@@ -167,6 +167,32 @@ async def get_dressing_room_events(limit: int = 100, skip: int = 0):
 
 
 # -----------------------
+# Terminal Analytics
+# -----------------------
+@api.post("/analytics/session")
+async def start_analytics_session(data: terminal_analytics.SessionStart, request: Request):
+    """Start a new analytics session"""
+    ip_address = request.client.host if request.client else None
+    return await terminal_analytics.start_session(data, ip_address)
+
+@api.post("/analytics/event")
+async def track_terminal_event(event: terminal_analytics.TerminalEvent, request: Request):
+    """Track a terminal event (page view, click, etc.)"""
+    ip_address = request.client.host if request.client else None
+    return await terminal_analytics.track_event(event, ip_address)
+
+@api.get("/analytics/summary")
+async def get_terminal_analytics(days: int = 7):
+    """Get terminal usage analytics summary"""
+    return await terminal_analytics.get_analytics_summary(days)
+
+@api.get("/analytics/live")
+async def get_live_terminal_stats():
+    """Get real-time terminal stats (last 5 minutes)"""
+    return await terminal_analytics.get_live_stats()
+
+
+# -----------------------
 # Generic proxy helper
 # -----------------------
 async def proxy_request(request: Request, target_base: str, path: str, inject_headers: Optional[dict] = None) -> Response:
