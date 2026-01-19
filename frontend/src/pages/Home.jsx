@@ -395,6 +395,14 @@ export default function Home() {
           0%, 100% { box-shadow: 0 4px 12px rgba(255,0,0,.3), 0 0 20px rgba(255,75,75,.2); }
           50% { box-shadow: 0 4px 12px rgba(255,0,0,.5), 0 0 40px rgba(255,75,75,.4); }
         }
+        @keyframes warningPulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        @keyframes gradientMove {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 200% 50%; }
+        }
       `}</style>
     </div>
   );
