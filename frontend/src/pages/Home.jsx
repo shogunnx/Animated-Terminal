@@ -290,6 +290,80 @@ export default function Home() {
         )}
       </div>
 
+      {/* Fractured Power Game - External Link */}
+      <div 
+        className="tsv-glass tsv-glow" 
+        style={{ 
+          padding: 16, 
+          marginTop: 14,
+          background: "linear-gradient(135deg, rgba(255,50,100,.15), rgba(150,0,255,.15))",
+          border: "2px solid rgba(255,50,150,.5)",
+          position: "relative",
+          overflow: "hidden"
+        }}
+      >
+        {/* Warning Badge */}
+        <div style={{
+          position: "absolute",
+          top: 10,
+          right: 10,
+          background: "linear-gradient(135deg, #ff0040, #ff3366)",
+          padding: "4px 10px",
+          borderRadius: 4,
+          fontSize: 10,
+          fontWeight: "bold",
+          color: "#fff",
+          boxShadow: "0 0 15px rgba(255,0,64,.5)",
+          animation: "warningPulse 1.5s ease-in-out infinite"
+        }}>
+          🔞 +18 ONLY!!
+        </div>
+        
+        <div className="tsv-title" style={{ fontSize: 14, color: "#ff50aa" }}>
+          ⚡ FRACTURED POWER GAME
+        </div>
+        <div style={{ marginTop: 8, fontSize: 12, opacity: 0.85, lineHeight: 1.5 }}>
+          <span style={{ color: "#ff80cc" }}>WARNING:</span> Mature content ahead. Enter the multiverse's most dangerous game.
+          <br />
+          <span style={{ opacity: 0.7, fontSize: 11 }}>
+            🎮 Interactive AI-powered adventure • 💀 High stakes choices • 🔥 Exclusive storylines
+          </span>
+        </div>
+        
+        <a 
+          href="https://rosebud.ai/p/9ae128f9-db5f-4ce9-b573-55d98d6f3807"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="tsv-btn"
+          style={{ 
+            display: "inline-block",
+            marginTop: 12,
+            fontSize: 12,
+            background: "linear-gradient(135deg, rgba(255,0,100,.3), rgba(200,0,255,.3))",
+            border: "1px solid #ff50aa",
+            color: "#ff80cc",
+            textDecoration: "none",
+            padding: "10px 20px",
+            fontWeight: "bold",
+            textShadow: "0 0 10px rgba(255,80,170,.5)"
+          }}
+        >
+          🚀 LAUNCH FRACTURED POWER
+        </a>
+        
+        {/* Animated background effect */}
+        <div style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          background: "linear-gradient(90deg, #ff0080, #ff50aa, #aa00ff, #ff0080)",
+          backgroundSize: "200% 100%",
+          animation: "gradientMove 2s linear infinite"
+        }} />
+      </div>
+
       {/* Quick Access Terminal Commands */}
       <div className="tsv-glass" style={{ padding: 14, marginTop: 14 }}>
         <div className="tsv-title" style={{ fontSize: 12, opacity:.85, marginBottom: 10 }}>QUICK ACCESS TERMINALS</div>
