@@ -13,6 +13,23 @@ export default function Shell({ children }) {
     );
   };
 
+  const ExternalLink = ({ href, label, style = {} }) => {
+    return (
+      <a 
+        href={href} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="tsv-pill" 
+        style={{ 
+          textDecoration: "none",
+          ...style 
+        }}
+      >
+        {label}
+      </a>
+    );
+  };
+
   return (
     <div className="tsv-bg">
       <div style={{ maxWidth: 1140, margin: "0 auto", padding: "12px", minHeight: "100vh" }}>
@@ -29,6 +46,15 @@ export default function Shell({ children }) {
               <NavLink to="/characters" label="Characters" />
               <NavLink to="/dressing-room" label="👗 Dressing Room" />
               <NavLink to="/deviantart" label="DeviantArt" />
+              <ExternalLink 
+                href="https://rosebud.ai/p/9ae128f9-db5f-4ce9-b573-55d98d6f3807" 
+                label="🔥 Fractured Power" 
+                style={{ 
+                  background: "linear-gradient(135deg, rgba(255,0,100,.3), rgba(200,0,255,.3))",
+                  borderColor: "rgba(255,50,150,.6)",
+                  color: "#ff80cc"
+                }}
+              />
             </div>
           </div>
 
