@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import StatusBar from "./StatusBar.jsx";
+import { terminalAnalytics } from "../hooks/useTerminalAnalytics.js";
 
 export default function Shell({ children }) {
   const loc = useLocation();
@@ -13,7 +14,13 @@ export default function Shell({ children }) {
     );
   };
 
-  const ExternalLink = ({ href, label, style = {} }) => {
+  const ExternalLink = ({ href, label, style = {}, trackAs = null }) => {
+    const handleClick = () => {
+      if (trackAs) {
+        terminalAnalytics.trackEvent('external_link', loc.pathname, trackAs, { url: href });
+      }
+    };
+    
     return (
       <a 
         href={href} 
@@ -24,6 +31,7 @@ export default function Shell({ children }) {
           textDecoration: "none",
           ...style 
         }}
+        onClick={handleClick}
       >
         {label}
       </a>
