@@ -57,6 +57,7 @@ export default function Shell({ children }) {
               <ExternalLink 
                 href="https://rosebud.ai/p/9ae128f9-db5f-4ce9-b573-55d98d6f3807" 
                 label="🔥 Fractured Power" 
+                trackAs="fractured_power_game"
                 style={{ 
                   background: "linear-gradient(135deg, rgba(255,0,100,.3), rgba(200,0,255,.3))",
                   borderColor: "rgba(255,50,150,.6)",
