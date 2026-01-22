@@ -12,7 +12,9 @@ import {
   RefreshCw,
   ArrowLeft,
   Calendar,
-  Monitor
+  Monitor,
+  Globe,
+  UserCheck
 } from 'lucide-react';
 
 // Get API URL - using the same pattern as other pages
