@@ -4,11 +4,20 @@ import { TSV_CHARACTERS } from "../content/tsvContent.js";
 import CharacterAnimations from "../components/CharacterAnimations.jsx";
 import IdleTerminalMessages from "../components/IdleTerminalMessages.jsx";
 import UnlockTracker from "../components/UnlockTracker.jsx";
+import { terminalAnalytics } from "../hooks/useTerminalAnalytics.js";
 
 export default function Home() {
   const nav = useNavigate();
   const [selectedChar, setSelectedChar] = useState(null);
   const [unlockedSecret, setUnlockedSecret] = useState(false);
+
+  // Track Fractured Power game clicks
+  const trackFracturedPowerClick = () => {
+    terminalAnalytics.trackEvent('external_link', '/', 'fractured_power_game', { 
+      source: 'homepage_section',
+      url: 'https://rosebud.ai/p/9ae128f9-db5f-4ce9-b573-55d98d6f3807' 
+    });
+  };
 
   useEffect(() => {
     // Check if user has unlocked secret content
