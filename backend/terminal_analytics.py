@@ -125,6 +125,55 @@ async def get_analytics_summary(days: int = 7) -> dict:
         {"started_at": {"$gte": cutoff_str}}
     )
     
+    # Unique visitors (unique IPs)
+    unique_ips_pipeline = [
+        {"$match": {"timestamp": {"$gte": cutoff_str}, "ip_address": {"$ne": None}}},
+        {"$group": {"_id": "$ip_address"}},
+        {"$count": "unique_visitors"}
+    ]
+    unique_ips_cursor = events_collection.aggregate(unique_ips_pipeline)
+    unique_ips_result = await unique_ips_cursor.to_list(length=1)
+    unique_visitors = unique_ips_result[0]["unique_visitors"] if unique_ips_result else 0
+    
+    # Get visitor breakdown by IP with visit counts
+    visitor_breakdown_pipeline = [
+        {"$match": {"timestamp": {"$gte": cutoff_str}, "ip_address": {"$ne": None}}},
+        {"$group": {
+            "_id": "$ip_address",
+            "visits": {"$sum": 1},
+            "first_seen": {"$min": "$timestamp"},
+            "last_seen": {"$max": "$timestamp"},
+            "pages_visited": {"$addToSet": "$page"}
+        }},
+        {"$sort": {"visits": -1}},
+        {"$limit": 20}
+    ]
+    visitor_cursor = events_collection.aggregate(visitor_breakdown_pipeline)
+    visitors = await visitor_cursor.to_list(length=20)
+    
+    # Format visitor data (mask part of IP for privacy display but keep enough to identify)
+    visitor_list = []
+    for v in visitors:
+        ip = v["_id"]
+        # Show partial IP for identification (e.g., 192.168.x.x -> 192.168.***.***) 
+        if ip:
+            parts = ip.split(".")
+            if len(parts) == 4:
+                masked_ip = f"{parts[0]}.{parts[1]}.***.***"
+            else:
+                masked_ip = ip[:10] + "..."
+        else:
+            masked_ip = "Unknown"
+        
+        visitor_list.append({
+            "ip_masked": masked_ip,
+            "ip_hash": hash(ip) % 10000,  # Short hash for easy identification
+            "visits": v["visits"],
+            "first_seen": v["first_seen"],
+            "last_seen": v["last_seen"],
+            "pages_count": len(v["pages_visited"])
+        })
+    
     # Page views by page
     page_views_pipeline = [
         {"$match": {"timestamp": {"$gte": cutoff_str}, "event_type": "page_view"}},
