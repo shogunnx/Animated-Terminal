@@ -220,6 +220,15 @@ const TerminalAnalytics = () => {
               {formatNumber(analytics?.top_clicks?.reduce((sum, c) => sum + c.count, 0))}
             </div>
           </div>
+          
+          <div className="bg-gradient-to-br from-pink-900/30 to-purple-900/30 border border-pink-500/50 rounded-xl p-4">
+            <div className="flex items-center gap-3 mb-2">
+              <Zap className="w-6 h-6 text-pink-400" />
+              <span className="text-pink-300 text-sm">🔥 Fractured Power</span>
+            </div>
+            <div className="text-3xl font-bold text-white">{formatNumber(analytics?.fractured_power_visits)}</div>
+            <div className="text-xs text-pink-400 mt-1">Game Launches</div>
+          </div>
         </div>
 
         {/* Charts and Details */}
