@@ -184,7 +184,7 @@ const TerminalAnalytics = () => {
         )}
 
         {/* Main Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           <div className="bg-purple-900/30 border border-purple-700/50 rounded-xl p-4">
             <div className="flex items-center gap-3 mb-2">
               <Activity className="w-6 h-6 text-purple-400" />
