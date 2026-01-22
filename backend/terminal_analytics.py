@@ -198,6 +198,13 @@ async def get_analytics_summary(days: int = 7) -> dict:
     character_cursor = events_collection.aggregate(character_pipeline)
     popular_characters = await character_cursor.to_list(length=10)
     
+    # Fractured Power Game visits (external link clicks)
+    fractured_power_count = await events_collection.count_documents({
+        "timestamp": {"$gte": cutoff_str},
+        "event_type": "external_link",
+        "element": "fractured_power_game"
+    })
+    
     return {
         "period_days": days,
         "total_events": total_events,
@@ -208,7 +215,8 @@ async def get_analytics_summary(days: int = 7) -> dict:
         "daily_events": [{"date": d["_id"], "count": d["count"]} for d in daily_events],
         "hourly_events": [{"hour": h["_id"], "count": h["count"]} for h in hourly_events],
         "recent_activity": recent_events,
-        "popular_characters": [{"character": c["_id"], "visits": c["count"]} for c in popular_characters]
+        "popular_characters": [{"character": c["_id"], "visits": c["count"]} for c in popular_characters],
+        "fractured_power_visits": fractured_power_count
     }
 
 
