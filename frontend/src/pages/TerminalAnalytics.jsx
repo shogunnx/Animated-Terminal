@@ -308,6 +308,76 @@ const TerminalAnalytics = () => {
           </div>
         </div>
 
+        {/* Visitor Breakdown */}
+        <div className="bg-gray-900/50 border border-emerald-700/30 rounded-xl p-4 mb-6">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <UserCheck className="w-5 h-5 text-emerald-400" />
+            Visitor Breakdown
+            <span className="text-xs text-emerald-500 ml-2">(by IP address)</span>
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-emerald-400 border-b border-emerald-900/50">
+                  <th className="text-left py-2 px-3">Visitor ID</th>
+                  <th className="text-left py-2 px-3">IP (masked)</th>
+                  <th className="text-center py-2 px-3">Visits</th>
+                  <th className="text-center py-2 px-3">Pages</th>
+                  <th className="text-left py-2 px-3">First Seen</th>
+                  <th className="text-left py-2 px-3">Last Seen</th>
+                  <th className="text-center py-2 px-3">Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                {analytics?.visitor_breakdown?.map((visitor, i) => {
+                  const isFrequent = visitor.visits > 10;
+                  const isYou = i === 0 && analytics?.visitor_breakdown?.length === 1;
+                  return (
+                    <tr key={i} className="border-b border-emerald-900/20 hover:bg-emerald-900/20">
+                      <td className="py-2 px-3">
+                        <span className="font-mono text-emerald-300">#{visitor.ip_hash}</span>
+                      </td>
+                      <td className="py-2 px-3">
+                        <span className="font-mono text-gray-400">{visitor.ip_masked}</span>
+                      </td>
+                      <td className="py-2 px-3 text-center">
+                        <span className={`font-bold ${isFrequent ? 'text-amber-400' : 'text-white'}`}>
+                          {visitor.visits}
+                        </span>
+                      </td>
+                      <td className="py-2 px-3 text-center text-gray-300">{visitor.pages_count}</td>
+                      <td className="py-2 px-3 text-gray-400 text-xs">
+                        {new Date(visitor.first_seen).toLocaleDateString()}
+                      </td>
+                      <td className="py-2 px-3 text-gray-400 text-xs">
+                        {new Date(visitor.last_seen).toLocaleString()}
+                      </td>
+                      <td className="py-2 px-3 text-center">
+                        {isFrequent ? (
+                          <span className="bg-amber-900/50 text-amber-400 px-2 py-1 rounded text-xs">
+                            🏠 Regular
+                          </span>
+                        ) : (
+                          <span className="bg-emerald-900/50 text-emerald-400 px-2 py-1 rounded text-xs">
+                            🌍 Visitor
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {(!analytics?.visitor_breakdown || analytics.visitor_breakdown.length === 0) && (
+              <p className="text-emerald-400 text-center py-4">No visitor data yet</p>
+            )}
+          </div>
+          <div className="mt-3 text-xs text-gray-500">
+            💡 <span className="text-amber-400">Regular</span> = 10+ visits (likely you) | 
+            <span className="text-emerald-400 ml-2">Visitor</span> = fewer visits (likely outsiders)
+          </div>
+        </div>
+
         {/* Daily Activity Chart */}
         <div className="bg-gray-900/50 border border-purple-700/30 rounded-xl p-4 mb-6">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
