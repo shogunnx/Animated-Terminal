@@ -258,6 +258,8 @@ async def get_analytics_summary(days: int = 7) -> dict:
         "period_days": days,
         "total_events": total_events,
         "total_sessions": total_sessions,
+        "unique_visitors": unique_visitors,
+        "visitor_breakdown": visitor_list,
         "page_views": [{"page": p["_id"], "count": p["count"]} for p in page_views],
         "top_clicks": [{"page": c["_id"]["page"], "element": c["_id"]["element"], "count": c["count"]} for c in clicks],
         "feature_usage": [{"feature": f["_id"], "count": f["count"]} for f in features],
