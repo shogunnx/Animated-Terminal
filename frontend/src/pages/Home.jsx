@@ -344,6 +344,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
           className="tsv-btn"
+          onClick={trackFracturedPowerClick}
           style={{ 
             display: "inline-block",
             marginTop: 12,
