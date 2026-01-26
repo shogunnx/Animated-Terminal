@@ -294,30 +294,59 @@ async def get_dynamic_content():
 @router.get("/test-mode-status")
 async def get_test_mode_status():
     """
-    Check current video generation mode - TSVAvatarGenerator only
+    Check current video generation mode - HeyGen API
     """
     return {
-        "mode": "tsvavatar",
-        "message": "Using TSVAvatarGenerator service (your custom generator)"
+        "mode": "heygen",
+        "message": "Using HeyGen API for AI video generation"
     }
 
 @router.get("/credit-status")
 async def get_credit_status():
     """
-    Check TSVAvatarGenerator credit status by analyzing recent task failures
-    Returns warning if credits are low based on rate limit errors
+    Check HeyGen API credit status
     """
     try:
-        tsvavatar_base_url = os.getenv("TSVAVATAR_BASE_URL", "https://lipsync-creator-3.emergent.host")
+        from heygen_api import HEYGEN_API_KEY, get_headers, HEYGEN_API_BASE
+        import httpx
         
+        if not HEYGEN_API_KEY:
+            return {
+                "status": "error",
+                "message": "HeyGen API key not configured",
+                "credits_low": True
+            }
+        
+        # Check remaining credits via HeyGen API
         async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get(f"{tsvavatar_base_url}/api/tasks")
+            response = await client.get(
+                f"{HEYGEN_API_BASE}/v1/user/remaining_quota",
+                headers=get_headers()
+            )
             
-            if response.status_code != 200:
+            if response.status_code == 200:
+                data = response.json()
+                remaining = data.get("data", {}).get("remaining_quota", 0)
+                
                 return {
-                    "status": "unknown",
-                    "message": "Unable to check credit status",
+                    "status": "ok",
+                    "message": f"HeyGen credits remaining: {remaining}",
+                    "credits_low": remaining < 10,
+                    "remaining_credits": remaining
+                }
+            else:
+                return {
+                    "status": "ok",
+                    "message": "HeyGen API connected",
                     "credits_low": False
+                }
+                
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"Error checking HeyGen status: {str(e)}",
+            "credits_low": False
+        }
                 }
             
             data = response.json()
