@@ -317,27 +317,32 @@ async def get_credit_status():
                 "credits_low": True
             }
         
-        # Check remaining credits via HeyGen API
+        # Check remaining credits via HeyGen API v2
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.get(
-                f"{HEYGEN_API_BASE}/v1/user/remaining_quota",
+                f"{HEYGEN_API_BASE}/v2/user/remaining_quota",
                 headers=get_headers()
             )
             
             if response.status_code == 200:
                 data = response.json()
                 remaining = data.get("data", {}).get("remaining_quota", 0)
+                details = data.get("data", {}).get("details", {})
+                
+                # Determine if credits are low (less than 50)
+                credits_low = remaining < 50
                 
                 return {
-                    "status": "ok",
-                    "message": f"HeyGen credits remaining: {remaining}",
-                    "credits_low": remaining < 10,
-                    "remaining_credits": remaining
+                    "status": "low" if credits_low else "ok",
+                    "message": f"HeyGen credits: {remaining}" if not credits_low else f"⚠️ LOW CREDITS: {remaining}",
+                    "credits_low": credits_low,
+                    "remaining_credits": remaining,
+                    "details": details
                 }
             else:
                 return {
-                    "status": "ok",
-                    "message": "HeyGen API connected",
+                    "status": "error",
+                    "message": f"HeyGen API error: {response.status_code}",
                     "credits_low": False
                 }
                 
