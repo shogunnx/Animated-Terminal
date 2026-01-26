@@ -54,9 +54,10 @@ async def generate_video_heygen(
 ) -> Dict:
     """
     Generate a video using HeyGen API v2
+    Uses talking photo endpoint for custom avatars
     
     Args:
-        avatar_id: HeyGen avatar ID
+        avatar_id: HeyGen avatar ID (talking photo ID)
         script_text: Text for the avatar to speak
         voice_id: Optional voice ID (will use mapping if not provided)
         title: Video title
@@ -75,14 +76,13 @@ async def generate_video_heygen(
     if not voice_id:
         voice_id = HEYGEN_VOICE_MAPPING.get(avatar_id, DEFAULT_VOICE_ID)
     
-    # Build the request payload for HeyGen API v2
+    # Build the request payload for HeyGen API v2 with talking photo
     payload = {
         "video_inputs": [
             {
                 "character": {
-                    "type": "avatar",
-                    "avatar_id": avatar_id,
-                    "avatar_style": "normal"
+                    "type": "talking_photo",
+                    "talking_photo_id": avatar_id
                 },
                 "voice": {
                     "type": "text",
@@ -100,7 +100,7 @@ async def generate_video_heygen(
         "title": title
     }
     
-    logger.info(f"Generating HeyGen video for avatar {avatar_id}")
+    logger.info(f"Generating HeyGen video for talking photo {avatar_id}")
     logger.debug(f"Payload: {payload}")
     
     try:
@@ -132,7 +132,7 @@ async def generate_video_heygen(
                     }
             else:
                 error_data = response.json() if response.content else {}
-                error_msg = error_data.get("message", response.text)
+                error_msg = error_data.get("error", {}).get("message", response.text)
                 logger.error(f"HeyGen API error: {response.status_code} - {error_msg}")
                 return {
                     "success": False,
