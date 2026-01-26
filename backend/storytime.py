@@ -121,11 +121,11 @@ async def check_video_status(video_id: str):
 @router.post("/generate-narrated", response_model=StoryGenerationResponse)
 async def generate_narrated_story_video(request: NarratedStoryRequest):
     """
-    Generate a story video with in-character narration using TSVAvatarGenerator
+    Generate a story video with in-character narration using HeyGen API
     Rewrites the story in the character's voice before generating video
     """
     try:
-        from tsvavatar_integration import generate_video_with_tsvavatar
+        from heygen_api import generate_video_heygen
         
         # Rewrite story in character's voice if requested
         final_story_text = request.story_text
@@ -144,26 +144,25 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
         
         voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
         
-        logger.info("Generating narrated video via TSVAvatarGenerator")
-        result = await generate_video_with_tsvavatar(
+        logger.info(f"Generating narrated video via HeyGen API for avatar {request.avatar_id}")
+        result = await generate_video_heygen(
             avatar_id=request.avatar_id,
             script_text=final_story_text,
             voice_id=voice_id,
             title=request.story_title,
-            duration=10,
-            enable_audio=True
+            test_mode=False
         )
         
-        if result["success"] and result.get("task_id"):
+        if result["success"] and result.get("video_id"):
             return StoryGenerationResponse(
                 video_url="",
-                video_id=result["task_id"],
+                video_id=result["video_id"],
                 status="processing"
             )
         else:
             raise HTTPException(
                 status_code=500,
-                detail=f"TSVAvatarGenerator failed: {result.get('error', 'Unknown error')}"
+                detail=f"HeyGen API failed: {result.get('error', 'Unknown error')}"
             )
     
     except Exception as e:
