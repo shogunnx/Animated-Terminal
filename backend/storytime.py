@@ -8,7 +8,10 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/storytime", tags=["storytime"])
 
-# Voice ID mappings for different avatars
+# Check if we should use HeyGen or TSVAvatar
+USE_HEYGEN = os.getenv("HEYGEN_API_KEY", "") != ""
+
+# Voice ID mappings for different avatars (HeyGen IDs)
 AVATAR_VOICE_MAPPING = {
     # Evil Victoria - Main avatar
     '738db1645bc140beb1b476231a8b79f4': 'd74c1480d47e457d9181cb0b61d56eb0',
@@ -52,33 +55,32 @@ class NarratedStoryRequest(BaseModel):
 @router.post("/generate", response_model=StoryGenerationResponse)
 async def generate_story_video(request: StoryGenerationRequest):
     """
-    Generate a story video using TSVAvatarGenerator
+    Generate a story video using HeyGen API
     """
     try:
-        from tsvavatar_integration import generate_video_with_tsvavatar
+        from heygen_api import generate_video_heygen
         
         voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
         
-        logger.info("Generating video via TSVAvatarGenerator")
-        result = await generate_video_with_tsvavatar(
+        logger.info(f"Generating video via HeyGen API for avatar {request.avatar_id}")
+        result = await generate_video_heygen(
             avatar_id=request.avatar_id,
             script_text=request.story_text,
             voice_id=voice_id,
             title=request.story_title,
-            duration=10,  # Default 10 seconds
-            enable_audio=True
+            test_mode=False
         )
         
-        if result["success"] and result.get("task_id"):
+        if result["success"] and result.get("video_id"):
             return StoryGenerationResponse(
                 video_url="",
-                video_id=result["task_id"],
+                video_id=result["video_id"],
                 status="processing"
             )
         else:
             raise HTTPException(
                 status_code=500,
-                detail=f"TSVAvatarGenerator failed: {result.get('error', 'Unknown error')}"
+                detail=f"HeyGen API failed: {result.get('error', 'Unknown error')}"
             )
     except Exception as e:
         logger.error(f"Error generating story video: {str(e)}")
@@ -90,21 +92,21 @@ async def generate_story_video(request: StoryGenerationRequest):
 @router.get("/status/{video_id}")
 async def check_video_status(video_id: str):
     """
-    Check video generation status from TSVAvatarGenerator
+    Check video generation status from HeyGen API
     """
     try:
-        from tsvavatar_integration import check_tsvavatar_status
+        from heygen_api import check_video_status_heygen
         
-        tsv_result = await check_tsvavatar_status(video_id)
+        heygen_result = await check_video_status_heygen(video_id)
         
         # Return in standard format
         return {
             "data": {
                 "video_id": video_id,
-                "status": tsv_result.get("status", "processing"),
-                "video_url": tsv_result.get("video_url", ""),
-                "progress": tsv_result.get("progress", 0.0),
-                "error": tsv_result.get("error")
+                "status": heygen_result.get("status", "processing"),
+                "video_url": heygen_result.get("video_url", ""),
+                "progress": heygen_result.get("progress", 0.0),
+                "error": heygen_result.get("error")
             }
         }
 
