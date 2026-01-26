@@ -10,6 +10,8 @@ export default function Home() {
   const nav = useNavigate();
   const [selectedChar, setSelectedChar] = useState(null);
   const [unlockedSecret, setUnlockedSecret] = useState(false);
+  const [storytimeCredits, setStorytimeCredits] = useState(null);
+  const [creditsLoading, setCreditsLoading] = useState(true);
 
   // Track Fractured Power game clicks
   const trackFracturedPowerClick = () => {
@@ -19,14 +21,55 @@ export default function Home() {
     });
   };
 
+  // Fetch HeyGen/Storytime credits
+  const fetchCredits = async () => {
+    try {
+      const response = await fetch('/api/storytime/credit-status');
+      const data = await response.json();
+      setStorytimeCredits(data);
+    } catch (error) {
+      console.error('Failed to fetch credits:', error);
+      setStorytimeCredits({ status: 'error', message: 'Unable to check credits' });
+    } finally {
+      setCreditsLoading(false);
+    }
+  };
+
   useEffect(() => {
     // Check if user has unlocked secret content
     const unlocked = localStorage.getItem('tsv_secret_unlocked') === 'true';
     setUnlockedSecret(unlocked);
+    
+    // Fetch credits on mount
+    fetchCredits();
+    
+    // Refresh credits every 2 minutes
+    const interval = setInterval(fetchCredits, 120000);
+    return () => clearInterval(interval);
   }, []);
 
   const characters = TSV_CHARACTERS.filter(c => !c.isSpecial);
   const secretChar = TSV_CHARACTERS.find(c => c.id === 'evil_victoria');
+
+  // Get credit display info
+  const getCreditColor = () => {
+    if (!storytimeCredits) return '#888';
+    if (storytimeCredits.credits_low) return '#ff4444';
+    if (storytimeCredits.remaining_credits !== undefined) {
+      if (storytimeCredits.remaining_credits < 50) return '#ffaa00';
+      return '#44ff88';
+    }
+    return '#44ff88';
+  };
+
+  const getCreditText = () => {
+    if (creditsLoading) return 'Loading...';
+    if (!storytimeCredits) return 'Unknown';
+    if (storytimeCredits.remaining_credits !== undefined) {
+      return storytimeCredits.remaining_credits;
+    }
+    return storytimeCredits.status === 'ok' ? 'OK' : 'Error';
+  };
 
   return (
     <div>
@@ -35,6 +78,55 @@ export default function Home() {
       
       {/* Unlock Tracker */}
       <UnlockTracker onUnlock={() => setUnlockedSecret(true)} />
+
+      {/* Storytime Credits Display */}
+      <div 
+        className="tsv-glass" 
+        style={{ 
+          padding: '10px 16px', 
+          marginBottom: 14, 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          background: 'linear-gradient(135deg, rgba(100,50,150,.2), rgba(50,100,150,.2))',
+          border: `1px solid ${getCreditColor()}40`
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 12, opacity: 0.7 }}>🎬 STORYTIME CREDITS REMAINING:</span>
+          <span style={{ 
+            fontSize: 16, 
+            fontWeight: 'bold', 
+            color: getCreditColor(),
+            textShadow: `0 0 10px ${getCreditColor()}50`
+          }}>
+            {getCreditText()}
+          </span>
+          {storytimeCredits?.credits_low && (
+            <span style={{ 
+              background: '#ff4444', 
+              color: '#fff', 
+              padding: '2px 8px', 
+              borderRadius: 4, 
+              fontSize: 10,
+              animation: 'pulse 1s infinite'
+            }}>
+              ⚠️ LOW
+            </span>
+          )}
+        </div>
+        <button 
+          onClick={fetchCredits}
+          className="tsv-btn"
+          style={{ 
+            padding: '4px 10px', 
+            fontSize: 10,
+            opacity: 0.7
+          }}
+        >
+          🔄 Refresh
+        </button>
+      </div>
 
       {/* Terminal Header */}
       <div className="tsv-glass tsv-glow tsv-scanlines tsv-noise" style={{ padding: 16, position:"relative", marginBottom: 14 }}>
