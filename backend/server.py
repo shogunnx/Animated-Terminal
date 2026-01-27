@@ -336,12 +336,12 @@ async def deviantart_auth_status():
     return deviantart.is_authenticated()
 
 @api.get("/deviantart/auth-url")
-async def get_deviantart_auth_url():
+async def get_deviantart_auth_url(request: Request):
     """Get DeviantArt OAuth2 authorization URL"""
-    return deviantart.get_authorization_url()
+    return deviantart.get_authorization_url(request)
 
 @api.get("/deviantart/callback")
-async def deviantart_oauth_callback(code: str = None, state: str = None, error: str = None):
+async def deviantart_oauth_callback(request: Request, code: str = None, state: str = None, error: str = None):
     """Handle OAuth2 callback from DeviantArt"""
     if error:
         return JSONResponse({"error": error}, status_code=400)
@@ -349,7 +349,7 @@ async def deviantart_oauth_callback(code: str = None, state: str = None, error: 
     if not code:
         return JSONResponse({"error": "No authorization code received"}, status_code=400)
     
-    await deviantart.exchange_code_for_token(code)
+    await deviantart.exchange_code_for_token(code, request)
     
     # Return HTML that closes the popup and notifies the parent
     html_response = """
