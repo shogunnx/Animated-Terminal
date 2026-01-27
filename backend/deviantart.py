@@ -87,17 +87,16 @@ def get_headers():
         "User-Agent": "TSVTerminal/1.0"
     }
 
-def get_authorization_url() -> dict:
+def get_authorization_url(request: Optional[Request] = None) -> dict:
     """Generate OAuth2 authorization URL"""
     if not DEVIANTART_CLIENT_ID:
         raise HTTPException(status_code=500, detail="DEVIANTART_CLIENT_ID not configured")
     
-    if not DEVIANTART_REDIRECT_URI:
-        raise HTTPException(status_code=500, detail="DEVIANTART_REDIRECT_URI not configured")
+    redirect_uri = get_redirect_uri(request)
     
     params = {
         "client_id": DEVIANTART_CLIENT_ID,
-        "redirect_uri": DEVIANTART_REDIRECT_URI,
+        "redirect_uri": redirect_uri,
         "response_type": "code",
         "scope": "user.manage browse gallery",
         "state": "tsv_dressing_room"
@@ -108,19 +107,21 @@ def get_authorization_url() -> dict:
     return {
         "auth_url": auth_url,
         "client_id": DEVIANTART_CLIENT_ID,
-        "redirect_uri": DEVIANTART_REDIRECT_URI
+        "redirect_uri": redirect_uri
     }
 
-async def exchange_code_for_token(code: str) -> dict:
+async def exchange_code_for_token(code: str, request: Optional[Request] = None) -> dict:
     """Exchange authorization code for access token"""
     if not DEVIANTART_CLIENT_ID or not DEVIANTART_CLIENT_SECRET:
         raise HTTPException(status_code=500, detail="DeviantArt credentials not configured")
+    
+    redirect_uri = get_redirect_uri(request)
     
     data = {
         "grant_type": "authorization_code",
         "client_id": DEVIANTART_CLIENT_ID,
         "client_secret": DEVIANTART_CLIENT_SECRET,
-        "redirect_uri": DEVIANTART_REDIRECT_URI,
+        "redirect_uri": redirect_uri,
         "code": code
     }
     
