@@ -8,7 +8,7 @@ import os
 import base64
 import httpx
 from typing import Optional, List
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import urllib.parse
@@ -18,8 +18,37 @@ load_dotenv()
 # DeviantArt OAuth2 Configuration
 DEVIANTART_CLIENT_ID = os.environ.get("DEVIANTART_CLIENT_ID", "")
 DEVIANTART_CLIENT_SECRET = os.environ.get("DEVIANTART_CLIENT_SECRET", "")
-DEVIANTART_REDIRECT_URI = os.environ.get("DEVIANTART_REDIRECT_URI", "")
 DEVIANTART_USERNAME = os.environ.get("DEVIANTART_USERNAME", "")
+
+# Dynamic redirect URI - will be set based on request origin
+def get_redirect_uri(request: Optional[Request] = None) -> str:
+    """Get the redirect URI dynamically based on environment or request"""
+    # Check environment variable first
+    env_uri = os.environ.get("DEVIANTART_REDIRECT_URI", "")
+    if env_uri:
+        return env_uri
+    
+    # Try to get from FRONTEND_URL or BACKEND_URL
+    frontend_url = os.environ.get("FRONTEND_URL", "")
+    if frontend_url:
+        return f"{frontend_url}/api/deviantart/callback"
+    
+    backend_url = os.environ.get("BACKEND_URL", "")
+    if backend_url:
+        return f"{backend_url}/api/deviantart/callback"
+    
+    # Fallback to request origin if available
+    if request:
+        origin = request.headers.get("origin") or request.headers.get("referer", "").rstrip("/")
+        if origin:
+            # Extract base URL from origin/referer
+            from urllib.parse import urlparse
+            parsed = urlparse(origin)
+            base = f"{parsed.scheme}://{parsed.netloc}"
+            return f"{base}/api/deviantart/callback"
+    
+    # Final fallback
+    return "https://localhost:3000/api/deviantart/callback"
 
 # OAuth2 Endpoints
 DA_AUTH_URL = "https://www.deviantart.com/oauth2/authorize"
