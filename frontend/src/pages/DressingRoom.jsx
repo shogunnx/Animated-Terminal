@@ -688,44 +688,62 @@ export default function DressingRoom() {
         {/* Base Image Selection */}
         <div style={{ marginTop: 14 }}>
           <div className="tsv-title" style={{ fontSize: 12, opacity:.88, marginBottom: 8 }}>
-            BASE IMAGE REQUIRED
+            {selectedCharacter.requiresUpload ? "UPLOAD YOUR CHARACTER" : "BASE IMAGE REQUIRED"}
           </div>
-          <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 8, color: "#ffa500" }}>
-            ⚠️ You must upload a base image of {selectedCharacter.name} to generate outfits
-          </div>
+          
+          {/* Community OC specific messaging */}
+          {selectedCharacter.requiresUpload ? (
+            <div style={{ fontSize: 10, opacity: 0.9, marginBottom: 12, color: "#00FF88", padding: "8px 12px", background: "rgba(0,255,136,.1)", borderRadius: 8, border: "1px dashed rgba(0,255,136,.3)" }}>
+              📁 Upload an image of your OC to use as the base. This image will be used for all outfit generations in this session.
+            </div>
+          ) : (
+            <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 8, color: "#ffa500" }}>
+              ⚠️ You must upload a base image of {selectedCharacter.name} to generate outfits
+            </div>
+          )}
+          
           <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-            <button
-              className="tsv-btn"
-              style={{ 
-                fontSize: 10, 
-                padding: "6px 10px",
-                opacity: baseImageSource === "nexus" ? 1 : 0.5
-              }}
-              onClick={() => { setBaseImageSource("nexus"); fetchNexusImage(selectedCharacter.id); }}
-            >
-              Try Nexus
-            </button>
+            {/* Only show Nexus button for non-Community OC characters */}
+            {!selectedCharacter.requiresUpload && (
+              <button
+                className="tsv-btn"
+                data-testid="try-nexus-btn"
+                style={{ 
+                  fontSize: 10, 
+                  padding: "6px 10px",
+                  opacity: baseImageSource === "nexus" ? 1 : 0.5
+                }}
+                onClick={() => { setBaseImageSource("nexus"); fetchNexusImage(selectedCharacter.id); }}
+              >
+                Try Nexus
+              </button>
+            )}
             <label style={{ flex: 1 }}>
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
                 style={{ display: "none" }}
+                data-testid="base-image-upload-input"
               />
               <button
                 className="tsv-btn"
+                data-testid="upload-image-btn"
                 style={{ 
                   fontSize: 10, 
                   padding: "6px 10px",
                   width: "100%",
-                  opacity: baseImageSource === "upload" ? 1 : 0.5,
-                  background: baseImageSource === "upload" 
-                    ? `linear-gradient(135deg, ${selectedCharacter.accent}40, ${selectedCharacter.glow}30)`
-                    : undefined
+                  opacity: baseImageSource === "upload" || selectedCharacter.requiresUpload ? 1 : 0.5,
+                  background: selectedCharacter.requiresUpload 
+                    ? "linear-gradient(135deg, rgba(0,255,136,.3), rgba(0,204,255,.2))"
+                    : baseImageSource === "upload" 
+                      ? `linear-gradient(135deg, ${selectedCharacter.accent}40, ${selectedCharacter.glow}30)`
+                      : undefined,
+                  borderColor: selectedCharacter.requiresUpload ? "#00FF88" : undefined
                 }}
                 onClick={(e) => { e.preventDefault(); e.target.previousSibling.click(); }}
               >
-                📁 Upload Image
+                {selectedCharacter.requiresUpload ? "📁 Upload Your OC Image" : "📁 Upload Image"}
               </button>
             </label>
           </div>
@@ -733,28 +751,47 @@ export default function DressingRoom() {
           {/* Base Image Display */}
           <div className="tsv-scanlines tsv-noise" style={{ 
             borderRadius: 16, 
-            border: "1px solid rgba(255,255,255,.10)", 
+            border: selectedCharacter.requiresUpload && !baseImage 
+              ? "2px dashed rgba(0,255,136,.4)" 
+              : "1px solid rgba(255,255,255,.10)", 
             overflow: "hidden",
             position: "relative",
-            minHeight: 300
+            minHeight: 300,
+            background: selectedCharacter.requiresUpload && !baseImage ? "rgba(0,255,136,.03)" : undefined
           }}>
             {baseImage ? (
               <img 
                 src={baseImage} 
                 alt={selectedCharacter.name}
+                data-testid="base-image-preview"
                 style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
               />
             ) : (
               <div style={{ 
                 display: "flex", 
+                flexDirection: "column",
                 alignItems: "center", 
                 justifyContent: "center",
                 minHeight: 300,
-                opacity: 0.5
+                opacity: 0.7,
+                padding: 20,
+                textAlign: "center"
               }}>
-                <div className="tsv-title" style={{ fontSize: 12 }}>
-                  No base image available
-                </div>
+                {selectedCharacter.requiresUpload ? (
+                  <>
+                    <div style={{ fontSize: 48, marginBottom: 12 }}>📤</div>
+                    <div className="tsv-title" style={{ fontSize: 12, color: "#00FF88" }}>
+                      Upload Your OC Image
+                    </div>
+                    <div style={{ fontSize: 10, marginTop: 8, opacity: 0.6 }}>
+                      Your character will appear here after upload
+                    </div>
+                  </>
+                ) : (
+                  <div className="tsv-title" style={{ fontSize: 12 }}>
+                    No base image available
+                  </div>
+                )}
               </div>
             )}
           </div>
