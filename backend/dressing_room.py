@@ -285,7 +285,7 @@ async def generate_pairs_image_blended(request: OutfitRequest) -> dict:
     try:
         img1_url = await upload_image_to_fal(char1_base)
         img2_url = await upload_image_to_fal(char2_base)
-        print(f"[PAIRS MODE] Uploaded both character images")
+        print("[PAIRS MODE] Uploaded both character images")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to upload images: {str(e)}")
     
@@ -300,7 +300,7 @@ They should be close together, interacting, {activity}.
 Keep their exact faces, hair colors, and distinctive features from the reference images.
 Single unified scene, same lighting, high quality anime art."""
 
-    print(f"[PAIRS MODE] Using FLUX.2 Pro Edit with multi-reference")
+    print("[PAIRS MODE] Using FLUX.2 Pro Edit with multi-reference")
     print(f"[PAIRS MODE] Prompt: {smart_prompt[:200]}...")
     
     # Try FLUX.2 Pro Edit with multiple images
