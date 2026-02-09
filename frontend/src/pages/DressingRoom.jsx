@@ -606,16 +606,32 @@ export default function DressingRoom() {
               key={c.id}
               onClick={() => nav(`/dressing-room/${c.id}`)}
               className="tsv-glass tsv-glow"
+              data-testid={`character-card-${c.id}`}
               style={{
                 padding: 14,
                 textAlign: "left",
                 cursor: "pointer",
-                border: "1px solid rgba(255,255,255,.14)",
-                background: "linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06))"
+                border: c.requiresUpload ? "2px dashed rgba(0,255,136,.5)" : "1px solid rgba(255,255,255,.14)",
+                background: c.requiresUpload 
+                  ? "linear-gradient(180deg, rgba(0,255,136,.12), rgba(0,204,255,.08))"
+                  : "linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06))"
               }}
             >
               <div className="tsv-title" style={{ fontSize: 14, color: c.accent }}>{c.name}</div>
               <div style={{ fontSize: 11, opacity:.72, marginTop: 6 }}>{c.subtitle}</div>
+              {c.requiresUpload && (
+                <div style={{ 
+                  fontSize: 10, 
+                  color: "#00FF88", 
+                  marginTop: 8, 
+                  padding: "4px 8px", 
+                  background: "rgba(0,255,136,.15)", 
+                  borderRadius: 6,
+                  display: "inline-block"
+                }}>
+                  📁 Upload Required
+                </div>
+              )}
             </button>
           ))}
         </div>
