@@ -181,7 +181,13 @@ export default function DressingRoom() {
       const char = TSV_CHARACTERS.find(c => c.id === id);
       if (char && !char.isSpecial) {
         setSelectedCharacter(char);
-        checkAndLoadBaseImage(char.id);
+        // For Community OC, skip auto-loading and require upload
+        if (!char.requiresUpload) {
+          checkAndLoadBaseImage(char.id);
+        } else {
+          // Check if user already uploaded a base image for this session
+          checkStoredBaseImage(char.id);
+        }
         // Load current like count
         setLikeCount(getLikes(char.id));
       }
@@ -200,6 +206,24 @@ export default function DressingRoom() {
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, [id]);
+  
+  // Check for stored base image (for Community OC)
+  const checkStoredBaseImage = async (charId) => {
+    try {
+      const response = await fetch(`/api/dressing-room/has-base/${charId}`);
+      const data = await response.json();
+      if (data.has_base_image) {
+        const imgResponse = await fetch(`/api/dressing-room/get-base/${charId}`);
+        if (imgResponse.ok) {
+          const imgData = await imgResponse.json();
+          setBaseImage(`data:image/png;base64,${imgData.image_base64}`);
+          setBaseImageSource("stored");
+        }
+      }
+    } catch (err) {
+      console.error("Failed to check stored base image:", err);
+    }
+  };
   
   const checkDeviantArtAuth = async () => {
     try {
