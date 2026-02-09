@@ -1,91 +1,65 @@
 <analysis>**original_problem_statement:**
-The user's initial goal was to fix a broken Dressing Room feature and remove legacy HeyGen code. Throughout the session, the scope expanded significantly.
+The user's initial problem statement from the previous fork focused on fixing a broken Dressing Room feature. During this session, the user expanded the scope with several new requests:
 
-The user requested the following new features and fixes:
-1.  **DeviantArt Integration:** Implement a feature in the Dressing Room to post generated images to a character-specific gallery on DeviantArt. This requires an OAuth2 flow, a Post button, and a View gallery button.
-2.  **Dressing Room Content Expansion:** Add a vast amount of new content to the Dressing Room, including:
-    *   40 popular preset costumes.
-    *   New categories: Backgrounds (30 items), Gestures (30 items).
-    *   Expanded clothing options: 30 sexy tops, 30 sexy bottoms, 30 sexy shoes.
-    *   Expanded Positions (30 items).
-    *   A Pairs Mode feature to generate an image with two characters. This includes a UI to select the second character and Pairs specific prompts (40 mature, 40 fun).
-3.  **Usage Analytics:** Implement a tracking system for the Dressing Room to see usage statistics, including total generations, top items used, and recent activity, displayed on a new analytics dashboard.
-4.  **SEO Sitemap:** Create a comprehensive, up-to-date  file that includes all pages, characters, stories, and games for better SEO crawling, using the correct live URL.
-5.  **Domain/Deployment Issues:** The user reported multiple issues where the live production site was not updating after deployment, particularly when using a custom domain () versus the Emergent-provided URL ().
-6.  **Fix Pairs Mode Generation:** The user reported that Pairs Mode was crashing and, when it worked, the generated images did not combine both characters correctly or resemble the source characters.
-
-**PRODUCT REQUIREMENTS:**
-- Dressing Room must allow posting generated outfits to DeviantArt.
-- Dressing Room UI must be expanded with all new requested categories and items.
-- A new Pairs Mode must allow generating a single image containing two user-selected characters, and the output should resemble the source characters.
-- An analytics dashboard must display usage statistics for the Dressing Room.
-- The application must have a complete and accurate  for SEO.
-- All features must be functional on the live production URL: .
-- The custom domain  should correctly point to the latest deployment.
+1.  **Fix Pairs Mode Generation:** The primary request was to fix the Pairs Mode in the Dressing Room, which was generating images that did not resemble the source characters. The user wanted a single, cohesive image where the two characters were interacting.
+2.  **Implement Terminal Analytics:** The user requested a usage tracking system for the main application (Terminal) to see statistics like page visits, popular features, and unique visitors.
+3.  **Add Fractured Power Game:** The user asked to add a new section on the main page and a button in the navigation bar to link to an external +18 ONLY game called Fractured Power Game.
+4.  **Track Game Clicks:** The user requested that clicks on the new game link be tracked in the analytics system.
+5.  **Distinguish Visitors in Analytics:** The user wanted the analytics to track visitor IPs to differentiate between their own visits and those from outsiders.
+6.  **Restore HeyGen for StoryTime:** The user's HeyGen account was credited, and they requested to restore the StoryTime page to use the HeyGen API for video generation, replacing a non-functional custom service.
+7.  **Display HeyGen Credits:** The user asked for the remaining HeyGen credits to be displayed on the main terminal page.
+8.  **Fix Live URL Issues:** The user reported that the live/production URLs were not showing the latest changes and features.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application is a full-stack React/FastAPI project. The agent has implemented several major features, all of which are functioning correctly on the local preview environment.
-- **DeviantArt Integration:** A complete backend and frontend implementation for authenticating and posting images to DeviantArt is complete.
-- **Dressing Room Expansion:** The frontend () has been significantly updated with all the new UI sections and content items (Backgrounds, Gestures, new presets, etc.).
-- **Usage Analytics:** A MongoDB backend () and a new frontend dashboard () have been created to track and display usage.
-- **Sitemap:** A new, comprehensive  and  have been created and are located in .
+The application is a full-stack React/FastAPI project. The agent successfully completed several major feature implementations and fixes. Pairs Mode now correctly generates a single, cohesive image of two interacting characters by using the  model. A comprehensive Terminal Analytics system has been built from the ground up, tracking page views, feature usage, and unique visitors by IP, with a dedicated dashboard. The StoryTime page has been successfully migrated back to using the HeyGen API for video generation, and a credit counter is now displayed on the homepage. A new Fractured Power Game section and navigation link have been added and are being tracked.
 
-However, there are major issues with production deployment and the Pairs Mode feature. The correct production URL has been identified as , and after fixing the  files, most new features (UI expansion, analytics) are now live on that URL. The primary blocker is getting the Pairs Mode to generate images that resemble the source characters.
+However, the application is facing a critical deployment issue where the production URLs are serving a stale, cached version of the frontend, which prevents the newly implemented API endpoints (like for HeyGen) from working correctly. The agent has identified and fixed several potential deployment blockers but has not yet verified if this resolves the root caching/routing issue on the live domains.
 
 **Last working item**:
-- **Last item agent was working:** Fixing the Pairs Mode image generation to ensure the output characters resemble the source characters (e.g., Binary and Vanessa). The agent correctly identified that simple text prompts were insufficient and researched a solution. It found that **IP-Adapter** with 's FLUX model is the correct approach to condition the image generation on reference images. However, the implementation attempt failed.
-- **Status:** BLOCKED
+- **Last item agent was working:** Diagnosing and fixing a production deployment issue. The user reported that the live URLs (, ) were not working correctly. The agent discovered this was due to the domains serving an old, cached version of the application where new API routes (e.g., ) were not properly configured in the ingress, causing API calls to fail. The  was called, which identified three blockers: a hardcoded , a hardcoded , and missing Python dependencies. The agent has just finished implementing fixes for all three blockers.
+- **Status:** IN PROGRESS
 - **Agent Testing Done:** N
-- **Which testing method agent to use?** Manual testing by running the generation flow in the UI and inspecting the backend logs.
+- **Which testing method agent to use?**  should be used to verify the fixes have resolved the deployment blockers. Afterwards,  should be used on the live URL API endpoints (e.g., ) to confirm they return JSON instead of HTML.
 - **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
-- **Issue 1**: Pairs Mode generation does not resemble the source characters (P0)
-- **Issue 2**: Custom domain serves a stale version of the application (P1)
-- **Issue 3**: Video Generation is completely blocked (P2)
-- **Issue 4**: Minor UI bug in AITA stories (P3)
+-   **Issue 1:** Production URLs serve a stale, cached version of the application (P0)
+-   **Issue 2:** Minor UI bug in AITA stories (P3)
 
 **Issues Detail**:
-- **Issue 1**: 
-  - **Description**: When using Pairs Mode, the generated image contains two characters, but they do not look like the selected source characters (e.g., Binary, Vanessa).
-  - **Attempted fixes**:
-    - **Failed:** Adding detailed text descriptions of characters to the prompt. This did not provide enough likeness.
-    - **Failed:** The agent correctly identified  as the solution and attempted to implement it in . This failed with the error: . This indicates a problem with how the  service is loading the IP-Adapter model or its weights.
-  - **Next debug checklist**:
-    1.  Review the  documentation for IP-Adapter with the  model. The current implementation in  might be passing the  incorrectly or the model name is wrong.
-    2.  Check the  and composite image creation logic to ensure the image data sent to  is valid.
-    3.  If the error persists, the issue may be on the  service side. Consider searching for alternative ways to structure the API call or for known issues with that specific model.
-  - **Why fix this issue and what will be achieved with the fix?** This will complete the Pairs Mode feature, which is a major user requirement.
-  - **Status:** BLOCKED
-  - **Is recurring issue?** N
-  - **Should Test frontend/backend/both after fix?** Both.
-  - **Blocked on other issue:** None.
+-   **Issue 1:**
+    -   **Description:** The live production URLs ( and ) are not serving the latest version of the application. API requests to newly created endpoints, such as , are incorrectly routed to the frontend, which returns an HTML page instead of the expected JSON response. This is a platform-level routing or CDN caching issue.
+    -   **Attempted fixes:**
+        -   The agent confirmed the preview URL works correctly.
+        -   The  identified three blockers: hardcoded , hardcoded , and a missing  dependency.
+        -   The agent has implemented fixes for all three blockers by using environment variables and updating .
+    -   **Next debug checklist:**
+        1.  Re-run the  to confirm that all deployment blockers are resolved.
+        2.  After a successful deployment,  the live API endpoints (e.g., ) to verify they return JSON.
+        3.  If the issue persists, call the  to get advice on escalating a platform-level caching/routing problem.
+    -   **Why fix this issue and what will be achieved with the fix?** This will make all the recently completed features functional on the production website for the user and their visitors.
+    -   **Status:** IN PROGRESS
+    -   **Is recurring issue?** Y
+    -   **Should Test frontend/backend/both after fix?** Both (on production URLs).
+    -   **Blocked on other issue:** None
 
-- **Issue 2**: 
-  - **Description**: The user's custom domain () points to an old, cached version of the deployment, while the Emergent-provided URL () serves the correct, new version. The agent confirmed this by comparing the JS bundle hashes served by each domain.
-  - **Attempted fixes**: The agent correctly diagnosed this as a platform-level CDN caching or routing issue and advised the user to contact Emergent support with specific details.
-  - **Next debug checklist**: This is not an application code issue. The next step is for the user to follow the agent's advice and contact platform support. No further action is required from the agent on this.
-  - **Why fix this issue and what will be achieved with the fix?** The user will be able to use their branded custom domain to access the latest version of the application.
-  - **Status:** BLOCKED (on external support)
-  - **Is recurring issue?** Y
-  - **Should Test frontend/backend/both after fix?** Frontend (on the custom domain).
-  - **Blocked on other issue:** None.
-
-- **Issue 3**: 
-  - **Description**: The entire video generation workflow (Q&A) is failing because the user's external custom service, , is down.
-  - **Status:** BLOCKED (on external service recovery)
-  - **Is recurring issue?** Y
-  - **Should Test frontend/backend/both after fix?** Both.
-
-- **Issue 4**: 
-  - **Description**: A minor UI bug in the AITA from Reddit category in  where stories don't expand correctly.
-  - **Status:** NOT STARTED
-  - **Should Test frontend/backend/both after fix?** Frontend.
+-   **Issue 2:**
+    -   **Description:** A minor UI bug exists in the AITA from Reddit category within , where story content does not expand correctly upon interaction. This was noted in the initial handoff summary but has not been addressed.
+    -   **Attempted fixes:** None.
+    -   **Next debug checklist:**
+        1.  Examine the component logic in .
+        2.  Identify the state and event handlers responsible for the expand/collapse functionality of AITA stories.
+        3.  Debug the logic to resolve the display issue.
+    -   **Why fix this issue and what will be achieved with the fix?** This will improve the user experience on the StoryTime page.
+    -   **Status:** NOT STARTED
+    -   **Is recurring issue?** N
+    -   **Should Test frontend/backend/both after fix?** Frontend.
+    -   **Blocked on other issue:** None
 
 **In progress Task List**:
-- None. All work is captured in the issue list.
+-   None.
 
 **Upcoming and Future Tasks**
 - **Upcoming Tasks (Phase 2):**
@@ -102,96 +76,97 @@ However, there are major issues with production deployment and the Pairs Mode fe
     - P2: Implement Parallax Effect
 
 **Completed work in this session**
-- **DeviantArt Integration:** Implemented a full-stack feature for OAuth2 authentication and posting generated images from the Dressing Room to DeviantArt galleries. (, , ).
-- **Dressing Room Content Expansion:** Added hundreds of new items across new and existing categories, including Presets, Backgrounds, Gestures, Tops, Bottoms, and Shoes.
-- **Dressing Room Pairs Mode UI:** Created the UI to select a second character from a list, which dynamically shows Pairs specific prompt categories.
-- **Dressing Room Analytics:** Built a full-stack usage tracking feature with a MongoDB backend and a new analytics dashboard page (, ).
-- **Sitemap and SEO:** Generated a complete  and  for all application routes and content.
-- **Deployment URL Fix:** Identified and corrected the production URL in all  files, enabling successful deployment to .
-- **Pairs Mode Logic (In-Progress):** Iterated through multiple backend approaches to generate two characters, culminating in the (currently blocked) IP-Adapter implementation.
+- **Pairs Mode Generation (FIXED):** Re-implemented the Pairs Mode image generation to create a single, cohesive, and interactive scene with two characters, successfully using the  model.
+- **Terminal Analytics (NEW):** Built a full-stack usage analytics feature, including a backend (), frontend dashboard (), and IP-based visitor tracking.
+- **HeyGen Integration (RESTORED):** Migrated the StoryTime video generation feature back to the HeyGen API. This included creating a new API module (), updating the backend logic (), and modifying the frontend ().
+- **HeyGen Credit Display (NEW):** Added a component to the homepage () that fetches and displays the remaining HeyGen credits.
+- **Fractured Power Game Section (NEW):** Added a new UI section and a navigation button linking to an external game, with click tracking integrated into the new analytics system.
+- **Deployment Blockers (FIXED):** Resolved three critical deployment blockers identified by the deployment agent related to hardcoded environment variables and missing dependencies.
 
 **Earlier issues found/mentioned but not fixed**
-- Same as **All Pending/In progress Issue list**.
+-   **Issue 1:** Minor UI bug in  where AITA from Reddit stories don't expand correctly.
 
 **Known issue recurrence from previous fork**
-- **Issue recurrence in previous fork:** External Service Failures & Stale Deployments.
-- **Recurrence count:** High. This session was defined by debugging stale frontend deployments and issues with the custom domain pointing to an old deployment.
-- **Status:** RECURRING.
+-   **Issue recurrence in previous fork:** External Service Failures & Stale Deployments.
+-   **Recurrence count:** High. The primary issue at the end of this session is another instance of a stale production deployment.
+-   **Status:** RECURRING
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-- **External API Integration:** DeviantArt (OAuth2), Fal.ai (Image Generation).
-- **Advanced Image Generation:** Using text-to-image models () and attempting to use **IP-Adapter** for character-consistent generation with .
-- **Database Integration:** Using MongoDB for the first time in this project to store and aggregate analytics data.
-- **Deployment & Caching Issues:** Extensive debugging of stale frontend assets on production, differentiating between platform-provided URLs and custom domains.
-- **SEO:** Generation of  and .
+-   **Advanced Image Generation:** Successfully used  with multi-image references to combine two characters into a single, interactive scene.
+-   **External API Integration:** Integrated the HeyGen API for video generation, including endpoints for creating talking photo videos and checking the credit quota.
+-   **Full-Stack Development:** Built a complete analytics feature from the database schema (MongoDB) and backend API (FastAPI) to the frontend dashboard (React).
+-   **Deployment Troubleshooting:** Diagnosed platform-level caching and routing issues by comparing preview vs. production deployments, inspecting HTTP responses, and analyzing JS bundle hashes.
+-   **Dynamic Configuration:** Refactored code (e.g., ) to pull configuration from environment variables, making the application more portable and fixing deployment blockers.
 
 **key DB schema**
 - **database**:  (inferred from )
   - **collection**: 
     - : string
-    - : string (e.g., generation)
-    - : string
-    - : string (optional)
-    - : string
+    - : string (e.g., page_view, feature_use)
     - : dict
     - : datetime
+    - : string
+- **database**: 
+  - **collection**:  (from previous handoff, remains unchanged)
 
 **All files of reference**
-- : **[CRITICAL - BLOCKED]** Contains the logic for Pairs Mode image generation. The current IP-Adapter implementation is failing here.
-- : **[CRITICAL - UPDATED]** Contains all the new UI for the expanded content and Pairs Mode.
-- : **[NEW]** Backend logic for the new analytics feature.
-- : **[NEW]** Frontend dashboard for analytics.
-- : **[NEW]** Backend logic for DeviantArt integration.
-- : **[NEW]** The sitemap file ready for deployment.
-- : **[CRITICAL - UPDATED]** Now contains the correct production URL ().
-- : **[CRITICAL - UPDATED]** Now contains the correct production URL.
+-   : Modified to include new analytics routes and pass request objects for dynamic URIs.
+-   : Contains the new, working Pairs Mode logic using .
+-   : New file containing all backend logic for the terminal analytics feature.
+-   : New frontend dashboard for viewing analytics.
+-   : New file for handling all HeyGen API communication.
+-   : Modified to use  instead of the old service.
+-   : Modified to add the Fractured Power Game section and the HeyGen credits display.
+-   : Refactored to remove hardcoded redirect URI.
+-   : Updated with HeyGen API key.
 
 **Critical Info for New Agent**
-1.  **MAIN BLOCKER:** The Pairs Mode feature is failing because the IP-Adapter implementation in  throws an error: . Your top priority is to debug this. The goal is to use the base images of the two selected characters to generate a new image where they both appear and retain their likeness.
-2.  **PRODUCTION URL:** The correct, working live URL is . The user's custom domain () is pointing to an old deployment due to a platform-level issue. Do not waste time debugging the custom domain; advise the user to rely on support for that. All  files should point to .
-3.  **LOCAL VS. LIVE:** All new features (DeviantArt, Analytics, UI expansion) are implemented and work locally. Most are also live on . However, the latest changes to fix Pairs Mode are NOT deployed. You must deploy after fixing the IP-Adapter issue.
-4.  **VIDEO GENERATION IS STILL BLOCKED:** Do not attempt to work on the StoryTime/Q&A video features. The external  service is still down.
+1.  **MAIN BLOCKER IS DEPLOYMENT:** The top priority is to resolve the production deployment issue. The live URLs (, ) are serving a stale version of the app, causing new features to fail. The agent has just fixed three potential deployment blockers. Your first step should be to run the  again to verify these fixes and check if a new deployment resolves the problem. If not, this is a platform-level issue that needs to be escalated via the  or .
+2.  **Pairs Mode is Fixed:** The most complex user request, fixing Pairs Mode, is complete and works well. The key was using the  model. This is a major success.
+3.  **HeyGen is Restored:** StoryTime video generation now uses the HeyGen API. The API key is stored in  and confirmed to be working. The frontend reflects this change.
+4.  **Analytics System is New:** A full-stack analytics system for tracking general site usage has been created and is functional on the preview environment.
+
+**documents and test reports created in this job**
+- /app/test_result.md
 
 **Last 10 User Messages and any pending HUMAN messages**
-- **User:** The result from Pairs mode looks nothing like the base images. (Provided screenshot comparing base images to a poor text-to-image result).
-- **User:** The Pairs mode picture is supposed to show the characters combined into one picture. Test again.
-- **User:** Crashing when trying to use Pairs mode. Create a picture with Binary and Vanessa sitting in bed waving. Keep going until you get correct results.
-- **User:** The custom domain () shows an older version, while the emergent host URL works.
-- **User:** The  domain should redirect to .
-- **User:** Create a working sitemap. The live address is .
-- **User:** The live URL is .
-- **User:** The deployment is not making changes to the live URL. (This was before the correct URL was identified).
-- **User:** Add usage tracking to the dressing room.
-- **User:** Add a massive list of new content and features to the Dressing Room, including Pairs Mode.
+1.  **User:** My Heygen account is credited. Restore the Storytime page to use all the previous Heygen api stuff - **Status: COMPLETED**
+2.  **User:** Provides new Heygen API key after the first one failed. - **Status: COMPLETED**
+3.  **User:** Add the Heygen credits on the main page of the terminal so I’ll know when it’s too low. Call it Storytime credits remaining - **Status: COMPLETED**
+4.  **User:** The preview works but the live url is not working - **Status: IN PROGRESS**
+5.  **User:** Specifies the failing URL:  - **Status: IN PROGRESS**
+6.  **User:** Reports another URL not showing current info:  - **Status: IN PROGRESS**
+7.  **User:** Confirms the agent should fix the  configuration issue related to stale deployments. - **Status: COMPLETED** (Agent proceeded to fix deployment blockers).
+8.  **User:**  (Provided an initial, non-functional HeyGen API key).
+9.  **User:**  (Provided the correct, working HeyGen API key).
+10. **Pending:** Agent asked the user to specify what was not working on the live URL, to which the user replied with the specific URL ().
 
 **Project Health Check:**
-- **Broken**:
-  - **Pairs Mode Image Generation:** Fails to produce character-consistent images due to a technical error with the IP-Adapter implementation.
-  - **Custom Domain Deployment:** The user's custom domain serves a stale version of the application due to a platform-level issue.
-  - **Video Generation Feature:** Completely non-functional due to an external service outage.
-- **Mocked**: None.
+-   **Broken**:
+    -   **Production Deployment:** The primary live domains (, ) are serving stale, cached versions of the application. This prevents all newly developed features from being accessible in production.
+-   **Mocked**: None.
 
 **3rd Party Integrations**
-- **Fal.ai (Image Generation):** Used for the Dressing Room. Requires a User API Key. Currently implementing advanced features with **IP-Adapter** and the **FLUX** models.
-- **DeviantArt (Image Posting):** Used to post generated outfits. Requires user-provided Client ID & Secret via OAuth2.
-- **MongoDB (Database):** Used for analytics tracking. Credentials are in .
-- **TSVAvatarGenerator (User's Custom Service):** For video generation. **CURRENTLY DOWN.**
-- **Nexus (User's Custom Service):** For character personalities.
-- **Emergent LLM Key:** Used for personality-infused text generation in the Q&A flow.
+-   **Fal.ai (Image Generation):** Used for Dressing Room, including the  model for Pairs Mode. Requires a User API Key.
+-   **HeyGen (Video Generation):** Re-integrated for StoryTime. Uses talking photo and credit quota APIs. Requires a User API Key.
+-   **DeviantArt (Image Posting):** Used to post generated outfits. Requires user-provided Client ID & Secret via OAuth2.
+-   **MongoDB (Database):** Used for both Dressing Room and Terminal analytics.
+-   **Emergent LLM Key:** Used for personality-infused text generation.
+-   **TSVAvatarGenerator (User's Custom Service):** Deprecated and replaced by HeyGen.
 
 **Testing status**
-- **Testing agent used after significant changes:** YES (for the DeviantArt backend endpoints).
-- **Troubleshoot agent used after agent stuck in loop:** YES (for the initial deployment issue).
-- **Test files created:** None.
-- **Known regressions:** None.
+-   **Testing agent used after significant changes:** NO (Agent used manual  and  testing for recent changes).
+-   **Troubleshoot agent used after agent stuck in loop:** NO (But  was used).
+-   **Test files created:** None.
+-   **Known regressions:** The production deployment is broken, which is a major regression in availability.
 
 **Credentials to test flow:**
-- **Production URL:** 
-- **Fal.ai API Key:**  (from )
-- **DeviantArt Credentials:** Client ID  and a secret are stored in .
+-   **Fal.ai API Key:** Stored in .
+-   **HeyGen API Key:** Stored in .
+-   **DeviantArt Credentials:** Stored in .
 
 **What agent forgot to execute**
-- Nothing was forgotten. The agent was actively working on the most complex user request (Pairs Mode) when it hit a technical blocker.</analysis>
+-   The agent did not address the minor UI bug in  where AITA stories fail to expand. This was mentioned in the initial handoff summary but was deprioritized in favor of major features and fixes.</analysis>
