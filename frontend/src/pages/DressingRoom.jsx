@@ -821,10 +821,11 @@ export default function DressingRoom() {
                 {/* Select from existing characters */}
                 <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 4 }}>Select a character:</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {TSV_CHARACTERS.filter(c => !c.isSpecial && c.id !== selectedCharacter?.id).map((char) => (
+                  {TSV_CHARACTERS.filter(c => !c.isSpecial && c.id !== selectedCharacter?.id && !c.requiresUpload).map((char) => (
                     <button
                       key={char.id}
                       className="tsv-btn"
+                      data-testid={`second-char-${char.id}`}
                       onClick={() => {
                         setSecondCharacter(char);
                         setSecondImage(char.portrait || `https://nexus-multiverse.emergent.host/characters/${char.id}`);
@@ -854,6 +855,7 @@ export default function DressingRoom() {
                   />
                   <button
                     className="tsv-btn"
+                    data-testid="upload-second-char-btn"
                     style={{ fontSize: 10, padding: "8px", width: "100%", background: "rgba(255,105,180,.15)", borderColor: "#ff69b4" }}
                     onClick={(e) => { e.preventDefault(); e.target.closest('label').querySelector('input').click(); }}
                   >
