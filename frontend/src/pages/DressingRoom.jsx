@@ -93,7 +93,16 @@ const CLOTHING_CATEGORIES = {
     "Disney Style", "Pixar 3D", "Studio Ghibli", "Makoto Shinkai", "Comic Book Style", "Marvel Comics",
     "DC Comics Style", "Graphic Novel", "Noir Style", "Cel Shaded", "Watercolor Painting", "Oil Painting",
     "Digital Art", "Concept Art", "Fantasy Art", "Sci-Fi Art", "Cyberpunk Aesthetic", "Vaporwave",
-    "Retro 80s", "Retro 90s", "Art Nouveau", "Art Deco", "Pop Art", "Minimalist"
+    "Retro 80s", "Retro 90s", "Art Nouveau", "Art Deco", "Pop Art", "Minimalist",
+    // Realistic & Photorealistic Styles
+    "8K Ultra Realistic", "8K Photorealistic Portrait", "8K Cinematic", "8K Fashion Photography",
+    "Hyperrealistic", "Photorealistic", "Ultra Realistic 4K", "Cinema Quality 8K", "DSLR Photography",
+    "Studio Portrait Photography", "Fashion Magazine Editorial", "Vogue Cover Style", "High Fashion Photoshoot",
+    "Glamour Photography", "Beauty Photography", "Professional Headshot", "Red Carpet Photography",
+    "Cinematic Film Still", "Movie Poster Realistic", "HDR Photography", "RAW Photo Style",
+    "Natural Light Portrait", "Golden Hour Photography", "Dramatic Studio Lighting", "Rembrandt Lighting",
+    "High Key Photography", "Low Key Photography", "Fine Art Photography", "Editorial Beauty",
+    "Realistic Digital Painting", "Hyper Detailed Realistic"
   ],
   backgrounds: [
     // 30 Backgrounds
