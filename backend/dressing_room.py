@@ -24,10 +24,10 @@ CHARACTER_APPEARANCES = {
         "hair": "long flowing black hair with teal highlights",
         "identifier": "the woman with black and teal hair"
     },
-    "victoria_black_blaster": {
-        "full": "Victoria Black Blaster, fierce anime woman with wild black and red hair, glowing golden eyes, wearing battle armor with red and gold accents, explosive energy aura",
-        "hair": "wild black and red hair",
-        "identifier": "the woman with black and red hair"
+    "community_oc": {
+        "full": "custom uploaded character, beautiful person",
+        "hair": "distinctive hair",
+        "identifier": "the uploaded character"
     },
     "victoria_black_goddess": {
         "full": "Victoria Black Goddess, divine anime woman with ethereal golden-white hair, radiant eyes, wearing ornate golden goddess robes with pink accents, heavenly glow",
