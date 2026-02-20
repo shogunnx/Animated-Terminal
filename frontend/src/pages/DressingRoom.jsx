@@ -1317,15 +1317,16 @@ export default function DressingRoom() {
         <button
           className="tsv-btn"
           onClick={handleGenerate}
-          disabled={loading}
+          disabled={loading || (selectedCharacter?.requiresUpload && !baseImage)}
+          data-testid="generate-outfit-btn"
           style={{ 
             width: "100%", 
             marginTop: 14,
-            background: loading ? "rgba(100,100,100,.3)" : undefined,
-            cursor: loading ? "not-allowed" : "pointer"
+            background: (loading || (selectedCharacter?.requiresUpload && !baseImage)) ? "rgba(100,100,100,.3)" : undefined,
+            cursor: (loading || (selectedCharacter?.requiresUpload && !baseImage)) ? "not-allowed" : "pointer"
           }}
         >
-          {loading ? "GENERATING..." : "🎨 GENERATE OUTFIT"}
+          {loading ? "GENERATING..." : (selectedCharacter?.requiresUpload && !baseImage) ? "📁 UPLOAD IMAGE FIRST" : "🎨 GENERATE OUTFIT"}
         </button>
 
         {error && (
