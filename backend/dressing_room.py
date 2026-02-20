@@ -480,13 +480,13 @@ Keep everything else the same - same face, same hair, same background, same pose
 Only change the clothing."""
     
     try:
-        # Use Fal.ai FLUX.2 [dev] Edit - designed for image editing while preserving the person
+        # Use Fal.ai FLUX [dev] image-to-image - reliable model for outfit changes
         handler = await fal_client.submit_async(
-            "fal-ai/flux-2/edit",
+            "fal-ai/flux/dev/image-to-image",
             arguments={
-                "image_urls": [image_url],  # Array of image URLs (base image to edit)
+                "image_url": image_url,
                 "prompt": prompt,
-                "strength": 0.85,  # How much to change (0.85 = strong edit but preserve person)
+                "strength": 0.55,  # Balance between preserving character and changing outfit
                 "guidance_scale": 3.5,
                 "num_inference_steps": 28,
                 "enable_safety_checker": True
