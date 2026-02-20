@@ -16,6 +16,7 @@ export default defineConfig({
       "tsv-terminal-1.preview.emergentagent.com",
       ".emergentagent.com",
       ".emergent.host",
+      ".emergentcf.cloud",
       "localhost"
     ],
     proxy: {
