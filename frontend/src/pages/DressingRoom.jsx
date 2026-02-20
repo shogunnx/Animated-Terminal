@@ -190,12 +190,14 @@ export default function DressingRoom() {
       const char = TSV_CHARACTERS.find(c => c.id === id);
       if (char && !char.isSpecial) {
         setSelectedCharacter(char);
-        // For Community OC, skip auto-loading and require upload
-        if (!char.requiresUpload) {
-          checkAndLoadBaseImage(char.id);
+        // For Community OC, NEVER auto-load - force upload
+        if (char.requiresUpload) {
+          // Clear any existing base image state for Community OC
+          setBaseImage(null);
+          setBaseImageSource(null);
         } else {
-          // Check if user already uploaded a base image for this session
-          checkStoredBaseImage(char.id);
+          // For regular characters, check and load base image
+          checkAndLoadBaseImage(char.id);
         }
         // Load current like count
         setLikeCount(getLikes(char.id));
