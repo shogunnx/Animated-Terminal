@@ -218,23 +218,7 @@ export default function DressingRoom() {
     return () => window.removeEventListener('message', handleMessage);
   }, [id]);
   
-  // Check for stored base image (for Community OC)
-  const checkStoredBaseImage = async (charId) => {
-    try {
-      const response = await fetch(`/api/dressing-room/has-base/${charId}`);
-      const data = await response.json();
-      if (data.has_base_image) {
-        const imgResponse = await fetch(`/api/dressing-room/get-base/${charId}`);
-        if (imgResponse.ok) {
-          const imgData = await imgResponse.json();
-          setBaseImage(`data:image/png;base64,${imgData.image_base64}`);
-          setBaseImageSource("stored");
-        }
-      }
-    } catch (err) {
-      console.error("Failed to check stored base image:", err);
-    }
-  };
+  // Community OC requires manual upload - no auto-loading
   
   const checkDeviantArtAuth = async () => {
     try {
