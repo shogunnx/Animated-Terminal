@@ -381,6 +381,22 @@ export default function DressingRoom() {
     // No image found
     setBaseImageSource("placeholder");
   };
+
+  // Separate function for "Try Nexus" button
+  const fetchNexusImage = async (charId) => {
+    try {
+      const response = await fetch(`/api/nexus/api/characters`);
+      const characters = await response.json();
+      const nexusChar = characters.find(c => 
+        c.displayName?.toLowerCase() === charId.replace(/_/g, " ").toLowerCase()
+      );
+      if (nexusChar && nexusChar.avatar_image) {
+        setBaseImage(nexusChar.avatar_image);
+        setBaseImageSource("nexus");
+      }
+    } catch (err) {
+      console.error("Failed to fetch Nexus image:", err);
+    }
   };
 
   const handleItemToggle = (category, item) => {
