@@ -185,19 +185,25 @@ export default function DressingRoom() {
   const [daPostResult, setDaPostResult] = useState(null);
   const [daError, setDaError] = useState(null);
 
+  // Track if initial load is done for Community OC
+  const [communityOcInitialized, setCommunityOcInitialized] = useState(false);
+
   useEffect(() => {
     if (id) {
       const char = TSV_CHARACTERS.find(c => c.id === id);
       if (char && !char.isSpecial) {
         setSelectedCharacter(char);
-        // For Community OC, NEVER auto-load - force upload
+        // For Community OC, only clear on FIRST load of this character
         if (char.requiresUpload) {
-          // Clear any existing base image state for Community OC
-          setBaseImage(null);
-          setBaseImageSource(null);
+          if (!communityOcInitialized) {
+            setBaseImage(null);
+            setBaseImageSource(null);
+            setCommunityOcInitialized(true);
+          }
         } else {
           // For regular characters, check and load base image
           checkAndLoadBaseImage(char.id);
+          setCommunityOcInitialized(false);
         }
         // Load current like count
         setLikeCount(getLikes(char.id));
