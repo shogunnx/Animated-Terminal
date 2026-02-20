@@ -333,41 +333,11 @@ export default function DressingRoom() {
   };
 
   const checkAndLoadBaseImage = async (charId) => {
+    // Skip for Community OC - they must upload
+    const char = TSV_CHARACTERS.find(c => c.id === charId);
+    if (char?.requiresUpload) return;
+    
     // Priority 1: Try Nexus
-    await fetchNexusImage(charId);
-    
-    // Priority 2: If no Nexus image, try local portrait
-    if (!baseImage) {
-      const char = TSV_CHARACTERS.find(c => c.id === charId);
-      if (char && char.portrait) {
-        setBaseImage(char.portrait);
-        setBaseImageSource("portrait");
-        return;
-      }
-    }
-    
-    // Priority 3: If no portrait, check for stored base image
-    if (!baseImage) {
-      try {
-        const response = await fetch(`/api/dressing-room/has-base/${charId}`);
-        const data = await response.json();
-        
-        if (data.has_base_image) {
-          // Load the stored base image
-          const imgResponse = await fetch(`/api/dressing-room/get-base/${charId}`);
-          if (imgResponse.ok) {
-            const imgData = await imgResponse.json();
-            setBaseImage(`data:image/png;base64,${imgData.image_base64}`);
-            setBaseImageSource("stored");
-          }
-        }
-      } catch (err) {
-        console.error("Failed to check stored base image:", err);
-      }
-    }
-  };
-
-  const fetchNexusImage = async (charId) => {
     try {
       const response = await fetch(`/api/nexus/api/characters`);
       const characters = await response.json();
@@ -377,14 +347,40 @@ export default function DressingRoom() {
       if (nexusChar && nexusChar.avatar_image) {
         setBaseImage(nexusChar.avatar_image);
         setBaseImageSource("nexus");
-      } else {
-        setBaseImage(null);
-        setBaseImageSource("placeholder");
+        return; // Found Nexus image, done
       }
     } catch (err) {
       console.error("Failed to fetch Nexus image:", err);
-      setBaseImageSource("placeholder");
     }
+    
+    // Priority 2: Try local portrait
+    if (char && char.portrait) {
+      setBaseImage(char.portrait);
+      setBaseImageSource("portrait");
+      return;
+    }
+    
+    // Priority 3: Check for stored base image
+    try {
+      const response = await fetch(`/api/dressing-room/has-base/${charId}`);
+      const data = await response.json();
+      
+      if (data.has_base_image) {
+        const imgResponse = await fetch(`/api/dressing-room/get-base/${charId}`);
+        if (imgResponse.ok) {
+          const imgData = await imgResponse.json();
+          setBaseImage(`data:image/png;base64,${imgData.image_base64}`);
+          setBaseImageSource("stored");
+          return;
+        }
+      }
+    } catch (err) {
+      console.error("Failed to check stored base image:", err);
+    }
+    
+    // No image found
+    setBaseImageSource("placeholder");
+  };
   };
 
   const handleItemToggle = (category, item) => {
