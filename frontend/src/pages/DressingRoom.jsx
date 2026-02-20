@@ -185,35 +185,42 @@ export default function DressingRoom() {
   const [daPostResult, setDaPostResult] = useState(null);
   const [daError, setDaError] = useState(null);
 
-  // Use ref to track Community OC initialization (avoids re-render issues)
-  const communityOcInitRef = useRef(false);
+  // Use ref to track if initial setup is done
+  const initializedRef = useRef(false);
+  const currentCharIdRef = useRef(null);
 
   useEffect(() => {
-    if (id) {
-      const char = TSV_CHARACTERS.find(c => c.id === id);
-      if (char && !char.isSpecial) {
-        setSelectedCharacter(char);
-        // For Community OC, only clear on FIRST load
-        if (char.requiresUpload) {
-          if (!communityOcInitRef.current) {
-            setBaseImage(null);
-            setBaseImageSource(null);
-            communityOcInitRef.current = true;
-          }
-        } else {
-          // For regular characters, check and load base image
-          checkAndLoadBaseImage(char.id);
-          communityOcInitRef.current = false;
-        }
-        // Load current like count
-        setLikeCount(getLikes(char.id));
-      }
+    if (!id) return;
+    
+    const char = TSV_CHARACTERS.find(c => c.id === id);
+    if (!char || char.isSpecial) return;
+    
+    // Only run initialization once per character
+    if (currentCharIdRef.current === id && initializedRef.current) {
+      return;
     }
     
-    // Check DeviantArt auth status
-    checkDeviantArtAuth();
+    currentCharIdRef.current = id;
+    initializedRef.current = true;
     
-    // Listen for DeviantArt OAuth callback
+    setSelectedCharacter(char);
+    setLikeCount(getLikes(char.id));
+    
+    // For Community OC, start with blank slate
+    if (char.requiresUpload) {
+      setBaseImage(null);
+      setBaseImageSource(null);
+    } else {
+      // For regular characters, load base image
+      checkAndLoadBaseImage(char.id);
+    }
+    
+    // Check DeviantArt auth (only once)
+    checkDeviantArtAuth();
+  }, [id]);
+  
+  // Separate effect for DeviantArt message listener
+  useEffect(() => {
     const handleMessage = (event) => {
       if (event.data?.type === 'deviantart_auth_success') {
         setDaAuthenticated(true);
@@ -222,7 +229,7 @@ export default function DressingRoom() {
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [id]);
+  }, []);
   
   // Community OC requires manual upload - no auto-loading
   
