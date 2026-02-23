@@ -475,20 +475,33 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
     # Regular single character editing mode
-    prompt = f"""Change this person's outfit to: {request.outfit_description}.
+    # For Community OC or when prompt includes pose/hair changes, use more flexible prompt
+    is_community_oc = request.character_id == "community_oc"
+    prompt_lower = request.outfit_description.lower()
+    has_pose_request = any(word in prompt_lower for word in ['pose', 'posing', 'sitting', 'standing', 'covering', 'hand', 'arms', 'lying', 'kneeling'])
+    has_hair_request = any(word in prompt_lower for word in ['hair', 'updo', 'ponytail', 'braid', 'bun', 'hairstyle', 'bangs'])
+    
+    # Use higher strength and flexible prompt for dramatic changes
+    if is_community_oc or has_pose_request or has_hair_request:
+        prompt = f"""Transform this image: {request.outfit_description}.
+Keep the same face and skin tone. Apply all requested changes to outfit, pose, and hairstyle as specified."""
+        strength = 0.75  # Higher strength for more dramatic changes
+    else:
+        prompt = f"""Change this person's outfit to: {request.outfit_description}.
 Keep everything else the same - same face, same hair, same background, same pose.
 Only change the clothing."""
+        strength = 0.55  # Lower strength to preserve more of original
     
     try:
-        # Use Fal.ai FLUX [dev] image-to-image - reliable model for outfit changes
+        # Use Fal.ai FLUX [dev] image-to-image
         handler = await fal_client.submit_async(
             "fal-ai/flux/dev/image-to-image",
             arguments={
                 "image_url": image_url,
                 "prompt": prompt,
-                "strength": 0.55,  # Balance between preserving character and changing outfit
-                "guidance_scale": 3.5,
-                "num_inference_steps": 28,
+                "strength": strength,
+                "guidance_scale": 4.0,  # Slightly higher for better prompt following
+                "num_inference_steps": 30,
                 "enable_safety_checker": True
             }
         )
