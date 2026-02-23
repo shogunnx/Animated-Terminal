@@ -485,12 +485,19 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     if is_community_oc or has_pose_request or has_hair_request:
         prompt = f"""Transform this image: {request.outfit_description}.
 Keep the same face and skin tone. Apply all requested changes to outfit, pose, and hairstyle as specified."""
-        strength = 0.75  # Higher strength for more dramatic changes
+        strength = 0.80  # High strength for dramatic changes
+        guidance = 5.0   # Higher guidance for better prompt following
+        steps = 35
     else:
         prompt = f"""Change this person's outfit to: {request.outfit_description}.
 Keep everything else the same - same face, same hair, same background, same pose.
 Only change the clothing."""
         strength = 0.55  # Lower strength to preserve more of original
+        guidance = 3.5
+        steps = 28
+    
+    print(f"[DRESSING ROOM] Character: {request.character_id}, Strength: {strength}, Guidance: {guidance}")
+    print(f"[DRESSING ROOM] Prompt: {prompt[:100]}...")
     
     try:
         # Use Fal.ai FLUX [dev] image-to-image
@@ -500,8 +507,8 @@ Only change the clothing."""
                 "image_url": image_url,
                 "prompt": prompt,
                 "strength": strength,
-                "guidance_scale": 4.0,  # Slightly higher for better prompt following
-                "num_inference_steps": 30,
+                "guidance_scale": guidance,
+                "num_inference_steps": steps,
                 "enable_safety_checker": True
             }
         )
