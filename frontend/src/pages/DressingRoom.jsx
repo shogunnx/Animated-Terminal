@@ -535,14 +535,17 @@ export default function DressingRoom() {
 
     try {
       // Build request body
+      // For uploaded images (including Community OC), always send as base64
+      const isUploadedImage = baseImageSource === "upload" || selectedCharacter.requiresUpload;
+      
       const requestBody = {
         character_id: selectedCharacter.id,
         character_name: selectedCharacter.name,
         character_description: selectedCharacter.subtitle || "anime character",
         outfit_description: outfitDesc,
         reference_image_url: baseImageSource === "nexus" ? baseImage : null,
-        reference_image_base64: baseImageSource === "upload" ? baseImage : null,
-        save_as_base: baseImageSource === "upload"
+        reference_image_base64: isUploadedImage ? baseImage : null,
+        save_as_base: isUploadedImage
       };
       
       // Add second character info for Pairs mode
