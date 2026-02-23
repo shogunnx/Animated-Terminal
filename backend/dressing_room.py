@@ -481,18 +481,23 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     has_pose_request = any(word in prompt_lower for word in ['pose', 'posing', 'sitting', 'standing', 'covering', 'hand', 'arms', 'lying', 'kneeling'])
     has_hair_request = any(word in prompt_lower for word in ['hair', 'updo', 'ponytail', 'braid', 'bun', 'hairstyle', 'bangs'])
     
-    # Use higher strength and flexible prompt for dramatic changes
-    if is_community_oc or has_pose_request or has_hair_request:
+    # Use much higher strength for Community OC to force dramatic changes
+    if is_community_oc:
+        prompt = f"""{request.outfit_description}. Same face and skin tone. Apply ALL requested outfit and hairstyle changes exactly as specified. Remove any clothing not mentioned."""
+        strength = 0.92  # Very high strength for dramatic changes
+        guidance = 7.0   # High guidance for strict prompt following
+        steps = 40
+    elif has_pose_request or has_hair_request:
         prompt = f"""Transform this image: {request.outfit_description}.
 Keep the same face and skin tone. Apply all requested changes to outfit, pose, and hairstyle as specified."""
-        strength = 0.80  # High strength for dramatic changes
-        guidance = 5.0   # Higher guidance for better prompt following
+        strength = 0.80
+        guidance = 5.0
         steps = 35
     else:
         prompt = f"""Change this person's outfit to: {request.outfit_description}.
 Keep everything else the same - same face, same hair, same background, same pose.
 Only change the clothing."""
-        strength = 0.55  # Lower strength to preserve more of original
+        strength = 0.55
         guidance = 3.5
         steps = 28
     
