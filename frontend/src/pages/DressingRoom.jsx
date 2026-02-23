@@ -1321,6 +1321,9 @@ export default function DressingRoom() {
         <div style={{ marginTop: 14 }}>
           <div className="tsv-title" style={{ fontSize: 11, opacity:.75, marginBottom: 8 }}>
             CUSTOM OUTFIT DESCRIPTION
+            {customPrompt.trim() && (
+              <span style={{ color: "#00FF88", marginLeft: 8, fontSize: 10 }}>✓ ACTIVE - Will override selections</span>
+            )}
           </div>
           <textarea
             value={customPrompt}
@@ -1330,8 +1333,8 @@ export default function DressingRoom() {
               width: "100%",
               minHeight: 100,
               borderRadius: 14,
-              border: "1px solid rgba(255,255,255,.16)",
-              background: "rgba(0,0,0,.22)",
+              border: customPrompt.trim() ? "2px solid rgba(0,255,136,.5)" : "1px solid rgba(255,255,255,.16)",
+              background: customPrompt.trim() ? "rgba(0,255,136,.08)" : "rgba(0,0,0,.22)",
               color: "rgba(255,255,255,.92)",
               padding: "10px 12px",
               fontSize: 12,
