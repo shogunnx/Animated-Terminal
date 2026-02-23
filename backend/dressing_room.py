@@ -509,7 +509,7 @@ Only change the clothing."""
                 "strength": strength,
                 "guidance_scale": guidance,
                 "num_inference_steps": steps,
-                "enable_safety_checker": True
+                "enable_safety_checker": False  # Disabled for uncensored output
             }
         )
         
