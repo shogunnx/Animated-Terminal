@@ -434,36 +434,36 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
         return await generate_pairs_image_blended(request)
     
     # Priority system for base images:
-    # 1. Nexus API (if reference_image_url provided)
-    # 2. Stored base image for this character
-    # 3. Uploaded image (reference_image_base64)
+    # 1. Uploaded image (reference_image_base64) - highest priority, user just uploaded
+    # 2. Nexus API (if reference_image_url provided)
+    # 3. Stored base image for this character
     
     base_image_bytes = None
     image_source = None
     
-    # Priority 1: Try Nexus URL if provided
-    if request.reference_image_url:
-        try:
-            base_image_bytes = await download_image(request.reference_image_url)
-            image_source = "nexus"
-        except Exception:
-            pass  # Fall through to next priority
-    
-    # Priority 2: Try stored base image
-    if not base_image_bytes:
-        stored_image = get_base_image(request.character_id)
-        if stored_image:
-            base_image_bytes = stored_image
-            image_source = "stored"
-    
-    # Priority 3: Use uploaded image
-    if not base_image_bytes and request.reference_image_base64:
+    # Priority 1: Use uploaded image first (user explicitly provided it)
+    if request.reference_image_base64:
         base_image_bytes = base64.b64decode(request.reference_image_base64.split(',')[-1])
         image_source = "upload"
         
         # Save uploaded image as base image for this character
         if request.save_as_base:
             save_base_image(request.character_id, base_image_bytes)
+    
+    # Priority 2: Try Nexus URL if provided
+    if not base_image_bytes and request.reference_image_url:
+        try:
+            base_image_bytes = await download_image(request.reference_image_url)
+            image_source = "nexus"
+        except Exception:
+            pass  # Fall through to next priority
+    
+    # Priority 3: Try stored base image
+    if not base_image_bytes:
+        stored_image = get_base_image(request.character_id)
+        if stored_image:
+            base_image_bytes = stored_image
+            image_source = "stored"
     
     if not base_image_bytes:
         raise HTTPException(status_code=400, detail="No reference image available. Please upload a base image.")
