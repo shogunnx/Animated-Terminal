@@ -12,6 +12,7 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 3000,
+    hmr: false,  // Disable hot module reload to prevent auto-restarts
     allowedHosts: [
       "tsv-terminal-1.preview.emergentagent.com",
       ".emergentagent.com",
