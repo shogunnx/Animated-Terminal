@@ -419,10 +419,13 @@ export default function DressingRoom() {
   };
 
   const generateOutfitPrompt = () => {
+    // PRIORITY 1: Custom prompt always wins if provided
     if (customPrompt.trim()) {
+      console.log("[DEBUG] Using custom prompt:", customPrompt.trim());
       return customPrompt.trim();
     }
 
+    console.log("[DEBUG] No custom prompt, using selections");
     let basePrompt = "";
 
     // If a preset costume is selected, use it as the primary description
