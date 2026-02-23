@@ -508,35 +508,18 @@ Only change the clothing."""
     print(f"[DRESSING ROOM] Prompt: {prompt[:100]}...")
     
     try:
-        # Use different model based on character type
-        if is_community_oc:
-            # Use Flux Pro for Community OC - more powerful and better at dramatic changes
-            print("[DRESSING ROOM] Using Flux Pro for Community OC")
-            handler = await fal_client.submit_async(
-                "fal-ai/flux-pro/v1.1",
-                arguments={
-                    "prompt": prompt,
-                    "image_url": image_url,
-                    "strength": strength,
-                    "guidance_scale": guidance,
-                    "num_inference_steps": steps,
-                    "safety_tolerance": "6",  # Most permissive
-                    "enable_safety_checker": False
-                }
-            )
-        else:
-            # Use Flux Dev for regular characters
-            handler = await fal_client.submit_async(
-                "fal-ai/flux/dev/image-to-image",
-                arguments={
-                    "image_url": image_url,
-                    "prompt": prompt,
-                    "strength": strength,
-                    "guidance_scale": guidance,
-                    "num_inference_steps": steps,
-                    "enable_safety_checker": False
-                }
-            )
+        # Use Flux Dev for all characters - balanced performance
+        handler = await fal_client.submit_async(
+            "fal-ai/flux/dev/image-to-image",
+            arguments={
+                "image_url": image_url,
+                "prompt": prompt,
+                "strength": strength,
+                "guidance_scale": guidance,
+                "num_inference_steps": steps,
+                "enable_safety_checker": False
+            }
+        )
         
         # Get result
         result = await handler.get()
