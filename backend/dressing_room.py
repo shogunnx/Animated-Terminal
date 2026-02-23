@@ -240,7 +240,7 @@ High quality anime art style, detailed, vibrant colors, beautiful composition.""
             "strength": 0.35,  # Very low strength to preserve original character appearance
             "num_inference_steps": 30,
             "guidance_scale": 3.5,
-            "enable_safety_checker": True
+            "enable_safety_checker": False  # Disabled for uncensored output
         }
     )
     
