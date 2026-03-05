@@ -163,3 +163,7 @@ android-sdk/
 *.env
 *.env.*
 frontend/node_modules/@cloudflare/workerd-linux-arm64/bin/workerd
+-e 
+# Environment files
+*.env
+*.env.*
