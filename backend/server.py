@@ -73,6 +73,16 @@ api = APIRouter(prefix="/api")
 # -----------------------
 # Health / Root
 # -----------------------
+@app.get("/")
+def root_health():
+    """Root health check for Railway"""
+    return {"status": "ok", "service": "TSV Terminal"}
+
+@app.get("/health")
+def app_health():
+    """App-level health check"""
+    return {"status": "ok"}
+
 @api.get("/health")
 def health():
     return {"status": "ok"}
