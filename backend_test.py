@@ -14,7 +14,7 @@ import re
 import urllib.parse
 
 # Get backend URL from frontend environment
-BACKEND_URL = 'https://ai-outfit-generator.preview.emergentagent.com'  # Default
+BACKEND_URL = 'https://tsv-terminal-2.preview.emergentagent.com'  # Default
 try:
     with open('/app/frontend/.env', 'r') as f:
         for line in f:

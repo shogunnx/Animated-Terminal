@@ -5,7 +5,7 @@
 ### Two Separate Environments:
 
 **1. Preview Environment** (Development)
-- URL: `https://ai-outfit-generator.preview.emergentagent.com`
+- URL: `https://tsv-terminal-2.preview.emergentagent.com`
 - Status: ✅ Working perfectly
 - Avatars: 4 avatars with working images
 - Database: Contains all latest data

@@ -14,8 +14,8 @@ load_dotenv()
 
 FAL_KEY = os.environ.get("FAL_KEY", "")
 os.environ["FAL_KEY"] = FAL_KEY  # Ensure fal_client can access it
-BASE_IMAGES_DIR = Path("/app/backend/base_images")
-BASE_IMAGES_DIR.mkdir(exist_ok=True)
+BASE_IMAGES_DIR = Path("base_images")
+BASE_IMAGES_DIR.mkdir(exist_ok=True, parents=True)
 
 # Character appearance descriptions for Pairs mode - with distinctive visual identifiers
 CHARACTER_APPEARANCES = {
