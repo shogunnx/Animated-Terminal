@@ -185,6 +185,25 @@ def prepare_image_for_openai(image_data: bytes) -> bytes:
     img.save(output, format='PNG')
     return output.getvalue()
 
+def preprocess_image(image_bytes: bytes) -> bytes:
+    """Preprocess image for AI generation - resize and normalize"""
+    try:
+        img = Image.open(io.BytesIO(image_bytes))
+        # Convert to RGB if needed
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+        # Resize to reasonable size for API
+        max_size = 1024
+        if max(img.size) > max_size:
+            ratio = max_size / max(img.size)
+            new_size = (int(img.size[0] * ratio), int(img.size[1] * ratio))
+            img = img.resize(new_size, Image.Resampling.LANCZOS)
+        output = io.BytesIO()
+        img.save(output, format='PNG')
+        return output.getvalue()
+    except Exception:
+        return image_bytes
+
 def create_clothing_mask(image_bytes: bytes) -> bytes:
     """Create a mask for clothing area - WHITE = inpaint (clothes), BLACK = preserve (face)"""
     # Create 1024x1024 mask - RGB format for inpainting
