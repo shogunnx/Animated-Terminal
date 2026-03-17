@@ -5,7 +5,7 @@
 ### Two Separate Environments:
 
 **1. Preview Environment** (Development)
-- URL: `https://tsv-terminal-2.preview.emergentagent.com`
+- URL: `https://outfit-gen-6.preview.emergentagent.com`
 - Status: ✅ Working perfectly
 - Avatars: 4 avatars with working images
 - Database: Contains all latest data
