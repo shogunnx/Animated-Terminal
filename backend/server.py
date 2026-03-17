@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from dotenv import load_dotenv
 
-from dressing_room import generate_outfit_image, generate_tryon_images, OutfitRequest, TryOnRequest, BaseImageRequest
+from dressing_room import generate_outfit_image, generate_tryon_images, generate_headshot, OutfitRequest, TryOnRequest, HeadshotRequest, BaseImageRequest
 from teach_mode_routes import router as teach_mode_router
 from fastapi import HTTPException
 import base64
@@ -134,6 +134,13 @@ async def generate_tryon(request: TryOnRequest):
     Upload a model image and up to 4 garment/accessory images.
     Returns up to 4 generated results."""
     return await generate_tryon_images(request)
+
+@api.post("/dressing-room/headshot")
+async def generate_headshot_endpoint(request: HeadshotRequest):
+    """Generate a headshot/close-up portrait from a base image.
+    Perfect for talking head setups, profile pictures, or video calls.
+    Returns 4 headshot variations."""
+    return await generate_headshot(request)
 
 @api.post("/dressing-room/save-base")
 async def save_base_image_endpoint(request: BaseImageRequest):

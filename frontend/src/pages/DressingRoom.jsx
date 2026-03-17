@@ -183,9 +183,12 @@ export default function DressingRoom() {
   
   // TryOn mode state
   const [isTryOnMode, setIsTryOnMode] = useState(false);
+  const [isHeadshotMode, setIsHeadshotMode] = useState(false);
   const [garmentImages, setGarmentImages] = useState([]); // Up to 4 garment images
   const [tryOnResults, setTryOnResults] = useState([]); // Multiple results from TryOn
   const [generatedResults, setGeneratedResults] = useState([]); // Multiple results from standard generation
+  const [headshotBackground, setHeadshotBackground] = useState("neutral");
+  const [headshotExpression, setHeadshotExpression] = useState("neutral");
   
   // DeviantArt state
   const [daAuthenticated, setDaAuthenticated] = useState(false);
@@ -541,6 +544,12 @@ export default function DressingRoom() {
       return;
     }
 
+    // Headshot mode - creates close-up portrait
+    if (isHeadshotMode) {
+      await handleHeadshotGenerate();
+      return;
+    }
+
     const outfitDesc = generateOutfitPrompt();
     if (!outfitDesc) {
       setError("Please select clothing items or enter a custom description");
@@ -682,6 +691,55 @@ export default function DressingRoom() {
 
   const removeGarmentImage = (index) => {
     setGarmentImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Handle Headshot mode generation
+  const handleHeadshotGenerate = async () => {
+    setLoading(true);
+    setError(null);
+    setGeneratedResults([]);
+
+    try {
+      const isUploadedImage = baseImageSource === "upload" || selectedCharacter?.requiresUpload;
+      
+      const requestBody = {
+        character_name: selectedCharacter.name,
+        character_id: selectedCharacter.id,
+        reference_image_url: baseImageSource === "nexus" ? baseImage : null,
+        reference_image_base64: isUploadedImage ? baseImage?.split(',').pop() : null,
+        background: headshotBackground,
+        expression: headshotExpression
+      };
+      
+      const response = await fetch(`${BACKEND_URL}/api/dressing-room/headshot`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to generate headshot");
+      }
+
+      const data = await response.json();
+      
+      // Handle multiple results (4 images)
+      if (data.images && data.images.length > 0) {
+        const results = data.images.map(img => `data:image/png;base64,${img.image_base64}`);
+        setGeneratedResults(results);
+        setGeneratedImage(results[0]);
+      } else {
+        setGeneratedImage(`data:image/png;base64,${data.image_base64}`);
+        setGeneratedResults([`data:image/png;base64,${data.image_base64}`]);
+      }
+      
+      window.dispatchEvent(new Event('tsv_outfit_generated'));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Track usage for analytics
@@ -1224,50 +1282,135 @@ export default function DressingRoom() {
       {/* Right Panel - Clothing Selection */}
       <div className="tsv-glass tsv-glow" style={{ padding: 14, maxHeight: "90vh", overflowY: "auto" }}>
         
-        {/* Mode Toggle: Text Prompt vs TryOn */}
+        {/* Mode Toggle: Text Prompt vs TryOn vs Headshot */}
         <div style={{ marginBottom: 14, padding: 12, borderRadius: 12, background: "rgba(255,165,0,.1)", border: "1px solid rgba(255,165,0,.3)" }}>
           <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10, color: "#ffa500" }}>
             🎭 GENERATION MODE
           </div>
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             <button
-              onClick={() => { setIsTryOnMode(false); setTryOnResults([]); }}
+              onClick={() => { setIsTryOnMode(false); setIsHeadshotMode(false); setTryOnResults([]); }}
               className="tsv-pill"
               style={{
                 flex: 1,
+                minWidth: 80,
                 fontSize: 10,
-                padding: "8px 12px",
+                padding: "8px 10px",
                 cursor: "pointer",
-                borderColor: !isTryOnMode ? "#ffa500" : "rgba(255,255,255,.14)",
-                background: !isTryOnMode ? "rgba(255,165,0,.25)" : "rgba(255,255,255,.10)",
-                boxShadow: !isTryOnMode ? "0 0 12px rgba(255,165,0,.4)" : "none"
+                borderColor: (!isTryOnMode && !isHeadshotMode) ? "#ffa500" : "rgba(255,255,255,.14)",
+                background: (!isTryOnMode && !isHeadshotMode) ? "rgba(255,165,0,.25)" : "rgba(255,255,255,.10)",
+                boxShadow: (!isTryOnMode && !isHeadshotMode) ? "0 0 12px rgba(255,165,0,.4)" : "none"
               }}
             >
-              📝 Text Prompt
+              📝 Outfit
             </button>
             <button
-              onClick={() => setIsTryOnMode(true)}
+              onClick={() => { setIsTryOnMode(true); setIsHeadshotMode(false); }}
               className="tsv-pill"
               style={{
                 flex: 1,
+                minWidth: 80,
                 fontSize: 10,
-                padding: "8px 12px",
+                padding: "8px 10px",
                 cursor: "pointer",
                 borderColor: isTryOnMode ? "#ff69b4" : "rgba(255,255,255,.14)",
                 background: isTryOnMode ? "rgba(255,105,180,.25)" : "rgba(255,255,255,.10)",
                 boxShadow: isTryOnMode ? "0 0 12px rgba(255,105,180,.4)" : "none"
               }}
             >
-              👗 TryOn Mode
+              👗 TryOn
+            </button>
+            <button
+              onClick={() => { setIsTryOnMode(false); setIsHeadshotMode(true); setTryOnResults([]); }}
+              className="tsv-pill"
+              style={{
+                flex: 1,
+                minWidth: 80,
+                fontSize: 10,
+                padding: "8px 10px",
+                cursor: "pointer",
+                borderColor: isHeadshotMode ? "#00bfff" : "rgba(255,255,255,.14)",
+                background: isHeadshotMode ? "rgba(0,191,255,.25)" : "rgba(255,255,255,.10)",
+                boxShadow: isHeadshotMode ? "0 0 12px rgba(0,191,255,.4)" : "none"
+              }}
+            >
+              🎬 Headshot
             </button>
           </div>
           <div style={{ fontSize: 9, opacity: 0.6, marginTop: 8 }}>
             {isTryOnMode 
-              ? "Upload actual garment/accessory images to virtually try them on (up to 4)"
+              ? "Upload actual garment/accessory images to virtually try them on"
+              : isHeadshotMode
+              ? "Create a close-up portrait for talking head setups"
               : "Describe the outfit using text or select from presets below"
             }
           </div>
         </div>
+
+        {/* Headshot Mode Options */}
+        {isHeadshotMode && (
+          <div style={{ marginBottom: 14, padding: 12, borderRadius: 12, background: "rgba(0,191,255,.1)", border: "1px solid rgba(0,191,255,.3)" }}>
+            <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10, color: "#00bfff" }}>
+              🎬 HEADSHOT OPTIONS
+            </div>
+            
+            {/* Background Selection */}
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 6 }}>Background:</div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {[
+                  { value: "neutral", label: "Neutral" },
+                  { value: "studio", label: "Studio" },
+                  { value: "blurred", label: "Blurred" },
+                  { value: "none", label: "Keep Original" }
+                ].map(bg => (
+                  <button
+                    key={bg.value}
+                    onClick={() => setHeadshotBackground(bg.value)}
+                    className="tsv-pill"
+                    style={{
+                      fontSize: 9,
+                      padding: "5px 10px",
+                      cursor: "pointer",
+                      borderColor: headshotBackground === bg.value ? "#00bfff" : "rgba(255,255,255,.14)",
+                      background: headshotBackground === bg.value ? "rgba(0,191,255,.3)" : "rgba(255,255,255,.08)"
+                    }}
+                  >
+                    {bg.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            {/* Expression Selection */}
+            <div>
+              <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 6 }}>Expression:</div>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                {[
+                  { value: "neutral", label: "Neutral" },
+                  { value: "smile", label: "Smile" },
+                  { value: "serious", label: "Serious" },
+                  { value: "friendly", label: "Friendly" }
+                ].map(expr => (
+                  <button
+                    key={expr.value}
+                    onClick={() => setHeadshotExpression(expr.value)}
+                    className="tsv-pill"
+                    style={{
+                      fontSize: 9,
+                      padding: "5px 10px",
+                      cursor: "pointer",
+                      borderColor: headshotExpression === expr.value ? "#00bfff" : "rgba(255,255,255,.14)",
+                      background: headshotExpression === expr.value ? "rgba(0,191,255,.3)" : "rgba(255,255,255,.08)"
+                    }}
+                  >
+                    {expr.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* TryOn Mode - Garment Upload Section */}
         {isTryOnMode && (

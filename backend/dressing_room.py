@@ -109,6 +109,15 @@ class TryOnRequest(BaseModel):
     num_samples: int = 4  # Generate up to 4 results
     mode: str = "balanced"  # performance, balanced, quality
 
+class HeadshotRequest(BaseModel):
+    """Request for headshot/close-up generation"""
+    character_name: str
+    character_id: str
+    reference_image_url: Optional[str] = None
+    reference_image_base64: Optional[str] = None
+    background: str = "neutral"  # neutral, studio, blurred, none
+    expression: str = "neutral"  # neutral, smile, serious, friendly
+
 class BaseImageRequest(BaseModel):
     character_id: str
     image_base64: str
@@ -650,3 +659,112 @@ async def generate_tryon_images(request: TryOnRequest) -> dict:
         "total_generated": len(all_results),
         "model": "fal-ai/fashn/tryon/v1.5"
     }
+
+
+
+async def generate_headshot(request: HeadshotRequest) -> dict:
+    """Generate a headshot/close-up portrait from a base image"""
+    
+    # Get base image
+    if request.reference_image_base64:
+        base_image_bytes = base64.b64decode(request.reference_image_base64)
+        image_source = "upload"
+    elif request.reference_image_url:
+        base_image_bytes = await download_image(request.reference_image_url)
+        image_source = "url"
+    else:
+        raise HTTPException(status_code=400, detail="Reference image required (URL or base64)")
+    
+    # Preprocess image
+    base_image_bytes = preprocess_image(base_image_bytes)
+    
+    # Upload to Fal.ai
+    try:
+        image_url = await upload_image_to_fal(base_image_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
+    
+    # Build prompt for headshot
+    bg_prompts = {
+        "neutral": "plain neutral gray background",
+        "studio": "professional photography studio background with soft lighting",
+        "blurred": "softly blurred bokeh background",
+        "none": "same background as original"
+    }
+    
+    expr_prompts = {
+        "neutral": "neutral expression",
+        "smile": "warm friendly smile",
+        "serious": "serious professional expression",
+        "friendly": "approachable friendly expression"
+    }
+    
+    background_desc = bg_prompts.get(request.background, bg_prompts["neutral"])
+    expression_desc = expr_prompts.get(request.expression, expr_prompts["neutral"])
+    
+    prompt = f"""Close-up headshot portrait, head and shoulders only, cropped tight to face.
+Same person, same face, same hair, same features - just zoomed in as a professional headshot.
+{expression_desc}, {background_desc}.
+Professional portrait photography style, soft flattering lighting, sharp focus on face.
+Perfect for video calls or profile picture."""
+    
+    print(f"[HEADSHOT] Character: {request.character_id}")
+    print(f"[HEADSHOT] Background: {request.background}, Expression: {request.expression}")
+    print(f"[HEADSHOT] Generating 4 headshot variations...")
+    
+    try:
+        import asyncio
+        
+        async def generate_single():
+            handler = await fal_client.submit_async(
+                "fal-ai/flux-pro/kontext",
+                arguments={
+                    "image_url": image_url,
+                    "prompt": prompt,
+                }
+            )
+            return await handler.get()
+        
+        # Generate 4 variations in parallel
+        results = await asyncio.gather(
+            generate_single(),
+            generate_single(),
+            generate_single(),
+            generate_single(),
+            return_exceptions=True
+        )
+        
+        # Collect successful results
+        all_images = []
+        for i, result in enumerate(results):
+            if isinstance(result, Exception):
+                print(f"[HEADSHOT] Generation {i+1} failed: {result}")
+                continue
+            if result and result.get("images") and len(result["images"]) > 0:
+                img_url = result["images"][0]["url"]
+                try:
+                    async with httpx.AsyncClient() as http_client:
+                        img_response = await http_client.get(img_url, timeout=30.0)
+                        img_response.raise_for_status()
+                        img_bytes = img_response.content
+                    all_images.append({
+                        "image_base64": base64.b64encode(img_bytes).decode('utf-8'),
+                        "url": img_url
+                    })
+                    print(f"[HEADSHOT] Generation {i+1} complete")
+                except Exception as e:
+                    print(f"[HEADSHOT] Failed to download image {i+1}: {e}")
+        
+        if not all_images:
+            raise HTTPException(status_code=500, detail="No headshot images were generated")
+        
+        return {
+            "success": True,
+            "image_base64": all_images[0]["image_base64"],
+            "images": all_images,
+            "total_generated": len(all_images),
+            "model": "fal-ai/flux-pro/kontext"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Headshot generation failed: {str(e)}")
