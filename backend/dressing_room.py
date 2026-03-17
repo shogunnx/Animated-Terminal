@@ -474,28 +474,25 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
-    # Create detailed prompt for outfit change (original working approach)
-    prompt = f"""Change the outfit of this person to: {request.outfit_description}.
-Keep the same person, face, hair, and body proportions exactly as shown.
-Only change the clothing to match: {request.outfit_description}.
-High quality, detailed clothing, full body visible from head to toe including top of hair and complete shoes.
-Professional anime art style, clean background."""
+    # Create edit instruction for FLUX.2 Edit model (preserves identity)
+    prompt = f"""Change ONLY the clothing/outfit to: {request.outfit_description}.
+Keep the EXACT same person - same face, same skin tone, same hair, same pose, same background.
+Do not change anything except the clothes. The person should look identical."""
     
     print(f"[DRESSING ROOM] Character: {request.character_id}")
     print(f"[DRESSING ROOM] Prompt: {prompt[:100]}...")
-    print(f"[DRESSING ROOM] Using fal-ai/flux-general model")
+    print(f"[DRESSING ROOM] Using fal-ai/flux/dev/image-to-image with low strength for identity preservation")
     
     try:
-        # Use Fal.ai FLUX General for image editing (original working setup)
+        # Use FLUX dev image-to-image with very low strength to preserve identity
         handler = await fal_client.submit_async(
-            "fal-ai/flux-general",
+            "fal-ai/flux/dev/image-to-image",
             arguments={
-                "prompt": prompt,
                 "image_url": image_url,
-                "image_size": "square_hd",
-                "num_inference_steps": 28,
-                "guidance_scale": 3.5,
-                "num_images": 1,
+                "prompt": prompt,
+                "strength": 0.45,  # Low strength to preserve identity, just change clothes
+                "num_inference_steps": 35,
+                "guidance_scale": 4.0,
                 "enable_safety_checker": False
             }
         )
@@ -524,7 +521,7 @@ Professional anime art style, clean background."""
             "prompt_used": prompt,
             "image_source": image_source,
             "base_image_saved": request.save_as_base and image_source == "upload",
-            "model": "fal-ai/flux-general"
+            "model": "fal-ai/flux/dev/image-to-image"
         }
             
     except Exception as e:
