@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { TSV_CHARACTERS } from "../content/tsvContent.js";
 import { addLike, getLikes, getCharacterRank } from "../utils/engagement.js";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 const CLOTHING_CATEGORIES = {
   tops: [
