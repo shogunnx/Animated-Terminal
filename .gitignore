@@ -275,3 +275,7 @@ frontend/node_modules/@cloudflare/workerd-linux-arm64/bin/workerd
 # Environment files
 *.env
 *.env.*
+-e 
+# Environment files
+*.env
+*.env.*
