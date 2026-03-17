@@ -168,24 +168,18 @@ def prepare_image_for_openai(image_data: bytes) -> bytes:
     return output.getvalue()
 
 def create_clothing_mask(image_bytes: bytes) -> bytes:
-    """Create a mask for clothing area (transparent where clothes should be edited)"""
-    # Create 1024x1024 mask
-    mask = Image.new('RGBA', (1024, 1024), (255, 255, 255, 255))
+    """Create a mask for clothing area - WHITE = inpaint (clothes), BLACK = preserve (face)"""
+    # Create 1024x1024 mask - RGB format for inpainting
+    mask = Image.new('RGB', (1024, 1024), (0, 0, 0))  # Start all black (preserve all)
     pixels = mask.load()
     
-    # Balanced mask - keep face and top of head, edit body
-    # Top 20% opaque (face), middle 70% transparent (body/clothes), bottom 10% semi (feet)
-    for y in range(200, 924):  # From 20% to 90% (body area)
+    # Make clothing area WHITE (to be inpainted)
+    # Keep top 22% black (face/hair), make middle 68% white (body/clothes), keep bottom 10% black (feet)
+    for y in range(220, 900):  # From 22% to 88% (body/clothing area)
         for x in range(1024):
-            # Fully transparent in clothing area for complete replacement
-            pixels[x, y] = (255, 255, 255, 0)
+            pixels[x, y] = (255, 255, 255)  # White = inpaint this area
     
-    # Make bottom area (shoes) semi-transparent for better shoe rendering
-    for y in range(924, 1024):
-        for x in range(1024):
-            pixels[x, y] = (255, 255, 255, 128)  # Semi-transparent
-    
-    # Save mask
+    # Save mask as PNG
     output = io.BytesIO()
     mask.save(output, format='PNG')
     return output.getvalue()
@@ -474,25 +468,33 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
-    # Create edit instruction for FLUX.2 Edit model (preserves identity)
-    prompt = f"""Change ONLY the clothing/outfit to: {request.outfit_description}.
-Keep the EXACT same person - same face, same skin tone, same hair, same pose, same background.
-Do not change anything except the clothes. The person should look identical."""
+    # Create mask for clothing area (white = inpaint, black = preserve)
+    mask_bytes = create_clothing_mask(base_image_bytes)
+    try:
+        mask_url = await upload_image_to_fal(mask_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to upload mask: {str(e)}")
+    
+    # Create prompt for inpainting the clothing area
+    prompt = f"""Person wearing {request.outfit_description}. 
+High quality, detailed clothing, realistic fabric texture. 
+Same body pose and proportions."""
     
     print(f"[DRESSING ROOM] Character: {request.character_id}")
     print(f"[DRESSING ROOM] Prompt: {prompt[:100]}...")
-    print(f"[DRESSING ROOM] Using fal-ai/flux/dev/image-to-image with low strength for identity preservation")
+    print(f"[DRESSING ROOM] Using fal-ai/flux-general/inpainting for selective clothing edit")
     
     try:
-        # Use FLUX dev image-to-image with very low strength to preserve identity
+        # Use FLUX inpainting - only edit the masked (clothing) area
         handler = await fal_client.submit_async(
-            "fal-ai/flux/dev/image-to-image",
+            "fal-ai/flux-general/inpainting",
             arguments={
                 "image_url": image_url,
+                "mask_url": mask_url,
                 "prompt": prompt,
-                "strength": 0.45,  # Low strength to preserve identity, just change clothes
-                "num_inference_steps": 35,
-                "guidance_scale": 4.0,
+                "strength": 0.95,  # High strength for the masked area
+                "num_inference_steps": 30,
+                "guidance_scale": 7.5,
                 "enable_safety_checker": False
             }
         )
@@ -521,7 +523,7 @@ Do not change anything except the clothes. The person should look identical."""
             "prompt_used": prompt,
             "image_source": image_source,
             "base_image_saved": request.save_as_base and image_source == "upload",
-            "model": "fal-ai/flux/dev/image-to-image"
+            "model": "fal-ai/flux-general/inpainting"
         }
             
     except Exception as e:
