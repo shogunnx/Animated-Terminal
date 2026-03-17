@@ -185,6 +185,7 @@ export default function DressingRoom() {
   const [isTryOnMode, setIsTryOnMode] = useState(false);
   const [garmentImages, setGarmentImages] = useState([]); // Up to 4 garment images
   const [tryOnResults, setTryOnResults] = useState([]); // Multiple results from TryOn
+  const [generatedResults, setGeneratedResults] = useState([]); // Multiple results from standard generation
   
   // DeviantArt state
   const [daAuthenticated, setDaAuthenticated] = useState(false);
@@ -583,7 +584,17 @@ export default function DressingRoom() {
       }
 
       const data = await response.json();
-      setGeneratedImage(`data:image/png;base64,${data.image_base64}`);
+      
+      // Handle multiple results (4 images)
+      if (data.images && data.images.length > 0) {
+        const results = data.images.map(img => `data:image/png;base64,${img.image_base64}`);
+        setGeneratedResults(results);
+        setGeneratedImage(results[0]); // Set first as main display
+      } else {
+        // Fallback for single image response
+        setGeneratedImage(`data:image/png;base64,${data.image_base64}`);
+        setGeneratedResults([`data:image/png;base64,${data.image_base64}`]);
+      }
       
       // Track usage analytics
       trackUsage(outfitDesc, true);
@@ -1020,6 +1031,40 @@ export default function DressingRoom() {
                 <span style={{ opacity: 0.5 }}>RANK #{getCharacterRank(selectedCharacter.id) || '?'}</span>
               </div>
             </div>
+            
+            {/* Results Grid - Show all 4 variations */}
+            {generatedResults.length > 1 && (
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 10, opacity: 0.6, marginBottom: 8 }}>
+                  {generatedResults.length} variations generated - click to select:
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+                  {generatedResults.map((img, idx) => (
+                    <img
+                      key={idx}
+                      src={img}
+                      alt={`Variation ${idx + 1}`}
+                      onClick={() => setGeneratedImage(img)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "3/4",
+                        objectFit: "cover",
+                        borderRadius: 8,
+                        border: generatedImage === img 
+                          ? `2px solid ${selectedCharacter?.accent || '#ffa500'}` 
+                          : "1px solid rgba(255,255,255,.2)",
+                        cursor: "pointer",
+                        boxShadow: generatedImage === img 
+                          ? `0 0 10px ${selectedCharacter?.accent || '#ffa500'}50` 
+                          : "none",
+                        transition: "all 0.2s ease"
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            
             <div className="tsv-scanlines tsv-noise" style={{ 
               borderRadius: 16, 
               border: `2px solid ${selectedCharacter.accent}`,

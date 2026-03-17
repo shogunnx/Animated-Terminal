@@ -484,38 +484,63 @@ Only change the clothing. High quality, detailed clothing."""
     
     print(f"[DRESSING ROOM] Character: {request.character_id}")
     print(f"[DRESSING ROOM] Using FLUX Kontext for identity-preserving edit")
+    print(f"[DRESSING ROOM] Generating 4 variations...")
     print(f"[DRESSING ROOM] Prompt: {prompt[:80]}...")
     
     try:
-        # Use FLUX Kontext Pro for identity-preserving outfit changes
-        handler = await fal_client.submit_async(
-            "fal-ai/flux-pro/kontext",
-            arguments={
-                "image_url": image_url,
-                "prompt": prompt,
-            }
+        # Generate 4 variations by making parallel requests
+        import asyncio
+        
+        async def generate_single():
+            handler = await fal_client.submit_async(
+                "fal-ai/flux-pro/kontext",
+                arguments={
+                    "image_url": image_url,
+                    "prompt": prompt,
+                }
+            )
+            return await handler.get()
+        
+        # Run 4 generations in parallel
+        results = await asyncio.gather(
+            generate_single(),
+            generate_single(),
+            generate_single(),
+            generate_single(),
+            return_exceptions=True
         )
         
-        result = await handler.get()
+        # Collect successful results
+        all_images = []
+        for i, result in enumerate(results):
+            if isinstance(result, Exception):
+                print(f"[DRESSING ROOM] Generation {i+1} failed: {result}")
+                continue
+            if result and result.get("images") and len(result["images"]) > 0:
+                img_url = result["images"][0]["url"]
+                try:
+                    async with httpx.AsyncClient() as http_client:
+                        img_response = await http_client.get(img_url, timeout=30.0)
+                        img_response.raise_for_status()
+                        img_bytes = img_response.content
+                    all_images.append({
+                        "image_base64": base64.b64encode(img_bytes).decode('utf-8'),
+                        "url": img_url
+                    })
+                    print(f"[DRESSING ROOM] Generation {i+1} complete")
+                except Exception as e:
+                    print(f"[DRESSING ROOM] Failed to download image {i+1}: {e}")
         
-        if not result or not result.get("images") or len(result["images"]) == 0:
-            raise HTTPException(status_code=500, detail="No image was generated")
+        if not all_images:
+            raise HTTPException(status_code=500, detail="No images were generated")
         
-        generated_image_url = result["images"][0]["url"]
-        print(f"[DRESSING ROOM] Generation complete: {generated_image_url[:60]}...")
-        
-        # Download final image
-        async with httpx.AsyncClient() as http_client:
-            img_response = await http_client.get(generated_image_url, timeout=30.0)
-            img_response.raise_for_status()
-            generated_image_bytes = img_response.content
-        
-        # Encode as base64
-        image_base64 = base64.b64encode(generated_image_bytes).decode('utf-8')
+        print(f"[DRESSING ROOM] Total images generated: {len(all_images)}")
         
         return {
             "success": True,
-            "image_base64": image_base64,
+            "image_base64": all_images[0]["image_base64"],  # First image for backwards compatibility
+            "images": all_images,  # All images for new UI
+            "total_generated": len(all_images),
             "prompt_used": prompt,
             "image_source": image_source,
             "base_image_saved": request.save_as_base and image_source == "upload",
