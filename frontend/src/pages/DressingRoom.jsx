@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { TSV_CHARACTERS } from "../content/tsvContent.js";
 import { addLike, getLikes, getCharacterRank } from "../utils/engagement.js";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "";
+
 const CLOTHING_CATEGORIES = {
   tops: [
     "Crop Top", "T-Shirt", "Tank Top", "Blouse", "Jacket", "Hoodie", "Sweater", "Button-Up",
@@ -235,7 +237,7 @@ export default function DressingRoom() {
   
   const checkDeviantArtAuth = async () => {
     try {
-      const response = await fetch('/api/deviantart/auth-status');
+      const response = await fetch(`${BACKEND_URL}/api/deviantart/auth-status`);
       const data = await response.json();
       setDaAuthenticated(data.authenticated);
     } catch (err) {
@@ -245,7 +247,7 @@ export default function DressingRoom() {
   
   const handleDeviantArtAuth = async () => {
     try {
-      const response = await fetch('/api/deviantart/auth-url');
+      const response = await fetch(`${BACKEND_URL}/api/deviantart/auth-url`);
       const data = await response.json();
       
       if (data.auth_url) {
@@ -278,7 +280,7 @@ export default function DressingRoom() {
       const outfitDesc = generateOutfitPrompt();
       const title = `${selectedCharacter.name} - ${outfitDesc.slice(0, 50)}${outfitDesc.length > 50 ? '...' : ''}`;
       
-      const response = await fetch('/api/deviantart/post-outfit', {
+      const response = await fetch(`${BACKEND_URL}/api/deviantart/post-outfit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -309,7 +311,7 @@ export default function DressingRoom() {
     if (!selectedCharacter) return;
     
     try {
-      const response = await fetch(`/api/deviantart/view-url/${encodeURIComponent(selectedCharacter.name)}`);
+      const response = await fetch(`${BACKEND_URL}/api/deviantart/view-url/${encodeURIComponent(selectedCharacter.name)}`);
       const data = await response.json();
       
       if (data.gallery_url) {
@@ -339,7 +341,7 @@ export default function DressingRoom() {
     
     // Priority 1: Try Nexus
     try {
-      const response = await fetch(`/api/nexus/api/characters`);
+      const response = await fetch(`${BACKEND_URL}/api/nexus/api/characters`);
       const characters = await response.json();
       const nexusChar = characters.find(c => 
         c.displayName?.toLowerCase() === charId.replace(/_/g, " ").toLowerCase()
@@ -362,11 +364,11 @@ export default function DressingRoom() {
     
     // Priority 3: Check for stored base image
     try {
-      const response = await fetch(`/api/dressing-room/has-base/${charId}`);
+      const response = await fetch(`${BACKEND_URL}/api/dressing-room/has-base/${charId}`);
       const data = await response.json();
       
       if (data.has_base_image) {
-        const imgResponse = await fetch(`/api/dressing-room/get-base/${charId}`);
+        const imgResponse = await fetch(`${BACKEND_URL}/api/dressing-room/get-base/${charId}`);
         if (imgResponse.ok) {
           const imgData = await imgResponse.json();
           setBaseImage(`data:image/png;base64,${imgData.image_base64}`);
@@ -385,7 +387,7 @@ export default function DressingRoom() {
   // Separate function for "Try Nexus" button
   const fetchNexusImage = async (charId) => {
     try {
-      const response = await fetch(`/api/nexus/api/characters`);
+      const response = await fetch(`${BACKEND_URL}/api/nexus/api/characters`);
       const characters = await response.json();
       const nexusChar = characters.find(c => 
         c.displayName?.toLowerCase() === charId.replace(/_/g, " ").toLowerCase()
@@ -558,7 +560,7 @@ export default function DressingRoom() {
         requestBody.is_pairs_mode = true;
       }
       
-      const response = await fetch("/api/dressing-room/generate", {
+      const response = await fetch(`${BACKEND_URL}/api/dressing-room/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody)
@@ -596,7 +598,7 @@ export default function DressingRoom() {
         sessionStorage.setItem('tsv_session_id', sessionId);
       }
 
-      await fetch("/api/dressing-room/track", {
+      await fetch(`${BACKEND_URL}/api/dressing-room/track`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
