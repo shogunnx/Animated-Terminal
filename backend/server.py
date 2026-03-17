@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from dotenv import load_dotenv
 
-from dressing_room import generate_outfit_image, OutfitRequest, BaseImageRequest
+from dressing_room import generate_outfit_image, generate_tryon_images, OutfitRequest, TryOnRequest, BaseImageRequest
 from teach_mode_routes import router as teach_mode_router
 from fastapi import HTTPException
 import base64
@@ -125,8 +125,15 @@ async def status():
 # -----------------------
 @api.post("/dressing-room/generate")
 async def generate_dressing_room_image(request: OutfitRequest):
-    """Generate an outfit image for a character"""
+    """Generate an outfit image for a character using FLUX Kontext"""
     return await generate_outfit_image(request)
+
+@api.post("/dressing-room/tryon")
+async def generate_tryon(request: TryOnRequest):
+    """Virtual try-on with actual garment images using FASHN model.
+    Upload a model image and up to 4 garment/accessory images.
+    Returns up to 4 generated results."""
+    return await generate_tryon_images(request)
 
 @api.post("/dressing-room/save-base")
 async def save_base_image_endpoint(request: BaseImageRequest):

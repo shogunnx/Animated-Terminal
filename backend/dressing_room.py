@@ -1,7 +1,7 @@
 import os
 import base64
 import io
-from typing import Optional
+from typing import Optional, List
 from fastapi import HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -99,6 +99,15 @@ class OutfitRequest(BaseModel):
     second_character_id: Optional[str] = None
     second_character_name: Optional[str] = None
     is_pairs_mode: Optional[bool] = False
+
+class TryOnRequest(BaseModel):
+    """Request for virtual try-on with actual garment images"""
+    model_image_url: Optional[str] = None
+    model_image_base64: Optional[str] = None
+    garment_image_urls: List[str] = []  # Up to 4 garment/accessory images
+    garment_image_base64s: List[str] = []  # Alternative: base64 encoded garments
+    num_samples: int = 4  # Generate up to 4 results
+    mode: str = "balanced"  # performance, balanced, quality
 
 class BaseImageRequest(BaseModel):
     character_id: str
@@ -468,62 +477,36 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
-    # TWO-STEP APPROACH: Generate outfit, then face-swap original face back
-    # Step 1: Generate the outfit change with high strength
-    prompt = f"""{request.outfit_description}. 
-Same pose, same body proportions, same background.
-High quality, detailed clothing, anime style."""
+    # Use FLUX Kontext for identity-preserving outfit changes
+    prompt = f"""Change the clothing/outfit to: {request.outfit_description}.
+Maintain the EXACT same face, same facial features, same hair, same pose.
+Only change the clothing. High quality, detailed clothing."""
     
     print(f"[DRESSING ROOM] Character: {request.character_id}")
-    print(f"[DRESSING ROOM] Step 1: Generate outfit with prompt: {prompt[:80]}...")
+    print(f"[DRESSING ROOM] Using FLUX Kontext for identity-preserving edit")
+    print(f"[DRESSING ROOM] Prompt: {prompt[:80]}...")
     
     try:
-        # Step 1: Use image-to-image with high strength to change outfit
+        # Use FLUX Kontext Pro for identity-preserving outfit changes
         handler = await fal_client.submit_async(
-            "fal-ai/flux/dev/image-to-image",
+            "fal-ai/flux-pro/kontext",
             arguments={
                 "image_url": image_url,
                 "prompt": prompt,
-                "strength": 0.75,  # High enough to change outfit, preserve some structure
-                "num_inference_steps": 30,
-                "guidance_scale": 5.0,
-                "enable_safety_checker": False
             }
         )
         
         result = await handler.get()
         
         if not result or not result.get("images") or len(result["images"]) == 0:
-            raise HTTPException(status_code=500, detail="No image was generated in step 1")
+            raise HTTPException(status_code=500, detail="No image was generated")
         
         generated_image_url = result["images"][0]["url"]
-        print(f"[DRESSING ROOM] Step 1 complete: {generated_image_url[:60]}...")
-        
-        # Step 2: Face-swap the original face back onto the generated image
-        print("[DRESSING ROOM] Step 2: Face-swapping original face back...")
-        try:
-            face_handler = await fal_client.submit_async(
-                "fal-ai/face-swap",
-                arguments={
-                    "base_image_url": generated_image_url,  # Generated outfit image
-                    "swap_image_url": image_url,  # Original image with face to restore
-                }
-            )
-            
-            face_result = await face_handler.get()
-            if face_result and face_result.get("image"):
-                final_image_url = face_result['image']['url']
-                print(f"[DRESSING ROOM] Step 2 complete - face restored: {final_image_url[:60]}...")
-            else:
-                print("[DRESSING ROOM] Face swap returned no image, using outfit-only result")
-                final_image_url = generated_image_url
-        except Exception as face_err:
-            print(f"[DRESSING ROOM] Face swap failed: {face_err}, using outfit-only result")
-            final_image_url = generated_image_url
+        print(f"[DRESSING ROOM] Generation complete: {generated_image_url[:60]}...")
         
         # Download final image
         async with httpx.AsyncClient() as http_client:
-            img_response = await http_client.get(final_image_url, timeout=30.0)
+            img_response = await http_client.get(generated_image_url, timeout=30.0)
             img_response.raise_for_status()
             generated_image_bytes = img_response.content
         
@@ -536,8 +519,98 @@ High quality, detailed clothing, anime style."""
             "prompt_used": prompt,
             "image_source": image_source,
             "base_image_saved": request.save_as_base and image_source == "upload",
-            "model": "fal-ai/flux-dev + face-swap"
+            "model": "fal-ai/flux-pro/kontext"
         }
             
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Image generation failed: {str(e)}")
+
+
+async def generate_tryon_images(request: TryOnRequest) -> dict:
+    """Generate virtual try-on images using FASHN model with actual garment images"""
+    
+    # Get model (person) image
+    if request.model_image_base64:
+        model_image_bytes = base64.b64decode(request.model_image_base64)
+    elif request.model_image_url:
+        model_image_bytes = await download_image(request.model_image_url)
+    else:
+        raise HTTPException(status_code=400, detail="Model image required (URL or base64)")
+    
+    # Preprocess model image
+    model_image_bytes = preprocess_image(model_image_bytes)
+    
+    # Upload model image to Fal.ai
+    try:
+        model_url = await upload_image_to_fal(model_image_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to upload model image: {str(e)}")
+    
+    # Get garment images
+    garment_urls = []
+    
+    # From URLs
+    for url in request.garment_image_urls[:4]:  # Max 4 garments
+        garment_urls.append(url)
+    
+    # From base64
+    for b64 in request.garment_image_base64s[:4 - len(garment_urls)]:  # Fill remaining slots
+        garment_bytes = base64.b64decode(b64)
+        garment_url = await upload_image_to_fal(garment_bytes)
+        garment_urls.append(garment_url)
+    
+    if not garment_urls:
+        raise HTTPException(status_code=400, detail="At least one garment image required")
+    
+    print(f"[TRYON] Processing {len(garment_urls)} garment(s)")
+    print(f"[TRYON] Mode: {request.mode}, Samples: {request.num_samples}")
+    
+    all_results = []
+    
+    # Process each garment with FASHN Virtual Try-On
+    for i, garment_url in enumerate(garment_urls):
+        print(f"[TRYON] Processing garment {i+1}/{len(garment_urls)}")
+        
+        try:
+            handler = await fal_client.submit_async(
+                "fal-ai/fashn/tryon/v1.5",
+                arguments={
+                    "model_image": model_url,
+                    "garment_image": garment_url,
+                    "mode": request.mode,  # performance, balanced, quality
+                    "num_samples": min(request.num_samples, 4),
+                    "garment_photo_type": "auto"
+                }
+            )
+            
+            result = await handler.get()
+            
+            if result and result.get("images"):
+                for img_data in result["images"]:
+                    img_url = img_data.get("url")
+                    if img_url:
+                        # Download and encode
+                        async with httpx.AsyncClient() as http_client:
+                            img_response = await http_client.get(img_url, timeout=30.0)
+                            img_response.raise_for_status()
+                            img_bytes = img_response.content
+                        
+                        all_results.append({
+                            "image_base64": base64.b64encode(img_bytes).decode('utf-8'),
+                            "garment_index": i,
+                            "url": img_url
+                        })
+                        
+        except Exception as e:
+            print(f"[TRYON] Error processing garment {i+1}: {e}")
+            continue
+    
+    if not all_results:
+        raise HTTPException(status_code=500, detail="No try-on images were generated")
+    
+    return {
+        "success": True,
+        "images": all_results[:request.num_samples],  # Return up to requested samples
+        "total_generated": len(all_results),
+        "model": "fal-ai/fashn/tryon/v1.5"
+    }

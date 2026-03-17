@@ -181,6 +181,11 @@ export default function DressingRoom() {
   const [secondCharacter, setSecondCharacter] = useState(null);
   const [showPairsMode, setShowPairsMode] = useState(false);
   
+  // TryOn mode state
+  const [isTryOnMode, setIsTryOnMode] = useState(false);
+  const [garmentImages, setGarmentImages] = useState([]); // Up to 4 garment images
+  const [tryOnResults, setTryOnResults] = useState([]); // Multiple results from TryOn
+  
   // DeviantArt state
   const [daAuthenticated, setDaAuthenticated] = useState(false);
   const [daPosting, setDaPosting] = useState(false);
@@ -529,6 +534,12 @@ export default function DressingRoom() {
       return;
     }
 
+    // TryOn mode - uses garment images
+    if (isTryOnMode) {
+      await handleTryOnGenerate();
+      return;
+    }
+
     const outfitDesc = generateOutfitPrompt();
     if (!outfitDesc) {
       setError("Please select clothing items or enter a custom description");
@@ -586,6 +597,80 @@ export default function DressingRoom() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle TryOn mode generation with actual garment images
+  const handleTryOnGenerate = async () => {
+    if (garmentImages.length === 0) {
+      setError("Please upload at least one garment/accessory image for TryOn mode");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setTryOnResults([]);
+
+    try {
+      const isUploadedImage = baseImageSource === "upload" || selectedCharacter?.requiresUpload;
+      
+      const requestBody = {
+        model_image_url: baseImageSource === "nexus" ? baseImage : null,
+        model_image_base64: isUploadedImage ? baseImage?.split(',').pop() : null,
+        garment_image_urls: garmentImages.filter(g => g.startsWith('http')),
+        garment_image_base64s: garmentImages.filter(g => !g.startsWith('http')).map(g => g.split(',').pop()),
+        num_samples: 4,
+        mode: "balanced"
+      };
+      
+      const response = await fetch(`${BACKEND_URL}/api/dressing-room/tryon`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to generate try-on images");
+      }
+
+      const data = await response.json();
+      
+      // Set results - multiple images
+      const results = data.images.map(img => `data:image/png;base64,${img.image_base64}`);
+      setTryOnResults(results);
+      
+      // Also set the first result as the main generated image
+      if (results.length > 0) {
+        setGeneratedImage(results[0]);
+      }
+      
+      window.dispatchEvent(new Event('tsv_outfit_generated'));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle garment image upload for TryOn mode
+  const handleGarmentUpload = (e) => {
+    const files = Array.from(e.target.files);
+    if (garmentImages.length + files.length > 4) {
+      setError("Maximum 4 garment images allowed");
+      return;
+    }
+
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setGarmentImages(prev => [...prev.slice(0, 3), event.target.result]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeGarmentImage = (index) => {
+    setGarmentImages(prev => prev.filter((_, i) => i !== index));
   };
 
   // Track usage for analytics
@@ -1093,6 +1178,147 @@ export default function DressingRoom() {
 
       {/* Right Panel - Clothing Selection */}
       <div className="tsv-glass tsv-glow" style={{ padding: 14, maxHeight: "90vh", overflowY: "auto" }}>
+        
+        {/* Mode Toggle: Text Prompt vs TryOn */}
+        <div style={{ marginBottom: 14, padding: 12, borderRadius: 12, background: "rgba(255,165,0,.1)", border: "1px solid rgba(255,165,0,.3)" }}>
+          <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10, color: "#ffa500" }}>
+            🎭 GENERATION MODE
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              onClick={() => { setIsTryOnMode(false); setTryOnResults([]); }}
+              className="tsv-pill"
+              style={{
+                flex: 1,
+                fontSize: 10,
+                padding: "8px 12px",
+                cursor: "pointer",
+                borderColor: !isTryOnMode ? "#ffa500" : "rgba(255,255,255,.14)",
+                background: !isTryOnMode ? "rgba(255,165,0,.25)" : "rgba(255,255,255,.10)",
+                boxShadow: !isTryOnMode ? "0 0 12px rgba(255,165,0,.4)" : "none"
+              }}
+            >
+              📝 Text Prompt
+            </button>
+            <button
+              onClick={() => setIsTryOnMode(true)}
+              className="tsv-pill"
+              style={{
+                flex: 1,
+                fontSize: 10,
+                padding: "8px 12px",
+                cursor: "pointer",
+                borderColor: isTryOnMode ? "#ff69b4" : "rgba(255,255,255,.14)",
+                background: isTryOnMode ? "rgba(255,105,180,.25)" : "rgba(255,255,255,.10)",
+                boxShadow: isTryOnMode ? "0 0 12px rgba(255,105,180,.4)" : "none"
+              }}
+            >
+              👗 TryOn Mode
+            </button>
+          </div>
+          <div style={{ fontSize: 9, opacity: 0.6, marginTop: 8 }}>
+            {isTryOnMode 
+              ? "Upload actual garment/accessory images to virtually try them on (up to 4)"
+              : "Describe the outfit using text or select from presets below"
+            }
+          </div>
+        </div>
+
+        {/* TryOn Mode - Garment Upload Section */}
+        {isTryOnMode && (
+          <div style={{ marginBottom: 14, padding: 12, borderRadius: 12, background: "rgba(255,105,180,.1)", border: "1px solid rgba(255,105,180,.3)" }}>
+            <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10, color: "#ff69b4" }}>
+              👗 GARMENT IMAGES ({garmentImages.length}/4)
+            </div>
+            <div style={{ fontSize: 9, opacity: 0.6, marginBottom: 10 }}>
+              Upload photos of clothes/accessories to try on. Best with flat-lay or on-model photos.
+            </div>
+            
+            {/* Upload button */}
+            <label style={{
+              display: "block",
+              padding: "10px 16px",
+              background: "rgba(255,105,180,.2)",
+              border: "1px dashed rgba(255,105,180,.5)",
+              borderRadius: 8,
+              cursor: "pointer",
+              textAlign: "center",
+              fontSize: 11,
+              marginBottom: 10
+            }}>
+              📁 Upload Garment Images
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleGarmentUpload}
+                style={{ display: "none" }}
+              />
+            </label>
+            
+            {/* Display uploaded garments */}
+            {garmentImages.length > 0 && (
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {garmentImages.map((img, idx) => (
+                  <div key={idx} style={{ position: "relative" }}>
+                    <img 
+                      src={img} 
+                      alt={`Garment ${idx + 1}`}
+                      style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 8, border: "1px solid rgba(255,105,180,.5)" }}
+                    />
+                    <button
+                      onClick={() => removeGarmentImage(idx)}
+                      style={{
+                        position: "absolute",
+                        top: -5,
+                        right: -5,
+                        width: 18,
+                        height: 18,
+                        borderRadius: "50%",
+                        background: "#ff4444",
+                        border: "none",
+                        color: "white",
+                        fontSize: 10,
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {/* TryOn Results Grid */}
+            {tryOnResults.length > 0 && (
+              <div style={{ marginTop: 12 }}>
+                <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 8 }}>Generated Results:</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
+                  {tryOnResults.map((img, idx) => (
+                    <img
+                      key={idx}
+                      src={img}
+                      alt={`Result ${idx + 1}`}
+                      onClick={() => setGeneratedImage(img)}
+                      style={{
+                        width: "100%",
+                        aspectRatio: "3/4",
+                        objectFit: "cover",
+                        borderRadius: 8,
+                        border: generatedImage === img ? "2px solid #ff69b4" : "1px solid rgba(255,255,255,.2)",
+                        cursor: "pointer"
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="tsv-title" style={{ fontSize: 13, opacity:.88 }}>
           WARDROBE SELECTION
         </div>
