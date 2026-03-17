@@ -474,92 +474,48 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
-    # Regular single character editing mode
-    # For Community OC or when prompt includes pose/hair changes, use more flexible prompt
-    is_community_oc = request.character_id == "community_oc"
-    prompt_lower = request.outfit_description.lower()
-    has_pose_request = any(word in prompt_lower for word in ['pose', 'posing', 'sitting', 'standing', 'covering', 'hand', 'arms', 'lying', 'kneeling'])
-    has_hair_request = any(word in prompt_lower for word in ['hair', 'updo', 'ponytail', 'braid', 'bun', 'hairstyle', 'bangs'])
+    # Create detailed prompt for outfit change (original working approach)
+    prompt = f"""Change the outfit of this person to: {request.outfit_description}.
+Keep the same person, face, hair, and body proportions exactly as shown.
+Only change the clothing to match: {request.outfit_description}.
+High quality, detailed clothing, full body visible from head to toe including top of hair and complete shoes.
+Professional anime art style, clean background."""
     
-    # Build prompt based on character type
-    if is_community_oc:
-        # For Community OC - use TWO-STEP approach:
-        # Step 1: Generate outfit/pose with high strength
-        # Step 2: Face-swap original face back
-        prompt = f"""{request.outfit_description}. Full body shot, professional photography."""
-        strength = 0.85  # High strength to get outfit/pose right
-        guidance = 6.0
-        steps = 35
-        use_face_swap = True
-    elif has_pose_request or has_hair_request:
-        prompt = f"""Same person, same face, same skin tone, but now wearing {request.outfit_description}.
-Apply the requested pose and hairstyle changes while keeping facial features identical."""
-        strength = 0.75
-        guidance = 5.0
-        steps = 35
-        use_face_swap = False
-    else:
-        prompt = f"""Same person wearing {request.outfit_description}.
-Identical face, identical hair, identical pose, identical background.
-ONLY the clothes are different - now wearing {request.outfit_description}."""
-        strength = 0.65
-        guidance = 4.5
-        steps = 30
-        use_face_swap = False
-    
-    print(f"[DRESSING ROOM] Character: {request.character_id}, Strength: {strength}, Guidance: {guidance}")
+    print(f"[DRESSING ROOM] Character: {request.character_id}")
     print(f"[DRESSING ROOM] Prompt: {prompt[:100]}...")
-    print(f"[DRESSING ROOM] Face swap: {use_face_swap}")
+    print(f"[DRESSING ROOM] Using fal-ai/flux-general model")
     
     try:
-        # Step 1: Generate outfit/pose
+        # Use Fal.ai FLUX General for image editing (original working setup)
         handler = await fal_client.submit_async(
-            "fal-ai/flux/dev/image-to-image",
+            "fal-ai/flux-general",
             arguments={
-                "image_url": image_url,
                 "prompt": prompt,
-                "strength": strength,
-                "guidance_scale": guidance,
-                "num_inference_steps": steps,
+                "image_url": image_url,
+                "image_size": "square_hd",
+                "num_inference_steps": 28,
+                "guidance_scale": 3.5,
+                "num_images": 1,
                 "enable_safety_checker": False
             }
         )
         
+        # Get result
         result = await handler.get()
         
         if not result or not result.get("images") or len(result["images"]) == 0:
             raise HTTPException(status_code=500, detail="No image was generated")
         
+        # Download the generated image from Fal.ai
         generated_image_url = result["images"][0]["url"]
-        print(f"[DRESSING ROOM] Step 1 complete: {generated_image_url[:60]}...")
+        print(f"[DRESSING ROOM] Generation complete: {generated_image_url[:60]}...")
         
-        # Step 2: Face swap (only for Community OC)
-        if use_face_swap:
-            print("[DRESSING ROOM] Step 2: Face swapping...")
-            try:
-                face_handler = await fal_client.submit_async(
-                    "fal-ai/face-swap",
-                    arguments={
-                        "base_image_url": generated_image_url,
-                        "swap_image_url": image_url,  # Original uploaded face
-                    }
-                )
-                
-                face_result = await face_handler.get()
-                if face_result and face_result.get("image"):
-                    generated_image_url = face_result['image']['url']
-                    print(f"[DRESSING ROOM] Face swap complete: {generated_image_url[:60]}...")
-                else:
-                    print("[DRESSING ROOM] Face swap failed, using original generated image")
-            except Exception as face_err:
-                print(f"[DRESSING ROOM] Face swap error: {face_err}, using original generated image")
-        
-        # Download final image
         async with httpx.AsyncClient() as http_client:
             img_response = await http_client.get(generated_image_url, timeout=30.0)
             img_response.raise_for_status()
             generated_image_bytes = img_response.content
         
+        # Encode as base64
         image_base64 = base64.b64encode(generated_image_bytes).decode('utf-8')
         
         return {
@@ -568,7 +524,7 @@ ONLY the clothes are different - now wearing {request.outfit_description}."""
             "prompt_used": prompt,
             "image_source": image_source,
             "base_image_saved": request.save_as_base and image_source == "upload",
-            "model": "fal-ai/flux-dev + face-swap" if use_face_swap else "fal-ai/flux-dev"
+            "model": "fal-ai/flux-general"
         }
             
     except Exception as e:
