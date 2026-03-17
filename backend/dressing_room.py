@@ -468,49 +468,62 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
-    # Create mask for clothing area (white = inpaint, black = preserve)
-    mask_bytes = create_clothing_mask(base_image_bytes)
-    try:
-        mask_url = await upload_image_to_fal(mask_bytes)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed to upload mask: {str(e)}")
-    
-    # Create prompt for inpainting the clothing area
-    prompt = f"""Person wearing {request.outfit_description}. 
-High quality, detailed clothing, realistic fabric texture. 
-Same body pose and proportions."""
+    # TWO-STEP APPROACH: Generate outfit, then face-swap original face back
+    # Step 1: Generate the outfit change with high strength
+    prompt = f"""{request.outfit_description}. 
+Same pose, same body proportions, same background.
+High quality, detailed clothing, anime style."""
     
     print(f"[DRESSING ROOM] Character: {request.character_id}")
-    print(f"[DRESSING ROOM] Prompt: {prompt[:100]}...")
-    print(f"[DRESSING ROOM] Using fal-ai/flux-general/inpainting for selective clothing edit")
+    print(f"[DRESSING ROOM] Step 1: Generate outfit with prompt: {prompt[:80]}...")
     
     try:
-        # Use FLUX inpainting - only edit the masked (clothing) area
+        # Step 1: Use image-to-image with high strength to change outfit
         handler = await fal_client.submit_async(
-            "fal-ai/flux-general/inpainting",
+            "fal-ai/flux/dev/image-to-image",
             arguments={
                 "image_url": image_url,
-                "mask_url": mask_url,
                 "prompt": prompt,
-                "strength": 0.95,  # High strength for the masked area
+                "strength": 0.75,  # High enough to change outfit, preserve some structure
                 "num_inference_steps": 30,
-                "guidance_scale": 7.5,
+                "guidance_scale": 5.0,
                 "enable_safety_checker": False
             }
         )
         
-        # Get result
         result = await handler.get()
         
         if not result or not result.get("images") or len(result["images"]) == 0:
-            raise HTTPException(status_code=500, detail="No image was generated")
+            raise HTTPException(status_code=500, detail="No image was generated in step 1")
         
-        # Download the generated image from Fal.ai
         generated_image_url = result["images"][0]["url"]
-        print(f"[DRESSING ROOM] Generation complete: {generated_image_url[:60]}...")
+        print(f"[DRESSING ROOM] Step 1 complete: {generated_image_url[:60]}...")
         
+        # Step 2: Face-swap the original face back onto the generated image
+        print("[DRESSING ROOM] Step 2: Face-swapping original face back...")
+        try:
+            face_handler = await fal_client.submit_async(
+                "fal-ai/face-swap",
+                arguments={
+                    "base_image_url": generated_image_url,  # Generated outfit image
+                    "swap_image_url": image_url,  # Original image with face to restore
+                }
+            )
+            
+            face_result = await face_handler.get()
+            if face_result and face_result.get("image"):
+                final_image_url = face_result['image']['url']
+                print(f"[DRESSING ROOM] Step 2 complete - face restored: {final_image_url[:60]}...")
+            else:
+                print("[DRESSING ROOM] Face swap returned no image, using outfit-only result")
+                final_image_url = generated_image_url
+        except Exception as face_err:
+            print(f"[DRESSING ROOM] Face swap failed: {face_err}, using outfit-only result")
+            final_image_url = generated_image_url
+        
+        # Download final image
         async with httpx.AsyncClient() as http_client:
-            img_response = await http_client.get(generated_image_url, timeout=30.0)
+            img_response = await http_client.get(final_image_url, timeout=30.0)
             img_response.raise_for_status()
             generated_image_bytes = img_response.content
         
@@ -523,7 +536,7 @@ Same body pose and proportions."""
             "prompt_used": prompt,
             "image_source": image_source,
             "base_image_saved": request.save_as_base and image_source == "upload",
-            "model": "fal-ai/flux-general/inpainting"
+            "model": "fal-ai/flux-dev + face-swap"
         }
             
     except Exception as e:
