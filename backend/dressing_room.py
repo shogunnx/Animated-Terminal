@@ -492,19 +492,19 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
         steps = 35
         use_face_swap = True
     elif has_pose_request or has_hair_request:
-        prompt = f"""Transform this image: {request.outfit_description}.
-Keep the same face and skin tone. Apply all requested changes to outfit, pose, and hairstyle as specified."""
+        prompt = f"""Same person, same face, same skin tone, but now wearing {request.outfit_description}.
+Apply the requested pose and hairstyle changes while keeping facial features identical."""
         strength = 0.75
         guidance = 5.0
         steps = 35
         use_face_swap = False
     else:
-        prompt = f"""Change this person's outfit to: {request.outfit_description}.
-Keep everything else the same - same face, same hair, same background, same pose.
-Only change the clothing."""
-        strength = 0.55
-        guidance = 3.5
-        steps = 28
+        prompt = f"""Same person wearing {request.outfit_description}.
+Identical face, identical hair, identical pose, identical background.
+ONLY the clothes are different - now wearing {request.outfit_description}."""
+        strength = 0.65
+        guidance = 4.5
+        steps = 30
         use_face_swap = False
     
     print(f"[DRESSING ROOM] Character: {request.character_id}, Strength: {strength}, Guidance: {guidance}")
