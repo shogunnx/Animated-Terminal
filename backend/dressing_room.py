@@ -602,36 +602,47 @@ async def generate_tryon_images(request: TryOnRequest) -> dict:
                 arguments={
                     "model_image": model_url,
                     "garment_image": garment_url,
-                    "mode": request.mode,  # performance, balanced, quality
-                    "num_samples": min(request.num_samples, 4),
                     "garment_photo_type": "auto"
                 }
             )
             
             result = await handler.get()
+            print(f"[TRYON] Result keys: {result.keys() if result else 'None'}")
             
-            if result and result.get("images"):
-                for img_data in result["images"]:
-                    img_url = img_data.get("url")
-                    if img_url:
-                        # Download and encode
-                        async with httpx.AsyncClient() as http_client:
-                            img_response = await http_client.get(img_url, timeout=30.0)
-                            img_response.raise_for_status()
-                            img_bytes = img_response.content
-                        
-                        all_results.append({
-                            "image_base64": base64.b64encode(img_bytes).decode('utf-8'),
-                            "garment_index": i,
-                            "url": img_url
-                        })
+            # FASHN returns 'image' (singular) with url
+            if result:
+                img_url = None
+                if result.get("image"):
+                    img_url = result["image"].get("url") if isinstance(result["image"], dict) else result["image"]
+                elif result.get("images"):
+                    # Handle array format
+                    for img_data in result["images"]:
+                        img_url = img_data.get("url") if isinstance(img_data, dict) else img_data
+                        if img_url:
+                            break
+                
+                if img_url:
+                    # Download and encode
+                    async with httpx.AsyncClient() as http_client:
+                        img_response = await http_client.get(img_url, timeout=30.0)
+                        img_response.raise_for_status()
+                        img_bytes = img_response.content
+                    
+                    all_results.append({
+                        "image_base64": base64.b64encode(img_bytes).decode('utf-8'),
+                        "garment_index": i,
+                        "url": img_url
+                    })
+                    print(f"[TRYON] Successfully processed garment {i+1}")
                         
         except Exception as e:
             print(f"[TRYON] Error processing garment {i+1}: {e}")
+            import traceback
+            traceback.print_exc()
             continue
     
     if not all_results:
-        raise HTTPException(status_code=500, detail="No try-on images were generated")
+        raise HTTPException(status_code=500, detail="No try-on images were generated. The FASHN model may not support this type of image.")
     
     return {
         "success": True,
