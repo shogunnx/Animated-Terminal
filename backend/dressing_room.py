@@ -622,26 +622,26 @@ async def generate_tryon_images(request: TryOnRequest) -> dict:
     # Check for dress first (full outfit)
     dress_url = await get_garment_url(request.dress_image_url, request.dress_image_base64)
     if dress_url:
-        garments_to_apply.append({"url": dress_url, "type": "dress", "category": "upper_body"})
+        garments_to_apply.append({"url": dress_url, "type": "dress", "photo_type": "auto"})
     else:
         # If no dress, check for top and bottom separately
         top_url = await get_garment_url(request.top_image_url, request.top_image_base64)
         if top_url:
-            garments_to_apply.append({"url": top_url, "type": "top", "category": "upper_body"})
+            garments_to_apply.append({"url": top_url, "type": "top", "photo_type": "auto"})
         
         bottom_url = await get_garment_url(request.bottom_image_url, request.bottom_image_base64)
         if bottom_url:
-            garments_to_apply.append({"url": bottom_url, "type": "bottom", "category": "lower_body"})
+            garments_to_apply.append({"url": bottom_url, "type": "bottom", "photo_type": "auto"})
     
-    # Add shoes
+    # Add shoes - FASHN may not support shoes separately, try anyway
     shoes_url = await get_garment_url(request.shoes_image_url, request.shoes_image_base64)
     if shoes_url:
-        garments_to_apply.append({"url": shoes_url, "type": "shoes", "category": "shoes"})
+        garments_to_apply.append({"url": shoes_url, "type": "shoes", "photo_type": "flat-lay"})
     
     # Add accessories
     accessory_url = await get_garment_url(request.accessory_image_url, request.accessory_image_base64)
     if accessory_url:
-        garments_to_apply.append({"url": accessory_url, "type": "accessory", "category": "auto"})
+        garments_to_apply.append({"url": accessory_url, "type": "accessory", "photo_type": "auto"})
     
     if not garments_to_apply:
         raise HTTPException(status_code=400, detail="At least one garment image required (dress, top, bottom, shoes, or accessory)")
@@ -663,7 +663,7 @@ async def generate_tryon_images(request: TryOnRequest) -> dict:
                 arguments={
                     "model_image": final_result_url,
                     "garment_image": garment["url"],
-                    "garment_photo_type": garment.get("category", "auto")
+                    "garment_photo_type": garment.get("photo_type", "auto")
                 }
             )
             
