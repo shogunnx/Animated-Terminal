@@ -184,11 +184,20 @@ export default function DressingRoom() {
   // TryOn mode state
   const [isTryOnMode, setIsTryOnMode] = useState(false);
   const [isHeadshotMode, setIsHeadshotMode] = useState(false);
-  const [garmentImages, setGarmentImages] = useState([]); // Up to 4 garment images
+  const [garmentImages, setGarmentImages] = useState([]); // Legacy - keeping for compatibility
   const [tryOnResults, setTryOnResults] = useState([]); // Multiple results from TryOn
   const [generatedResults, setGeneratedResults] = useState([]); // Multiple results from standard generation
   const [headshotBackground, setHeadshotBackground] = useState("neutral");
   const [headshotExpression, setHeadshotExpression] = useState("neutral");
+  
+  // TryOn garment categories
+  const [tryOnGarments, setTryOnGarments] = useState({
+    dress: null,      // Full outfit/dress
+    top: null,        // Shirt, blouse, etc.
+    bottom: null,     // Pants, skirt, etc.
+    shoes: null,      // Footwear
+    accessory: null   // Accessories
+  });
   
   // DeviantArt state
   const [daAuthenticated, setDaAuthenticated] = useState(false);
@@ -619,27 +628,58 @@ export default function DressingRoom() {
     }
   };
 
-  // Handle TryOn mode generation with actual garment images
+  // Handle TryOn mode generation with categorized garment images
   const handleTryOnGenerate = async () => {
-    if (garmentImages.length === 0) {
-      setError("Please upload at least one garment/accessory image for TryOn mode");
+    // Check if at least one garment is selected
+    const hasGarment = tryOnGarments.dress || tryOnGarments.top || tryOnGarments.bottom || 
+                       tryOnGarments.shoes || tryOnGarments.accessory;
+    
+    if (!hasGarment) {
+      setError("Please upload at least one garment image (dress, top, bottom, shoes, or accessory)");
       return;
     }
 
     setLoading(true);
     setError(null);
     setTryOnResults([]);
+    setGeneratedResults([]);
 
     try {
       const isUploadedImage = baseImageSource === "upload" || selectedCharacter?.requiresUpload;
       
+      // Helper to extract base64 from data URL
+      const extractBase64 = (dataUrl) => {
+        if (!dataUrl) return null;
+        if (dataUrl.startsWith('http')) return null; // URL, not base64
+        return dataUrl.split(',').pop();
+      };
+      
+      // Helper to check if it's a URL
+      const extractUrl = (dataUrl) => {
+        if (!dataUrl) return null;
+        if (dataUrl.startsWith('http')) return dataUrl;
+        return null;
+      };
+      
       const requestBody = {
         model_image_url: baseImageSource === "nexus" ? baseImage : null,
         model_image_base64: isUploadedImage ? baseImage?.split(',').pop() : null,
-        garment_image_urls: garmentImages.filter(g => g.startsWith('http')),
-        garment_image_base64s: garmentImages.filter(g => !g.startsWith('http')).map(g => g.split(',').pop()),
-        num_samples: 4,
-        mode: "balanced"
+        // Dress (full outfit)
+        dress_image_url: extractUrl(tryOnGarments.dress),
+        dress_image_base64: extractBase64(tryOnGarments.dress),
+        // Top
+        top_image_url: extractUrl(tryOnGarments.top),
+        top_image_base64: extractBase64(tryOnGarments.top),
+        // Bottom
+        bottom_image_url: extractUrl(tryOnGarments.bottom),
+        bottom_image_base64: extractBase64(tryOnGarments.bottom),
+        // Shoes
+        shoes_image_url: extractUrl(tryOnGarments.shoes),
+        shoes_image_base64: extractBase64(tryOnGarments.shoes),
+        // Accessory
+        accessory_image_url: extractUrl(tryOnGarments.accessory),
+        accessory_image_base64: extractBase64(tryOnGarments.accessory),
+        num_samples: 4
       };
       
       const response = await fetch(`${BACKEND_URL}/api/dressing-room/tryon`, {
@@ -655,11 +695,12 @@ export default function DressingRoom() {
 
       const data = await response.json();
       
-      // Set results - multiple images
+      // Set results
       const results = data.images.map(img => `data:image/png;base64,${img.image_base64}`);
       setTryOnResults(results);
+      setGeneratedResults(results);
       
-      // Also set the first result as the main generated image
+      // Set the first result as the main generated image
       if (results.length > 0) {
         setGeneratedImage(results[0]);
       }
@@ -672,14 +713,41 @@ export default function DressingRoom() {
     }
   };
 
-  // Handle garment image upload for TryOn mode
+  // Handle garment image upload for TryOn mode by category
+  const handleCategoryGarmentUpload = (category, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setTryOnGarments(prev => ({
+        ...prev,
+        [category]: event.target.result
+      }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeCategoryGarment = (category) => {
+    setTryOnGarments(prev => ({
+      ...prev,
+      [category]: null
+    }));
+  };
+
+  const clearAllGarments = () => {
+    setTryOnGarments({
+      dress: null,
+      top: null,
+      bottom: null,
+      shoes: null,
+      accessory: null
+    });
+  };
+
+  // Legacy handlers for backwards compatibility
   const handleGarmentUpload = (e) => {
     const files = Array.from(e.target.files);
-    if (garmentImages.length + files.length > 4) {
-      setError("Maximum 4 garment images allowed");
-      return;
-    }
-
     files.forEach(file => {
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -1412,98 +1480,147 @@ export default function DressingRoom() {
           </div>
         )}
 
-        {/* TryOn Mode - Garment Upload Section */}
+        {/* TryOn Mode - Categorized Garment Upload Section */}
         {isTryOnMode && (
           <div style={{ marginBottom: 14, padding: 12, borderRadius: 12, background: "rgba(255,105,180,.1)", border: "1px solid rgba(255,105,180,.3)" }}>
-            <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10, color: "#ff69b4" }}>
-              👗 GARMENT IMAGES ({garmentImages.length}/4)
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div className="tsv-title" style={{ fontSize: 11, opacity:.85, color: "#ff69b4" }}>
+                👗 GARMENT CATEGORIES
+              </div>
+              {(tryOnGarments.dress || tryOnGarments.top || tryOnGarments.bottom || tryOnGarments.shoes || tryOnGarments.accessory) && (
+                <button
+                  onClick={clearAllGarments}
+                  style={{
+                    fontSize: 9,
+                    padding: "4px 8px",
+                    background: "rgba(255,68,68,.2)",
+                    border: "1px solid rgba(255,68,68,.5)",
+                    borderRadius: 4,
+                    color: "#ff6666",
+                    cursor: "pointer"
+                  }}
+                >
+                  Clear All
+                </button>
+              )}
             </div>
-            <div style={{ fontSize: 9, opacity: 0.6, marginBottom: 10 }}>
-              Upload photos of clothes/accessories to try on. Best with flat-lay or on-model photos.
+            <div style={{ fontSize: 9, opacity: 0.6, marginBottom: 12 }}>
+              Upload garments by category. Items will be layered: Dress/Top+Bottom → Shoes → Accessories
             </div>
             
-            {/* Upload button */}
-            <label style={{
-              display: "block",
-              padding: "10px 16px",
-              background: "rgba(255,105,180,.2)",
-              border: "1px dashed rgba(255,105,180,.5)",
-              borderRadius: 8,
-              cursor: "pointer",
-              textAlign: "center",
-              fontSize: 11,
-              marginBottom: 10
-            }}>
-              📁 Upload Garment Images
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleGarmentUpload}
-                style={{ display: "none" }}
-              />
-            </label>
-            
-            {/* Display uploaded garments */}
-            {garmentImages.length > 0 && (
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {garmentImages.map((img, idx) => (
-                  <div key={idx} style={{ position: "relative" }}>
-                    <img 
-                      src={img} 
-                      alt={`Garment ${idx + 1}`}
-                      style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 8, border: "1px solid rgba(255,105,180,.5)" }}
-                    />
-                    <button
-                      onClick={() => removeGarmentImage(idx)}
-                      style={{
-                        position: "absolute",
-                        top: -5,
-                        right: -5,
-                        width: 18,
-                        height: 18,
-                        borderRadius: "50%",
-                        background: "#ff4444",
-                        border: "none",
-                        color: "white",
-                        fontSize: 10,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                      }}
-                    >
-                      ×
-                    </button>
+            {/* Category Grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
+              {/* Dress (Full Outfit) */}
+              <div style={{ 
+                padding: 8, 
+                borderRadius: 8, 
+                background: tryOnGarments.dress ? "rgba(255,105,180,.2)" : "rgba(255,255,255,.05)",
+                border: tryOnGarments.dress ? "1px solid rgba(255,105,180,.5)" : "1px dashed rgba(255,255,255,.2)"
+              }}>
+                <div style={{ fontSize: 9, opacity: 0.7, marginBottom: 6 }}>👗 Dress/Full Outfit</div>
+                {tryOnGarments.dress ? (
+                  <div style={{ position: "relative", display: "inline-block" }}>
+                    <img src={tryOnGarments.dress} alt="Dress" style={{ width: 50, height: 60, objectFit: "cover", borderRadius: 4 }} />
+                    <button onClick={() => removeCategoryGarment('dress')} style={{ position: "absolute", top: -5, right: -5, width: 16, height: 16, borderRadius: "50%", background: "#ff4444", border: "none", color: "white", fontSize: 9, cursor: "pointer" }}>×</button>
                   </div>
-                ))}
+                ) : (
+                  <label style={{ display: "block", padding: "8px", background: "rgba(255,105,180,.15)", borderRadius: 4, cursor: "pointer", textAlign: "center", fontSize: 9 }}>
+                    + Upload
+                    <input type="file" accept="image/*" onChange={(e) => handleCategoryGarmentUpload('dress', e)} style={{ display: "none" }} />
+                  </label>
+                )}
               </div>
-            )}
+              
+              {/* Top */}
+              <div style={{ 
+                padding: 8, 
+                borderRadius: 8, 
+                background: tryOnGarments.top ? "rgba(100,149,237,.2)" : "rgba(255,255,255,.05)",
+                border: tryOnGarments.top ? "1px solid rgba(100,149,237,.5)" : "1px dashed rgba(255,255,255,.2)"
+              }}>
+                <div style={{ fontSize: 9, opacity: 0.7, marginBottom: 6 }}>👚 Top/Shirt</div>
+                {tryOnGarments.top ? (
+                  <div style={{ position: "relative", display: "inline-block" }}>
+                    <img src={tryOnGarments.top} alt="Top" style={{ width: 50, height: 60, objectFit: "cover", borderRadius: 4 }} />
+                    <button onClick={() => removeCategoryGarment('top')} style={{ position: "absolute", top: -5, right: -5, width: 16, height: 16, borderRadius: "50%", background: "#ff4444", border: "none", color: "white", fontSize: 9, cursor: "pointer" }}>×</button>
+                  </div>
+                ) : (
+                  <label style={{ display: "block", padding: "8px", background: "rgba(100,149,237,.15)", borderRadius: 4, cursor: "pointer", textAlign: "center", fontSize: 9 }}>
+                    + Upload
+                    <input type="file" accept="image/*" onChange={(e) => handleCategoryGarmentUpload('top', e)} style={{ display: "none" }} />
+                  </label>
+                )}
+              </div>
+              
+              {/* Bottom */}
+              <div style={{ 
+                padding: 8, 
+                borderRadius: 8, 
+                background: tryOnGarments.bottom ? "rgba(50,205,50,.2)" : "rgba(255,255,255,.05)",
+                border: tryOnGarments.bottom ? "1px solid rgba(50,205,50,.5)" : "1px dashed rgba(255,255,255,.2)"
+              }}>
+                <div style={{ fontSize: 9, opacity: 0.7, marginBottom: 6 }}>👖 Bottom/Pants</div>
+                {tryOnGarments.bottom ? (
+                  <div style={{ position: "relative", display: "inline-block" }}>
+                    <img src={tryOnGarments.bottom} alt="Bottom" style={{ width: 50, height: 60, objectFit: "cover", borderRadius: 4 }} />
+                    <button onClick={() => removeCategoryGarment('bottom')} style={{ position: "absolute", top: -5, right: -5, width: 16, height: 16, borderRadius: "50%", background: "#ff4444", border: "none", color: "white", fontSize: 9, cursor: "pointer" }}>×</button>
+                  </div>
+                ) : (
+                  <label style={{ display: "block", padding: "8px", background: "rgba(50,205,50,.15)", borderRadius: 4, cursor: "pointer", textAlign: "center", fontSize: 9 }}>
+                    + Upload
+                    <input type="file" accept="image/*" onChange={(e) => handleCategoryGarmentUpload('bottom', e)} style={{ display: "none" }} />
+                  </label>
+                )}
+              </div>
+              
+              {/* Shoes */}
+              <div style={{ 
+                padding: 8, 
+                borderRadius: 8, 
+                background: tryOnGarments.shoes ? "rgba(255,165,0,.2)" : "rgba(255,255,255,.05)",
+                border: tryOnGarments.shoes ? "1px solid rgba(255,165,0,.5)" : "1px dashed rgba(255,255,255,.2)"
+              }}>
+                <div style={{ fontSize: 9, opacity: 0.7, marginBottom: 6 }}>👠 Shoes</div>
+                {tryOnGarments.shoes ? (
+                  <div style={{ position: "relative", display: "inline-block" }}>
+                    <img src={tryOnGarments.shoes} alt="Shoes" style={{ width: 50, height: 60, objectFit: "cover", borderRadius: 4 }} />
+                    <button onClick={() => removeCategoryGarment('shoes')} style={{ position: "absolute", top: -5, right: -5, width: 16, height: 16, borderRadius: "50%", background: "#ff4444", border: "none", color: "white", fontSize: 9, cursor: "pointer" }}>×</button>
+                  </div>
+                ) : (
+                  <label style={{ display: "block", padding: "8px", background: "rgba(255,165,0,.15)", borderRadius: 4, cursor: "pointer", textAlign: "center", fontSize: 9 }}>
+                    + Upload
+                    <input type="file" accept="image/*" onChange={(e) => handleCategoryGarmentUpload('shoes', e)} style={{ display: "none" }} />
+                  </label>
+                )}
+              </div>
+            </div>
             
-            {/* TryOn Results Grid */}
-            {tryOnResults.length > 0 && (
-              <div style={{ marginTop: 12 }}>
-                <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 8 }}>Generated Results:</div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 }}>
-                  {tryOnResults.map((img, idx) => (
-                    <img
-                      key={idx}
-                      src={img}
-                      alt={`Result ${idx + 1}`}
-                      onClick={() => setGeneratedImage(img)}
-                      style={{
-                        width: "100%",
-                        aspectRatio: "3/4",
-                        objectFit: "cover",
-                        borderRadius: 8,
-                        border: generatedImage === img ? "2px solid #ff69b4" : "1px solid rgba(255,255,255,.2)",
-                        cursor: "pointer"
-                      }}
-                    />
-                  ))}
+            {/* Accessories - Full Width */}
+            <div style={{ 
+              marginTop: 8,
+              padding: 8, 
+              borderRadius: 8, 
+              background: tryOnGarments.accessory ? "rgba(148,0,211,.2)" : "rgba(255,255,255,.05)",
+              border: tryOnGarments.accessory ? "1px solid rgba(148,0,211,.5)" : "1px dashed rgba(255,255,255,.2)"
+            }}>
+              <div style={{ fontSize: 9, opacity: 0.7, marginBottom: 6 }}>💎 Accessory (bag, jewelry, etc.)</div>
+              {tryOnGarments.accessory ? (
+                <div style={{ position: "relative", display: "inline-block" }}>
+                  <img src={tryOnGarments.accessory} alt="Accessory" style={{ width: 50, height: 60, objectFit: "cover", borderRadius: 4 }} />
+                  <button onClick={() => removeCategoryGarment('accessory')} style={{ position: "absolute", top: -5, right: -5, width: 16, height: 16, borderRadius: "50%", background: "#ff4444", border: "none", color: "white", fontSize: 9, cursor: "pointer" }}>×</button>
                 </div>
-              </div>
-            )}
+              ) : (
+                <label style={{ display: "block", padding: "8px", background: "rgba(148,0,211,.15)", borderRadius: 4, cursor: "pointer", textAlign: "center", fontSize: 9, maxWidth: 120 }}>
+                  + Upload
+                  <input type="file" accept="image/*" onChange={(e) => handleCategoryGarmentUpload('accessory', e)} style={{ display: "none" }} />
+                </label>
+              )}
+            </div>
+            
+            {/* Info about layering */}
+            <div style={{ marginTop: 10, fontSize: 9, opacity: 0.5, fontStyle: "italic" }}>
+              💡 Tip: Upload a Dress OR Top+Bottom. Shoes and accessories will be layered on top.
+            </div>
           </div>
         )}
 

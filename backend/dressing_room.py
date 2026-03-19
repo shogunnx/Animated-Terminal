@@ -101,13 +101,21 @@ class OutfitRequest(BaseModel):
     is_pairs_mode: Optional[bool] = False
 
 class TryOnRequest(BaseModel):
-    """Request for virtual try-on with actual garment images"""
+    """Request for virtual try-on with actual garment images by category"""
     model_image_url: Optional[str] = None
     model_image_base64: Optional[str] = None
-    garment_image_urls: List[str] = []  # Up to 4 garment/accessory images
-    garment_image_base64s: List[str] = []  # Alternative: base64 encoded garments
-    num_samples: int = 4  # Generate up to 4 results
-    mode: str = "balanced"  # performance, balanced, quality
+    # Separate garment categories
+    top_image_url: Optional[str] = None
+    top_image_base64: Optional[str] = None
+    bottom_image_url: Optional[str] = None
+    bottom_image_base64: Optional[str] = None
+    dress_image_url: Optional[str] = None  # Full outfit/dress (replaces top+bottom)
+    dress_image_base64: Optional[str] = None
+    shoes_image_url: Optional[str] = None
+    shoes_image_base64: Optional[str] = None
+    accessory_image_url: Optional[str] = None
+    accessory_image_base64: Optional[str] = None
+    num_samples: int = 4
 
 class HeadshotRequest(BaseModel):
     """Request for headshot/close-up generation"""
@@ -580,7 +588,7 @@ Only change the clothing. High quality, detailed clothing."""
 
 
 async def generate_tryon_images(request: TryOnRequest) -> dict:
-    """Generate virtual try-on images using FASHN model with actual garment images"""
+    """Generate virtual try-on images with layered garments (dress/top+bottom, shoes, accessories)"""
     
     # Get model (person) image
     if request.model_image_base64:
@@ -595,87 +603,114 @@ async def generate_tryon_images(request: TryOnRequest) -> dict:
     
     # Upload model image to Fal.ai
     try:
-        model_url = await upload_image_to_fal(model_image_bytes)
+        current_model_url = await upload_image_to_fal(model_image_bytes)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to upload model image: {str(e)}")
     
-    # Get garment images
-    garment_urls = []
+    # Helper to get garment URL from request
+    async def get_garment_url(url: Optional[str], b64: Optional[str]) -> Optional[str]:
+        if url:
+            return url
+        elif b64:
+            garment_bytes = base64.b64decode(b64)
+            return await upload_image_to_fal(garment_bytes)
+        return None
     
-    # From URLs
-    for url in request.garment_image_urls[:4]:  # Max 4 garments
-        garment_urls.append(url)
+    # Collect garments in order: dress OR (top+bottom), then shoes, then accessories
+    garments_to_apply = []
     
-    # From base64
-    for b64 in request.garment_image_base64s[:4 - len(garment_urls)]:  # Fill remaining slots
-        garment_bytes = base64.b64decode(b64)
-        garment_url = await upload_image_to_fal(garment_bytes)
-        garment_urls.append(garment_url)
+    # Check for dress first (full outfit)
+    dress_url = await get_garment_url(request.dress_image_url, request.dress_image_base64)
+    if dress_url:
+        garments_to_apply.append({"url": dress_url, "type": "dress", "category": "upper_body"})
+    else:
+        # If no dress, check for top and bottom separately
+        top_url = await get_garment_url(request.top_image_url, request.top_image_base64)
+        if top_url:
+            garments_to_apply.append({"url": top_url, "type": "top", "category": "upper_body"})
+        
+        bottom_url = await get_garment_url(request.bottom_image_url, request.bottom_image_base64)
+        if bottom_url:
+            garments_to_apply.append({"url": bottom_url, "type": "bottom", "category": "lower_body"})
     
-    if not garment_urls:
-        raise HTTPException(status_code=400, detail="At least one garment image required")
+    # Add shoes
+    shoes_url = await get_garment_url(request.shoes_image_url, request.shoes_image_base64)
+    if shoes_url:
+        garments_to_apply.append({"url": shoes_url, "type": "shoes", "category": "shoes"})
     
-    print(f"[TRYON] Processing {len(garment_urls)} garment(s)")
-    print(f"[TRYON] Mode: {request.mode}, Samples: {request.num_samples}")
+    # Add accessories
+    accessory_url = await get_garment_url(request.accessory_image_url, request.accessory_image_base64)
+    if accessory_url:
+        garments_to_apply.append({"url": accessory_url, "type": "accessory", "category": "auto"})
     
-    all_results = []
+    if not garments_to_apply:
+        raise HTTPException(status_code=400, detail="At least one garment image required (dress, top, bottom, shoes, or accessory)")
     
-    # Process each garment with FASHN Virtual Try-On
-    for i, garment_url in enumerate(garment_urls):
-        print(f"[TRYON] Processing garment {i+1}/{len(garment_urls)}")
+    print(f"[TRYON] Processing {len(garments_to_apply)} garment(s) sequentially")
+    for g in garments_to_apply:
+        print(f"[TRYON]   - {g['type']}")
+    
+    # Apply garments sequentially - each result becomes the base for the next
+    final_result_url = current_model_url
+    applied_garments = []
+    
+    for i, garment in enumerate(garments_to_apply):
+        print(f"[TRYON] Applying {garment['type']} ({i+1}/{len(garments_to_apply)})...")
         
         try:
             handler = await fal_client.submit_async(
                 "fal-ai/fashn/tryon/v1.5",
                 arguments={
-                    "model_image": model_url,
-                    "garment_image": garment_url,
-                    "garment_photo_type": "auto"
+                    "model_image": final_result_url,
+                    "garment_image": garment["url"],
+                    "garment_photo_type": garment.get("category", "auto")
                 }
             )
             
             result = await handler.get()
-            print(f"[TRYON] Result keys: {result.keys() if result else 'None'}")
             
-            # FASHN returns 'image' (singular) with url
+            # Get result URL
+            img_url = None
             if result:
-                img_url = None
                 if result.get("image"):
                     img_url = result["image"].get("url") if isinstance(result["image"], dict) else result["image"]
-                elif result.get("images"):
-                    # Handle array format
-                    for img_data in result["images"]:
-                        img_url = img_data.get("url") if isinstance(img_data, dict) else img_data
-                        if img_url:
-                            break
+                elif result.get("images") and len(result["images"]) > 0:
+                    img_data = result["images"][0]
+                    img_url = img_data.get("url") if isinstance(img_data, dict) else img_data
+            
+            if img_url:
+                final_result_url = img_url
+                applied_garments.append(garment['type'])
+                print(f"[TRYON] Successfully applied {garment['type']}")
+            else:
+                print(f"[TRYON] Warning: No result for {garment['type']}, continuing with previous state")
                 
-                if img_url:
-                    # Download and encode
-                    async with httpx.AsyncClient() as http_client:
-                        img_response = await http_client.get(img_url, timeout=30.0)
-                        img_response.raise_for_status()
-                        img_bytes = img_response.content
-                    
-                    all_results.append({
-                        "image_base64": base64.b64encode(img_bytes).decode('utf-8'),
-                        "garment_index": i,
-                        "url": img_url
-                    })
-                    print(f"[TRYON] Successfully processed garment {i+1}")
-                        
         except Exception as e:
-            print(f"[TRYON] Error processing garment {i+1}: {e}")
-            import traceback
-            traceback.print_exc()
+            print(f"[TRYON] Error applying {garment['type']}: {e}")
+            # Continue with what we have
             continue
     
-    if not all_results:
-        raise HTTPException(status_code=500, detail="No try-on images were generated. The FASHN model may not support this type of image.")
+    if not applied_garments:
+        raise HTTPException(status_code=500, detail="Failed to apply any garments. The FASHN model may not support these image types.")
+    
+    # Download final result
+    try:
+        async with httpx.AsyncClient() as http_client:
+            img_response = await http_client.get(final_result_url, timeout=30.0)
+            img_response.raise_for_status()
+            final_image_bytes = img_response.content
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to download final image: {str(e)}")
+    
+    final_base64 = base64.b64encode(final_image_bytes).decode('utf-8')
+    
+    print(f"[TRYON] Complete! Applied: {', '.join(applied_garments)}")
     
     return {
         "success": True,
-        "images": all_results[:request.num_samples],  # Return up to requested samples
-        "total_generated": len(all_results),
+        "images": [{"image_base64": final_base64, "applied_garments": applied_garments}],
+        "total_generated": 1,
+        "applied_garments": applied_garments,
         "model": "fal-ai/fashn/tryon/v1.5"
     }
 
