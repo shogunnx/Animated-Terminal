@@ -126,6 +126,13 @@ class HeadshotRequest(BaseModel):
     background: str = "neutral"  # neutral, studio, blurred, none
     expression: str = "neutral"  # neutral, smile, serious, friendly
 
+class FootToHeadRequest(BaseModel):
+    """Request for foot-to-head progression shots"""
+    character_name: str
+    character_id: str
+    reference_image_url: Optional[str] = None
+    reference_image_base64: Optional[str] = None
+
 class BaseImageRequest(BaseModel):
     character_id: str
     image_base64: str
@@ -681,20 +688,20 @@ async def generate_tryon_images(request: TryOnRequest) -> dict:
             print(f"[TRYON] Error applying {item['type']}: {e}")
             continue
     
-    # Step 2: Apply shoes using FLUX Kontext (FASHN doesn't support shoes)
+    # Step 2: Apply shoes using FLUX.2 Pro with multi-image reference
     if shoes_url:
-        print(f"[TRYON] Applying shoes using FLUX Kontext...")
+        print(f"[TRYON] Applying shoes using FLUX.2 Pro multi-reference...")
         try:
-            # Download shoes image to analyze
-            shoes_prompt = """Add these exact shoes to the person's feet. 
+            # Use FLUX.2 Pro with both images - model and shoes as references
+            shoes_prompt = """Take the person from @image1 and put the exact shoes from @image2 on their feet.
 Keep everything else exactly the same - same outfit, same pose, same face, same background.
-Only change the footwear to match the reference shoes exactly.
-High detail, exact match to the shoe design, proper perspective."""
+Only replace the footwear with the exact shoes shown in @image2.
+Match the shoe design, color, and style precisely. High detail rendering of the shoes."""
             
             handler = await fal_client.submit_async(
-                "fal-ai/flux-pro/kontext",
+                "fal-ai/flux-2-pro/edit",
                 arguments={
-                    "image_url": final_result_url,
+                    "image_url": [final_result_url, shoes_url],
                     "prompt": shoes_prompt,
                 }
             )
@@ -704,26 +711,26 @@ High detail, exact match to the shoe design, proper perspective."""
             if result and result.get("images") and len(result["images"]) > 0:
                 final_result_url = result["images"][0]["url"]
                 applied_items.append("shoes")
-                print(f"[TRYON] Successfully applied shoes")
+                print(f"[TRYON] Successfully applied shoes with FLUX.2 Pro")
             else:
                 print(f"[TRYON] Warning: No result for shoes")
                 
         except Exception as e:
             print(f"[TRYON] Error applying shoes: {e}")
     
-    # Step 3: Apply accessories using FLUX Kontext
+    # Step 3: Apply accessories using FLUX.2 Pro with multi-image reference
     if accessory_url:
-        print(f"[TRYON] Applying accessory using FLUX Kontext...")
+        print(f"[TRYON] Applying accessory using FLUX.2 Pro multi-reference...")
         try:
-            accessory_prompt = """Add this exact accessory to the person.
+            accessory_prompt = """Take the person from @image1 and add the exact accessory from @image2.
 Keep everything else exactly the same - same outfit, same pose, same face.
-Only add the accessory from the reference image.
-High detail, exact match to the accessory design."""
+Add the accessory from @image2 in a natural position.
+Match the accessory design exactly. High detail."""
             
             handler = await fal_client.submit_async(
-                "fal-ai/flux-pro/kontext",
+                "fal-ai/flux-2-pro/edit",
                 arguments={
-                    "image_url": final_result_url,
+                    "image_url": [final_result_url, accessory_url],
                     "prompt": accessory_prompt,
                 }
             )
@@ -733,7 +740,7 @@ High detail, exact match to the accessory design."""
             if result and result.get("images") and len(result["images"]) > 0:
                 final_result_url = result["images"][0]["url"]
                 applied_items.append("accessory")
-                print(f"[TRYON] Successfully applied accessory")
+                print(f"[TRYON] Successfully applied accessory with FLUX.2 Pro")
             else:
                 print(f"[TRYON] Warning: No result for accessory")
                 
@@ -875,3 +882,121 @@ Perfect for video calls or profile picture."""
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Headshot generation failed: {str(e)}")
+
+
+
+async def generate_foot_to_head(request: FootToHeadRequest) -> dict:
+    """Generate 5 progression shots from feet to head - detailed close-ups at each body point"""
+    
+    # Get base image
+    if request.reference_image_base64:
+        base_image_bytes = base64.b64decode(request.reference_image_base64)
+        image_source = "upload"
+    elif request.reference_image_url:
+        base_image_bytes = await download_image(request.reference_image_url)
+        image_source = "url"
+    else:
+        raise HTTPException(status_code=400, detail="Reference image required (URL or base64)")
+    
+    # Preprocess image
+    base_image_bytes = preprocess_image(base_image_bytes)
+    
+    # Upload to Fal.ai
+    try:
+        image_url = await upload_image_to_fal(base_image_bytes)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
+    
+    # Define the 5 progression shots
+    shots = [
+        {
+            "name": "shoes_feet",
+            "prompt": """Extreme close-up shot of this person's feet and shoes only.
+Show detailed view of the footwear - the shoe design, heel, straps, and texture.
+Same person, same outfit, just zoomed in tight on the feet/shoes area.
+High fashion photography style, sharp focus on the shoes, professional lighting."""
+        },
+        {
+            "name": "legs_knees",
+            "prompt": """Close-up shot from knees to feet of this same person.
+Show the legs, calves, and how the outfit/dress falls.
+Same person, same outfit, cropped to show lower legs to feet.
+High fashion photography style, elegant pose, professional lighting."""
+        },
+        {
+            "name": "waist_hips",
+            "prompt": """Close-up shot of this same person from waist to knees.
+Show the waist, hips, and how the outfit fits the midsection.
+Same person, same outfit, cropped to show waist/hip area.
+High fashion photography style, flattering angle, professional lighting."""
+        },
+        {
+            "name": "chest_bust",
+            "prompt": """Close-up shot of this same person from chest to waist.
+Show the bust, shoulders, and upper body details of the outfit.
+Same person, same outfit, cropped to show chest/torso area.
+High fashion photography style, elegant composition, professional lighting."""
+        },
+        {
+            "name": "headshot",
+            "prompt": """Professional headshot close-up of this same person.
+Head and shoulders only, capturing face, hair, and expression.
+Same person, same styling, tight crop on face.
+Professional portrait photography, soft flattering lighting, sharp focus on face."""
+        }
+    ]
+    
+    print(f"[FOOT-TO-HEAD] Generating 5 progression shots for {request.character_id}")
+    
+    all_images = []
+    
+    # Generate each shot
+    import asyncio
+    
+    async def generate_shot(shot):
+        try:
+            handler = await fal_client.submit_async(
+                "fal-ai/flux-pro/kontext",
+                arguments={
+                    "image_url": image_url,
+                    "prompt": shot["prompt"],
+                }
+            )
+            result = await handler.get()
+            
+            if result and result.get("images") and len(result["images"]) > 0:
+                img_url = result["images"][0]["url"]
+                async with httpx.AsyncClient() as http_client:
+                    img_response = await http_client.get(img_url, timeout=30.0)
+                    img_response.raise_for_status()
+                    img_bytes = img_response.content
+                return {
+                    "name": shot["name"],
+                    "image_base64": base64.b64encode(img_bytes).decode('utf-8'),
+                    "url": img_url
+                }
+        except Exception as e:
+            print(f"[FOOT-TO-HEAD] Error generating {shot['name']}: {e}")
+            return None
+    
+    # Generate all 5 shots in parallel
+    results = await asyncio.gather(*[generate_shot(shot) for shot in shots])
+    
+    # Collect successful results in order
+    for result in results:
+        if result:
+            all_images.append(result)
+            print(f"[FOOT-TO-HEAD] Generated: {result['name']}")
+    
+    if not all_images:
+        raise HTTPException(status_code=500, detail="Failed to generate any progression shots")
+    
+    print(f"[FOOT-TO-HEAD] Complete! Generated {len(all_images)} shots")
+    
+    return {
+        "success": True,
+        "images": all_images,
+        "total_generated": len(all_images),
+        "shot_names": [img["name"] for img in all_images],
+        "model": "fal-ai/flux-pro/kontext"
+    }

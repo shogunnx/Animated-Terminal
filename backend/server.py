@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from dotenv import load_dotenv
 
-from dressing_room import generate_outfit_image, generate_tryon_images, generate_headshot, OutfitRequest, TryOnRequest, HeadshotRequest, BaseImageRequest
+from dressing_room import generate_outfit_image, generate_tryon_images, generate_headshot, generate_foot_to_head, OutfitRequest, TryOnRequest, HeadshotRequest, FootToHeadRequest, BaseImageRequest
 from teach_mode_routes import router as teach_mode_router
 from fastapi import HTTPException
 import base64
@@ -141,6 +141,12 @@ async def generate_headshot_endpoint(request: HeadshotRequest):
     Perfect for talking head setups, profile pictures, or video calls.
     Returns 4 headshot variations."""
     return await generate_headshot(request)
+
+@api.post("/dressing-room/foot-to-head")
+async def generate_foot_to_head_endpoint(request: FootToHeadRequest):
+    """Generate 5 progression shots from feet to head.
+    Returns detailed close-ups at: shoes/feet, legs/knees, waist/hips, chest/bust, and headshot."""
+    return await generate_foot_to_head(request)
 
 @api.post("/dressing-room/save-base")
 async def save_base_image_endpoint(request: BaseImageRequest):

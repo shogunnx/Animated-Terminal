@@ -184,11 +184,13 @@ export default function DressingRoom() {
   // TryOn mode state
   const [isTryOnMode, setIsTryOnMode] = useState(false);
   const [isHeadshotMode, setIsHeadshotMode] = useState(false);
+  const [isFootToHeadMode, setIsFootToHeadMode] = useState(false);
   const [garmentImages, setGarmentImages] = useState([]); // Legacy - keeping for compatibility
   const [tryOnResults, setTryOnResults] = useState([]); // Multiple results from TryOn
   const [generatedResults, setGeneratedResults] = useState([]); // Multiple results from standard generation
   const [headshotBackground, setHeadshotBackground] = useState("neutral");
   const [headshotExpression, setHeadshotExpression] = useState("neutral");
+  const [footToHeadResults, setFootToHeadResults] = useState([]); // 5 progression shots
   
   // TryOn garment categories
   const [tryOnGarments, setTryOnGarments] = useState({
@@ -559,6 +561,12 @@ export default function DressingRoom() {
       return;
     }
 
+    // Foot to Head mode - creates 5 progression shots
+    if (isFootToHeadMode) {
+      await handleFootToHeadGenerate();
+      return;
+    }
+
     const outfitDesc = generateOutfitPrompt();
     if (!outfitDesc) {
       setError("Please select clothing items or enter a custom description");
@@ -800,6 +808,55 @@ export default function DressingRoom() {
       } else {
         setGeneratedImage(`data:image/png;base64,${data.image_base64}`);
         setGeneratedResults([`data:image/png;base64,${data.image_base64}`]);
+      }
+      
+      window.dispatchEvent(new Event('tsv_outfit_generated'));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle Foot to Head mode generation - 5 progression shots
+  const handleFootToHeadGenerate = async () => {
+    setLoading(true);
+    setError(null);
+    setFootToHeadResults([]);
+    setGeneratedResults([]);
+
+    try {
+      const isUploadedImage = baseImageSource === "upload" || selectedCharacter?.requiresUpload;
+      
+      const requestBody = {
+        character_name: selectedCharacter.name,
+        character_id: selectedCharacter.id,
+        reference_image_url: baseImageSource === "nexus" ? baseImage : null,
+        reference_image_base64: isUploadedImage ? baseImage?.split(',').pop() : null,
+      };
+      
+      const response = await fetch(`${BACKEND_URL}/api/dressing-room/foot-to-head`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Failed to generate foot-to-head shots");
+      }
+
+      const data = await response.json();
+      
+      // Set the 5 progression shots
+      if (data.images && data.images.length > 0) {
+        const results = data.images.map(img => ({
+          name: img.name,
+          image: `data:image/png;base64,${img.image_base64}`
+        }));
+        setFootToHeadResults(results);
+        setGeneratedResults(results.map(r => r.image));
+        setGeneratedImage(results[0].image);
       }
       
       window.dispatchEvent(new Event('tsv_outfit_generated'));
@@ -1350,34 +1407,30 @@ export default function DressingRoom() {
       {/* Right Panel - Clothing Selection */}
       <div className="tsv-glass tsv-glow" style={{ padding: 14, maxHeight: "90vh", overflowY: "auto" }}>
         
-        {/* Mode Toggle: Text Prompt vs TryOn vs Headshot */}
+        {/* Mode Toggle: Text Prompt vs TryOn vs Headshot vs Foot-to-Head */}
         <div style={{ marginBottom: 14, padding: 12, borderRadius: 12, background: "rgba(255,165,0,.1)", border: "1px solid rgba(255,165,0,.3)" }}>
           <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10, color: "#ffa500" }}>
             🎭 GENERATION MODE
           </div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 6 }}>
             <button
-              onClick={() => { setIsTryOnMode(false); setIsHeadshotMode(false); setTryOnResults([]); }}
+              onClick={() => { setIsTryOnMode(false); setIsHeadshotMode(false); setIsFootToHeadMode(false); setTryOnResults([]); }}
               className="tsv-pill"
               style={{
-                flex: 1,
-                minWidth: 80,
                 fontSize: 10,
                 padding: "8px 10px",
                 cursor: "pointer",
-                borderColor: (!isTryOnMode && !isHeadshotMode) ? "#ffa500" : "rgba(255,255,255,.14)",
-                background: (!isTryOnMode && !isHeadshotMode) ? "rgba(255,165,0,.25)" : "rgba(255,255,255,.10)",
-                boxShadow: (!isTryOnMode && !isHeadshotMode) ? "0 0 12px rgba(255,165,0,.4)" : "none"
+                borderColor: (!isTryOnMode && !isHeadshotMode && !isFootToHeadMode) ? "#ffa500" : "rgba(255,255,255,.14)",
+                background: (!isTryOnMode && !isHeadshotMode && !isFootToHeadMode) ? "rgba(255,165,0,.25)" : "rgba(255,255,255,.10)",
+                boxShadow: (!isTryOnMode && !isHeadshotMode && !isFootToHeadMode) ? "0 0 12px rgba(255,165,0,.4)" : "none"
               }}
             >
               📝 Outfit
             </button>
             <button
-              onClick={() => { setIsTryOnMode(true); setIsHeadshotMode(false); }}
+              onClick={() => { setIsTryOnMode(true); setIsHeadshotMode(false); setIsFootToHeadMode(false); }}
               className="tsv-pill"
               style={{
-                flex: 1,
-                minWidth: 80,
                 fontSize: 10,
                 padding: "8px 10px",
                 cursor: "pointer",
@@ -1389,11 +1442,9 @@ export default function DressingRoom() {
               👗 TryOn
             </button>
             <button
-              onClick={() => { setIsTryOnMode(false); setIsHeadshotMode(true); setTryOnResults([]); }}
+              onClick={() => { setIsTryOnMode(false); setIsHeadshotMode(true); setIsFootToHeadMode(false); setTryOnResults([]); }}
               className="tsv-pill"
               style={{
-                flex: 1,
-                minWidth: 80,
                 fontSize: 10,
                 padding: "8px 10px",
                 cursor: "pointer",
@@ -1404,16 +1455,90 @@ export default function DressingRoom() {
             >
               🎬 Headshot
             </button>
+            <button
+              onClick={() => { setIsTryOnMode(false); setIsHeadshotMode(false); setIsFootToHeadMode(true); setTryOnResults([]); }}
+              className="tsv-pill"
+              style={{
+                fontSize: 10,
+                padding: "8px 10px",
+                cursor: "pointer",
+                borderColor: isFootToHeadMode ? "#9932cc" : "rgba(255,255,255,.14)",
+                background: isFootToHeadMode ? "rgba(153,50,204,.25)" : "rgba(255,255,255,.10)",
+                boxShadow: isFootToHeadMode ? "0 0 12px rgba(153,50,204,.4)" : "none"
+              }}
+            >
+              👠➡️👤 Foot to Head
+            </button>
           </div>
           <div style={{ fontSize: 9, opacity: 0.6, marginTop: 8 }}>
             {isTryOnMode 
               ? "Upload actual garment/accessory images to virtually try them on"
               : isHeadshotMode
               ? "Create a close-up portrait for talking head setups"
+              : isFootToHeadMode
+              ? "Generate 5 detailed shots from shoes to headshot"
               : "Describe the outfit using text or select from presets below"
             }
           </div>
         </div>
+
+        {/* Foot to Head Mode Info */}
+        {isFootToHeadMode && (
+          <div style={{ marginBottom: 14, padding: 12, borderRadius: 12, background: "rgba(153,50,204,.1)", border: "1px solid rgba(153,50,204,.3)" }}>
+            <div className="tsv-title" style={{ fontSize: 11, opacity:.85, marginBottom: 10, color: "#9932cc" }}>
+              👠➡️👤 FOOT TO HEAD
+            </div>
+            <div style={{ fontSize: 9, opacity: 0.7, marginBottom: 10 }}>
+              Generates 5 detailed close-up shots in progression:
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 9 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#9932cc" }}>1.</span> 👠 Shoes/Feet - detailed footwear close-up
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#9932cc" }}>2.</span> 🦵 Legs/Knees - lower body view
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#9932cc" }}>3.</span> 👗 Waist/Hips - midsection details
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#9932cc" }}>4.</span> 👚 Chest/Bust - upper body
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#9932cc" }}>5.</span> 👤 Headshot - face close-up
+              </div>
+            </div>
+            
+            {/* Display Foot to Head Results */}
+            {footToHeadResults.length > 0 && (
+              <div style={{ marginTop: 12 }}>
+                <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 8 }}>Generated Shots:</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 6 }}>
+                  {footToHeadResults.map((shot, idx) => (
+                    <div key={idx} style={{ textAlign: "center" }}>
+                      <img
+                        src={shot.image}
+                        alt={shot.name}
+                        onClick={() => setGeneratedImage(shot.image)}
+                        style={{
+                          width: "100%",
+                          aspectRatio: "3/4",
+                          objectFit: "cover",
+                          borderRadius: 6,
+                          border: generatedImage === shot.image ? "2px solid #9932cc" : "1px solid rgba(255,255,255,.2)",
+                          cursor: "pointer"
+                        }}
+                      />
+                      <div style={{ fontSize: 8, opacity: 0.6, marginTop: 4 }}>
+                        {shot.name.replace('_', ' ')}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Headshot Mode Options */}
         {isHeadshotMode && (
