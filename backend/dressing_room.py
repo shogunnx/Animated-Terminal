@@ -588,7 +588,8 @@ Only change the clothing. High quality, detailed clothing."""
 
 
 async def generate_tryon_images(request: TryOnRequest) -> dict:
-    """Generate virtual try-on images with layered garments (dress/top+bottom, shoes, accessories)"""
+    """Generate virtual try-on images with layered garments.
+    Uses FASHN for clothing (dress/top/bottom) and FLUX Kontext for shoes/accessories."""
     
     # Get model (person) image
     if request.model_image_base64:
@@ -616,60 +617,51 @@ async def generate_tryon_images(request: TryOnRequest) -> dict:
             return await upload_image_to_fal(garment_bytes)
         return None
     
-    # Collect garments in order: dress OR (top+bottom), then shoes, then accessories
-    garments_to_apply = []
+    # Collect clothing items (FASHN supported: dress, top, bottom)
+    clothing_items = []
+    shoes_url = None
+    accessory_url = None
     
     # Check for dress first (full outfit)
     dress_url = await get_garment_url(request.dress_image_url, request.dress_image_base64)
     if dress_url:
-        garments_to_apply.append({"url": dress_url, "type": "dress", "photo_type": "auto"})
+        clothing_items.append({"url": dress_url, "type": "dress"})
     else:
         # If no dress, check for top and bottom separately
         top_url = await get_garment_url(request.top_image_url, request.top_image_base64)
         if top_url:
-            garments_to_apply.append({"url": top_url, "type": "top", "photo_type": "auto"})
+            clothing_items.append({"url": top_url, "type": "top"})
         
         bottom_url = await get_garment_url(request.bottom_image_url, request.bottom_image_base64)
         if bottom_url:
-            garments_to_apply.append({"url": bottom_url, "type": "bottom", "photo_type": "auto"})
+            clothing_items.append({"url": bottom_url, "type": "bottom"})
     
-    # Add shoes - FASHN may not support shoes separately, try anyway
+    # Get shoes and accessories (will use FLUX Kontext)
     shoes_url = await get_garment_url(request.shoes_image_url, request.shoes_image_base64)
-    if shoes_url:
-        garments_to_apply.append({"url": shoes_url, "type": "shoes", "photo_type": "flat-lay"})
-    
-    # Add accessories
     accessory_url = await get_garment_url(request.accessory_image_url, request.accessory_image_base64)
-    if accessory_url:
-        garments_to_apply.append({"url": accessory_url, "type": "accessory", "photo_type": "auto"})
     
-    if not garments_to_apply:
-        raise HTTPException(status_code=400, detail="At least one garment image required (dress, top, bottom, shoes, or accessory)")
+    if not clothing_items and not shoes_url and not accessory_url:
+        raise HTTPException(status_code=400, detail="At least one garment image required")
     
-    print(f"[TRYON] Processing {len(garments_to_apply)} garment(s) sequentially")
-    for g in garments_to_apply:
-        print(f"[TRYON]   - {g['type']}")
-    
-    # Apply garments sequentially - each result becomes the base for the next
+    applied_items = []
     final_result_url = current_model_url
-    applied_garments = []
     
-    for i, garment in enumerate(garments_to_apply):
-        print(f"[TRYON] Applying {garment['type']} ({i+1}/{len(garments_to_apply)})...")
-        
+    # Step 1: Apply clothing items using FASHN v1.6 (better quality)
+    for item in clothing_items:
+        print(f"[TRYON] Applying {item['type']} using FASHN v1.6...")
         try:
             handler = await fal_client.submit_async(
-                "fal-ai/fashn/tryon/v1.5",
+                "fal-ai/fashn/tryon/v1.6",
                 arguments={
                     "model_image": final_result_url,
-                    "garment_image": garment["url"],
-                    "garment_photo_type": garment.get("photo_type", "auto")
+                    "garment_image": item["url"],
+                    "garment_photo_type": "auto",
+                    "mode": "quality"
                 }
             )
             
             result = await handler.get()
             
-            # Get result URL
             img_url = None
             if result:
                 if result.get("image"):
@@ -680,18 +672,76 @@ async def generate_tryon_images(request: TryOnRequest) -> dict:
             
             if img_url:
                 final_result_url = img_url
-                applied_garments.append(garment['type'])
-                print(f"[TRYON] Successfully applied {garment['type']}")
+                applied_items.append(item['type'])
+                print(f"[TRYON] Successfully applied {item['type']}")
             else:
-                print(f"[TRYON] Warning: No result for {garment['type']}, continuing with previous state")
+                print(f"[TRYON] Warning: No result for {item['type']}")
                 
         except Exception as e:
-            print(f"[TRYON] Error applying {garment['type']}: {e}")
-            # Continue with what we have
+            print(f"[TRYON] Error applying {item['type']}: {e}")
             continue
     
-    if not applied_garments:
-        raise HTTPException(status_code=500, detail="Failed to apply any garments. The FASHN model may not support these image types.")
+    # Step 2: Apply shoes using FLUX Kontext (FASHN doesn't support shoes)
+    if shoes_url:
+        print(f"[TRYON] Applying shoes using FLUX Kontext...")
+        try:
+            # Download shoes image to analyze
+            shoes_prompt = """Add these exact shoes to the person's feet. 
+Keep everything else exactly the same - same outfit, same pose, same face, same background.
+Only change the footwear to match the reference shoes exactly.
+High detail, exact match to the shoe design, proper perspective."""
+            
+            handler = await fal_client.submit_async(
+                "fal-ai/flux-pro/kontext",
+                arguments={
+                    "image_url": final_result_url,
+                    "prompt": shoes_prompt,
+                }
+            )
+            
+            result = await handler.get()
+            
+            if result and result.get("images") and len(result["images"]) > 0:
+                final_result_url = result["images"][0]["url"]
+                applied_items.append("shoes")
+                print(f"[TRYON] Successfully applied shoes")
+            else:
+                print(f"[TRYON] Warning: No result for shoes")
+                
+        except Exception as e:
+            print(f"[TRYON] Error applying shoes: {e}")
+    
+    # Step 3: Apply accessories using FLUX Kontext
+    if accessory_url:
+        print(f"[TRYON] Applying accessory using FLUX Kontext...")
+        try:
+            accessory_prompt = """Add this exact accessory to the person.
+Keep everything else exactly the same - same outfit, same pose, same face.
+Only add the accessory from the reference image.
+High detail, exact match to the accessory design."""
+            
+            handler = await fal_client.submit_async(
+                "fal-ai/flux-pro/kontext",
+                arguments={
+                    "image_url": final_result_url,
+                    "prompt": accessory_prompt,
+                }
+            )
+            
+            result = await handler.get()
+            
+            if result and result.get("images") and len(result["images"]) > 0:
+                final_result_url = result["images"][0]["url"]
+                applied_items.append("accessory")
+                print(f"[TRYON] Successfully applied accessory")
+            else:
+                print(f"[TRYON] Warning: No result for accessory")
+                
+        except Exception as e:
+            print(f"[TRYON] Error applying accessory: {e}")
+    
+    if not applied_items:
+        raise HTTPException(status_code=500, detail="Failed to apply any items. Please try with different images.")
     
     # Download final result
     try:
@@ -704,14 +754,17 @@ async def generate_tryon_images(request: TryOnRequest) -> dict:
     
     final_base64 = base64.b64encode(final_image_bytes).decode('utf-8')
     
-    print(f"[TRYON] Complete! Applied: {', '.join(applied_garments)}")
+    print(f"[TRYON] Complete! Applied: {', '.join(applied_items)}")
     
     return {
         "success": True,
-        "images": [{"image_base64": final_base64, "applied_garments": applied_garments}],
+        "images": [{"image_base64": final_base64, "applied_items": applied_items}],
         "total_generated": 1,
-        "applied_garments": applied_garments,
-        "model": "fal-ai/fashn/tryon/v1.5"
+        "applied_items": applied_items,
+        "models_used": {
+            "clothing": "fal-ai/fashn/tryon/v1.6",
+            "shoes_accessories": "fal-ai/flux-pro/kontext"
+        }
     }
 
 
