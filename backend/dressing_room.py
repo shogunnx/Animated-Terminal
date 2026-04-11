@@ -688,20 +688,20 @@ async def generate_tryon_images(request: TryOnRequest) -> dict:
             print(f"[TRYON] Error applying {item['type']}: {e}")
             continue
     
-    # Step 2: Apply shoes using FLUX.2 Pro with multi-image reference
+    # Step 2: Apply shoes using FLUX Kontext Max Multi-image
     if shoes_url:
-        print(f"[TRYON] Applying shoes using FLUX.2 Pro multi-reference...")
+        print(f"[TRYON] Applying shoes using FLUX Kontext Max multi-image...")
         try:
-            # Use FLUX.2 Pro with both images - model and shoes as references
-            shoes_prompt = """Take the person from @image1 and put the exact shoes from @image2 on their feet.
-Keep everything else exactly the same - same outfit, same pose, same face, same background.
-Only replace the footwear with the exact shoes shown in @image2.
-Match the shoe design, color, and style precisely. High detail rendering of the shoes."""
+            # Use Kontext Max with multiple images - the prompt references both
+            shoes_prompt = """Replace the footwear on the person in the first image with the exact shoes shown in the second image.
+Keep everything else identical - same outfit, same pose, same face, same background.
+The new shoes should match the second image exactly in design, color, straps, heel style, and all details.
+High quality, photorealistic rendering of the exact shoes from the reference."""
             
             handler = await fal_client.submit_async(
-                "fal-ai/flux-2-pro/edit",
+                "fal-ai/flux-pro/kontext/max",
                 arguments={
-                    "image_url": [final_result_url, shoes_url],
+                    "image_urls": [final_result_url, shoes_url],
                     "prompt": shoes_prompt,
                 }
             )
@@ -711,26 +711,26 @@ Match the shoe design, color, and style precisely. High detail rendering of the 
             if result and result.get("images") and len(result["images"]) > 0:
                 final_result_url = result["images"][0]["url"]
                 applied_items.append("shoes")
-                print(f"[TRYON] Successfully applied shoes with FLUX.2 Pro")
+                print(f"[TRYON] Successfully applied shoes with Kontext Max")
             else:
                 print(f"[TRYON] Warning: No result for shoes")
                 
         except Exception as e:
             print(f"[TRYON] Error applying shoes: {e}")
     
-    # Step 3: Apply accessories using FLUX.2 Pro with multi-image reference
+    # Step 3: Apply accessories using FLUX Kontext Max Multi-image
     if accessory_url:
-        print(f"[TRYON] Applying accessory using FLUX.2 Pro multi-reference...")
+        print(f"[TRYON] Applying accessory using FLUX Kontext Max multi-image...")
         try:
-            accessory_prompt = """Take the person from @image1 and add the exact accessory from @image2.
-Keep everything else exactly the same - same outfit, same pose, same face.
-Add the accessory from @image2 in a natural position.
-Match the accessory design exactly. High detail."""
+            accessory_prompt = """Add the exact accessory from the second image to the person in the first image.
+Keep everything else identical - same outfit, same pose, same face, same shoes.
+Place the accessory naturally and match its design exactly from the reference.
+High quality, photorealistic rendering."""
             
             handler = await fal_client.submit_async(
-                "fal-ai/flux-2-pro/edit",
+                "fal-ai/flux-pro/kontext/max",
                 arguments={
-                    "image_url": [final_result_url, accessory_url],
+                    "image_urls": [final_result_url, accessory_url],
                     "prompt": accessory_prompt,
                 }
             )
