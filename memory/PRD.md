@@ -38,6 +38,12 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## Recent Changes
 
+### Feb 11, 2026 — Q&A INTERNAL HTTP BUG FIXED
+- **Bug**: Production Q&A on Railway failed with `"Failed to generate Q&A response: ... All connection attempts failed"` even though the LLM text generation succeeded. Root cause: `create_qa_video()` was doing an internal HTTP POST to `http://127.0.0.1:8001/api/storytime/generate-narrated`, but Railway containers don't allow loopback to the same service port.
+- **Fix**: Replaced the internal HTTP call with a direct in-process function call to `_generate_video_with_voice_fallback()` using the resolved voice_id chain. Faster, no httpx, no port assumptions.
+- **Graceful HeyGen failure**: When HeyGen rejects the video (credits/voice/etc), `create_qa_video()` now returns `success: True` with `video_id: None` and `heygen_error: "..."`, so the frontend's text+TTS+sources fallback panel still renders the lore-grounded answer.
+- Verified: "how tall is VixenVictoria" → lore-grounded answer (5'11" per VixenVictoria wiki page) with 4 source pills.
+
 ### Feb 11, 2026 — VOICE PICKER ADMIN PAGE
 - New page **`/admin/voices`** (linked from a 🎙️ VOICES button in the StoryTime header)
 - Backend: `voice_mapping.py` — MongoDB-backed persistent avatar→voice overrides, in-process 30s cache so production reads are cheap

@@ -337,40 +337,44 @@ async def create_qa_video(
         logger.warning(f"Lore sources lookup failed: {e}")
         sources = []
     
-    # Use the narrated endpoint which supports TSVAvatarGenerator with custom duration
-    # Use localhost for internal backend-to-backend call (same container)
-    async with httpx.AsyncClient() as client:
-        story_response = await client.post(
-            "http://127.0.0.1:8001/api/storytime/generate-narrated",
-            json={
-                "avatar_id": avatar_id,
-                "character_id": character_id,
-                "character_name": character_name,
-                "story_text": response_text,
-                "story_title": f"Q&A: {question[:50]}",
-                "use_character_voice": False  # Already in character voice from LLM
-            },
-            timeout=30.0
+    # Generate the HeyGen video directly via the storytime helper.
+    # We used to httpx-POST to 127.0.0.1:8001 here, but Railway containers
+    # don't allow loopback to the same service, which produced
+    # "All connection attempts failed" in production.
+    try:
+        from storytime import _generate_video_with_voice_fallback, _resolve_voice_id
+        voice_id = _resolve_voice_id(avatar_id)
+        story_result = await _generate_video_with_voice_fallback(
+            avatar_id=avatar_id,
+            script_text=response_text,
+            voice_id=voice_id,
+            title=f"Q&A: {question[:50]}",
+            test_mode=False,
         )
-        
-        if story_response.status_code != 200:
-            try:
-                error_data = story_response.json()
-                raise Exception(f"Video generation error: {error_data.get('detail', story_response.text)}")
-            except Exception:
-                raise Exception(f"Video generation error: HTTP {story_response.status_code} - {story_response.text[:200]}")
-        
-        try:
-            story_data = story_response.json()
-        except Exception as e:
-            raise Exception(f"Failed to parse response: {str(e)} - Response text: {story_response.text[:200]}")
-        
-        video_id = story_data.get("video_id")
-        
+    except Exception as e:
+        logger.exception("HeyGen direct call failed")
+        raise Exception(f"Video generation error: {e}")
+
+    if not story_result.get("success"):
+        # Return the text + sources anyway so the frontend's TTS+text fallback
+        # can still render an answer; surface HeyGen's error message verbatim.
+        err = story_result.get("error", "Unknown HeyGen failure")
+        logger.warning(f"HeyGen rejected Q&A video: {err}")
         return {
-            "video_id": video_id,
+            "video_id": None,
             "response_text": response_text,
             "question": question,
             "character_name": character_name,
             "sources": sources,
+            "heygen_error": err,
         }
+
+    video_id = story_result.get("video_id")
+
+    return {
+        "video_id": video_id,
+        "response_text": response_text,
+        "question": question,
+        "character_name": character_name,
+        "sources": sources,
+    }
