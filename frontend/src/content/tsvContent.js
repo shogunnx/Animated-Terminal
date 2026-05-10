@@ -7,6 +7,7 @@ export const TSV_CHARACTERS = [
   { id:"vanessa", name:"Vanessa", subtitle:"Pinup warrior suite", accent:"#FF3D5A", glow:"#FFCC4D", portrait:"/assets/portraits/vanessa.png" },
   { id:"harmony", name:"Harmony", subtitle:"Tech loft & fusion lab", accent:"#63B3FF", glow:"#A7F0FF", portrait:"/assets/portraits/harmony.png" },
   { id:"evil_victoria", name:"Evil Victoria", subtitle:"Forbidden chamber", accent:"#FF4B4B", glow:"#B000FF", portrait:"/assets/portraits/evil_victoria.png" },
+  { id:"vixen_victoria", name:"VixenVictoria", subtitle:"Ruined-grandeur curator · nostalgia aphrodisiac", accent:"#C0B8C9", glow:"#8C7A99", portrait:"https://customer-assets.emergentagent.com/job_b8ece04d-f4c9-44e4-bbaa-65813b82c742/artifacts/6xog5976_vixenpowerrangers.png" },
   { id:"veronica", name:"Veronica", subtitle:"Human ally quarters", accent:"#FFB84D", glow:"#63B3FF", portrait:"/assets/portraits/veronica.png" },
   { id:"gameroom", name:"Game Room", subtitle:"Arcade & party zone", accent:"#FFD700", glow:"#FF6B00", portrait:"/assets/portraits/gameroom.png", isSpecial: true }
 ];

@@ -85,7 +85,7 @@ const AVATARS = {
   'evil_victoria_talking_head': { id: '94fd37e9ad0b42efb9d828edf5be22ee', name: 'Evil Victoria Talking Head', portrait: 'https://customer-assets.emergentagent.com/job_avatar-realm-5/artifacts/d5pdq5ky_evilsmile.jpg', isPreRecorded: false },
   'wargirl': { id: 'c8680d9549744019809f0acc04faac65', name: 'Wargirl', portrait: null, isPreRecorded: false },
   'victoria_black': { id: 'faa3f1fcdc0b49b79bb0a3fa11595754', name: 'Victoria Black', portrait: null, isPreRecorded: false },
-  'victoria_black_blaster': { id: '1992da07-01f4-44da-b1f5-918144391d90', name: 'Victoria Black Blaster', portrait: null, isPreRecorded: false },
+  'vixen_victoria': { id: '738db1645bc140beb1b476231a8b79f4', name: 'VixenVictoria', portrait: 'https://customer-assets.emergentagent.com/job_b8ece04d-f4c9-44e4-bbaa-65813b82c742/artifacts/6xog5976_vixenpowerrangers.png', isPreRecorded: false, tagline: 'Nostalgia & Ruined Sacred Memories' },
   'victoria_black_goddess': { id: '1afb71c7-2353-4252-bdc9-87bfb2f47423', name: 'Victoria Black Goddess', portrait: null, isPreRecorded: false },
   'vanessa': { id: 'f81fa68314f84acb8fe6e527d90adc07', name: 'Vanessa', portrait: null, isPreRecorded: false },
   'binary': { id: 'd8d16687495340c5805ad9821046be3a', name: 'Binary', portrait: null, isPreRecorded: false },

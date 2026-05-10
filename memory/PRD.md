@@ -38,6 +38,14 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## Recent Changes
 
+### Feb 11, 2026 — NEW HOST: VIXENVICTORIA
+- Added **VixenVictoria** as a new StoryTime narrator in the slot previously occupied by the broken-image Victoria Black Blaster card
+- Portrait: user-provided artifact (silver curls, gold halter, willow tree backdrop)
+- Voice: reuses Evil Victoria's HeyGen avatar (`738db1645bc140beb1b476231a8b79f4` → voice `d74c1480d47e457d9181cb0b61d56eb0`) so she shares the deep sensual voice as requested
+- Personality (in `storytime_qa.CHARACTER_LORE['vixen_victoria']`): calm, distracted, deeply human-feeling, vast librarian-like knowledge, husky pauses, **aphrodisiac for nostalgia / decayed ruins / past destruction of sacred memories & landmarks**. Signature speech patterns like *"Mmm... I remember that one."* and *"funny, isn't it, how the most sacred places fall the softest..."*
+- Lore-grounded via her existing VixenVictoria wiki page (5'11", softly curvy, etc.)
+- Verified Q&A: asked "Tell me about a place you miss" → answered with abandoned-amusement-park imagery, chipped carousel horses, dusk light, scent of old popcorn, mid-thought trail-offs. Sources pill includes VixenVictoria first.
+
 ### Feb 11, 2026 — Q&A INTERNAL HTTP BUG FIXED
 - **Bug**: Production Q&A on Railway failed with `"Failed to generate Q&A response: ... All connection attempts failed"` even though the LLM text generation succeeded. Root cause: `create_qa_video()` was doing an internal HTTP POST to `http://127.0.0.1:8001/api/storytime/generate-narrated`, but Railway containers don't allow loopback to the same service port.
 - **Fix**: Replaced the internal HTTP call with a direct in-process function call to `_generate_video_with_voice_fallback()` using the resolved voice_id chain. Faster, no httpx, no port assumptions.
