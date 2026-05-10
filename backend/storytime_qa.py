@@ -211,8 +211,16 @@ Target: {max_words} words maximum"""
             return response.strip()
     
     except Exception as e:
-        print(f"LLM API error: {e}")
-        raise Exception(f"Failed to generate response: {str(e)}")
+        msg = str(e)
+        print(f"LLM API error: {msg}")
+        # Surface a clean, actionable error for known cases
+        if "FREE_USER_EXTERNAL_ACCESS_DENIED" in msg or "Free users can only use Universal Key" in msg:
+            raise Exception(
+                "AI text key blocked: the Emergent Universal Key is free-tier and "
+                "can't be used outside the Emergent platform. Add a direct OPENAI_API_KEY "
+                "on Railway, or upgrade your Emergent plan."
+            )
+        raise Exception(f"Failed to generate response: {msg}")
 
 async def rewrite_story_in_character_voice(
     character_id: str,

@@ -38,6 +38,16 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## Recent Changes
 
+### Feb 11, 2026 — CRITICAL CORS + URL FIXES (continued)
+- **Bug: `[object Object]` alert on Q&A** — frontend passed Pydantic/error objects to `new Error()` which renders as `[object Object]`.
+- **Fix**: Added `formatErrorDetail()` helper in StoryTime.jsx that handles strings, Pydantic arrays, generic objects, and recognizes two known cases:
+  1. `FREE_USER_EXTERNAL_ACCESS_DENIED` → "AI text key blocked: your Emergent Universal Key is free-tier and can't be used outside Emergent. Add a direct OPENAI_API_KEY on Railway, or upgrade your Emergent plan."
+  2. `Insufficient credit` → "HeyGen credits are exhausted. Please top up your HeyGen account."
+- Backend `storytime_qa.py` now also surfaces the FREE_USER message cleanly instead of the long litellm trace.
+- ⚠️ **Root cause of Q&A failure on Railway**: `EMERGENT_LLM_KEY` is on the free tier — Emergent's gateway blocks external (non-Emergent-platform) calls. Two fix paths for the user:
+  1. Upgrade Emergent plan (universal key works everywhere)
+  2. Add a direct `OPENAI_API_KEY` on Railway and switch `storytime_qa.py` to use it directly
+
 ### Feb 11, 2026 — CRITICAL CORS + URL FIXES
 - **Bug: "The string did not match the expected pattern"** in StoryTime — root cause: frontend (Cloudflare Pages) was calling relative `/api/*` paths which Cloudflare served as static index.html (POST=405 with empty body). iOS Safari throws this exact error when parsing empty body as JSON.
 - **Fix 1**: Updated `StoryTime.jsx`, `Home.jsx`, `TeachMode.jsx`, `DressingRoomAnalytics.jsx`, `RelationshipPanel.jsx`, and `lib/api.js` to use `${VITE_BACKEND_URL}/api/...` (matching the pattern already used in DressingRoom.jsx).

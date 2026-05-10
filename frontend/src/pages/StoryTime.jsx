@@ -6,6 +6,28 @@ import { LORE_STORIES } from '../data/story-lore.js';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
+// Robustly format any error detail into a readable string.
+// Handles Pydantic validation arrays, nested objects, and embedded LLM/HeyGen quota errors.
+function formatErrorDetail(detail) {
+  if (!detail) return "";
+  if (typeof detail === "string") {
+    if (detail.includes("FREE_USER_EXTERNAL_ACCESS_DENIED") || detail.includes("Free users can only use Universal Key")) {
+      return "AI text key blocked: your Emergent Universal Key is free-tier and can't be used outside Emergent. Add a direct OPENAI_API_KEY on Railway, or upgrade your Emergent plan.";
+    }
+    if (detail.toLowerCase().includes("insufficient credit") || detail.toLowerCase().includes("low credits")) {
+      return "HeyGen credits are exhausted. Please top up your HeyGen account.";
+    }
+    return detail;
+  }
+  if (Array.isArray(detail)) {
+    return detail.map(d => d?.msg || JSON.stringify(d)).join("; ");
+  }
+  if (typeof detail === "object") {
+    return detail.message || detail.msg || detail.detail || JSON.stringify(detail);
+  }
+  return String(detail);
+}
+
 const STORY_CATEGORIES = {
   test: "Test Stories",
   reddit: "AITA from Reddit",
@@ -259,7 +281,7 @@ export default function StoryTime() {
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.detail || 'Failed to generate video');
+        throw new Error(formatErrorDetail(data.detail) || 'Failed to generate video');
       }
       
       const videoId = data.video_id;
@@ -382,7 +404,7 @@ export default function StoryTime() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.detail || 'Failed to generate Q&A response');
+        throw new Error(formatErrorDetail(data.detail) || 'Failed to generate Q&A response');
       }
 
       // Store response data
