@@ -5,14 +5,30 @@ Interactive question-answering with video responses using character lore and per
 
 import os
 import json
-from typing import Optional
+import logging
+from typing import Optional, List, Dict
 import httpx
+from openai import AsyncOpenAI
 from emergentintegrations.llm.chat import LlmChat, UserMessage
-from lore_wiki import build_lore_context
+from lore_wiki import build_lore_context, search_lore
 
-# Emergent LLM key
-EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY", "")
+logger = logging.getLogger(__name__)
+
+# LLM keys — prefer direct OPENAI_API_KEY (works on external hosts like Railway).
+# Fall back to EMERGENT_LLM_KEY (only works inside Emergent platform on free tier).
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
+EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY", "").strip()
 GIRLSMIND_API_KEY = os.getenv("GIRLSMIND_API_KEY", "")
+
+_openai_client: Optional[AsyncOpenAI] = None
+if OPENAI_API_KEY:
+    _openai_client = AsyncOpenAI(
+        api_key=OPENAI_API_KEY,
+        timeout=httpx.Timeout(30.0, read=25.0, write=5.0, connect=5.0),
+    )
+    logger.info("OpenAI direct client initialized (using OPENAI_API_KEY)")
+else:
+    logger.info("OPENAI_API_KEY not set; falling back to Emergent Universal Key")
 
 # Character ID mapping - all Victoria Black variants use the same personality
 CHARACTER_ID_MAPPING = {
@@ -176,58 +192,51 @@ Examples:
 
 Target: {max_words} words maximum"""
 
-    # Generate response using emergentintegrations
+    # Generate response — prefer direct OpenAI (works on Railway), fall back to Emergent.
     try:
-        # Create unique session ID for this Q&A
         session_id = f"qa_{character_id}_{hash(question)}"
-        
-        # If video URL is provided, use Gemini for video understanding
+
+        # Video Q&A still needs Emergent's Gemini wrapper (multimodal)
         if video_url:
-            from emergentintegrations.llm.chat import FileContentWithMimeType
-            
-            # Download video temporarily (for YouTube videos, we need to download first)
-            video_path = None
-            if "youtube.com" in video_url or "youtu.be" in video_url:
-                # For YouTube, we'll pass the URL directly in the prompt for now
-                # Gemini can handle YouTube URLs directly
-                chat = LlmChat(
-                    api_key=EMERGENT_LLM_KEY,
-                    session_id=session_id,
-                    system_message=system_prompt
-                ).with_model("gemini", "gemini-2.0-flash")
-                
-                # Create user message with YouTube URL
-                full_question = f"{question}\n\nYouTube Video URL: {video_url}\n\nPlease watch this video and respond based on its content."
-                user_message = UserMessage(text=full_question)
-            else:
-                # For direct video files, download and attach
-                chat = LlmChat(
-                    api_key=EMERGENT_LLM_KEY,
-                    session_id=session_id,
-                    system_message=system_prompt
-                ).with_model("gemini", "gemini-2.0-flash")
-                
-                user_message = UserMessage(text=question)
-            
-            # Send message and get response
-            response = await chat.send_message(user_message)
-            
-            return response.strip()
-        else:
-            # Use OpenAI for text-only Q&A
+            from emergentintegrations.llm.chat import FileContentWithMimeType  # noqa: F401
+            full_question = (
+                f"{question}\n\nYouTube Video URL: {video_url}\n\n"
+                "Please watch this video and respond based on its content."
+                if ("youtube.com" in video_url or "youtu.be" in video_url)
+                else question
+            )
             chat = LlmChat(
                 api_key=EMERGENT_LLM_KEY,
                 session_id=session_id,
-                system_message=system_prompt
-            ).with_model("openai", "gpt-4o")
-            
-            # Create user message
-            user_message = UserMessage(text=question)
-            
-            # Send message and get response
-            response = await chat.send_message(user_message)
-            
+                system_message=system_prompt,
+            ).with_model("gemini", "gemini-2.0-flash")
+            response = await chat.send_message(UserMessage(text=full_question))
             return response.strip()
+
+        # Text-only path — prefer direct OpenAI (works publicly), fall back to Emergent.
+        if _openai_client is not None:
+            try:
+                completion = await _openai_client.chat.completions.create(
+                    model="gpt-4o",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": question},
+                    ],
+                    max_tokens=int(max_words * 2.5),  # ~1 token per 0.75 words
+                    temperature=0.7,
+                )
+                return (completion.choices[0].message.content or "").strip()
+            except Exception as e:
+                logger.warning(f"Direct OpenAI failed, falling back to Emergent: {e}")
+                # fall through to Emergent path below
+
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=session_id,
+            system_message=system_prompt,
+        ).with_model("openai", "gpt-4o")
+        response = await chat.send_message(UserMessage(text=question))
+        return response.strip()
     
     except Exception as e:
         msg = str(e)
@@ -309,10 +318,24 @@ async def create_qa_video(
     video_url: str = None,
     duration: int = 10
 ) -> dict:
-    """Generate Q&A response and create video using TSVAvatarGenerator"""
-    
+    """Generate Q&A response and create video using TSVAvatarGenerator.
+
+    Returns the AI-generated text plus a list of lore-wiki sources used so the
+    frontend can credit/link the canonical wiki pages.
+    """
+
     # Generate character response using AI (with optional video analysis)
     response_text = await generate_character_response(character_id, character_name, question, video_url)
+
+    # Capture which lore pages grounded this answer (for source attribution UI)
+    try:
+        retrieved = search_lore(question, character_name, top_n=4)
+        sources: List[Dict[str, str]] = [
+            {"title": p["title"], "url": p["url"]} for p in retrieved
+        ]
+    except Exception as e:
+        logger.warning(f"Lore sources lookup failed: {e}")
+        sources = []
     
     # Use the narrated endpoint which supports TSVAvatarGenerator with custom duration
     # Use localhost for internal backend-to-backend call (same container)
@@ -334,7 +357,7 @@ async def create_qa_video(
             try:
                 error_data = story_response.json()
                 raise Exception(f"Video generation error: {error_data.get('detail', story_response.text)}")
-            except:
+            except Exception:
                 raise Exception(f"Video generation error: HTTP {story_response.status_code} - {story_response.text[:200]}")
         
         try:
@@ -348,5 +371,6 @@ async def create_qa_video(
             "video_id": video_id,
             "response_text": response_text,
             "question": question,
-            "character_name": character_name
+            "character_name": character_name,
+            "sources": sources,
         }

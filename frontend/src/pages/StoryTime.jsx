@@ -378,7 +378,7 @@ export default function StoryTime() {
   //   1) Try Web Speech API to read the AI-generated text aloud
   //   2) If TTS unavailable/blocked, just show the text in the video space
   //   3) Always display the text regardless
-  const triggerQAFallback = (text, character, accent) => {
+  const triggerQAFallback = (text, character, accent, sources = []) => {
     if (!text) return;
     setQaLoading(false);
     setGeneratedVideoUrl(null);
@@ -403,7 +403,13 @@ export default function StoryTime() {
         mode = 'text';
       }
     }
-    setQaFallback({ mode, text, character: character || 'Character', accent: accent || '#ff69b4' });
+    setQaFallback({
+      mode,
+      text,
+      character: character || 'Character',
+      accent: accent || '#ff69b4',
+      sources: Array.isArray(sources) ? sources : [],
+    });
   };
 
   const stopQAFallbackAudio = () => {
@@ -415,7 +421,7 @@ export default function StoryTime() {
 
   const replayQAFallbackAudio = () => {
     if (qaFallback?.text) {
-      triggerQAFallback(qaFallback.text, qaFallback.character, qaFallback.accent);
+      triggerQAFallback(qaFallback.text, qaFallback.character, qaFallback.accent, qaFallback.sources);
     }
   };
 
@@ -464,16 +470,18 @@ export default function StoryTime() {
       setQaResponse({
         question: data.question,
         text: data.response_text,
-        character: data.character_name
+        character: data.character_name,
+        sources: Array.isArray(data.sources) ? data.sources : [],
       });
 
       const videoId = data.video_id;
       const responseText = data.response_text;
       const characterName = data.character_name;
+      const responseSources = Array.isArray(data.sources) ? data.sources : [];
 
       // If credits already known to be 0, skip HeyGen polling and go straight to fallback
       if (creditStatus?.credits_low) {
-        triggerQAFallback(responseText, characterName, fallbackAccent);
+        triggerQAFallback(responseText, characterName, fallbackAccent, responseSources);
         return;
       }
 
@@ -506,12 +514,12 @@ export default function StoryTime() {
             } else if (status === 'failed') {
               clearInterval(pollInterval);
               // HeyGen failed (commonly: 0 credits). Activate TTS-or-text fallback
-              triggerQAFallback(responseText, characterName, fallbackAccent);
+              triggerQAFallback(responseText, characterName, fallbackAccent, responseSources);
             }
           } catch (err) {
             console.error('Error polling Q&A video status:', err);
             clearInterval(pollInterval);
-            triggerQAFallback(responseText, characterName, fallbackAccent);
+            triggerQAFallback(responseText, characterName, fallbackAccent, responseSources);
           }
         }, 3000);
 
@@ -519,12 +527,12 @@ export default function StoryTime() {
         setTimeout(() => {
           clearInterval(pollInterval);
           if (qaLoading) {
-            triggerQAFallback(responseText, characterName, fallbackAccent);
+            triggerQAFallback(responseText, characterName, fallbackAccent, responseSources);
           }
         }, 300000);
       } else {
         // No video_id returned (HeyGen rejected upfront). Go straight to fallback.
-        triggerQAFallback(responseText, characterName, fallbackAccent);
+        triggerQAFallback(responseText, characterName, fallbackAccent, responseSources);
       }
     } catch (error) {
       console.error('Error generating Q&A:', error);
@@ -973,6 +981,46 @@ export default function StoryTime() {
                   )}
                 </div>
               )}
+
+              {qaFallback.sources && qaFallback.sources.length > 0 && (
+                <div
+                  data-testid="qa-fallback-sources"
+                  style={{
+                    marginTop: 18,
+                    paddingTop: 14,
+                    borderTop: `1px dashed ${qaFallback.accent}40`,
+                  }}
+                >
+                  <div className="tsv-title" style={{ fontSize: 10, opacity: 0.7, marginBottom: 6, letterSpacing: 1 }}>
+                    📖 SOURCES — FANDOM WIKI
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    {qaFallback.sources.map((s, i) => (
+                      <a
+                        key={i}
+                        href={s.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        data-testid={`qa-source-link-${i}`}
+                        style={{
+                          fontSize: 11,
+                          padding: '4px 10px',
+                          borderRadius: 999,
+                          background: `${qaFallback.accent}20`,
+                          border: `1px solid ${qaFallback.accent}60`,
+                          color: '#fff',
+                          textDecoration: 'none',
+                          transition: 'all 0.2s',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background = `${qaFallback.accent}50`; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = `${qaFallback.accent}20`; }}
+                      >
+                        {s.title}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div style={{ 
@@ -1383,6 +1431,39 @@ export default function StoryTime() {
               </div>
               {qaResponse.text}
             </div>
+
+            {/* Sources from Fandom Wiki */}
+            {qaResponse.sources && qaResponse.sources.length > 0 && (
+              <div
+                data-testid="qa-response-sources"
+                style={{ marginTop: 10, padding: '8px 10px', background: 'rgba(0,0,0,0.25)', borderRadius: 6 }}
+              >
+                <div style={{ fontSize: 9, opacity: 0.65, marginBottom: 5, letterSpacing: 0.5 }}>
+                  📖 SOURCES — FANDOM WIKI
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+                  {qaResponse.sources.map((s, i) => (
+                    <a
+                      key={i}
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        fontSize: 10,
+                        padding: '2px 8px',
+                        borderRadius: 999,
+                        background: 'rgba(255,105,180,0.15)',
+                        border: '1px solid rgba(255,105,180,0.4)',
+                        color: '#ff9ad1',
+                        textDecoration: 'none',
+                      }}
+                    >
+                      {s.title}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Ask Another Button */}
             <button

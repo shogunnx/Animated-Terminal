@@ -38,6 +38,10 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## Recent Changes
 
+### Feb 11, 2026 — DIRECT OPENAI + SOURCE ATTRIBUTION
+- **Direct OpenAI primary path**: `storytime_qa.py` now uses `openai.AsyncOpenAI` with `OPENAI_API_KEY` (works on any host, including Railway). Falls back to `EMERGENT_LLM_KEY` only when `OPENAI_API_KEY` is not set or the direct call fails. Verified locally — gpt-4o answers Q&A in ~6s.
+- **Source attribution UI**: `/api/storytime/qa` now returns a `sources: [{title, url}]` array — the top 4 lore wiki pages used to ground the answer. Frontend renders them as pill-style links under both the fallback panel (`[data-testid='qa-fallback-sources']`) and the success card (`[data-testid='qa-response-sources']`). Every Q&A doubles as a wiki SEO funnel — fans can click straight through to the canonical pages.
+
 ### Feb 11, 2026 — LORE-GROUNDED Q&A (RAG)
 - New `/app/backend/lore_wiki.py` — scrapes all 56 pages from the official **TheSaiyanVictoria Fandom Wiki** (`thesaiyanvictoria-universe.fandom.com`) via MediaWiki `action=parse`, strips HTML to plain text, stores in MongoDB collection `lore_wiki_pages`
 - `storytime_qa.py` — `generate_character_response()` now calls `build_lore_context(question, character_name)` which retrieves the top 4 most relevant pages via weighted keyword scoring (title hits worth 100×, content frequency 1×) and injects them as authoritative system context. LLM is instructed to answer STRICTLY from these excerpts and flag any speculation explicitly.

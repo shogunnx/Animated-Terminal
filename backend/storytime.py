@@ -205,7 +205,8 @@ async def generate_qa_response(request: QARequest):
             "video_id": result["video_id"],
             "response_text": result["response_text"],
             "question": result["question"],
-            "character_name": result["character_name"]
+            "character_name": result["character_name"],
+            "sources": result.get("sources", []),
         }
         
     except Exception as e:
