@@ -8,6 +8,7 @@ import json
 from typing import Optional
 import httpx
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+from lore_wiki import build_lore_context
 
 # Emergent LLM key
 EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY", "")
@@ -113,19 +114,33 @@ async def generate_character_response(
     video_url: str = None,
     max_words: int = 200
 ) -> str:
-    """Generate AI response from character perspective, with optional video analysis"""
-    
+    """Generate AI response from character perspective, with optional video analysis.
+
+    The response is GROUNDED in the official Fandom wiki (lore_wiki) — top relevant
+    pages are injected as authoritative context. The LLM is instructed to answer
+    strictly from those excerpts and flag speculation if the lore is silent.
+    """
+
     # Fetch GirlsMind personality
     girlsmind_data = await fetch_girlsmind_personality(character_id)
-    
+
     # Build character context
     character_context = build_character_context(character_id, girlsmind_data)
+
+    # Retrieve relevant lore from the official Fandom wiki
+    try:
+        lore_context = build_lore_context(question, character_name)
+    except Exception as e:
+        print(f"Lore wiki retrieval failed (continuing without RAG): {e}")
+        lore_context = ""
+
+    lore_block = f"\n\n{lore_context}" if lore_context else ""
     
     # Create system prompt
     if video_url:
         system_prompt = f"""You are {character_name} from TheSaiyanVictoria universe.
 
-{character_context}
+{character_context}{lore_block}
 
 CRITICAL RULES FOR VIDEO ANALYSIS:
 - Watch and understand the video content provided
@@ -134,17 +149,21 @@ CRITICAL RULES FOR VIDEO ANALYSIS:
 - Keep responses SHORT and EFFICIENT (150-250 words max)
 - Stay in character while discussing the video content
 - Video response must be under 180 seconds (3 minutes)
+- Ground every lore claim in the OFFICIAL LORE EXCERPTS above. Do NOT invent.
 
 Target: {max_words} words maximum"""
     else:
         system_prompt = f"""You are {character_name} from TheSaiyanVictoria universe.
 
-{character_context}
+{character_context}{lore_block}
 
 CRITICAL RULES:
 - Answer as {character_name} in first person
 - Keep responses SHORT and EFFICIENT (150-250 words max for ~60-90 second videos)
-- For lore questions: Stay 100% TRUE to established lore - DO NOT make up events or details
+- For lore questions: Answer ONLY from the OFFICIAL LORE EXCERPTS provided above.
+  Do NOT invent names, places, events, or relationships not in the excerpts.
+  If the lore doesn't cover something, say so in character (e.g.
+  "That part of my story isn't yet written down...") before any speculation.
 - For simple questions (time, weather, jokes): Answer briefly with personality flair
 - For general topics: Be efficient and concise
 - Add personality but don't be overly verbose
@@ -152,7 +171,7 @@ CRITICAL RULES:
 
 Examples:
 - "What time is it?" → Brief answer with personality (20-30 words)
-- "How was Binary created?" → Stick to exact lore, concise (150-200 words)
+- "How was Binary created?" → Quote/paraphrase the lore excerpts exactly (150-200 words)
 - "What's your favorite color?" → Quick in-character answer (30-50 words)
 
 Target: {max_words} words maximum"""

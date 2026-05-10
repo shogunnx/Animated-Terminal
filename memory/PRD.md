@@ -38,6 +38,16 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## Recent Changes
 
+### Feb 11, 2026 — LORE-GROUNDED Q&A (RAG)
+- New `/app/backend/lore_wiki.py` — scrapes all 56 pages from the official **TheSaiyanVictoria Fandom Wiki** (`thesaiyanvictoria-universe.fandom.com`) via MediaWiki `action=parse`, strips HTML to plain text, stores in MongoDB collection `lore_wiki_pages`
+- `storytime_qa.py` — `generate_character_response()` now calls `build_lore_context(question, character_name)` which retrieves the top 4 most relevant pages via weighted keyword scoring (title hits worth 100×, content frequency 1×) and injects them as authoritative system context. LLM is instructed to answer STRICTLY from these excerpts and flag any speculation explicitly.
+- New admin endpoints:
+  - `POST /api/storytime/lore/refresh` — force re-scrape (call after wiki edits)
+  - `GET /api/storytime/lore/status` — cache size
+  - `GET /api/storytime/lore/search?q=...&character=...` — diagnostic retrieval preview
+- Cache auto-primes on backend startup
+- Verified: "Where did Binary come from?" now returns the canon answer — Vegeta deal, Super Saiyan God Vegeta battle, Merged Zamasu extraction, nuclear-powered evolved form — pulled directly from the Binary wiki page. No more fabrication.
+
 ### Feb 11, 2026 — GRACEFUL Q&A FALLBACK CHAIN
 - **New behavior**: When user asks a Q&A question, the flow now degrades gracefully:
   1. Try HeyGen video (existing)

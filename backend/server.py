@@ -72,6 +72,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# Prime the Fandom lore cache on startup so first Q&A is fast.
+@app.on_event("startup")
+async def _prime_lore_cache():
+    try:
+        from lore_wiki import cached_page_count, refresh_lore_cache
+        if cached_page_count() == 0:
+            await refresh_lore_cache()
+    except Exception as e:
+        # Non-fatal — Q&A will fall back to in-code lore summaries
+        import logging
+        logging.getLogger(__name__).warning(f"Lore cache priming failed: {e}")
+
 api = APIRouter(prefix="/api")
 
 # -----------------------

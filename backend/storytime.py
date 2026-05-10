@@ -4,6 +4,7 @@ from typing import Optional
 import httpx
 import os
 import logging
+from lore_wiki import refresh_lore_cache, cached_page_count, search_lore
 
 logger = logging.getLogger(__name__)
 
@@ -364,3 +365,36 @@ async def get_credit_status():
             "message": "HeyGen API connected",
             "credits_low": False
         }
+
+
+
+# ---------------------- Lore wiki (RAG) admin endpoints ----------------------
+
+@router.post("/lore/refresh")
+async def refresh_lore_endpoint():
+    """Force-refresh the cached Fandom wiki lore. Call after wiki updates."""
+    try:
+        result = await refresh_lore_cache()
+        return {"success": True, **result}
+    except Exception as e:
+        logger.exception("Lore refresh failed")
+        raise HTTPException(status_code=500, detail=f"Lore refresh failed: {e}")
+
+
+@router.get("/lore/status")
+async def lore_status():
+    """Number of cached lore pages — used to verify RAG is primed."""
+    return {"cached_pages": cached_page_count()}
+
+
+@router.get("/lore/search")
+async def lore_search(q: str, character: str = "", top_n: int = 4):
+    """Diagnostic: see which lore pages a question retrieves."""
+    pages = search_lore(q, character, top_n=top_n)
+    return {
+        "query": q,
+        "results": [
+            {"title": p["title"], "url": p["url"], "preview": p["content"][:300]}
+            for p in pages
+        ],
+    }
