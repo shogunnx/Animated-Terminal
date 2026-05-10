@@ -109,6 +109,9 @@ export default function StoryTime() {
   const [qaResponse, setQaResponse] = useState(null);
   const [qaLoading, setQaLoading] = useState(false);
   const [qaVideoUrl, setQaVideoUrl] = useState(null);
+  // Fallback display when HeyGen video fails (e.g. zero credits):
+  // { mode: 'tts' | 'text', text, character, accent }
+  const [qaFallback, setQaFallback] = useState(null);
   
   // Dynamic Content State
   const [dynamicStories, setDynamicStories] = useState([]);
@@ -220,6 +223,8 @@ export default function StoryTime() {
     setCurrentStory(story);
     setIsPlaying(false);
     setGeneratedVideoUrl(null);
+    setQaFallback(null);
+    stopQAFallbackAudio();
     
     // Check if story has a pre-recorded video ID
     if (story.preRecordedVideoId) {
@@ -369,6 +374,51 @@ export default function StoryTime() {
     handleStorySelect(randomStory);
   };
 
+  // 3-tier fallback when HeyGen video fails (e.g. zero credits):
+  //   1) Try Web Speech API to read the AI-generated text aloud
+  //   2) If TTS unavailable/blocked, just show the text in the video space
+  //   3) Always display the text regardless
+  const triggerQAFallback = (text, character, accent) => {
+    if (!text) return;
+    setQaLoading(false);
+    setGeneratedVideoUrl(null);
+    setIsPlaying(false);
+
+    let mode = 'text';
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = 1.0;
+        utter.pitch = 1.0;
+        utter.volume = 1.0;
+        utter.onstart = () => setIsPlaying(true);
+        utter.onend = () => setIsPlaying(false);
+        utter.onerror = () => setIsPlaying(false);
+        // iOS Safari requires user gesture; speak() inside click handler chain works
+        window.speechSynthesis.speak(utter);
+        mode = 'tts';
+      } catch (e) {
+        console.warn('Speech synthesis failed, falling back to text-only:', e);
+        mode = 'text';
+      }
+    }
+    setQaFallback({ mode, text, character: character || 'Character', accent: accent || '#ff69b4' });
+  };
+
+  const stopQAFallbackAudio = () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    setIsPlaying(false);
+  };
+
+  const replayQAFallbackAudio = () => {
+    if (qaFallback?.text) {
+      triggerQAFallback(qaFallback.text, qaFallback.character, qaFallback.accent);
+    }
+  };
+
   const handleQASubmit = async () => {
     if (!qaQuestion.trim()) {
       alert('Please enter a question!');
@@ -378,6 +428,8 @@ export default function StoryTime() {
     setQaLoading(true);
     setQaVideoUrl(null);
     setQaResponse(null);
+    setQaFallback(null);
+    stopQAFallbackAudio();
     setCurrentStory(null);
     setGeneratedVideoUrl(null);
     setIsPlaying(false);
@@ -386,6 +438,7 @@ export default function StoryTime() {
       const currentNarratorData = AVATARS[selectedNarrator];
       const characterLookupId = selectedNarrator === 'evil_victoria_alt' ? 'evil_victoria' : selectedNarrator;
       const characterData = TSV_CHARACTERS.find(c => c.id === characterLookupId);
+      const fallbackAccent = characterData?.accent || '#ff69b4';
 
       // Call Q&A API
       const response = await fetch(`${BACKEND_URL}/api/storytime/qa`, {
@@ -415,6 +468,14 @@ export default function StoryTime() {
       });
 
       const videoId = data.video_id;
+      const responseText = data.response_text;
+      const characterName = data.character_name;
+
+      // If credits already known to be 0, skip HeyGen polling and go straight to fallback
+      if (creditStatus?.credits_low) {
+        triggerQAFallback(responseText, characterName, fallbackAccent);
+        return;
+      }
 
       // Poll for video completion and display in MAIN player
       if (videoId) {
@@ -432,7 +493,7 @@ export default function StoryTime() {
               setQaVideoUrl(videoUrl);
               setQaLoading(false);
               clearInterval(pollInterval);
-              
+
               // Auto-play video when ready
               setTimeout(() => {
                 if (videoRef.current) {
@@ -443,23 +504,27 @@ export default function StoryTime() {
                 }
               }, 100);
             } else if (status === 'failed') {
-              throw new Error('Video generation failed');
+              clearInterval(pollInterval);
+              // HeyGen failed (commonly: 0 credits). Activate TTS-or-text fallback
+              triggerQAFallback(responseText, characterName, fallbackAccent);
             }
           } catch (err) {
             console.error('Error polling Q&A video status:', err);
             clearInterval(pollInterval);
-            setQaLoading(false);
+            triggerQAFallback(responseText, characterName, fallbackAccent);
           }
         }, 3000);
 
-        // Cleanup after 5 minutes
+        // Cleanup after 5 minutes — if still no video, fall back to text/TTS
         setTimeout(() => {
           clearInterval(pollInterval);
           if (qaLoading) {
-            setQaLoading(false);
-            alert('Video generation timed out. Please try again.');
+            triggerQAFallback(responseText, characterName, fallbackAccent);
           }
         }, 300000);
+      } else {
+        // No video_id returned (HeyGen rejected upfront). Go straight to fallback.
+        triggerQAFallback(responseText, characterName, fallbackAccent);
       }
     } catch (error) {
       console.error('Error generating Q&A:', error);
@@ -780,6 +845,19 @@ export default function StoryTime() {
               <div className="tsv-title" style={{ fontSize: 14, marginBottom: 12 }}>⚡ GENERATING STORY VIDEO...</div>
               <div style={{ fontSize: 12, opacity: 0.7 }}>HeyGen AI is creating your personalized story experience</div>
             </div>
+          ) : qaLoading ? (
+            <div style={{ 
+              padding: 60, 
+              textAlign: 'center',
+              background: 'rgba(0,0,0,0.7)',
+              borderRadius: 16,
+              backdropFilter: 'blur(10px)',
+              maxWidth: 600,
+              margin: '80px auto'
+            }}>
+              <div className="tsv-title" style={{ fontSize: 14, marginBottom: 12 }}>⚡ GENERATING Q&A RESPONSE...</div>
+              <div style={{ fontSize: 12, opacity: 0.7 }}>Crafting an in-character answer — video next, with audio/text fallback if needed</div>
+            </div>
           ) : generatedVideoUrl ? (
             <div style={{ maxWidth: 600, margin: '60px auto' }}>
               <video
@@ -812,6 +890,87 @@ export default function StoryTime() {
                   <div style={{ fontSize: 10, opacity: 0.7, marginTop: 4 }}>
                     {currentStory.category.toUpperCase()} • {currentStory.duration}
                   </div>
+                </div>
+              )}
+            </div>
+          ) : qaFallback ? (
+            <div
+              data-testid="qa-fallback-panel"
+              style={{
+                maxWidth: 640,
+                margin: '40px auto',
+                padding: 28,
+                background: 'rgba(0,0,0,0.78)',
+                borderRadius: 16,
+                backdropFilter: 'blur(10px)',
+                border: `2px solid ${qaFallback.accent}`,
+                boxShadow: `0 10px 40px ${qaFallback.accent}40, 0 0 60px ${qaFallback.accent}30`,
+                textAlign: 'left'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, gap: 8, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{
+                    width: 10, height: 10, borderRadius: 999,
+                    background: qaFallback.mode === 'tts' && isPlaying ? '#59ffb0' : qaFallback.accent,
+                    boxShadow: qaFallback.mode === 'tts' && isPlaying
+                      ? '0 0 16px rgba(89,255,176,.7)'
+                      : `0 0 12px ${qaFallback.accent}80`,
+                    animation: qaFallback.mode === 'tts' && isPlaying ? 'pulse 1.2s ease-in-out infinite' : 'none'
+                  }} />
+                  <div className="tsv-title" style={{ fontSize: 12, color: qaFallback.accent, letterSpacing: 1 }}>
+                    {qaFallback.mode === 'tts'
+                      ? (isPlaying ? '◉ AUDIO PLAYBACK' : '◉ AUDIO READY')
+                      : '◉ TEXT TRANSCRIPT'}
+                  </div>
+                </div>
+                <div style={{ fontSize: 10, opacity: 0.6 }}>
+                  HeyGen video unavailable — graceful fallback
+                </div>
+              </div>
+
+              <div style={{ fontSize: 11, opacity: 0.7, marginBottom: 4 }}>QUESTION</div>
+              <div style={{ fontSize: 13, marginBottom: 16, color: '#ff9ad1' }}>
+                {qaResponse?.question}
+              </div>
+
+              <div className="tsv-title" style={{ fontSize: 12, color: qaFallback.accent, marginBottom: 8 }}>
+                {qaFallback.character.toUpperCase()} RESPONDS:
+              </div>
+              <div style={{
+                fontSize: 15,
+                lineHeight: 1.65,
+                whiteSpace: 'pre-wrap',
+                color: '#fff',
+                padding: '14px 16px',
+                background: `linear-gradient(135deg, ${qaFallback.accent}10, rgba(0,0,0,0.5))`,
+                borderRadius: 10,
+                border: `1px solid ${qaFallback.accent}30`
+              }}>
+                {qaFallback.text}
+              </div>
+
+              {qaFallback.mode === 'tts' && (
+                <div style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap' }}>
+                  {isPlaying ? (
+                    <button
+                      data-testid="qa-fallback-stop-btn"
+                      className="tsv-btn"
+                      onClick={stopQAFallbackAudio}
+                      style={{ fontSize: 12, padding: '8px 18px' }}
+                    >
+                      ⏹ STOP AUDIO
+                    </button>
+                  ) : (
+                    <button
+                      data-testid="qa-fallback-replay-btn"
+                      className="tsv-btn"
+                      onClick={replayQAFallbackAudio}
+                      style={{ fontSize: 12, padding: '8px 18px' }}
+                    >
+                      ▶ REPLAY AUDIO
+                    </button>
+                  )}
                 </div>
               )}
             </div>

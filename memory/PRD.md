@@ -38,6 +38,15 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## Recent Changes
 
+### Feb 11, 2026 — GRACEFUL Q&A FALLBACK CHAIN
+- **New behavior**: When user asks a Q&A question, the flow now degrades gracefully:
+  1. Try HeyGen video (existing)
+  2. If HeyGen status='failed' (commonly: 0 credits) OR credits already low → trigger Web Speech API TTS to read the AI text response aloud, with full text shown in the video space
+  3. If TTS unavailable in browser → just show the formatted text response
+- New `triggerQAFallback()` helper, `qaFallback` state, and a styled `[data-testid='qa-fallback-panel']` UI block in the video area
+- Bonus fix: `QARequest.video_url` was `str = None` (Pydantic v2 rejects null) → now `Optional[str] = None`
+- Bonus fix: Added a "GENERATING Q&A RESPONSE..." loading state in the main video area (was previously empty during polling)
+
 ### Feb 11, 2026 — CRITICAL CORS + URL FIXES (continued)
 - **Bug: `[object Object]` alert on Q&A** — frontend passed Pydantic/error objects to `new Error()` which renders as `[object Object]`.
 - **Fix**: Added `formatErrorDetail()` helper in StoryTime.jsx that handles strings, Pydantic arrays, generic objects, and recognizes two known cases:

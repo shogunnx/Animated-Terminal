@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from typing import Optional
 import httpx
 import os
 import logging
@@ -177,7 +178,7 @@ class QARequest(BaseModel):
     character_name: str
     avatar_id: str
     question: str
-    video_url: str = None  # Optional YouTube or video URL for analysis
+    video_url: Optional[str] = None  # Optional YouTube or video URL for analysis
     duration: int = 10  # Video duration in seconds (default 10)
 
 @router.post("/qa")
