@@ -5,6 +5,7 @@ import httpx
 import os
 import logging
 from lore_wiki import refresh_lore_cache, cached_page_count, search_lore
+import voice_mapping
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +46,15 @@ KNOWN_INVALID_VOICE_IDS = {
 }
 
 
+def _resolve_voice_id(avatar_id: str) -> str:
+    """Look up voice in priority order: DB override -> hardcoded mapping -> default."""
+    return (
+        voice_mapping.get_voice_for_avatar(avatar_id)
+        or AVATAR_VOICE_MAPPING.get(avatar_id)
+        or DEFAULT_VOICE_ID
+    )
+
+
 async def _generate_video_with_voice_fallback(
     *, avatar_id: str, script_text: str, voice_id: str, title: str, test_mode: bool = False
 ):
@@ -64,12 +74,17 @@ async def _generate_video_with_voice_fallback(
     )
 
     err = (result or {}).get("error", "") or ""
-    if (
+    err_lower = err.lower()
+    is_voice_error = (
         not result.get("success")
-        and "voice" in err.lower()
-        and ("not found" in err.lower() or "invalid voice" in err.lower())
-        and effective != DEFAULT_VOICE_ID
-    ):
+        and "voice" in err_lower
+        and (
+            "not found" in err_lower
+            or "invalid voice" in err_lower
+            or "failed to process" in err_lower
+        )
+    )
+    if is_voice_error and effective != DEFAULT_VOICE_ID:
         logger.warning(
             f"HeyGen rejected voice_id={effective} for avatar={avatar_id} "
             f"({err!r}); retrying with DEFAULT_VOICE_ID={DEFAULT_VOICE_ID}"
@@ -109,7 +124,7 @@ async def generate_story_video(request: StoryGenerationRequest):
     Generate a story video using HeyGen API
     """
     try:
-        voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
+        voice_id = _resolve_voice_id(request.avatar_id)
 
         logger.info(f"Generating video via HeyGen API for avatar {request.avatar_id}")
         result = await _generate_video_with_voice_fallback(
@@ -189,7 +204,7 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
             except Exception as e:
                 logger.warning(f"Character voice rewrite failed: {e}")
 
-        voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
+        voice_id = _resolve_voice_id(request.avatar_id)
 
         logger.info(f"Generating narrated video via HeyGen API for avatar {request.avatar_id}")
         result = await _generate_video_with_voice_fallback(
@@ -444,3 +459,54 @@ async def lore_search(q: str, character: str = "", top_n: int = 4):
             for p in pages
         ],
     }
+
+
+
+# ---------------------- Voice mapping admin endpoints ----------------------
+
+class VoiceMappingUpsertRequest(BaseModel):
+    avatar_id: str
+    voice_id: str
+
+
+@router.get("/voices/list")
+async def voices_list():
+    """List every voice available in your HeyGen account."""
+    from heygen_api import list_voices
+    result = await list_voices()
+    if not result.get("success"):
+        raise HTTPException(status_code=502, detail=result.get("error", "HeyGen voices fetch failed"))
+    return {"voices": result.get("voices", [])}
+
+
+@router.get("/voices/mappings")
+async def voices_mappings():
+    """Return all configured avatar -> voice overrides + hardcoded defaults."""
+    db_overrides = voice_mapping.list_all_mappings()
+    return {
+        "overrides": db_overrides,
+        "hardcoded_defaults": [
+            {"avatar_id": aid, "voice_id": vid}
+            for aid, vid in AVATAR_VOICE_MAPPING.items()
+        ],
+        "default_voice_id": DEFAULT_VOICE_ID,
+        "known_invalid_voice_ids": sorted(KNOWN_INVALID_VOICE_IDS),
+    }
+
+
+@router.post("/voices/mappings")
+async def voices_mappings_upsert(req: VoiceMappingUpsertRequest):
+    """Save an avatar -> voice mapping. Takes effect within 30s (cache TTL)."""
+    if not req.avatar_id or not req.voice_id:
+        raise HTTPException(status_code=400, detail="avatar_id and voice_id are required")
+    # If this voice was previously marked dead, clear it so we actually try it
+    KNOWN_INVALID_VOICE_IDS.discard(req.voice_id)
+    saved = voice_mapping.set_voice_for_avatar(req.avatar_id, req.voice_id)
+    return {"success": True, **saved}
+
+
+@router.delete("/voices/mappings/{avatar_id}")
+async def voices_mappings_delete(avatar_id: str):
+    """Remove an override so the avatar falls back to hardcoded / default."""
+    deleted = voice_mapping.delete_mapping(avatar_id)
+    return {"success": True, "deleted": deleted}

@@ -38,6 +38,19 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## Recent Changes
 
+### Feb 11, 2026 — VOICE PICKER ADMIN PAGE
+- New page **`/admin/voices`** (linked from a 🎙️ VOICES button in the StoryTime header)
+- Backend: `voice_mapping.py` — MongoDB-backed persistent avatar→voice overrides, in-process 30s cache so production reads are cheap
+- New endpoints:
+  - `GET /api/storytime/voices/list` — all 2400+ voices from your HeyGen account
+  - `GET /api/storytime/voices/mappings` — current overrides + hardcoded defaults + known-dead voice IDs
+  - `POST /api/storytime/voices/mappings` — upsert avatar→voice
+  - `DELETE /api/storytime/voices/mappings/{avatar_id}` — remove override
+- Resolution chain in `storytime.py._resolve_voice_id`: **DB override → hardcoded mapping → default**
+- Voice fallback helper now also catches **"failed to process"** (broken voice clones) in addition to "not found / invalid voice"
+- UI features: per-row search across 2400 voices, preview-audio play button, save/reset controls, prominent **DEAD — falls back to default** red badge on rows whose hardcoded voice is in `KNOWN_INVALID_VOICE_IDS`
+- Verified end-to-end: list → search → save override → next generation uses override → broken clone triggers auto-fallback → delete override → resolution falls back to hardcoded
+
 ### Feb 11, 2026 — VOICE-ID FALLBACK
 - HeyGen rejected Vanessa's voice (`6fa2fa767bf148fc939c0bbba7306760` → "Voice not found"), blocking story generation for Vanessa narrator.
 - New `_generate_video_with_voice_fallback()` in `storytime.py`: catches "Voice not found / Invalid voice_id" errors and retries once with `DEFAULT_VOICE_ID`. Maintains a process-level `KNOWN_INVALID_VOICE_IDS` cache pre-seeded with Vanessa + Wargirl IDs so the first attempt for those characters skips the dead voice entirely.

@@ -1117,6 +1117,15 @@ export default function StoryTime() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <div className="tsv-title" style={{ fontSize: 12 }}>📚 STORY LIBRARY</div>
           <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              data-testid="voice-admin-link"
+              className="tsv-btn"
+              onClick={() => nav('/admin/voices')}
+              style={{ fontSize: 11, padding: '6px 12px' }}
+              title="Assign HeyGen voices to each character"
+            >
+              🎙️ VOICES
+            </button>
             <button 
               className="tsv-btn"
               onClick={() => setShowHistory(!showHistory)}
