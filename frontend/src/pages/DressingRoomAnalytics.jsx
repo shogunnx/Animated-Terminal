@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
+
 // Stat Card Component
 const StatCard = ({ title, value, icon, color = "#00ffff" }) => (
   <div className="tsv-glass" style={{ 
@@ -73,7 +75,7 @@ export default function DressingRoomAnalytics() {
   const fetchAnalytics = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/dressing-room/analytics?days=${days}`);
+      const response = await fetch(`${BACKEND_URL}/api/dressing-room/analytics?days=${days}`);
       if (!response.ok) throw new Error("Failed to fetch analytics");
       const data = await response.json();
       setAnalytics(data);

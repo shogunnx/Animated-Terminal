@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
+
 export default function TeachMode() {
   const nav = useNavigate();
   
@@ -27,7 +29,7 @@ export default function TeachMode() {
   
   const fetchStatus = async () => {
     try {
-      const response = await fetch('/api/teach-mode/status');
+      const response = await fetch(`${BACKEND_URL}/api/teach-mode/status`);
       const data = await response.json();
       setRecording(data.recording);
       setCurrentSequence(data.current_sequence);
@@ -39,7 +41,7 @@ export default function TeachMode() {
   
   const fetchSequences = async () => {
     try {
-      const response = await fetch('/api/teach-mode/sequences');
+      const response = await fetch(`${BACKEND_URL}/api/teach-mode/sequences`);
       const data = await response.json();
       if (data.success) {
         setSequences(data.sequences);
@@ -56,7 +58,7 @@ export default function TeachMode() {
     }
     
     try {
-      const response = await fetch('/api/teach-mode/start-recording', {
+      const response = await fetch(`${BACKEND_URL}/api/teach-mode/start-recording`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sequence_name: sequenceName })
@@ -77,7 +79,7 @@ export default function TeachMode() {
   
   const stopRecording = async () => {
     try {
-      const response = await fetch('/api/teach-mode/stop-recording', {
+      const response = await fetch(`${BACKEND_URL}/api/teach-mode/stop-recording`, {
         method: 'POST'
       });
       
@@ -105,7 +107,7 @@ export default function TeachMode() {
     setReplayStatus('Replaying...');
     
     try {
-      const response = await fetch('/api/teach-mode/replay', {
+      const response = await fetch(`${BACKEND_URL}/api/teach-mode/replay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

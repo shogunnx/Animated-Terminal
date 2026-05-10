@@ -60,10 +60,14 @@ if CORS_ORIGINS == "*":
 else:
     origins = [o.strip() for o in CORS_ORIGINS.split(",") if o.strip()]
 
+# When using wildcard origins, browsers (and Starlette) require allow_credentials=False.
+# We don't rely on cookies anyway, so this is safe.
+allow_creds = origins != ["*"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
+    allow_credentials=allow_creds,
     allow_methods=["*"],
     allow_headers=["*"],
 )

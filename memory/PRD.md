@@ -15,104 +15,78 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 ## Core Features Implemented
 
 ### 1. Dressing Room (`/dressing-room`)
-- **Standard generation**: text-to-outfit with character identity preservation via `fal-ai/flux-pro/kontext`
-- **Pairs Mode**: two characters in one cohesive scene via `fal-ai/flux-2-pro/edit`
-- **Categorized TryOn**: Upload Dress / Top / Bottom / Shoes / Accessories — hybrid pipeline (FASHN v1.6 for clothing, FLUX Kontext Max multi-image for shoes/accessories)
-- **Headshot mode**: 4 close-up portrait variations from base image
-- **Foot-to-Head mode**: 5 sequential progression shots (shoes_feet → legs_knees → waist_hips → chest_bust → headshot)
-- **Community OC**: Upload-your-own character slot
+- Standard generation via `fal-ai/flux-pro/kontext`
+- Pairs Mode via `fal-ai/flux-2-pro/edit`
+- Categorized TryOn: Dress / Top / Bottom / Shoes / Accessories (FASHN v1.6 + FLUX Kontext Max hybrid)
+- Headshot mode (4 variations)
+- Foot-to-Head mode (5 progression shots)
+- Community OC upload slot
 
 ### 2. StoryTime (`/storytime`)
-- HeyGen talking-photo video generation (verified working)
+- HeyGen talking-photo video generation
 - Multiple story categories
-- Credit display on homepage
+- Q&A flow with character lore + LLM rewrite
+- Credit display
 
-### 3. Terminal Analytics (`/terminal-analytics`)
-- Page view, feature usage, IP tracking
-
-### 4. Game Room (`/gameroom`)
-- Game grid + Coach/Rival/Date modes
-- External Fractured Power link
-
-### 5. External Service Integrations
-- Nexus proxy (`/api/nexus/*`)
-- GirlsMind proxy (`/api/girlsmind/*`)
-- DeviantArt OAuth + RSS + posting
-
-## Character Roster (Dressing Room)
-1. Victoria Black, 2. Victoria Black Goddess, 3. Community OC,
-4. Wargirl, 5. Binary, 6. Vanessa, 7. Harmony, 8. Evil Victoria, 9. Veronica
-
-## Key Files
-- `/app/frontend/src/pages/DressingRoom.jsx` - Main dressing room UI (1900+ lines, ripe for refactor)
-- `/app/frontend/src/pages/StoryTime.jsx`
-- `/app/frontend/src/components/Shell.jsx` & `StatusBar.jsx`
-- `/app/backend/dressing_room.py` - All image generation pipelines
-- `/app/backend/server.py` - API routes & external proxies
-- `/app/backend/heygen_api.py` - HeyGen integration
-- `/app/backend/storytime.py`
+### 3. Terminal Analytics, Game Room, External Service Integrations (Nexus, GirlsMind, DeviantArt OAuth + RSS)
 
 ## Key API Endpoints
-- `POST /api/dressing-room/generate` — standard outfit
-- `POST /api/dressing-room/tryon` — categorized garment try-on
-- `POST /api/dressing-room/headshot` — 4 headshot variations
-- `POST /api/dressing-room/foot-to-head` — 5 progression shots
-- `POST /api/dressing-room/save-base`, `GET /api/dressing-room/has-base/{id}`, `GET /api/dressing-room/get-base/{id}`
-- `GET /api/status` — Nexus / GirlsMind / DeviantArt health
-- `GET /api/storytime/generate-narrated`
-
-## 3rd Party Integrations
-- Fal.ai (Image Generation) — User API Key on Railway
-- HeyGen (Video Generation) — User API Key on Railway
-- DeviantArt (Image Posting) — OAuth2
-- MongoDB (Database)
-- Emergent LLM Key — Personality text generation
+- `POST /api/dressing-room/generate | tryon | headshot | foot-to-head`
+- `POST /api/storytime/generate-narrated | qa`
+- `GET /api/storytime/status/{video_id} | credit-status | dynamic-content | video-history`
+- `GET /api/status`
 
 ## Recent Changes
 
-### Feb 10, 2026 (this session)
-- Verified production end-to-end: status indicators all GREEN, image generation restored after Fal.ai top-up
-- Verified `headshot` endpoint (4 variations, ~49s) and `foot-to-head` endpoint (5 shots, ~43s) on production
-- TryOn endpoint validation confirmed
-- No code changes — diagnostic verification session
+### Feb 11, 2026 — CRITICAL CORS + URL FIXES
+- **Bug: "The string did not match the expected pattern"** in StoryTime — root cause: frontend (Cloudflare Pages) was calling relative `/api/*` paths which Cloudflare served as static index.html (POST=405 with empty body). iOS Safari throws this exact error when parsing empty body as JSON.
+- **Fix 1**: Updated `StoryTime.jsx`, `Home.jsx`, `TeachMode.jsx`, `DressingRoomAnalytics.jsx`, `RelationshipPanel.jsx`, and `lib/api.js` to use `${VITE_BACKEND_URL}/api/...` (matching the pattern already used in DressingRoom.jsx).
+- **Fix 2**: Backend `server.py` CORS — `allow_credentials=True` combined with `allow_origins=["*"]` was silently breaking CORS (FastAPI/Starlette refuses to send `Access-Control-Allow-Origin: *` with credentials). Now auto-disables credentials when origins is wildcard.
+- **Fix 3**: StoryTime polling now surfaces "HeyGen credits exhausted" message instead of generic "Video generation failed" when HeyGen returns insufficient credit error.
+- ⚠️ **HeyGen credits = 0 on Railway** — user needs to top up HeyGen account; otherwise generation requests are accepted but final video status will be `failed` with "Insufficient credit".
+
+### Feb 10, 2026
+- Verified all production endpoints (status indicators GREEN, generate, headshot 4-var ~49s, foot-to-head 5-shot ~43s).
 
 ### Feb 9-10, 2026 (previous fork)
-- Migrated frontend env from `REACT_APP_` → `VITE_` (Cloudflare Pages compatibility)
-- Standard outfit generation upgraded to `fal-ai/flux-pro/kontext`
-- Implemented categorized TryOn (hybrid FASHN + FLUX Kontext Max)
-- Implemented Headshot and Foot-to-Head modes
-- Verified StoryTime HeyGen integration working
+- Migrated env vars `REACT_APP_` → `VITE_`
+- Implemented categorized TryOn, Headshot, Foot-to-Head modes
 
-## Project Health (Feb 10, 2026)
+## Project Health (Feb 11, 2026)
 - ✅ Cloudflare/Railway deployments
-- ✅ HeyGen StoryTime
 - ✅ Fal.ai image generation (all modes)
-- ✅ Nexus / GirlsMind / DeviantArt status indicators
+- ✅ Status indicators (Nexus / GirlsMind / DeviantArt)
+- ⚠️ HeyGen credits exhausted — generation requests will fail until top-up
+- ✅ Code now correctly handles cross-origin Cloudflare↔Railway calls
 
 ## Backlog / Future Tasks
 
 ### P0 (High Priority)
-- [ ] Live UI smoke-test of TryOn / Headshot / Foot-to-Head (manual user verification)
-- [ ] Implement Secret "Classified" Folder (partial — UnlockTracker exists, dedicated folder UI pending)
+- [ ] **Top-up HeyGen account** to restore StoryTime/Q&A video generation
+- [ ] **Deploy fix to Railway + Cloudflare Pages** (frontend rebuild + backend restart)
+- [ ] Implement Secret "Classified" Folder UI (UnlockTracker already wired)
 - [ ] Gamify Game Room with Data Fragments
+- [ ] Fix invalid HeyGen voice IDs for Wargirl (`1a9bfb4ec9bc43d59ab64a4e66fe467c`) and Vanessa (`6fa2fa767bf148fc939c0bbba7306760`) — both currently return "Voice not found"
+- [ ] Fix invalid HeyGen avatar IDs for Victoria Black Blaster (`1992da07-...`) and Victoria Black Goddess (`1afb71c7-...`) — both UUIDs return "avatar look not found"
 
-### P1 (Medium Priority)
-- [ ] Add "Outfit Likes" Counter (visual surfacing)
-- [ ] Add Idle Terminal Messages
-- [ ] Add Leaderboard
+### P1
+- [ ] Outfit Likes counter surfacing
+- [ ] Idle Terminal Messages
+- [ ] Leaderboard
 
-### P2 (Lower Priority)
-- [ ] Add "Broadcast Mode" (X/Twitter integration)
-- [ ] Add Konami Code Easter Egg
+### P2
+- [ ] Broadcast Mode (X/Twitter)
+- [ ] Konami Code Easter Egg
 - [ ] Activate Relationship/Memory System (requires GirlsMind API)
-- [ ] Implement Full Games (replace placeholders)
-- [ ] Implement Parallax Effect
+- [ ] Implement Full Games
+- [ ] Parallax Effect
 
 ### Refactoring
-- [ ] Split `dressing_room.py` (1000+ lines) into `generators/flux.py`, `generators/fashn.py`, `generators/kontext.py`
-- [ ] Split `DressingRoom.jsx` (1900+ lines) into `TryOnPanel.jsx`, `HeadshotPanel.jsx`, `FootToHeadPanel.jsx`, `ResultGrid.jsx`
+- [ ] Split `dressing_room.py` (1002 lines) into `generators/`
+- [ ] Split `DressingRoom.jsx` (2050 lines) into smaller components
 - [ ] Move backend routes from `server.py` into `/app/backend/routes/`
 
 ## Known Issues
-- Production custom domain `thesaiyanvictoria.com` not DNS-resolvable from this container (works for end users; container has no DNS for that hostname)
-- Minor UI bug in StoryTime.jsx — AITA stories don't expand correctly
+- HeyGen credits exhausted (P0)
+- Some HeyGen avatar/voice IDs invalid in `AVATARS` map (StoryTime.jsx)
+- StoryTime AITA stories don't expand correctly (minor UI)

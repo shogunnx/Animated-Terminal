@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
+
 export default function RelationshipPanel({ characterId, accent = "#76FFE1", glow = "#8C50FF" }) {
   const [relationship, setRelationship] = useState(null);
   const [memories, setMemories] = useState([]);
@@ -17,7 +19,7 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
   useEffect(() => {
     const fetchNexusId = async () => {
       try {
-        const response = await fetch("/api/nexus/api/characters");
+        const response = await fetch(`${BACKEND_URL}/api/nexus/api/characters`);
         if (response.ok) {
           const characters = await response.json();
           const character = characters.find(c => 
@@ -46,7 +48,7 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
     if (!nexusId) return;
     
     try {
-      const response = await fetch(`/api/girlsmind/relationship/${nexusId}?userId=${userId}`);
+      const response = await fetch(`${BACKEND_URL}/api/girlsmind/relationship/${nexusId}?userId=${userId}`);
       if (response.ok) {
         const data = await response.json();
         setRelationship(data);
@@ -67,7 +69,7 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
     if (!nexusId) return;
     
     try {
-      const response = await fetch(`/api/girlsmind/memories/${nexusId}?userId=${userId}`);
+      const response = await fetch(`${BACKEND_URL}/api/girlsmind/memories/${nexusId}?userId=${userId}`);
       if (response.ok) {
         const data = await response.json();
         setMemories(data.memories || data || []);
@@ -86,7 +88,7 @@ export default function RelationshipPanel({ characterId, accent = "#76FFE1", glo
 
     setSubmitting(true);
     try {
-      const response = await fetch(`/api/girlsmind/store_exchange`, {
+      const response = await fetch(`${BACKEND_URL}/api/girlsmind/store_exchange`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

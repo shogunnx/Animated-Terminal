@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TSV_CHARACTERS } from '../content/tsvContent.js';
 import { LORE_STORIES } from '../data/story-lore.js';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
+
 const STORY_CATEGORIES = {
   test: "Test Stories",
   reddit: "AITA from Reddit",
@@ -112,7 +114,7 @@ export default function StoryTime() {
   // Fetch video history
   const fetchVideoHistory = async () => {
     try {
-      const response = await fetch('/api/storytime/video-history');
+      const response = await fetch(`${BACKEND_URL}/api/storytime/video-history`);
       if (response.ok) {
         const data = await response.json();
         setVideoHistory(data.videos || []);
@@ -127,7 +129,7 @@ export default function StoryTime() {
   // Fetch credit status
   const fetchCreditStatus = async () => {
     try {
-      const response = await fetch('/api/storytime/credit-status');
+      const response = await fetch(`${BACKEND_URL}/api/storytime/credit-status`);
       if (response.ok) {
         const data = await response.json();
         setCreditStatus(data);
@@ -146,7 +148,7 @@ export default function StoryTime() {
   useEffect(() => {
     const fetchDynamicContent = async () => {
       try {
-        const response = await fetch('/api/storytime/dynamic-content');
+        const response = await fetch(`${BACKEND_URL}/api/storytime/dynamic-content`);
         const data = await response.json();
         
         if (data.success && data.content) {
@@ -162,7 +164,7 @@ export default function StoryTime() {
     
     const checkMode = async () => {
       try {
-        const response = await fetch('/api/storytime/test-mode-status');
+        const response = await fetch(`${BACKEND_URL}/api/storytime/test-mode-status`);
         const data = await response.json();
         setMode(data.mode || 'api');
         setModeMessage(data.message || '');
@@ -202,7 +204,7 @@ export default function StoryTime() {
       setIsLoading(true);
       try {
         // Fetch the pre-recorded video status directly
-        const statusResponse = await fetch(`/api/storytime/status/${story.preRecordedVideoId}`);
+        const statusResponse = await fetch(`${BACKEND_URL}/api/storytime/status/${story.preRecordedVideoId}`);
         const statusData = await statusResponse.json();
         
         const videoUrl = statusData.data?.video_url;
@@ -241,7 +243,7 @@ export default function StoryTime() {
       const avatarIdForGeneration = currentNarratorData.id;
       
       // Use the narrated endpoint for in-character voice
-      const response = await fetch('/api/storytime/generate-narrated', {
+      const response = await fetch(`${BACKEND_URL}/api/storytime/generate-narrated`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -270,7 +272,7 @@ export default function StoryTime() {
           
           const checkStatus = async () => {
             try {
-              const statusResponse = await fetch(`/api/storytime/status/${videoId}`);
+              const statusResponse = await fetch(`${BACKEND_URL}/api/storytime/status/${videoId}`);
               const statusData = await statusResponse.json();
               
               const videoStatus = statusData.data?.status;
@@ -292,7 +294,14 @@ export default function StoryTime() {
                 
                 return true;
               } else if (videoStatus === 'failed') {
-                throw new Error('Video generation failed');
+                const errMsg = statusData.data?.error?.message
+                  || statusData.data?.error?.detail
+                  || statusData.data?.error
+                  || 'Video generation failed';
+                if (typeof errMsg === 'string' && errMsg.toLowerCase().includes('credit')) {
+                  throw new Error('HeyGen credits are exhausted. Please top up your HeyGen account.');
+                }
+                throw new Error(typeof errMsg === 'string' ? errMsg : JSON.stringify(errMsg));
               } else if (attempts >= maxAttempts) {
                 throw new Error('Video generation timeout');
               }
@@ -357,7 +366,7 @@ export default function StoryTime() {
       const characterData = TSV_CHARACTERS.find(c => c.id === characterLookupId);
 
       // Call Q&A API
-      const response = await fetch('/api/storytime/qa', {
+      const response = await fetch(`${BACKEND_URL}/api/storytime/qa`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -389,7 +398,7 @@ export default function StoryTime() {
       if (videoId) {
         const pollInterval = setInterval(async () => {
           try {
-            const statusResponse = await fetch(`/api/storytime/status/${videoId}`);
+            const statusResponse = await fetch(`${BACKEND_URL}/api/storytime/status/${videoId}`);
             const statusData = await statusResponse.json();
 
             const status = statusData.data?.status;

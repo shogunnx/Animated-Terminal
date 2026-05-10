@@ -1,4 +1,5 @@
-const API_BASE = "/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
+const API_BASE = `${BACKEND_URL}/api`;
 
 async function j(url, opts = {}) {
   const res = await fetch(API_BASE + url, {
