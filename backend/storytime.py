@@ -36,6 +36,55 @@ AVATAR_VOICE_MAPPING = {
 # Default voice if avatar not in mapping
 DEFAULT_VOICE_ID = '1bd001e7e50f421d891986aad5158bc8'
 
+# Voices known to be invalid (HeyGen "Voice not found") — process-level cache so
+# we only eat the failed-then-retry hop once per voice per backend lifetime.
+# Pre-seeded with voices we've already confirmed are dead on HeyGen.
+KNOWN_INVALID_VOICE_IDS = {
+    '6fa2fa767bf148fc939c0bbba7306760',  # Vanessa (verified Feb 11 2026)
+    '1a9bfb4ec9bc43d59ab64a4e66fe467c',  # Wargirl (verified Feb 11 2026)
+}
+
+
+async def _generate_video_with_voice_fallback(
+    *, avatar_id: str, script_text: str, voice_id: str, title: str, test_mode: bool = False
+):
+    """Call HeyGen with the configured voice. If HeyGen returns 'Voice not
+    found' (a recurring issue with stale voice IDs in AVATAR_VOICE_MAPPING),
+    retry once with DEFAULT_VOICE_ID and remember the bad voice."""
+    from heygen_api import generate_video_heygen
+
+    effective = DEFAULT_VOICE_ID if voice_id in KNOWN_INVALID_VOICE_IDS else voice_id
+
+    result = await generate_video_heygen(
+        avatar_id=avatar_id,
+        script_text=script_text,
+        voice_id=effective,
+        title=title,
+        test_mode=test_mode,
+    )
+
+    err = (result or {}).get("error", "") or ""
+    if (
+        not result.get("success")
+        and "voice" in err.lower()
+        and ("not found" in err.lower() or "invalid voice" in err.lower())
+        and effective != DEFAULT_VOICE_ID
+    ):
+        logger.warning(
+            f"HeyGen rejected voice_id={effective} for avatar={avatar_id} "
+            f"({err!r}); retrying with DEFAULT_VOICE_ID={DEFAULT_VOICE_ID}"
+        )
+        KNOWN_INVALID_VOICE_IDS.add(effective)
+        result = await generate_video_heygen(
+            avatar_id=avatar_id,
+            script_text=script_text,
+            voice_id=DEFAULT_VOICE_ID,
+            title=title,
+            test_mode=test_mode,
+        )
+    return result
+
+
 class StoryGenerationRequest(BaseModel):
     avatar_id: str
     story_text: str
@@ -60,17 +109,15 @@ async def generate_story_video(request: StoryGenerationRequest):
     Generate a story video using HeyGen API
     """
     try:
-        from heygen_api import generate_video_heygen
-        
         voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
-        
+
         logger.info(f"Generating video via HeyGen API for avatar {request.avatar_id}")
-        result = await generate_video_heygen(
+        result = await _generate_video_with_voice_fallback(
             avatar_id=request.avatar_id,
             script_text=request.story_text,
             voice_id=voice_id,
             title=request.story_title,
-            test_mode=False
+            test_mode=False,
         )
         
         if result["success"] and result.get("video_id"):
@@ -127,8 +174,6 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
     Rewrites the story in the character's voice before generating video
     """
     try:
-        from heygen_api import generate_video_heygen
-        
         # Rewrite story in character's voice if requested
         final_story_text = request.story_text
         if request.use_character_voice:
@@ -143,16 +188,16 @@ async def generate_narrated_story_video(request: NarratedStoryRequest):
                 logger.info(f"Story rewritten in {request.character_name}'s voice")
             except Exception as e:
                 logger.warning(f"Character voice rewrite failed: {e}")
-        
+
         voice_id = AVATAR_VOICE_MAPPING.get(request.avatar_id, DEFAULT_VOICE_ID)
-        
+
         logger.info(f"Generating narrated video via HeyGen API for avatar {request.avatar_id}")
-        result = await generate_video_heygen(
+        result = await _generate_video_with_voice_fallback(
             avatar_id=request.avatar_id,
             script_text=final_story_text,
             voice_id=voice_id,
             title=request.story_title,
-            test_mode=False
+            test_mode=False,
         )
         
         if result["success"] and result.get("video_id"):

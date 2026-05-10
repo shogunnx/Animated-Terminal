@@ -38,6 +38,12 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## Recent Changes
 
+### Feb 11, 2026 — VOICE-ID FALLBACK
+- HeyGen rejected Vanessa's voice (`6fa2fa767bf148fc939c0bbba7306760` → "Voice not found"), blocking story generation for Vanessa narrator.
+- New `_generate_video_with_voice_fallback()` in `storytime.py`: catches "Voice not found / Invalid voice_id" errors and retries once with `DEFAULT_VOICE_ID`. Maintains a process-level `KNOWN_INVALID_VOICE_IDS` cache pre-seeded with Vanessa + Wargirl IDs so the first attempt for those characters skips the dead voice entirely.
+- Both story and narrated-story endpoints route through the helper.
+- Verified: Vanessa + Wargirl narrators now return 200 with video_id on first call.
+
 ### Feb 11, 2026 — DIRECT OPENAI + SOURCE ATTRIBUTION
 - **Direct OpenAI primary path**: `storytime_qa.py` now uses `openai.AsyncOpenAI` with `OPENAI_API_KEY` (works on any host, including Railway). Falls back to `EMERGENT_LLM_KEY` only when `OPENAI_API_KEY` is not set or the direct call fails. Verified locally — gpt-4o answers Q&A in ~6s.
 - **Source attribution UI**: `/api/storytime/qa` now returns a `sources: [{title, url}]` array — the top 4 lore wiki pages used to ground the answer. Frontend renders them as pill-style links under both the fallback panel (`[data-testid='qa-fallback-sources']`) and the success card (`[data-testid='qa-response-sources']`). Every Q&A doubles as a wiki SEO funnel — fans can click straight through to the canonical pages.
