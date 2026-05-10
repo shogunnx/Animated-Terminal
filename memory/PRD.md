@@ -38,6 +38,14 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## Recent Changes
 
+### Feb 11, 2026 — VIXENVICTORIA'S ARCHIVE WIDGET
+- New rotating daily-blurb widget mounted at the top of `/storytime`
+- Backend `vixen_archive.py`: 20 curated paragraphs in VixenVictoria's voice (in-lore: Nexus spire, Sadala, Classified chamber outer vestibule, Goddess Vanessa's first temple, Veronica's childhood garden, Wargirl's arcade, Harmony's first lab, Binary's cradle, Fusion Door, Sands of Time Page 7 + real-world: Pompeii, Library of Alexandria, Aleppo souq, Notre-Dame, Palmyra, Hagia Sophia, Lighthouse of Alexandria, Buddhas of Bamiyan, Roman Baths of Caracalla, Detroit Michigan Central)
+- Endpoint `GET /api/storytime/vixen-archive/today` rotates deterministically by day-of-year (everyone sees the same entry today, refreshes at midnight without a cron)
+- Endpoint `GET /api/storytime/vixen-archive/{index}` for prev/next browsing
+- Frontend `VixenArchiveWidget.jsx` with ‹ · TODAY · › navigation, soft silver/lilac aesthetic matching VixenVictoria's accent color, fails silently if backend unavailable (won't break the page)
+- Verified: widget renders, today's entry is *Buddhas of Bamiyan / March 2001*, NEXT button advances to *Veronica's Childhood Garden*
+
 ### Feb 11, 2026 — NEW HOST: VIXENVICTORIA
 - Added **VixenVictoria** as a new StoryTime narrator in the slot previously occupied by the broken-image Victoria Black Blaster card
 - Portrait: user-provided artifact (silver curls, gold halter, willow tree backdrop)

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TSV_CHARACTERS } from '../content/tsvContent.js';
 import { LORE_STORIES } from '../data/story-lore.js';
+import VixenArchiveWidget from '../components/VixenArchiveWidget.jsx';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
 
@@ -670,6 +671,9 @@ export default function StoryTime() {
           </div>
         )}
       </div>
+
+      {/* VixenVictoria's Archive — daily decay/nostalgia blurb */}
+      <VixenArchiveWidget />
 
       {/* Narrator Selection */}
       <div className="tsv-glass" style={{ padding: 14, marginBottom: 14 }}>

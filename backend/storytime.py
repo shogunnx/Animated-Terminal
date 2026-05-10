@@ -510,3 +510,19 @@ async def voices_mappings_delete(avatar_id: str):
     """Remove an override so the avatar falls back to hardcoded / default."""
     deleted = voice_mapping.delete_mapping(avatar_id)
     return {"success": True, "deleted": deleted}
+
+
+# ---------------------- VixenVictoria's Archive ----------------------
+
+@router.get("/vixen-archive/today")
+async def vixen_archive_today():
+    """A rotating daily 'sacred place that fell' blurb in VixenVictoria's voice."""
+    from vixen_archive import get_todays_archive
+    return get_todays_archive()
+
+
+@router.get("/vixen-archive/{index}")
+async def vixen_archive_by_index(index: int):
+    """Fetch a specific archive entry (for prev/next browsing)."""
+    from vixen_archive import get_archive_by_index
+    return get_archive_by_index(index)
