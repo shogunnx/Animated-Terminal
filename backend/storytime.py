@@ -526,3 +526,100 @@ async def vixen_archive_by_index(index: int):
     """Fetch a specific archive entry (for prev/next browsing)."""
     from vixen_archive import get_archive_by_index
     return get_archive_by_index(index)
+
+
+# ---------------------- Talking-photo upload + per-character avatar override ----------------------
+
+# Persisted character_id -> talking_photo_id mapping (so VixenVictoria can have
+# her own HeyGen avatar without a code push).
+from pymongo import MongoClient as _MC  # local import to avoid touching the top of file
+_char_avatar_col = _MC(os.environ["MONGO_URL"])[os.environ.get("DB_NAME", "tsv")]["character_avatar_overrides"]
+_char_avatar_col.create_index("character_id", unique=True)
+
+
+class TalkingPhotoUploadRequest(BaseModel):
+    character_id: str
+    image_url: str
+
+
+@router.post("/talking-photo/upload")
+async def talking_photo_upload(req: TalkingPhotoUploadRequest):
+    """Download a portrait URL, upload it to HeyGen as a talking photo, and
+    save the resulting talking_photo_id keyed by character_id. The frontend
+    AVATARS map should subsequently look up its avatar via this endpoint."""
+    from heygen_api import upload_talking_photo_from_url
+    from datetime import datetime as _dt, timezone as _tz
+
+    result = await upload_talking_photo_from_url(req.image_url)
+    if not result.get("success"):
+        raise HTTPException(status_code=502, detail=result.get("error", "Upload failed"))
+
+    tp_id = result["talking_photo_id"]
+    now_iso = _dt.now(_tz.utc).isoformat()
+    _char_avatar_col.update_one(
+        {"character_id": req.character_id},
+        {"$set": {
+            "character_id": req.character_id,
+            "talking_photo_id": tp_id,
+            "source_image_url": req.image_url,
+            "updated_at": now_iso,
+        }},
+        upsert=True,
+    )
+    return {
+        "success": True,
+        "character_id": req.character_id,
+        "talking_photo_id": tp_id,
+        "talking_photo_url": result.get("talking_photo_url"),
+    }
+
+
+@router.get("/character-avatars")
+async def list_character_avatars():
+    """Return all custom character->talking_photo_id mappings created via upload."""
+    rows = list(_char_avatar_col.find({}, {"_id": 0}))
+    return {"mappings": rows}
+
+
+@router.get("/character-avatars/{character_id}")
+async def get_character_avatar(character_id: str):
+    doc = _char_avatar_col.find_one({"character_id": character_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="No custom avatar saved for this character")
+    return doc
+
+
+class CharacterAvatarSetRequest(BaseModel):
+    character_id: str
+    talking_photo_id: str
+    source_image_url: Optional[str] = None
+
+
+@router.post("/character-avatars/set")
+async def set_character_avatar(req: CharacterAvatarSetRequest):
+    """Manually map a character to an existing HeyGen talking_photo_id (no upload).
+
+    Use this when the HeyGen photo-avatar upload quota is exhausted: create the
+    avatar inside the HeyGen dashboard, copy its talking_photo_id, and paste here.
+    """
+    from datetime import datetime as _dt, timezone as _tz
+    if not req.character_id or not req.talking_photo_id:
+        raise HTTPException(status_code=400, detail="character_id and talking_photo_id are required")
+    now_iso = _dt.now(_tz.utc).isoformat()
+    _char_avatar_col.update_one(
+        {"character_id": req.character_id},
+        {"$set": {
+            "character_id": req.character_id,
+            "talking_photo_id": req.talking_photo_id,
+            "source_image_url": req.source_image_url,
+            "updated_at": now_iso,
+        }},
+        upsert=True,
+    )
+    return {"success": True, "character_id": req.character_id, "talking_photo_id": req.talking_photo_id}
+
+
+@router.delete("/character-avatars/{character_id}")
+async def delete_character_avatar(character_id: str):
+    res = _char_avatar_col.delete_one({"character_id": character_id})
+    return {"success": True, "deleted": res.deleted_count > 0}

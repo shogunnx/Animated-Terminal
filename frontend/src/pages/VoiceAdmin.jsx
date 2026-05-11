@@ -25,6 +25,23 @@ export default function VoiceAdmin() {
   const [search, setSearch] = useState({});  // per-avatar search text
   const [pendingVoice, setPendingVoice] = useState({});  // avatar_id -> voice_id selected but not yet saved
 
+  // Per-character HeyGen avatar overrides (talking_photo_id paste-in)
+  const [charAvatars, setCharAvatars] = useState([]);  // [{character_id, talking_photo_id}]
+  const [tpInputs, setTpInputs] = useState({});  // character_id -> typed talking_photo_id
+  const [tpSaving, setTpSaving] = useState(null);
+
+  const reloadCharAvatars = async () => {
+    try {
+      const r = await fetch(`${BACKEND_URL}/api/storytime/character-avatars`);
+      if (r.ok) {
+        const d = await r.json();
+        setCharAvatars(d.mappings || []);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   useEffect(() => {
     const load = async () => {
       try {
@@ -39,6 +56,7 @@ export default function VoiceAdmin() {
         const mData = await mRes.json();
         setVoices(Array.isArray(vData.voices) ? vData.voices : []);
         setMappings(mData);
+        await reloadCharAvatars();
       } catch (e) {
         setError(e.message);
       } finally {
@@ -174,6 +192,130 @@ export default function VoiceAdmin() {
         <>
           <div style={{ fontSize: 11, opacity: 0.7, marginBottom: 12 }}>
             {voices.length} voices loaded · {mappings.overrides.length} custom overrides · {mappings.known_invalid_voice_ids.length} known-dead voice IDs
+          </div>
+
+          {/* Character HeyGen avatar (talking_photo_id) paste-in section */}
+          <div
+            data-testid="character-avatar-section"
+            style={{
+              padding: 16,
+              marginBottom: 18,
+              border: "1px solid rgba(192,184,201,0.4)",
+              borderRadius: 12,
+              background: "linear-gradient(135deg, rgba(192,184,201,0.06), rgba(140,122,153,0.04))",
+            }}
+          >
+            <div className="tsv-title" style={{ fontSize: 14, color: "#C0B8C9", marginBottom: 4, letterSpacing: 1 }}>
+              📸 CHARACTER FACE (HeyGen talking_photo_id)
+            </div>
+            <div style={{ fontSize: 11, opacity: 0.7, marginBottom: 12, lineHeight: 1.5 }}>
+              Want VixenVictoria to show her own face on video instead of Evil Victoria's? Create a Photo Avatar in your{" "}
+              <a href="https://app.heygen.com/avatars" target="_blank" rel="noreferrer" style={{ color: "#C0B8C9" }}>HeyGen dashboard</a>,
+              copy its <code>talking_photo_id</code>, and paste it below. Voice mapping stays separate — these two systems work independently.
+            </div>
+
+            {[
+              { id: "vixen_victoria", label: "VixenVictoria" },
+              { id: "evil_victoria", label: "Evil Victoria" },
+              { id: "wargirl", label: "Wargirl" },
+              { id: "victoria_black", label: "Victoria Black" },
+              { id: "vanessa", label: "Vanessa" },
+              { id: "binary", label: "Binary" },
+              { id: "harmony", label: "Harmony" },
+            ].map((c) => {
+              const existing = charAvatars.find((x) => x.character_id === c.id);
+              return (
+                <div
+                  key={c.id}
+                  data-testid={`char-avatar-row-${c.id}`}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "140px 1fr auto auto",
+                    gap: 8,
+                    alignItems: "center",
+                    padding: "8px 0",
+                    borderBottom: "1px solid rgba(192,184,201,0.1)",
+                  }}
+                >
+                  <div style={{ fontSize: 12, color: "#fff" }}>{c.label}</div>
+                  <input
+                    data-testid={`char-avatar-input-${c.id}`}
+                    type="text"
+                    placeholder={existing ? existing.talking_photo_id : "paste talking_photo_id here…"}
+                    value={tpInputs[c.id] ?? ""}
+                    onChange={(e) => setTpInputs((p) => ({ ...p, [c.id]: e.target.value }))}
+                    style={{
+                      padding: "6px 10px",
+                      fontSize: 11,
+                      fontFamily: "monospace",
+                      borderRadius: 6,
+                      border: "1px solid rgba(192,184,201,0.3)",
+                      background: "rgba(0,0,0,0.4)",
+                      color: existing && !tpInputs[c.id] ? "#9affc5" : "#fff",
+                      outline: "none",
+                    }}
+                  />
+                  <button
+                    data-testid={`char-avatar-save-${c.id}`}
+                    disabled={!tpInputs[c.id] || tpSaving === c.id}
+                    onClick={async () => {
+                      const id = (tpInputs[c.id] || "").trim();
+                      if (!id) return;
+                      setTpSaving(c.id);
+                      try {
+                        const r = await fetch(`${BACKEND_URL}/api/storytime/character-avatars/set`, {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ character_id: c.id, talking_photo_id: id }),
+                        });
+                        if (!r.ok) {
+                          const d = await r.json().catch(() => ({}));
+                          throw new Error(d.detail || `HTTP ${r.status}`);
+                        }
+                        await reloadCharAvatars();
+                        setTpInputs((p) => ({ ...p, [c.id]: "" }));
+                      } catch (e) {
+                        alert(`Save failed: ${e.message}`);
+                      } finally {
+                        setTpSaving(null);
+                      }
+                    }}
+                    style={{
+                      fontSize: 11,
+                      padding: "6px 12px",
+                      background: tpInputs[c.id] ? "#C0B8C9" : "rgba(192,184,201,0.2)",
+                      color: tpInputs[c.id] ? "#000" : "#888",
+                      border: "1px solid #C0B8C9",
+                      borderRadius: 6,
+                      cursor: tpInputs[c.id] ? "pointer" : "not-allowed",
+                    }}
+                  >
+                    {tpSaving === c.id ? "..." : "SAVE"}
+                  </button>
+                  {existing && (
+                    <button
+                      data-testid={`char-avatar-clear-${c.id}`}
+                      onClick={async () => {
+                        if (!confirm(`Remove custom face for ${c.label}?`)) return;
+                        await fetch(`${BACKEND_URL}/api/storytime/character-avatars/${c.id}`, { method: "DELETE" });
+                        await reloadCharAvatars();
+                      }}
+                      style={{
+                        fontSize: 10,
+                        padding: "4px 8px",
+                        background: "none",
+                        border: "1px solid #ff7070",
+                        color: "#ff7070",
+                        borderRadius: 5,
+                        cursor: "pointer",
+                      }}
+                    >
+                      ↺
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           <div data-testid="voice-admin-rows" style={{ display: "grid", gap: 14 }}>

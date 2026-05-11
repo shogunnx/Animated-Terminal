@@ -38,6 +38,24 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## Recent Changes
 
+### Feb 11, 2026 — PER-CHARACTER HEYGEN FACE OVERRIDE
+- **Why**: VixenVictoria's video was showing Evil Victoria's face because they share an avatar_id (intentional — for the shared deep sensual voice). User wants distinct face.
+- **HeyGen API auto-upload blocked**: `POST /v1/talking_photo` returned "exceeded limit of 3 photo avatars" — this account has a per-period upload quota that's already used.
+- **Solution**: Manual paste flow at `/admin/voices`:
+  1. User creates the Photo Avatar inside HeyGen's dashboard (app.heygen.com/avatars)
+  2. Copies the resulting `talking_photo_id`
+  3. Pastes it into the new "📸 CHARACTER FACE" section on `/admin/voices`
+- **Backend**:
+  - New MongoDB collection `character_avatar_overrides` keyed by `character_id`
+  - `POST /api/storytime/character-avatars/set` — upsert manually
+  - `POST /api/storytime/talking-photo/upload` — auto-upload (currently blocked by HeyGen quota; ready when quota frees)
+  - `GET /api/storytime/character-avatars` — list all overrides
+  - `DELETE /api/storytime/character-avatars/{character_id}` — clear an override
+- **Frontend**:
+  - StoryTime now fetches overrides on mount and uses `characterAvatarOverrides[selectedNarrator] ?? AVATARS[selectedNarrator].id` as the avatar_id for both Q&A and story generation
+  - New admin section in `/admin/voices` with paste-input rows for VixenVictoria + 6 other characters
+- **Bonus**: `heygen_api.upload_talking_photo_from_url()` is implemented and tested (downloads source image, POSTs raw bytes with correct Content-Type to HeyGen) — works the moment the HeyGen quota refreshes or the user upgrades their plan.
+
 ### Feb 11, 2026 — VIXENVICTORIA'S ARCHIVE WIDGET
 - New rotating daily-blurb widget mounted at the top of `/storytime`
 - Backend `vixen_archive.py`: 20 curated paragraphs in VixenVictoria's voice (in-lore: Nexus spire, Sadala, Classified chamber outer vestibule, Goddess Vanessa's first temple, Veronica's childhood garden, Wargirl's arcade, Harmony's first lab, Binary's cradle, Fusion Door, Sands of Time Page 7 + real-world: Pompeii, Library of Alexandria, Aleppo souq, Notre-Dame, Palmyra, Hagia Sophia, Lighthouse of Alexandria, Buddhas of Bamiyan, Roman Baths of Caracalla, Detroit Michigan Central)

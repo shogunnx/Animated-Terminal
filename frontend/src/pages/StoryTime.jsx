@@ -126,6 +126,10 @@ export default function StoryTime() {
   // Credit Status State
   const [creditStatus, setCreditStatus] = useState(null);
   const [showCreditWarning, setShowCreditWarning] = useState(false);
+
+  // Per-character HeyGen avatar overrides (set in /admin/voices via "paste talking_photo_id")
+  // character_id -> talking_photo_id
+  const [characterAvatarOverrides, setCharacterAvatarOverrides] = useState({});
   
   // Pagination state for lore stories
   const [loreDisplayCount, setLoreDisplayCount] = useState(10);
@@ -170,6 +174,25 @@ export default function StoryTime() {
     }
   };
 
+  // Fetch per-character avatar overrides (lets VixenVictoria use her own HeyGen face once admin pastes an ID)
+  const fetchCharacterAvatarOverrides = async () => {
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/storytime/character-avatars`);
+      if (response.ok) {
+        const data = await response.json();
+        const map = {};
+        (data.mappings || []).forEach((m) => {
+          if (m.character_id && m.talking_photo_id) {
+            map[m.character_id] = m.talking_photo_id;
+          }
+        });
+        setCharacterAvatarOverrides(map);
+      }
+    } catch (error) {
+      console.error('Failed to fetch character avatar overrides:', error);
+    }
+  };
+
   // Fetch dynamic content and check mode on mount
   useEffect(() => {
     const fetchDynamicContent = async () => {
@@ -202,6 +225,7 @@ export default function StoryTime() {
     fetchDynamicContent();
     fetchVideoHistory();
     fetchCreditStatus();
+    fetchCharacterAvatarOverrides();
     checkMode();
     
     // Refresh credit status every 2 minutes
@@ -266,9 +290,10 @@ export default function StoryTime() {
     try {
       // Get the current narrator
       const currentNarratorData = AVATARS[selectedNarrator];
-      
-      // Use the selected narrator's avatar ID
-      const avatarIdForGeneration = currentNarratorData.id;
+
+      // Prefer per-character HeyGen avatar override (set in admin) so e.g.
+      // VixenVictoria can use her own face once an admin pastes her talking_photo_id
+      const avatarIdForGeneration = characterAvatarOverrides[selectedNarrator] || currentNarratorData.id;
       
       // Use the narrated endpoint for in-character voice
       const response = await fetch(`${BACKEND_URL}/api/storytime/generate-narrated`, {
@@ -447,6 +472,10 @@ export default function StoryTime() {
       const characterData = TSV_CHARACTERS.find(c => c.id === characterLookupId);
       const fallbackAccent = characterData?.accent || '#ff69b4';
 
+      // Prefer per-character HeyGen avatar override so VixenVictoria can show
+      // her own face if an admin has pasted her talking_photo_id.
+      const avatarIdForQA = characterAvatarOverrides[selectedNarrator] || currentNarratorData.id;
+
       // Call Q&A API
       const response = await fetch(`${BACKEND_URL}/api/storytime/qa`, {
         method: 'POST',
@@ -454,7 +483,7 @@ export default function StoryTime() {
         body: JSON.stringify({
           character_id: characterLookupId,
           character_name: characterData?.name || currentNarratorData.name,
-          avatar_id: currentNarratorData.id,
+          avatar_id: avatarIdForQA,
           question: qaQuestion,
           video_url: qaVideoLink || null,
           duration: 20  // 20-second video for Q&A responses

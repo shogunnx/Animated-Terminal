@@ -291,3 +291,64 @@ async def list_voices() -> Dict:
             "success": False,
             "error": str(e)
         }
+
+
+
+async def upload_talking_photo_from_url(image_url: str) -> Dict:
+    """
+    Download an image from a URL and upload it to HeyGen as a Talking Photo.
+    Returns the new talking_photo_id which can be used as avatar_id in generate_video_heygen.
+
+    Endpoint: POST https://upload.heygen.com/v1/talking_photo
+    Auth header: X-Api-Key
+    Body: raw image bytes
+    Content-Type: image/jpeg | image/png (must match the actual file)
+    """
+    if not HEYGEN_API_KEY:
+        return {"success": False, "error": "HEYGEN_API_KEY not configured"}
+
+    try:
+        async with httpx.AsyncClient(timeout=60.0, follow_redirects=True) as client:
+            # 1. Download the source image
+            img_resp = await client.get(image_url)
+            if img_resp.status_code != 200:
+                return {"success": False, "error": f"Failed to fetch image: HTTP {img_resp.status_code}"}
+            img_bytes = img_resp.content
+            content_type = img_resp.headers.get("content-type", "").split(";")[0].strip().lower()
+            # Default to PNG if Content-Type is missing/odd (HeyGen accepts jpeg, png, jpg)
+            if content_type not in ("image/jpeg", "image/png", "image/jpg"):
+                # Guess from URL extension
+                url_lower = image_url.lower()
+                if url_lower.endswith(".jpg") or url_lower.endswith(".jpeg"):
+                    content_type = "image/jpeg"
+                else:
+                    content_type = "image/png"
+
+            # 2. Upload to HeyGen
+            upload_resp = await client.post(
+                "https://upload.heygen.com/v1/talking_photo",
+                headers={
+                    "X-Api-Key": HEYGEN_API_KEY,
+                    "Content-Type": content_type,
+                },
+                content=img_bytes,
+            )
+
+            if upload_resp.status_code != 200:
+                return {
+                    "success": False,
+                    "error": f"HeyGen upload error: HTTP {upload_resp.status_code} - {upload_resp.text[:300]}",
+                }
+            data = upload_resp.json()
+            talking_photo_id = data.get("data", {}).get("talking_photo_id")
+            if not talking_photo_id:
+                return {"success": False, "error": f"No talking_photo_id returned: {data}"}
+
+            return {
+                "success": True,
+                "talking_photo_id": talking_photo_id,
+                "talking_photo_url": data.get("data", {}).get("talking_photo_url"),
+            }
+    except Exception as e:
+        logger.exception("upload_talking_photo_from_url failed")
+        return {"success": False, "error": str(e)}
