@@ -86,6 +86,7 @@ export default function Characters() {
               c={c}
               onProfile={() => nav(`/characters/${c.id}`)}
               onRoom={() => nav(`/rooms/${c.id}`)}
+              onWatchNexus={() => nav(`/nexus?q=${encodeURIComponent(c.name)}`)}
             />
           ))}
         </div>

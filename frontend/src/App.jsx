@@ -15,6 +15,7 @@ import DressingRoom from "./pages/DressingRoom.jsx";
 import DressingRoomAnalytics from "./pages/DressingRoomAnalytics.jsx";
 import TerminalAnalytics from "./pages/TerminalAnalytics.jsx";
 import VoiceAdmin from "./pages/VoiceAdmin.jsx";
+import Nexus from "./pages/Nexus.jsx";
 import TerminalPolish from "./components/TerminalPolish.jsx";
 import CursorBlink from "./components/CursorBlink.jsx";
 import { useTerminalAnalytics } from "./hooks/useTerminalAnalytics.js";
@@ -47,6 +48,7 @@ function AnimatedRoutes() {
           <Route path="/terminal-analytics" element={<TerminalAnalytics />} />
           <Route path="/admin/voices" element={<VoiceAdmin />} />
           <Route path="/deviantart" element={<DeviantArt />} />
+          <Route path="/nexus" element={<Nexus />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AnimatePresence>

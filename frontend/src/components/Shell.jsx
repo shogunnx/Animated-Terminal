@@ -54,6 +54,7 @@ export default function Shell({ children }) {
               <NavLink to="/characters" label="Characters" />
               <NavLink to="/dressing-room" label="👗 Dressing Room" />
               <NavLink to="/deviantart" label="DeviantArt" />
+              <NavLink to="/nexus" label="🎬 Nexus" />
               <ExternalLink 
                 href="https://rosebud.ai/p/9ae128f9-db5f-4ce9-b573-55d98d6f3807" 
                 label="🔥 Fractured Power" 

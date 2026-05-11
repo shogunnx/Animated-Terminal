@@ -1,7 +1,7 @@
 import HoloPortrait from "./HoloPortrait.jsx";
 import CharacterAnimations from "./CharacterAnimations.jsx";
 
-export default function CharacterCard({ c, onProfile, onRoom }) {
+export default function CharacterCard({ c, onProfile, onRoom, onWatchNexus }) {
   // Set default values for Nexus data
   const accent = c.accent || "#00ffff";
   const glow = c.glow || "#8800ff";
@@ -94,6 +94,25 @@ export default function CharacterCard({ c, onProfile, onRoom }) {
           ENTER ROOM
         </button>
       </div>
+
+      {onWatchNexus && (
+        <button
+          className="tsv-btn"
+          onClick={onWatchNexus}
+          style={{
+            fontSize: 11,
+            padding: "10px 12px",
+            marginTop: 8,
+            width: "100%",
+            background: `linear-gradient(135deg, rgba(255,107,0,.18), rgba(255,184,0,.12))`,
+            borderColor: "rgba(255,107,0,.55)",
+            color: "#FFB800",
+            letterSpacing: ".08em",
+          }}
+        >
+          🎬 WATCH ON NEXUS
+        </button>
+      )}
 
       {/* AMBIENT GLOW */}
       <div style={{
