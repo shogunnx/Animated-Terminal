@@ -99,6 +99,13 @@ class OutfitRequest(BaseModel):
     second_character_id: Optional[str] = None
     second_character_name: Optional[str] = None
     is_pairs_mode: Optional[bool] = False
+    # "Keep Untouched" preservation flags — defaults preserve identity
+    preserve_face: Optional[bool] = True
+    preserve_hair: Optional[bool] = True
+    preserve_skin_tone: Optional[bool] = True
+    preserve_body: Optional[bool] = False
+    preserve_pose: Optional[bool] = False
+    preserve_background: Optional[bool] = False
 
 class TryOnRequest(BaseModel):
     """Request for virtual try-on with actual garment images by category"""
@@ -520,10 +527,28 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
+    # Build dynamic "Keep Untouched" preservation clauses from request flags
+    preserve_parts = []
+    if request.preserve_face:
+        preserve_parts.append("the EXACT same face and facial features")
+    if request.preserve_hair:
+        preserve_parts.append("the EXACT same hair (color, style, length, texture)")
+    if request.preserve_skin_tone:
+        preserve_parts.append("the EXACT same skin tone and complexion")
+    if request.preserve_body:
+        preserve_parts.append("the EXACT same body shape and proportions")
+    if request.preserve_pose:
+        preserve_parts.append("the EXACT same pose and body position")
+    if request.preserve_background:
+        preserve_parts.append("the EXACT same background and setting")
+
+    preserve_clause = ""
+    if preserve_parts:
+        preserve_clause = "\nMust keep untouched: " + ", ".join(preserve_parts) + "."
+
     # Use FLUX Kontext for identity-preserving outfit changes
-    prompt = f"""Change the clothing/outfit to: {request.outfit_description}.
-Maintain the EXACT same face, same facial features, same hair, same pose.
-Only change the clothing. High quality, detailed clothing."""
+    prompt = f"""Change the clothing/outfit to: {request.outfit_description}.{preserve_clause}
+Only change the clothing/outfit. High quality, detailed clothing."""
     
     print(f"[DRESSING ROOM] Character: {request.character_id}")
     print(f"[DRESSING ROOM] Using FLUX Kontext for identity-preserving edit")

@@ -18,7 +18,20 @@ const CLOTHING_CATEGORIES = {
     "Chain Mail Top", "Deep V Crop", "Side Boob Top", "Underboob Crop", "Body Harness", "Cupless Corset", 
     "Wet Look Top", "Snakeskin Top", "Feather Top", "Jeweled Bra Top", "Crystal Chainmail", "Barely There Halter", 
     "String Bikini Top", "Micro Crop", "Navel Tie Top", "Open Back Bodysuit", "Caged Bralette", "Shredded Top", 
-    "Net Sleeve Top", "Transparent Blouse", "Liquid Metal Top", "Holographic Crop", "Satin Slip Top", "Velvet Bustier"
+    "Net Sleeve Top", "Transparent Blouse", "Liquid Metal Top", "Holographic Crop", "Satin Slip Top", "Velvet Bustier",
+    // Sensual Tops Extended (60 new)
+    "Lace Bralette Top", "Silk Camisole", "Satin Tie-Front Blouse", "Velvet Choker Crop", "Silk Wrap Blouse",
+    "Ruched Side Crop", "Deep Plunge Bodysuit", "Backless Halter Top", "Lace-Up Bustier", "Leather Corset Crop",
+    "Vinyl Halter Top", "Latex Tube Top", "Sheer Lace Blouse", "Chiffon Peek-a-Boo Top", "Ruffle Off-Shoulder Top",
+    "Cold Shoulder Wrap", "One-Shoulder Satin Top", "Asymmetric Cutout Top", "Side-Tie Crop Top", "Knot-Front Crop",
+    "Twisted Bandeau", "Strapless Sweetheart Top", "Corseted Puff Sleeve Top", "Ribboned Cami", "Pearl Strap Bralette",
+    "Rhinestone Mesh Top", "Crystal Fringe Crop", "Beaded Sheer Blouse", "Sequin Halter Top", "Metallic Draped Top",
+    "Rose Gold Sequin Crop", "Gold Chain Halter", "Silver Chainmail Top", "Snake Chain Crop", "Fishnet Long Sleeve",
+    "Mesh Turtleneck Crop", "Lace Bodysuit Top", "Deep V Wrap Top", "Keyhole Cutout Blouse", "Hollow-Back Top",
+    "Lattice Cutout Crop", "Lace-Up Back Top", "Tie-Back Halter", "Crisscross Strap Top", "Cage Strap Bralette",
+    "Satin Ribbon Top", "Butterfly Sleeve Top", "Bell Sleeve Crop", "Flutter Sleeve Blouse", "Puff Sleeve Bustier",
+    "Balloon Sleeve Crop", "Velvet Spaghetti Strap Cami", "Lace Trim Camisole", "Embroidered Peasant Top", "Boho Crochet Top",
+    "Tie-Dye Crop", "Floral Lace Top", "Watercolor Satin Blouse", "Ombre Metallic Crop", "Holographic Mesh Top"
   ],
   bottoms: [
     "Jeans", "Shorts", "Skirt", "Leggings", "Dress Pants", "Cargo Pants", "Mini Skirt",
@@ -31,7 +44,70 @@ const CLOTHING_CATEGORIES = {
     "Leather Hot Pants", "Latex Leggings", "Wet Look Leggings", "Garter Belt Bottom", "Suspender Shorts", 
     "Booty Shorts", "Cheeky Shorts", "Brazilian Cut Shorts", "Hip Hugger Jeans", "Painted-On Jeans", 
     "Liquid Latex Pants", "Body Paint Pants", "Holographic Shorts", "Satin Mini Skirt", "Velvet Hot Pants",
-    "Lace Pencil Skirt", "Mesh Leggings", "Bodycon Skirt"
+    "Lace Pencil Skirt", "Mesh Leggings", "Bodycon Skirt",
+    // Short Skirts (60 new)
+    "Mini Pleated Tartan Skirt", "Denim Micro Mini", "Leather Mini Skirt", "Suede A-Line Mini", "Lace-Trim Mini Skirt",
+    "Sequin Party Mini", "Satin Slip Mini", "Velvet Wrap Mini", "Metallic Pleated Mini", "Faux Fur Mini Skirt",
+    "Buckle-Front Mini", "Button-Down Denim Mini", "Houndstooth Mini Skirt", "Plaid Schoolgirl Mini", "Tennis Pleated Mini",
+    "Cheerleader Pleated Mini", "Ruffle-Hem Mini Skirt", "Tiered Ruffle Mini", "Asymmetric Hem Mini", "Wrap Tie Mini Skirt",
+    "Zipper-Front Mini", "Cargo Pocket Mini", "Utility Mini Skirt", "Corset-Waist Mini", "Belted Mini Skirt",
+    "Denim Frayed Hem Mini", "Acid Wash Mini", "Rip-Detail Denim Mini", "Vinyl Mini Skirt", "Wet-Look Mini",
+    "Chainmail Mini Skirt", "Beaded Fringe Mini", "Rhinestone Mini Skirt", "Metallic Foil Mini", "Holographic Mini Skirt",
+    "Neon Mesh Mini", "Tulle Layered Mini", "Taffeta Puff Mini", "Bubble Hem Mini", "Rose-Embroidered Mini",
+    "Floral Print Mini", "Polka Dot Mini Skirt", "Striped Mini Skirt", "Snake Print Mini", "Leopard Print Mini",
+    "Zebra Print Mini", "Camouflage Mini Skirt", "Checkerboard Mini", "Rainbow Pride Mini", "Pastel Pink Mini",
+    "Hot Pink Bodycon Mini", "Red Satin Mini Skirt", "Black Lace Overlay Mini", "White Linen Mini", "Khaki Safari Mini",
+    "Burgundy Suede Mini", "Emerald Velvet Mini", "Sapphire Satin Mini", "Champagne Sequin Mini", "Rose Gold Pleated Mini"
+  ],
+  dresses: [
+    // Form-Fitting Dresses & Gowns (60)
+    "Bodycon Midi Dress", "Bodycon Mini Dress", "Bodycon Maxi Dress", "Mermaid Gown", "Trumpet Gown",
+    "Fit-and-Flare Gown", "Sheath Cocktail Dress", "Column Evening Gown", "Hourglass Bodycon", "Corset Bodice Gown",
+    "Backless Bodycon Dress", "Open-Back Mermaid Gown", "Deep V Bodycon Dress", "Plunging Neckline Gown", "Halter Bodycon Dress",
+    "One-Shoulder Bodycon", "Off-Shoulder Mermaid Gown", "Strapless Bodycon Mini", "Strapless Sweetheart Gown", "Spaghetti Strap Slip Dress",
+    "Silk Slip Dress", "Satin Bias-Cut Gown", "Sequin Bodycon Mini", "Sequin Mermaid Gown", "Beaded Illusion Gown",
+    "Crystal-Embellished Bodycon", "Rhinestone Mesh Gown", "Lace Bodycon Dress", "Floral Lace Gown", "Nude Illusion Gown",
+    "Sheer Panel Bodycon", "Cutout Bodycon Dress", "Side-Cutout Mermaid", "Thigh-Slit Bodycon Dress", "Thigh-High Slit Gown",
+    "Wrap Bodycon Dress", "Draped Bodycon Gown", "Grecian Column Gown", "Ruched Side Bodycon", "Pleated Bodycon Midi",
+    "Metallic Foil Bodycon", "Metallic Lamé Gown", "Liquid Metal Mermaid", "Velvet Bodycon Mini", "Velvet Trumpet Gown",
+    "Leather Bodycon Dress", "Latex Bodycon Mini", "Latex Mermaid Gown", "Vinyl Bodycon Dress", "Mesh Illusion Bodycon",
+    "Fishnet Overlay Gown", "Chainmail Metal Mesh Gown", "Feather-Trim Gown", "Fringed Flapper Gown", "Ombre Gradient Gown",
+    "Watercolor Print Bodycon", "Snake Print Bodycon", "Leopard Print Gown", "Red Carpet Gown", "Vintage Hollywood Gown"
+  ],
+  dragonball: [
+    // Dragonball Outfits (80)
+    "Goku Base Form Gi", "Goku Orange Battle Gi with Blue Weight Belt", "Goku Kaio-Ken Red Aura Gi", "Goku Super Saiyan Gi",
+    "Goku Super Saiyan 2 Gi", "Goku Super Saiyan 3 Gi", "Goku Super Saiyan God Red Gi", "Goku Super Saiyan Blue Gi",
+    "Goku Ultra Instinct Gi", "Goku Mastered Ultra Instinct Gi", "Vegeta Saiyan Royal Armor", "Vegeta Namek Saga Armor",
+    "Vegeta Majin Saga Outfit", "Vegeta Battle Armor Blue and Yellow", "Vegeta Super Saiyan Blue Armor", "Vegeta Beyond Blue Evolution Armor",
+    "Vegeta Ultra Ego Armor", "Future Trunks Capsule Corp Jacket", "Future Trunks Sword and Jacket", "Trunks Battle Jacket Blue",
+    "Teen Trunks Tournament Uniform", "Goten Orange Gi Mini", "Gohan Teen Battle Gi", "Gohan Mystic Purple Gi",
+    "Gohan Ultimate Form Gi", "Great Saiyaman Suit", "Great Saiyaman 2 Videl Costume", "Piccolo Namekian Turban and Cape",
+    "Piccolo Weighted Purple Gi", "Piccolo Orange Namekian Fusion", "Krillin Monk Orange Gi", "Yamcha Desert Bandit Outfit",
+    "Yamcha Baseball Uniform", "Tien Three-Eyed Gi", "Chiaotzu Hat and Robe", "Master Roshi Turtle Gi",
+    "Master Roshi Hawaiian Shirt", "Bulma Capsule Corp Jumpsuit", "Bulma Namek Saga Pink Outfit", "Bulma Red Dress Dragonball Era",
+    "Chi-Chi Princess Dress", "Chi-Chi Housewife Outfit", "Chi-Chi Fighter Armor", "Videl White Gi Shirt",
+    "Videl Pigtails Shorts Fighter", "Pan Teen Gi", "Pan GT Red Bandana Outfit", "Caulifla Saiyan Gi Red",
+    "Kale Berserker Transformation", "Kefla Fusion Gi Blue and Red", "Android 18 Denim Vest Jeans", "Android 18 Black Shirt Jeans",
+    "Android 17 Green Scarf Outfit", "Android 17 Park Ranger Uniform", "Frieza Final Form White Purple", "Frieza Golden Form Armor",
+    "Cell Perfect Form Green Black", "Cell Semi-Perfect Form", "Majin Buu Pink Gi Pants Cape", "Kid Buu Loincloth",
+    "Goku Black Gray Gi with Earring", "Zamasu Fused Purple Robe", "Beerus Purple God of Destruction Robe", "Whis Angel Attendant Robe",
+    "Jiren Red Pride Trooper Suit", "Hit Blue Assassin Outfit", "Toppo Pride Trooper Uniform", "Broly Legendary Super Saiyan Fur Boots",
+    "Broly DBS Green Wild Hair Loincloth", "Paragus Saiyan Captain Armor", "Bardock Red Headband Scouter", "King Vegeta Royal Cape",
+    "Nappa Shoulder Pads Armor", "Raditz Scouter Fur Pauldrons", "Pilaf Mao Suit", "Captain Ginyu Force Pose Armor",
+    "Recoome Orange Ginyu Armor", "Burter Blue Speedster Armor", "Jeice Red Mullet Armor", "Zarbon Lord Frieza Outfit",
+    "Dodoria Pink Frieza Soldier Armor", "Cooler Final Form Purple Armor"
+  ],
+  villainessPoses: [
+    // Sexy Villainess Poses (30)
+    "Throne Pose with Crossed Legs", "Crown Adjustment Smirking", "Stroking Weapon Affectionately", "Finger Under Victim's Chin",
+    "Crystal Ball Gazing with Smirk", "Whip Coiled in Hand", "Blade Across Lips", "Poison Apple Offered",
+    "Dark Magic Swirling in Palms", "Arms Spread with Cape Billowing", "Goblet of Wine Raised in Toast", "Mirror Pose Hand on Reflection",
+    "Standing Over Defeated Enemy", "Hand on Hip Pointing Commandingly", "Reclining Throne One Leg Up", "Peering Through Fingers Playfully",
+    "Beckoning Finger Come Hither", "Hair Toss with Villain Cackle", "Lightning in Palm Raised High", "Whispering Curse to the Air",
+    "Serpent Draped Around Shoulders", "Mask Being Lowered Seductively", "Veil Covering Half the Face", "Smoke Curling Around Body",
+    "Dagger Spinning on Fingertip", "Ice Forming Between Fingertips", "Fire Dancing Above Open Palm", "Chain-Weapon Dragging Behind",
+    "Mind-Control Gesture at Temple", "Spellbook Open Balanced on Hip"
   ],
   shoes: [
     "Sneakers", "Heels", "Boots", "Sandals", "Wedges", "Flats", "Combat Boots",
@@ -44,7 +120,20 @@ const CLOTHING_CATEGORIES = {
     "Satin Ballet Slippers", "Sheer Stockings Barefoot", "Anklet Barefoot", "Toe Ring Barefoot", "Silk Socks",
     "Fishnet Ankle Socks", "Lace Socks with Heels", "Barefoot with Anklets", "House Wedges", "Indoor Stilettos",
     "Chenille Slippers", "Memory Foam Slides", "Cashmere Socks", "Silk Bed Socks", "Boudoir Heels",
-    "Ribbon Tie Flats", "Faux Fur Slides", "Satin Kitten Heels", "Pearl Strap Sandals"
+    "Ribbon Tie Flats", "Faux Fur Slides", "Satin Kitten Heels", "Pearl Strap Sandals",
+    // Sensual & Modern Heels (60 new)
+    "Clear PVC Pumps", "Mirror Chrome Stilettos", "Red Bottom Pumps", "Ankle Wrap Stilettos", "Crystal-Embellished Heels",
+    "Rhinestone Platform Pumps", "Snakeskin Pointed Pumps", "Patent Leather Stilettos", "Thigh-High Stiletto Boots", "Over-the-Knee Stiletto Boots",
+    "Pointed Toe Mules with Heel", "Barely-There Strappy Sandals", "Ankle-Cuff Stilettos", "Caged Stiletto Heels", "Lace-Up Gladiator Heels",
+    "Transparent Heel Pumps", "Metallic Gold Stilettos", "Metallic Silver Pumps", "Rose Gold Platform Heels", "Hologram Stiletto Pumps",
+    "Studded Stiletto Pumps", "Spiked Platform Heels", "Chain Ankle Heels", "Pearl Wrap Stilettos", "Diamond Encrusted Heels",
+    "Sequin Platform Pumps", "Velvet Point Stilettos", "Suede Pointed Pumps", "Croc-Embossed Stilettos", "Python Print Stilettos",
+    "Leopard Print Pumps", "Zebra Print Stilettos", "Illusion Heel Pumps", "Sculptural Art Heels", "Architectural Stilettos",
+    "Ribbon-Tie Heels", "Satin Bow Stilettos", "Feather-Trim Heels", "Fringe Stilettos", "Floral Appliqué Heels",
+    "Butterfly Strap Heels", "Mesh Panel Stilettos", "Cutout Ankle Heels", "Peep-Toe Stiletto Sandals", "Square-Toe Stiletto Mules",
+    "Pointed-Toe Slingbacks", "Ankle Tie Platform Heels", "Lucite Block Heel Mules", "Perspex Pumps", "Mirrored Platform Stilettos",
+    "Rhinestone T-Strap Heels", "Crystal Ankle Strap Sandals", "Bejeweled Slingbacks", "Glass Slipper Transparent Heels", "Neon Clear PVC Pumps",
+    "Embroidered Mesh Stilettos", "Scalloped Edge Pumps", "Twisted Strap Heels", "Double-Buckle Ankle Stilettos", "Signature Red-Sole Pumps"
   ],
   hairstyles: [
     "Long", "Short", "Ponytail", "Bun", "Braided", "Wavy", "Straight", "Curly",
@@ -70,7 +159,18 @@ const CLOTHING_CATEGORIES = {
     "Legs Spread", "Legs Crossed", "One Leg Up", "Hands Behind Head", "Hands on Knees", "Hands on Face",
     "Touching Hair", "Blowing Kiss", "Finger on Lips", "Hand on Chest", "Hand on Hip Turned", "Dancing Pose",
     "Jumping", "Floating", "Hovering", "Flying Pose", "Action Stance", "Fighting Stance", "Yoga Pose",
-    "Meditation Pose", "Sleeping Position", "Sensual Recline", "Pin-Up Pose"
+    "Meditation Pose", "Sleeping Position", "Sensual Recline", "Pin-Up Pose",
+    // Sensual Poses (30 new)
+    "Lying on Silk Sheets Looking Back", "Stretching Catlike Arched Back", "Kneeling on Bed Hands on Thighs",
+    "Sitting on Floor Legs Crossed Hair Tossed", "Leaning Against Wall Hand on Hip", "Hair Flip Mid-Twirl",
+    "Running Hands Through Hair Eyes Closed", "Biting Lip Over Shoulder", "Looking Up Through Lashes",
+    "Head Tilted Finger on Lips", "Reclining on Velvet Chaise", "Sitting on Dresser Legs Dangling",
+    "Perched on Windowsill Silhouette", "Pulling at Strap of Top", "Adjusting Stocking Seam",
+    "Tying Hair Up Arms Raised", "Draping Silk Robe Off Shoulder", "Sliding on Long Gloves",
+    "Clasping Necklace While Gazing", "Applying Perfume to Collarbone", "Running Finger Along Collarbone",
+    "Tracing Jawline Thoughtfully", "Hair Caught by Wind Close-Up", "Straddling Chair Backwards",
+    "Draped Across Grand Piano", "Lounging in Bubble Bath", "Towel-Drying Hair Laughing",
+    "Peeking Through Curtain of Hair", "Looking Into Mirror From Behind", "Backlit Silhouette in Doorway"
   ],
   presetCostumes: [
     "School Uniform", "Gothic Lolita", "Maid Outfit", "Nurse Uniform", "Police Officer", "Military Uniform",
@@ -112,7 +212,21 @@ const CLOTHING_CATEGORIES = {
     "Rooftop Terrace", "Garden Patio", "Swimming Pool", "Hot Tub", "Sauna", "Gym", "Dance Studio",
     "Photography Studio", "Red Carpet", "Nightclub", "Bar Lounge", "Restaurant", "Hotel Suite",
     "Spa Room", "Massage Table", "Yoga Studio", "Boxing Ring", "Racing Track", "Concert Stage",
-    "Forest Clearing", "Mountain Peak", "Desert Sunset", "Underwater Fantasy"
+    "Forest Clearing", "Mountain Peak", "Desert Sunset", "Underwater Fantasy",
+    // Realistic Backgrounds (40 new)
+    "New York City Rooftop Skyline", "Parisian Café Terrace", "Tokyo Neon Alley", "Dubai Luxury Hotel Lobby",
+    "Los Angeles Hollywood Hills Mansion", "Miami South Beach Sunset", "Las Vegas Strip at Night",
+    "London Bridge Rainy Evening", "Venetian Gondola Canal", "Santorini White Village Sunset",
+    "Maldives Overwater Bungalow", "Bali Infinity Pool Villa", "Swiss Alps Snowy Chalet",
+    "Scottish Highland Castle", "Moroccan Riad Courtyard", "Kyoto Bamboo Forest Path",
+    "African Savanna Sunrise", "Caribbean White Sand Beach", "Icelandic Northern Lights",
+    "Arizona Red Rock Canyon", "Rainy Downtown Sidewalk at Night", "Snowy Central Park Winter",
+    "Golden Autumn Forest Trail", "Cherry Blossom Avenue Spring", "Lavender Field Provence",
+    "Sunflower Field Tuscany", "Cobblestone European Alley", "Vintage Library Oak Shelves",
+    "Luxury Private Jet Cabin", "Classic Yacht Deck at Sea", "Underground Subway Platform",
+    "Industrial Warehouse Loft", "Modern Art Gallery White Walls", "Marble Museum Hallway",
+    "Black-Tie Gala Ballroom", "Opera House Grand Staircase", "Backstage Mirrored Dressing Room",
+    "Film Noir Smoky Jazz Club", "Rooftop Helipad at Dusk", "Desert Dunes Camel Caravan"
   ],
   gestures: [
     // 30 Gestures
@@ -167,7 +281,19 @@ export default function DressingRoom() {
     backgrounds: "",
     gestures: "",
     pairsMature: "",
-    pairsFun: ""
+    pairsFun: "",
+    dresses: "",
+    dragonball: "",
+    villainessPoses: ""
+  });
+  // "Keep Untouched" preservation toggles — default: preserve identity (face, hair, skin tone)
+  const [preserveFlags, setPreserveFlags] = useState({
+    face: true,
+    hair: true,
+    skinTone: true,
+    body: false,
+    pose: false,
+    background: false
   });
   const [generatedImage, setGeneratedImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -458,6 +584,21 @@ export default function DressingRoom() {
       if (selectedItems.accessories) parts.push(`and ${selectedItems.accessories}`);
       if (selectedItems.positions) parts.push(`in ${selectedItems.positions} position`);
       basePrompt = parts.join(" ");
+    } else if (selectedItems.dragonball) {
+      // Dragonball preset takes priority similar to presetCostumes
+      const parts = [selectedItems.dragonball + " costume"];
+      if (selectedItems.hairstyles) parts.push(`with ${selectedItems.hairstyles} hair`);
+      if (selectedItems.accessories) parts.push(`and ${selectedItems.accessories}`);
+      if (selectedItems.positions) parts.push(`in ${selectedItems.positions} position`);
+      basePrompt = parts.join(" ");
+    } else if (selectedItems.dresses) {
+      // Form-fitting dress/gown as the primary garment
+      const parts = [selectedItems.dresses];
+      if (selectedItems.shoes) parts.push(`with ${selectedItems.shoes}`);
+      if (selectedItems.accessories) parts.push(`and ${selectedItems.accessories}`);
+      if (selectedItems.hairstyles) parts.push(`with ${selectedItems.hairstyles} hair`);
+      if (selectedItems.positions) parts.push(`in ${selectedItems.positions} position`);
+      basePrompt = parts.join(" ");
     } else {
       // Otherwise, build from individual items
       const parts = [];
@@ -468,6 +609,13 @@ export default function DressingRoom() {
       if (selectedItems.accessories) parts.push(selectedItems.accessories);
       if (selectedItems.positions) parts.push(`${selectedItems.positions} position`);
       basePrompt = parts.join(", ");
+    }
+
+    // Villainess pose can be layered onto anything
+    if (selectedItems.villainessPoses) {
+      basePrompt = basePrompt
+        ? `${basePrompt}, ${selectedItems.villainessPoses}`
+        : selectedItems.villainessPoses;
     }
 
     // Add background if selected
@@ -588,7 +736,13 @@ export default function DressingRoom() {
         outfit_description: outfitDesc,
         reference_image_url: baseImageSource === "nexus" ? baseImage : null,
         reference_image_base64: isUploadedImage ? baseImage : null,
-        save_as_base: isUploadedImage
+        save_as_base: isUploadedImage,
+        preserve_face: preserveFlags.face,
+        preserve_hair: preserveFlags.hair,
+        preserve_skin_tone: preserveFlags.skinTone,
+        preserve_body: preserveFlags.body,
+        preserve_pose: preserveFlags.pose,
+        preserve_background: preserveFlags.background
       };
       
       // Add second character info for Pairs mode
@@ -1481,6 +1635,51 @@ export default function DressingRoom() {
             }
           </div>
         </div>
+
+
+        {/* Keep Untouched — Preservation Toggles */}
+        <div style={{ marginBottom: 14, padding: 12, borderRadius: 12, background: "rgba(0,255,136,.08)", border: "1px solid rgba(0,255,136,.35)" }}>
+          <div className="tsv-title" style={{ fontSize: 11, opacity:.9, marginBottom: 6, color: "#00FF88" }}>
+            🔒 KEEP UNTOUCHED
+          </div>
+          <div style={{ fontSize: 9, opacity: 0.7, marginBottom: 10 }}>
+            Protects selected traits of your uploaded image during generation. Face, hair & skin tone are protected by default — ideal for preserving a person's identity (e.g. a Black woman keeps her exact face and hair when the outfit changes).
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
+            {[
+              { key: "face", label: "Face" },
+              { key: "hair", label: "Hair" },
+              { key: "skinTone", label: "Skin Tone" },
+              { key: "body", label: "Body Shape" },
+              { key: "pose", label: "Pose" },
+              { key: "background", label: "Background" }
+            ].map(({ key, label }) => {
+              const active = preserveFlags[key];
+              return (
+                <button
+                  key={key}
+                  data-testid={`preserve-${key}-toggle`}
+                  onClick={() => setPreserveFlags(prev => ({ ...prev, [key]: !prev[key] }))}
+                  className="tsv-pill"
+                  style={{
+                    fontSize: 10,
+                    padding: "6px 10px",
+                    cursor: "pointer",
+                    borderColor: active ? "#00FF88" : "rgba(255,255,255,.16)",
+                    background: active
+                      ? "linear-gradient(135deg, rgba(0,255,136,.35), rgba(0,191,255,.15))"
+                      : "rgba(255,255,255,.08)",
+                    boxShadow: active ? "0 0 10px rgba(0,255,136,.4)" : "none",
+                    color: active ? "#fff" : "rgba(255,255,255,.75)"
+                  }}
+                >
+                  {active ? "🔒" : "🔓"} {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
 
         {/* Foot to Head Mode Info */}
         {isFootToHeadMode && (
