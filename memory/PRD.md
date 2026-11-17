@@ -38,6 +38,15 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## Recent Changes
 
+### Feb 10, 2026 (this session) — Dressing Room Content Expansion + Keep Untouched
+- Added **60 sensual & modern heels**, **60 short skirts**, **60 form-fitting dresses & gowns**, **60 sensual tops**, **80 Dragonball outfits**, **30 sensual poses**, **30 villainess poses**, **40 realistic backgrounds** to `CLOTHING_CATEGORIES`.
+- Added **🔒 Keep Untouched** panel (Outfit mode only) with 6 toggles — Face, Hair, Skin Tone, Body, Pose, Background. Face/Hair/Skin-Tone ON by default so uploaded images (e.g. a Black woman's face/hair) stay identical when the outfit changes.
+- Flags wired through to backend `OutfitRequest` (`preserve_face/hair/skin_tone/body/pose/background`) → dynamic preservation clause in the FLUX Kontext prompt.
+- 3 new wardrobe categories: `dresses`, `dragonball`, `villainessPoses` (with friendly display labels: Dresses & Gowns, Dragonball Outfits, Villainess Poses).
+- Verified by testing_agent → iteration_1.json (100% frontend success). Counts: Tops 134 • Bottoms 118 • Shoes 116 • Positions 80 • Backgrounds 70 • Dresses 60 • Dragonball 82 • Villainess Poses 30.
+
+
+
 ### Feb 11, 2026 — PER-CHARACTER HEYGEN FACE OVERRIDE
 - **Why**: VixenVictoria's video was showing Evil Victoria's face because they share an avatar_id (intentional — for the shared deep sensual voice). User wants distinct face.
 - **HeyGen API auto-upload blocked**: `POST /v1/talking_photo` returned "exceeded limit of 3 photo avatars" — this account has a per-period upload quota that's already used.
@@ -182,3 +191,6 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 - HeyGen credits exhausted (P0)
 - Some HeyGen avatar/voice IDs invalid in `AVATARS` map (StoryTime.jsx)
 - StoryTime AITA stories don't expand correctly (minor UI)
+
+## 2026-06 Verification
+- Dressing Room expansion re-verified: build OK, 6 Keep Untouched toggles render (Face/Hair/Skin on by default), all new categories present. MicroGames lint fix confirmed.

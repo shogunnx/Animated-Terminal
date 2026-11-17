@@ -1637,7 +1637,8 @@ export default function DressingRoom() {
         </div>
 
 
-        {/* Keep Untouched — Preservation Toggles */}
+        {/* Keep Untouched — Preservation Toggles (Outfit mode only) */}
+        {!isTryOnMode && !isHeadshotMode && !isFootToHeadMode && (
         <div style={{ marginBottom: 14, padding: 12, borderRadius: 12, background: "rgba(0,255,136,.08)", border: "1px solid rgba(0,255,136,.35)" }}>
           <div className="tsv-title" style={{ fontSize: 11, opacity:.9, marginBottom: 6, color: "#00FF88" }}>
             🔒 KEEP UNTOUCHED
@@ -1679,6 +1680,7 @@ export default function DressingRoom() {
             })}
           </div>
         </div>
+        )}
 
 
         {/* Foot to Head Mode Info */}
@@ -2146,10 +2148,23 @@ export default function DressingRoom() {
         )}
 
         {/* Regular Clothing Categories */}
-        {Object.entries(CLOTHING_CATEGORIES).filter(([cat]) => !['presetCostumes', 'artStyles', 'backgrounds', 'gestures', 'pairsMature', 'pairsFun'].includes(cat)).map(([category, items]) => (
+        {Object.entries(CLOTHING_CATEGORIES).filter(([cat]) => !['presetCostumes', 'artStyles', 'backgrounds', 'gestures', 'pairsMature', 'pairsFun'].includes(cat)).map(([category, items]) => {
+          const CATEGORY_LABELS = {
+            tops: "Tops",
+            bottoms: "Bottoms",
+            shoes: "Shoes",
+            hairstyles: "Hairstyles",
+            accessories: "Accessories",
+            positions: "Positions",
+            dresses: "Dresses & Gowns",
+            dragonball: "Dragonball Outfits",
+            villainessPoses: "Villainess Poses"
+          };
+          const label = CATEGORY_LABELS[category] || category;
+          return (
           <div key={category} style={{ marginTop: 14 }}>
             <div className="tsv-title" style={{ fontSize: 11, opacity:.75, marginBottom: 8, textTransform: "uppercase" }}>
-              {category} ({items.length})
+              {label} ({items.length})
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, maxHeight: 120, overflowY: "auto" }}>
               {items.map((item) => (
@@ -2172,7 +2187,8 @@ export default function DressingRoom() {
               ))}
             </div>
           </div>
-        ))}
+          );
+        })}
 
         {/* Custom Prompt */}
         <div style={{ marginTop: 14 }}>

@@ -139,7 +139,7 @@ const MicroGames = forwardRef(({ onScoreChange, onCoachTrigger, onBondChange, co
 
       if (gameType.type === "catch") {
         target.y += 3;
-        if (target.y > HEIGHT && !won) {
+        if (target.y > HEIGHT && !gameOver) {
           setGameOver(true);
           onCoachTrigger(coach.failPhrases[Math.floor(Math.random() * coach.failPhrases.length)]);
         }
