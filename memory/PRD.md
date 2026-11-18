@@ -207,3 +207,10 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 - POST /api/nexus-library/submit: generated image (data URL only, PNG/JPEG/WEBP, ≤25MB) uploaded to Nexus via chunked upload as PRIVATE, tags terminal-submission + pending-approval + mode-*, outfit details in description + fields (clothing/pose/location). Optional name/note. 10 per IP per hour (in-memory).
 - Frontend `components/SendToLibrary.jsx` under generated result; details snapshotted at generation time (mode, outfit text, selections, source asset).
 - Admin approves in Nexus admin ("Approve for publication") → appears in Terminal picker (approved/public shown).
+
+## 2026-06 DeviantArt per-visitor posting (FIXED, tested iteration_3)
+- Root causes: broken callback JS ({{ }}), redirect_uri fell back to https://localhost:3000 on Railway, one global token, no form.
+- New `backend/deviantart.py` router: per-visitor session (localStorage tsv_da_session → X-DA-Session header, sha256 stored), Mongo da_sessions (tokens + refresh) & da_oauth_states (single-use, 10-min TTL). Redirect = DEVIANTART_REDIRECT_URI or request host + /api/deviantart/callback.
+- Endpoints: auth-url, callback, auth-status, disconnect, galleries, post-outfit (stash submit → publish, is_ai_generated, noai, mature level/classification, folder or new folder reuse), view-url.
+- Frontend `components/DeviantArtPostForm.jsx`: prefilled title/description/tags, character folder default, mature options; auto-opens after connect.
+- USER ACTION: whitelist redirect URIs in DeviantArt app 55907 (Railway + preview /api/deviantart/callback); allow scopes user browse stash publish gallery.

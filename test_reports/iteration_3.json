@@ -1,0 +1,35 @@
+{
+  "summary": "Tested the DeviantArt per-visitor OAuth rework end to end. Backend: 19/19 pytest checks pass. They cover auth-status, auth-url (401 without or with a bad header; client_id 55907, the right scope, a fresh state each call, redirect_uri = preview host /api/deviantart/callback), single-use state, callback with a bogus state (expired page plus deviantart_auth_error postMessage, no '{{' leftovers), HTML-escaping of error_description, 401 from galleries and post-outfit for unknown sessions, post-outfit validation (400 for mature without a level, 422 for a title over 50 chars, 400 for bad base64), a fake token being rejected by DeviantArt (session removed), disconnect, and view-url. Frontend, with generate and DeviantArt calls mocked: the popup opens, the button shows CONNECTING and the notice appears. The popup landed on deviantart.com/join (DeviantArt's sign-up/login page), and closing it reset the state. A blocked popup shows a visible da-error. A real callback page posted its message to the opener and closed itself. On auth_success the form opens automatically and shows TestUser. All form prefills are correct, folder f2 matches the character, and with no match it defaults to '+ Create new folder…' with the character name. The mature option reveals the level and classification controls. The modal is not covered by anything at 1920 and 390, with no horizontal scroll. The submit body and header are correct, success shows the link, 401 flips to disconnected, and 502 shows da-form-error. Regression: Nexus picker, SAVE, Send to Nexus Library (mocked submit) and VIEW all work.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "da_oauth_states / da_sessions (Mongo)", "issue": "No TTL index and no age check on OAuth states. States that are never used pile up forever, and an old unused state stays valid for good. Add a TTL index on created_at (stored as a Date, e.g. 10 min) or check its age in callback."},
+      {"endpoint": "/api/deviantart/post-outfit", "issue": "When new_folder_name is set, the folder is created before the stash upload. If the upload or publish then fails, an empty folder is left behind, and a retry creates a duplicate (the form still shows '+ Create new folder')."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Dressing Room action row", "issues": ["The CONNECT DA button sits about 2px higher and looks taller than SAVE/VIEW (seen at 1920)", "The prefilled title is cut mid-word at 50 chars (e.g. 'VixenVictoria - red crop top with white leather pa'). Consider cutting at the last word boundary."]},
+      {"screen": "da-error box", "issues": ["The secondary 'Connect DeviantArt' button inside da-error and the 'View on DeviantArt' link in da-post-success have no data-testid"]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_deviantart.py", "/app/test_reports/pytest/pytest_deviantart.xml"],
+  "action_items": [
+    "Optional: add a TTL or expiry check for da_oauth_states",
+    "Optional: cut the default title at a word boundary",
+    "Optional: add data-testid to the da-error reconnect button and the da-post-success link"
+  ],
+  "critical_code_review_comments": [
+    "The message listener does not check event.origin. The impact is low because it only triggers a re-check of auth-status, but checking for the backend origin would be cleaner.",
+    "DA_HEADERS is built once when the module loads. localStorage/crypto failures (e.g. strict privacy modes) would throw at import and break the whole page. Wrap getDaSession in try/catch.",
+    "DressingRoom.jsx is about 2400 lines; it should be split (DA action panel, result panel)."
+  ],
+  "updated_files": ["/app/backend/tests/test_deviantart.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Temporary fake da_sessions docs (access_token TEST_fake, username TEST_user) were inserted by the fixture and deleted by _id. OAuth state docs made by test auth-url calls were consumed or deleted. A few states from the real CONNECT DA clicks remain in da_oauth_states (harmless).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run the backend DA tests with: REACT_APP_BACKEND_URL=https://outfit-generator-42.preview.emergentagent.com python -m pytest tests/test_deviantart.py -p no:xdist -o addopts=''. The frontend .env only has VITE_BACKEND_URL, so pass REACT_APP_BACKEND_URL explicitly. To get a generated image in the UI: Nexus Media Library btn -> first item -> fill page.locator('textarea').first (an outfit choice is required) -> mock **/api/dressing-room/generate -> click generate-outfit-btn. The DA form opens automatically only if CONNECT DA was clicked while an image existed (daWantsForm) and then a deviantart_auth_success message arrives."
+}

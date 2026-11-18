@@ -23,6 +23,7 @@ DA_AUTH_URL = "https://www.deviantart.com/oauth2/authorize"
 DA_TOKEN_URL = "https://www.deviantart.com/oauth2/token"
 DA_API = "https://www.deviantart.com/api/v1/oauth2"
 DA_SCOPES = "user browse stash publish gallery"
+STATE_TTL = 600
 UA = {"User-Agent": "TSVTerminal/1.0", "dA-minor-version": "20240701"}
 
 _db = AsyncIOMotorClient(os.environ["MONGO_URL"])[os.environ.get("DB_NAME", "tsv")]
@@ -111,7 +112,8 @@ async def auth_url(request: Request, x_da_session: str = Header("")):
     sid_hash = _hash(x_da_session)
     state = secrets.token_urlsafe(24)
     redirect = _redirect_uri(request)
-    await _states.insert_one({"_id": state, "sid": sid_hash, "redirect_uri": redirect, "created_at": datetime.now(timezone.utc).isoformat()})
+    await _states.create_index("created_at", expireAfterSeconds=STATE_TTL)
+    await _states.insert_one({"_id": state, "sid": sid_hash, "redirect_uri": redirect, "created_at": datetime.now(timezone.utc)})
     params = {"client_id": cid, "redirect_uri": redirect, "response_type": "code", "scope": DA_SCOPES, "state": state}
     return {"auth_url": f"{DA_AUTH_URL}?{urllib.parse.urlencode(params)}", "redirect_uri": redirect}
 
@@ -132,7 +134,8 @@ async def callback(code: Optional[str] = None, state: Optional[str] = None, erro
     if error:
         return _popup_html(False, error_description or error)
     st = await _states.find_one_and_delete({"_id": state or ""})
-    if not code or not st:
+    fresh = st and datetime.now(timezone.utc) - st["created_at"].replace(tzinfo=timezone.utc) < timedelta(seconds=STATE_TTL)
+    if not code or not fresh:
         return _popup_html(False, "This sign-in link expired. Close this window and press Connect again.")
     cid, secret = _creds()
     try:
@@ -207,8 +210,12 @@ async def post_outfit(body: DeviantArtPostRequest, x_da_session: str = Header(""
 
     folder_id = body.folder_id
     if not folder_id and body.new_folder_name:
-        created = await _da("POST", "/gallery/folders/create", sid, data={"folder": body.new_folder_name.strip()})
-        folder_id = created.get("folderid")
+        name = body.new_folder_name.strip()
+        existing = (await galleries(x_da_session))["galleries"]
+        folder_id = next((f["folderid"] for f in existing if f["name"].lower() == name.lower()), None)
+        if not folder_id:
+            created = await _da("POST", "/gallery/folders/create", sid, data={"folder": name})
+            folder_id = created.get("folderid")
 
     tags = _clean_tags(body.tags)
     stash = await _da("POST", "/stash/submit", sid,

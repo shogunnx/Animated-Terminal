@@ -482,7 +482,9 @@ export default function DressingRoom() {
 
   const daDefaults = () => {
     const outfit = (lastDetails?.outfit || generateOutfitPrompt() || "").trim();
-    const short = outfit.replace(/\s+/g, " ").slice(0, 50 - selectedCharacter.name.length - 3);
+    const room = 50 - selectedCharacter.name.length - 3;
+    const flat = outfit.replace(/\s+/g, " ");
+    const short = flat.length <= room ? flat : flat.slice(0, room + 1).replace(/\s+\S*$/, "").replace(/[,;:.\s]+$/, "");
     const items = Object.values(lastDetails?.items || {}).filter(Boolean);
     const tags = [selectedCharacter.name, "TSV Terminal", "The Saiyan Victoria", "AI Art", "Digital Art", "Character Outfit", ...items].map(t => t.replace(/[^A-Za-z0-9 ]/g, "").trim()).filter(Boolean);
     return {
@@ -1539,7 +1541,7 @@ export default function DressingRoom() {
             {lastDetails && <SendToLibrary backendUrl={BACKEND_URL} image={generatedImage} details={lastDetails} />}
             {saveNotice && <div data-testid="save-notice" style={{ fontSize: 10, color: "#00FF88", marginTop: 8 }}>✓ {saveNotice}</div>}
             {/* Action Buttons */}
-            <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+            <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, alignItems: "stretch", gridAutoRows: "36px" }}>
               <button 
                 className="tsv-btn"
                 data-testid="save-generated-btn"
@@ -1652,6 +1654,7 @@ export default function DressingRoom() {
                 {daPostResult.deviation_url && (
                   <a 
                     href={daPostResult.deviation_url} 
+                    data-testid="da-post-success-link"
                     target="_blank" 
                     rel="noopener noreferrer"
                     style={{ color: "#05cc47", textDecoration: "underline" }}
@@ -1677,6 +1680,7 @@ export default function DressingRoom() {
                   <div style={{ marginTop: 6 }}>
                     <button 
                       className="tsv-btn"
+                      data-testid="da-error-connect-btn"
                       onClick={handleDeviantArtAuth}
                       style={{ fontSize: 10, padding: "4px 8px" }}
                     >
