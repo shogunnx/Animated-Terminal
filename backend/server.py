@@ -440,6 +440,9 @@ async def get_deviantart_view_url(character_name: str):
 
 app.include_router(api)
 
+from nexus_media import router as nexus_media_router
+app.include_router(nexus_media_router)
+
 # StoryTime routes
 from storytime import router as storytime_router
 app.include_router(storytime_router)

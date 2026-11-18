@@ -9,6 +9,7 @@ import httpx
 import fal_client
 from PIL import Image
 from pathlib import Path
+from nexus_media import fetch_asset_bytes
 
 load_dotenv()
 
@@ -94,6 +95,7 @@ class OutfitRequest(BaseModel):
     outfit_description: str
     reference_image_url: Optional[str] = None
     reference_image_base64: Optional[str] = None
+    nexus_asset_id: Optional[str] = None
     save_as_base: Optional[bool] = False
     # Pairs mode fields
     second_character_id: Optional[str] = None
@@ -111,6 +113,7 @@ class TryOnRequest(BaseModel):
     """Request for virtual try-on with actual garment images by category"""
     model_image_url: Optional[str] = None
     model_image_base64: Optional[str] = None
+    nexus_asset_id: Optional[str] = None
     # Separate garment categories
     top_image_url: Optional[str] = None
     top_image_base64: Optional[str] = None
@@ -130,6 +133,7 @@ class HeadshotRequest(BaseModel):
     character_id: str
     reference_image_url: Optional[str] = None
     reference_image_base64: Optional[str] = None
+    nexus_asset_id: Optional[str] = None
     background: str = "neutral"  # neutral, studio, blurred, none
     expression: str = "neutral"  # neutral, smile, serious, friendly
 
@@ -139,6 +143,7 @@ class FootToHeadRequest(BaseModel):
     character_id: str
     reference_image_url: Optional[str] = None
     reference_image_base64: Optional[str] = None
+    nexus_asset_id: Optional[str] = None
 
 class BaseImageRequest(BaseModel):
     character_id: str
@@ -494,8 +499,13 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     base_image_bytes = None
     image_source = None
     
+    # Priority 0: Nexus Media Library asset selected by the visitor (session only, never saved)
+    if request.nexus_asset_id:
+        base_image_bytes = await fetch_asset_bytes(request.nexus_asset_id)
+        image_source = "nexus_media_library"
+
     # Priority 1: Use uploaded image first (user explicitly provided it)
-    if request.reference_image_base64:
+    if not base_image_bytes and request.reference_image_base64:
         base_image_bytes = base64.b64decode(request.reference_image_base64.split(',')[-1])
         image_source = "upload"
         
@@ -582,7 +592,7 @@ Only change the clothing/outfit. High quality, detailed clothing."""
         all_images = []
         for i, result in enumerate(results):
             if isinstance(result, Exception):
-                print(f"[DRESSING ROOM] Generation {i+1} failed: {result}")
+                print(f"[DRESSING ROOM] Generation {i+1} failed: {result!r}")
                 continue
             if result and result.get("images") and len(result["images"]) > 0:
                 img_url = result["images"][0]["url"]
@@ -600,7 +610,8 @@ Only change the clothing/outfit. High quality, detailed clothing."""
                     print(f"[DRESSING ROOM] Failed to download image {i+1}: {e}")
         
         if not all_images:
-            raise HTTPException(status_code=500, detail="No images were generated")
+            first_err = next((r for r in results if isinstance(r, Exception)), None)
+            raise HTTPException(status_code=502, detail=f"No images were generated" + (f": {first_err.args[0] if first_err.args else type(first_err).__name__}" if first_err else ""))
         
         print(f"[DRESSING ROOM] Total images generated: {len(all_images)}")
         
@@ -615,6 +626,8 @@ Only change the clothing/outfit. High quality, detailed clothing."""
             "model": "fal-ai/flux-pro/kontext"
         }
             
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Image generation failed: {str(e)}")
 
@@ -624,8 +637,10 @@ async def generate_tryon_images(request: TryOnRequest) -> dict:
     Uses FASHN for clothing (dress/top/bottom) and FLUX Kontext for shoes/accessories."""
     
     # Get model (person) image
-    if request.model_image_base64:
-        model_image_bytes = base64.b64decode(request.model_image_base64)
+    if request.nexus_asset_id:
+        model_image_bytes = await fetch_asset_bytes(request.nexus_asset_id)
+    elif request.model_image_base64:
+        model_image_bytes = base64.b64decode(request.model_image_base64.split(',')[-1])
     elif request.model_image_url:
         model_image_bytes = await download_image(request.model_image_url)
     else:
@@ -805,8 +820,11 @@ async def generate_headshot(request: HeadshotRequest) -> dict:
     """Generate a headshot/close-up portrait from a base image"""
     
     # Get base image
-    if request.reference_image_base64:
-        base_image_bytes = base64.b64decode(request.reference_image_base64)
+    if request.nexus_asset_id:
+        base_image_bytes = await fetch_asset_bytes(request.nexus_asset_id)
+        image_source = "nexus_media_library"
+    elif request.reference_image_base64:
+        base_image_bytes = base64.b64decode(request.reference_image_base64.split(',')[-1])
         image_source = "upload"
     elif request.reference_image_url:
         base_image_bytes = await download_image(request.reference_image_url)
@@ -877,7 +895,7 @@ Perfect for video calls or profile picture."""
         all_images = []
         for i, result in enumerate(results):
             if isinstance(result, Exception):
-                print(f"[HEADSHOT] Generation {i+1} failed: {result}")
+                print(f"[HEADSHOT] Generation {i+1} failed: {result!r}")
                 continue
             if result and result.get("images") and len(result["images"]) > 0:
                 img_url = result["images"][0]["url"]
@@ -895,7 +913,8 @@ Perfect for video calls or profile picture."""
                     print(f"[HEADSHOT] Failed to download image {i+1}: {e}")
         
         if not all_images:
-            raise HTTPException(status_code=500, detail="No headshot images were generated")
+            first_err = next((r for r in results if isinstance(r, Exception)), None)
+            raise HTTPException(status_code=502, detail=f"No headshot images were generated" + (f": {first_err.args[0] if first_err.args else type(first_err).__name__}" if first_err else ""))
         
         return {
             "success": True,
@@ -905,6 +924,8 @@ Perfect for video calls or profile picture."""
             "model": "fal-ai/flux-pro/kontext"
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Headshot generation failed: {str(e)}")
 
@@ -914,8 +935,11 @@ async def generate_foot_to_head(request: FootToHeadRequest) -> dict:
     """Generate 5 progression shots from feet to head - detailed close-ups at each body point"""
     
     # Get base image
-    if request.reference_image_base64:
-        base_image_bytes = base64.b64decode(request.reference_image_base64)
+    if request.nexus_asset_id:
+        base_image_bytes = await fetch_asset_bytes(request.nexus_asset_id)
+        image_source = "nexus_media_library"
+    elif request.reference_image_base64:
+        base_image_bytes = base64.b64decode(request.reference_image_base64.split(',')[-1])
         image_source = "upload"
     elif request.reference_image_url:
         base_image_bytes = await download_image(request.reference_image_url)

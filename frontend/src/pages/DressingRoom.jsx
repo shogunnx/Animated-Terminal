@@ -1,9 +1,24 @@
 import { useState, useEffect, useRef } from "react";
+import { NexusMediaPicker } from "../components/NexusMediaPicker";
 import { useNavigate, useParams } from "react-router-dom";
 import { TSV_CHARACTERS } from "../content/tsvContent.js";
 import { addLike, getLikes, getCharacterRank } from "../utils/engagement.js";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
+
+async function apiError(response, fallback) {
+  const data = await response.json().catch(() => ({}));
+  if (typeof data.detail === "string") return data.detail;
+  if (response.status === 405) return `${fallback}: the server rejected this request method (405). Check the Terminal backend URL.`;
+  return `${fallback} (HTTP ${response.status})`;
+}
+
+const blobToDataUrl = (blob) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onloadend = () => resolve(reader.result);
+  reader.onerror = reject;
+  reader.readAsDataURL(blob);
+});
 
 const CLOTHING_CATEGORIES = {
   tops: [
@@ -267,7 +282,11 @@ export default function DressingRoom() {
   
   const [selectedCharacter, setSelectedCharacter] = useState(null);
   const [baseImage, setBaseImage] = useState(null);
-  const [baseImageSource, setBaseImageSource] = useState("nexus"); // nexus, placeholder, upload
+  const [baseImageSource, setBaseImageSource] = useState("nexus"); // nexus, library, portrait, stored, placeholder, upload
+  const [nexusAsset, setNexusAsset] = useState(null);
+  const [baseNotice, setBaseNotice] = useState(null);
+  const [saveNotice, setSaveNotice] = useState(null);
+  const uploadInputRef = useRef(null);
   const [customPrompt, setCustomPrompt] = useState("");
   const [selectedItems, setSelectedItems] = useState({
     tops: "",
@@ -353,6 +372,8 @@ export default function DressingRoom() {
     
     setSelectedCharacter(char);
     setLikeCount(getLikes(char.id));
+    setNexusAsset(null);
+    setBaseNotice(null);
     
     // For Community OC, start with blank slate
     if (char.requiresUpload) {
@@ -532,19 +553,44 @@ export default function DressingRoom() {
 
   // Separate function for "Try Nexus" button
   const fetchNexusImage = async (charId) => {
+    setBaseNotice({ type: "info", text: "Checking Nexus for a character avatar..." });
     try {
       const response = await fetch(`${BACKEND_URL}/api/nexus/api/characters`);
+      if (!response.ok) throw new Error(await apiError(response, "Nexus is unavailable"));
       const characters = await response.json();
-      const nexusChar = characters.find(c => 
+      const nexusChar = Array.isArray(characters) && characters.find(c => 
         c.displayName?.toLowerCase() === charId.replace(/_/g, " ").toLowerCase()
       );
       if (nexusChar && nexusChar.avatar_image) {
         setBaseImage(nexusChar.avatar_image);
         setBaseImageSource("nexus");
+        setNexusAsset(null);
+        setBaseNotice({ type: "ok", text: "Loaded the Nexus avatar." });
+      } else {
+        setBaseNotice({ type: "warn", text: "Nexus has no avatar for this character yet. Try the Nexus Media Library or upload an image." });
       }
     } catch (err) {
-      console.error("Failed to fetch Nexus image:", err);
+      setBaseNotice({ type: "error", text: `Could not load from Nexus: ${err.message}` });
     }
+  };
+
+  const handleLibrarySelect = (asset) => {
+    setNexusAsset(asset);
+    setBaseImage(`${BACKEND_URL}${asset.preview_url}`);
+    setBaseImageSource("library");
+    setBaseNotice({ type: "ok", text: `Using "${asset.title}" from the Nexus Media Library.` });
+    setError(null);
+  };
+
+  const resolveBaseImage = async () => {
+    if (baseImageSource === "library" && nexusAsset) return { assetId: nexusAsset.id, url: null, base64: null };
+    if (!baseImage) return { assetId: null, url: null, base64: null };
+    if (baseImage.startsWith("data:")) return { assetId: null, url: null, base64: baseImage.split(",").pop() };
+    if (baseImage.startsWith("http")) return { assetId: null, url: baseImage, base64: null };
+    const res = await fetch(baseImage);
+    if (!res.ok) throw new Error("Could not load the base image");
+    const dataUrl = await blobToDataUrl(await res.blob());
+    return { assetId: null, url: null, base64: dataUrl.split(",").pop() };
   };
 
   const handleItemToggle = (category, item) => {
@@ -561,6 +607,8 @@ export default function DressingRoom() {
       reader.onloadend = () => {
         setBaseImage(reader.result);
         setBaseImageSource("upload");
+        setNexusAsset(null);
+        setBaseNotice({ type: "ok", text: `Using uploaded image "${file.name}".` });
       };
       reader.readAsDataURL(file);
     }
@@ -728,14 +776,16 @@ export default function DressingRoom() {
       // Build request body
       // For uploaded images (including Community OC), always send as base64
       const isUploadedImage = baseImageSource === "upload" || selectedCharacter.requiresUpload;
+      const ref = await resolveBaseImage();
       
       const requestBody = {
         character_id: selectedCharacter.id,
         character_name: selectedCharacter.name,
         character_description: selectedCharacter.subtitle || "anime character",
         outfit_description: outfitDesc,
-        reference_image_url: baseImageSource === "nexus" ? baseImage : null,
-        reference_image_base64: isUploadedImage ? baseImage : null,
+        nexus_asset_id: ref.assetId,
+        reference_image_url: ref.url,
+        reference_image_base64: ref.base64,
         save_as_base: isUploadedImage,
         preserve_face: preserveFlags.face,
         preserve_hair: preserveFlags.hair,
@@ -759,8 +809,7 @@ export default function DressingRoom() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to generate image");
+        throw new Error(await apiError(response, "Failed to generate image"));
       }
 
       const data = await response.json();
@@ -807,7 +856,7 @@ export default function DressingRoom() {
     setGeneratedResults([]);
 
     try {
-      const isUploadedImage = baseImageSource === "upload" || selectedCharacter?.requiresUpload;
+      const ref = await resolveBaseImage();
       
       // Helper to extract base64 from data URL
       const extractBase64 = (dataUrl) => {
@@ -824,8 +873,9 @@ export default function DressingRoom() {
       };
       
       const requestBody = {
-        model_image_url: baseImageSource === "nexus" ? baseImage : null,
-        model_image_base64: isUploadedImage ? baseImage?.split(',').pop() : null,
+        nexus_asset_id: ref.assetId,
+        model_image_url: ref.url,
+        model_image_base64: ref.base64,
         // Dress (full outfit)
         dress_image_url: extractUrl(tryOnGarments.dress),
         dress_image_base64: extractBase64(tryOnGarments.dress),
@@ -851,8 +901,7 @@ export default function DressingRoom() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to generate try-on images");
+        throw new Error(await apiError(response, "Failed to generate try-on images"));
       }
 
       const data = await response.json();
@@ -930,13 +979,14 @@ export default function DressingRoom() {
     setGeneratedResults([]);
 
     try {
-      const isUploadedImage = baseImageSource === "upload" || selectedCharacter?.requiresUpload;
+      const ref = await resolveBaseImage();
       
       const requestBody = {
         character_name: selectedCharacter.name,
         character_id: selectedCharacter.id,
-        reference_image_url: baseImageSource === "nexus" ? baseImage : null,
-        reference_image_base64: isUploadedImage ? baseImage?.split(',').pop() : null,
+        nexus_asset_id: ref.assetId,
+        reference_image_url: ref.url,
+        reference_image_base64: ref.base64,
         background: headshotBackground,
         expression: headshotExpression
       };
@@ -948,8 +998,7 @@ export default function DressingRoom() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to generate headshot");
+        throw new Error(await apiError(response, "Failed to generate headshot"));
       }
 
       const data = await response.json();
@@ -980,13 +1029,14 @@ export default function DressingRoom() {
     setGeneratedResults([]);
 
     try {
-      const isUploadedImage = baseImageSource === "upload" || selectedCharacter?.requiresUpload;
+      const ref = await resolveBaseImage();
       
       const requestBody = {
         character_name: selectedCharacter.name,
         character_id: selectedCharacter.id,
-        reference_image_url: baseImageSource === "nexus" ? baseImage : null,
-        reference_image_base64: isUploadedImage ? baseImage?.split(',').pop() : null,
+        nexus_asset_id: ref.assetId,
+        reference_image_url: ref.url,
+        reference_image_base64: ref.base64,
       };
       
       const response = await fetch(`${BACKEND_URL}/api/dressing-room/foot-to-head`, {
@@ -996,8 +1046,7 @@ export default function DressingRoom() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Failed to generate foot-to-head shots");
+        throw new Error(await apiError(response, "Failed to generate foot-to-head shots"));
       }
 
       const data = await response.json();
@@ -1149,7 +1198,7 @@ export default function DressingRoom() {
         {/* Base Image Selection */}
         <div style={{ marginTop: 14 }}>
           <div className="tsv-title" style={{ fontSize: 12, opacity:.88, marginBottom: 8 }}>
-            {selectedCharacter.requiresUpload ? "UPLOAD YOUR CHARACTER" : "BASE IMAGE REQUIRED"}
+            {selectedCharacter.requiresUpload ? "UPLOAD YOUR CHARACTER" : baseImage ? "BASE IMAGE" : "BASE IMAGE REQUIRED"}
           </div>
           
           {/* Community OC specific messaging */}
@@ -1157,13 +1206,18 @@ export default function DressingRoom() {
             <div style={{ fontSize: 10, opacity: 0.9, marginBottom: 12, color: "#00FF88", padding: "8px 12px", background: "rgba(0,255,136,.1)", borderRadius: 8, border: "1px dashed rgba(0,255,136,.3)" }}>
               📁 Upload an image of your OC to use as the base. This image will be used for all outfit generations in this session.
             </div>
-          ) : (
-            <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 8, color: "#ffa500" }}>
+          ) : !baseImage ? (
+            <div data-testid="base-image-required-warning" style={{ fontSize: 10, opacity: 0.7, marginBottom: 8, color: "#ffa500" }}>
               ⚠️ You must upload a base image of {selectedCharacter.name} to generate outfits
+            </div>
+          ) : null}
+          {baseNotice && (
+            <div data-testid="base-image-notice" style={{ fontSize: 10, marginBottom: 8, color: { ok: "#00FF88", warn: "#ffa500", error: "#ff6b6b", info: "#8fd8ff" }[baseNotice.type] }}>
+              {baseNotice.type === "ok" ? "✓ " : baseNotice.type === "info" ? "" : "⚠️ "}{baseNotice.text}
             </div>
           )}
           
-          <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
             {/* Only show Nexus button for non-Community OC characters */}
             {!selectedCharacter.requiresUpload && (
               <button
@@ -1179,8 +1233,16 @@ export default function DressingRoom() {
                 Try Nexus
               </button>
             )}
-            <label style={{ flex: 1 }}>
+            <NexusMediaPicker
+              backendUrl={BACKEND_URL}
+              characters={TSV_CHARACTERS.filter(c => !c.isSpecial && !c.requiresUpload).map(c => c.name)}
+              currentCharacter={selectedCharacter.name}
+              active={baseImageSource === "library"}
+              onSelect={handleLibrarySelect}
+            />
+            <label style={{ flex: 1, minWidth: 120 }}>
               <input
+                ref={uploadInputRef}
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
@@ -1202,7 +1264,7 @@ export default function DressingRoom() {
                       : undefined,
                   borderColor: selectedCharacter.requiresUpload ? "#00FF88" : undefined
                 }}
-                onClick={(e) => { e.preventDefault(); e.target.previousSibling.click(); }}
+                onClick={(e) => { e.preventDefault(); uploadInputRef.current?.click(); }}
               >
                 {selectedCharacter.requiresUpload ? "📁 Upload Your OC Image" : "📁 Upload Image"}
               </button>
@@ -1225,6 +1287,7 @@ export default function DressingRoom() {
                 src={baseImage} 
                 alt={selectedCharacter.name}
                 data-testid="base-image-preview"
+                data-source={baseImageSource}
                 style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
               />
             ) : (
@@ -1381,6 +1444,7 @@ export default function DressingRoom() {
                       key={idx}
                       src={img}
                       alt={`Variation ${idx + 1}`}
+                      data-testid={`generated-variation-${idx}`}
                       onClick={() => setGeneratedImage(img)}
                       style={{
                         width: "100%",
@@ -1412,6 +1476,7 @@ export default function DressingRoom() {
               <img 
                 src={generatedImage} 
                 alt="Generated outfit"
+                data-testid="generated-image-main"
                 style={{ width: "100%", display: "block" }}
               />
               
@@ -1438,20 +1503,25 @@ export default function DressingRoom() {
               </button>
             </div>
             
+            {saveNotice && <div data-testid="save-notice" style={{ fontSize: 10, color: "#00FF88", marginTop: 8 }}>✓ {saveNotice}</div>}
             {/* Action Buttons */}
             <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
               <button 
                 className="tsv-btn"
+                data-testid="save-generated-btn"
                 onClick={() => {
-                  // Save to local storage
-                  const saves = JSON.parse(localStorage.getItem('tsv_saved_outfits') || '[]');
-                  saves.push({
-                    characterId: selectedCharacter.id,
-                    image: generatedImage,
-                    timestamp: Date.now()
-                  });
-                  localStorage.setItem('tsv_saved_outfits', JSON.stringify(saves));
-                  alert('Outfit saved locally!');
+                  const link = document.createElement("a");
+                  link.href = generatedImage;
+                  link.download = `tsv-${selectedCharacter.id}-${Date.now()}.png`;
+                  document.body.appendChild(link);
+                  link.click();
+                  link.remove();
+                  try {
+                    const saves = JSON.parse(localStorage.getItem('tsv_saved_outfits') || '[]');
+                    saves.push({ characterId: selectedCharacter.id, image: generatedImage, timestamp: Date.now() });
+                    localStorage.setItem('tsv_saved_outfits', JSON.stringify(saves.slice(-5)));
+                  } catch (e) { /* storage full: the download still saved the image */ }
+                  setSaveNotice("Image downloaded to your device.");
                 }}
                 style={{ fontSize: 11, padding: "8px" }}
               >
@@ -1969,6 +2039,8 @@ export default function DressingRoom() {
                   key={item}
                   onClick={() => handleItemToggle("presetCostumes", item)}
                   className="tsv-pill"
+                  aria-pressed={selectedItems.presetCostumes === item}
+                  data-testid={`preset-costume-${item.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
                   style={{
                     fontSize: 10,
                     padding: "5px 12px",
@@ -1980,10 +2052,15 @@ export default function DressingRoom() {
                     boxShadow: selectedItems.presetCostumes === item ? `0 0 12px ${selectedCharacter.accent}40` : "none"
                   }}
                 >
-                  {item}
+                  {selectedItems.presetCostumes === item ? "✓ " : ""}{item}
                 </button>
               ))}
             </div>
+            {selectedItems.presetCostumes && (
+              <div data-testid="preset-costume-selected" style={{ fontSize: 10, marginTop: 8, color: "#00FF88" }}>
+                ✓ Selected preset: {selectedItems.presetCostumes}
+              </div>
+            )}
           </div>
         )}
 
@@ -2237,7 +2314,7 @@ export default function DressingRoom() {
         </button>
 
         {error && (
-          <div style={{ 
+          <div data-testid="generate-error" style={{ 
             marginTop: 10, 
             padding: 10, 
             borderRadius: 8, 
