@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { NexusMediaPicker } from "../components/NexusMediaPicker";
+import { SendToLibrary } from "../components/SendToLibrary";
 import { useNavigate, useParams } from "react-router-dom";
 import { TSV_CHARACTERS } from "../content/tsvContent.js";
 import { addLike, getLikes, getCharacterRank } from "../utils/engagement.js";
@@ -286,6 +287,7 @@ export default function DressingRoom() {
   const [nexusAsset, setNexusAsset] = useState(null);
   const [baseNotice, setBaseNotice] = useState(null);
   const [saveNotice, setSaveNotice] = useState(null);
+  const [lastDetails, setLastDetails] = useState(null);
   const uploadInputRef = useRef(null);
   const [customPrompt, setCustomPrompt] = useState("");
   const [selectedItems, setSelectedItems] = useState({
@@ -373,6 +375,7 @@ export default function DressingRoom() {
     setSelectedCharacter(char);
     setLikeCount(getLikes(char.id));
     setNexusAsset(null);
+    setLastDetails(null);
     setBaseNotice(null);
     
     // For Community OC, start with blank slate
@@ -573,6 +576,15 @@ export default function DressingRoom() {
       setBaseNotice({ type: "error", text: `Could not load from Nexus: ${err.message}` });
     }
   };
+
+  const snapshotDetails = (mode, outfit) => setLastDetails({
+    character_id: selectedCharacter.id,
+    character_name: selectedCharacter.name,
+    mode,
+    outfit: outfit || customPrompt,
+    items: Object.fromEntries(Object.entries(selectedItems).filter(([, v]) => v)),
+    source_asset_id: baseImageSource === "library" ? nexusAsset?.id : null,
+  });
 
   const handleLibrarySelect = (asset) => {
     setNexusAsset(asset);
@@ -819,9 +831,11 @@ export default function DressingRoom() {
         const results = data.images.map(img => `data:image/png;base64,${img.image_base64}`);
         setGeneratedResults(results);
         setGeneratedImage(results[0]); // Set first as main display
+        snapshotDetails("outfit", generateOutfitPrompt());
       } else {
         // Fallback for single image response
         setGeneratedImage(`data:image/png;base64,${data.image_base64}`);
+        snapshotDetails("outfit", generateOutfitPrompt());
         setGeneratedResults([`data:image/png;base64,${data.image_base64}`]);
       }
       
@@ -914,6 +928,7 @@ export default function DressingRoom() {
       // Set the first result as the main generated image
       if (results.length > 0) {
         setGeneratedImage(results[0]);
+        snapshotDetails("tryon");
       }
       
       window.dispatchEvent(new Event('tsv_outfit_generated'));
@@ -1008,8 +1023,10 @@ export default function DressingRoom() {
         const results = data.images.map(img => `data:image/png;base64,${img.image_base64}`);
         setGeneratedResults(results);
         setGeneratedImage(results[0]);
+        snapshotDetails("headshot");
       } else {
         setGeneratedImage(`data:image/png;base64,${data.image_base64}`);
+        snapshotDetails("headshot");
         setGeneratedResults([`data:image/png;base64,${data.image_base64}`]);
       }
       
@@ -1060,6 +1077,7 @@ export default function DressingRoom() {
         setFootToHeadResults(results);
         setGeneratedResults(results.map(r => r.image));
         setGeneratedImage(results[0].image);
+        snapshotDetails("foot-to-head");
       }
       
       window.dispatchEvent(new Event('tsv_outfit_generated'));
@@ -1503,6 +1521,7 @@ export default function DressingRoom() {
               </button>
             </div>
             
+            {lastDetails && <SendToLibrary backendUrl={BACKEND_URL} image={generatedImage} details={lastDetails} />}
             {saveNotice && <div data-testid="save-notice" style={{ fontSize: 10, color: "#00FF88", marginTop: 8 }}>✓ {saveNotice}</div>}
             {/* Action Buttons */}
             <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>

@@ -4,9 +4,14 @@ import time
 import difflib
 from typing import Optional
 
+import base64
+from collections import defaultdict, deque
+from datetime import datetime, timezone
+
 import httpx
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import Response
+from pydantic import BaseModel, Field
 
 router = APIRouter(prefix="/api/nexus-library", tags=["nexus-library"])
 
@@ -24,7 +29,7 @@ def _cfg():
 
 
 def _is_public_image(item: dict) -> bool:
-    return item.get("kind") == "image" and item.get("visibility") == "approved" and item.get("status", "active") == "active"
+    return item.get("kind") == "image" and item.get("visibility") in ("approved", "public") and item.get("status", "active") == "active"
 
 
 def _public(item: dict) -> dict:
@@ -149,3 +154,101 @@ async def media_file(asset_id: str, thumb: Optional[int] = 0):
     await _resolve(asset_id)
     data, ctype = await _download(asset_id, bool(thumb))
     return Response(content=data, media_type=ctype, headers={"Cache-Control": "public, max-age=300"})
+
+
+_SUBMIT_LIMIT = 10
+_SUBMIT_WINDOW = 3600
+_submits = defaultdict(deque)
+
+
+class LibrarySubmission(BaseModel):
+    image: str
+    character_id: str = Field(max_length=80)
+    character_name: str = Field(max_length=80)
+    mode: str = Field("outfit", max_length=30)
+    outfit: str = Field("", max_length=3000)
+    items: dict = {}
+    source_asset_id: Optional[str] = Field(None, max_length=64)
+    submitter_name: str = Field("", max_length=60)
+    note: str = Field("", max_length=500)
+
+
+def _client_ip(request: Request) -> str:
+    fwd = request.headers.get("x-forwarded-for", "")
+    return fwd.split(",")[0].strip() or (request.client.host if request.client else "unknown")
+
+
+def _check_rate(ip: str) -> None:
+    q, now = _submits[ip], time.time()
+    while q and now - q[0] > _SUBMIT_WINDOW:
+        q.popleft()
+    if len(q) >= _SUBMIT_LIMIT:
+        wait = int((_SUBMIT_WINDOW - (now - q[0])) / 60) + 1
+        raise HTTPException(status_code=429, detail=f"You've sent {_SUBMIT_LIMIT} outfits this hour. Try again in about {wait} min.")
+    q.append(now)
+
+
+async def _image_bytes(image: str) -> bytes:
+    try:
+        data = base64.b64decode(image.split(",")[-1], validate=True)
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid image data")
+    if len(data) > _MAX_BYTES:
+        raise HTTPException(status_code=400, detail="Image is too large")
+    if not (data.startswith(b"\x89PNG") or data.startswith(b"\xff\xd8") or (data[:4] == b"RIFF" and data[8:12] == b"WEBP")):
+        raise HTTPException(status_code=400, detail="Only PNG, JPEG or WEBP images can be sent")
+    return data
+
+
+async def _nexus_upload(data: bytes, filename: str, meta: dict) -> dict:
+    base, headers = _cfg()
+    async with httpx.AsyncClient(timeout=60) as c:
+        r = await c.post(f"{base}/api/nexus-media/uploads", headers=headers, json={"filename": filename, "size": len(data)})
+        if r.status_code != 200:
+            raise HTTPException(status_code=502, detail=f"Nexus upload failed ({r.status_code})")
+        up = r.json()
+        for i in range(up["chunks"]):
+            chunk = data[i * up["chunk_size"]:(i + 1) * up["chunk_size"]]
+            cr = await c.put(f"{base}/api/nexus-media/uploads/{up['upload_id']}/chunk/{i}", headers=headers, content=chunk)
+            if cr.status_code != 200:
+                raise HTTPException(status_code=502, detail=f"Nexus upload chunk {i + 1} failed")
+        done = await c.post(f"{base}/api/nexus-media/uploads/{up['upload_id']}/complete", headers=headers, json=meta)
+    if done.status_code != 200:
+        raise HTTPException(status_code=502, detail=f"Nexus upload could not be completed ({done.status_code})")
+    return done.json().get("asset", {})
+
+
+@router.post("/submit")
+async def submit_to_library(body: LibrarySubmission, request: Request):
+    """Send a generated outfit to Nexus as a private asset awaiting admin approval."""
+    data = await _image_bytes(body.image)
+    _check_rate(_client_ip(request))
+    ext = "jpg" if data.startswith(b"\xff\xd8") else "webp" if data[:4] == b"RIFF" else "png"
+    stamp = datetime.now(timezone.utc)
+    items = {k: str(v)[:200] for k, v in (body.items or {}).items() if v and isinstance(v, (str, int, float))}
+    item_text = "; ".join(f"{k}: {v}" for k, v in items.items())
+    by = body.submitter_name.strip() or "Anonymous visitor"
+    description = "\n".join(x for x in [
+        f"Terminal DressingRoom submission ({body.mode}) for {body.character_name}.",
+        f"Outfit: {body.outfit.strip()}" if body.outfit.strip() else "",
+        f"Selections: {item_text}" if item_text else "",
+        f"Source Nexus asset: {body.source_asset_id}" if body.source_asset_id else "",
+        f"Submitted by: {by}",
+        f"Note: {body.note.strip()}" if body.note.strip() else "",
+        f"Submitted at: {stamp.isoformat()}",
+    ] if x)
+    meta = {
+        "title": f"{body.character_name} outfit by {by}"[:120],
+        "description": description,
+        "tags": ["terminal-submission", "pending-approval", f"mode-{body.mode}"],
+        "characters": [body.character_name],
+        "visibility": "private",
+        "fields": {
+            "clothing": (body.outfit.strip() or item_text)[:500],
+            "pose": items.get("positions") or items.get("villainessPoses") or "",
+            "location": items.get("backgrounds", ""),
+            "purpose": "Terminal visitor submission awaiting approval",
+        },
+    }
+    asset = await _nexus_upload(data, f"tsv-{body.character_id}-{int(stamp.timestamp())}.{ext}", meta)
+    return {"success": True, "asset_id": asset.get("id"), "status": "pending_approval"}

@@ -202,3 +202,8 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 - Fixes: Try Nexus visible notices (NEXUS_BASE_URL now https://api.thesaiyanvictoria.com), warning hides when base image present, upload button via ref, preset ✓ confirmation, readable API errors (405 explained), SAVE downloads file, portrait base images now sent as base64, responsive layout.
 - Env needed on Railway: NEXUS_BASE_URL, NEXUS_MEDIA_API_URL=https://api.thesaiyanvictoria.com, NEXUS_MEDIA_TOKEN, valid FAL_KEY.
 - Preview build: `cd /app/frontend && VITE_BACKEND_URL= yarn build` (keeps .env pointing at Railway for production).
+
+## 2026-06 Send To Library (DONE, self-tested)
+- POST /api/nexus-library/submit: generated image (data URL only, PNG/JPEG/WEBP, ≤25MB) uploaded to Nexus via chunked upload as PRIVATE, tags terminal-submission + pending-approval + mode-*, outfit details in description + fields (clothing/pose/location). Optional name/note. 10 per IP per hour (in-memory).
+- Frontend `components/SendToLibrary.jsx` under generated result; details snapshotted at generation time (mode, outfit text, selections, source asset).
+- Admin approves in Nexus admin ("Approve for publication") → appears in Terminal picker (approved/public shown).
