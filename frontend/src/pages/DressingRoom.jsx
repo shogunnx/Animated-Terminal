@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { NexusMediaPicker } from "../components/NexusMediaPicker";
 import { SendToLibrary } from "../components/SendToLibrary";
+import { DeviantArtPostForm } from "../components/DeviantArtPostForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { TSV_CHARACTERS } from "../content/tsvContent.js";
 import { addLike, getLikes, getCharacterRank } from "../utils/engagement.js";
@@ -13,6 +14,17 @@ async function apiError(response, fallback) {
   if (response.status === 405) return `${fallback}: the server rejected this request method (405). Check the Terminal backend URL.`;
   return `${fallback} (HTTP ${response.status})`;
 }
+
+function getDaSession() {
+  let sid = localStorage.getItem("tsv_da_session");
+  if (!sid) {
+    const bytes = crypto.getRandomValues(new Uint8Array(24));
+    sid = Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
+    localStorage.setItem("tsv_da_session", sid);
+  }
+  return sid;
+}
+const DA_HEADERS = { "X-DA-Session": getDaSession() };
 
 const blobToDataUrl = (blob) => new Promise((resolve, reject) => {
   const reader = new FileReader();
@@ -350,9 +362,13 @@ export default function DressingRoom() {
   
   // DeviantArt state
   const [daAuthenticated, setDaAuthenticated] = useState(false);
-  const [daPosting, setDaPosting] = useState(false);
+  const [daPosting] = useState(false);
   const [daPostResult, setDaPostResult] = useState(null);
   const [daError, setDaError] = useState(null);
+  const [daUsername, setDaUsername] = useState(null);
+  const [daFormOpen, setDaFormOpen] = useState(false);
+  const [daConnecting, setDaConnecting] = useState(false);
+  const daWantsForm = useRef(false);
 
   // Use ref to track if initial setup is done
   const initializedRef = useRef(false);
@@ -395,8 +411,15 @@ export default function DressingRoom() {
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.data?.type === 'deviantart_auth_success') {
-        setDaAuthenticated(true);
+        setDaConnecting(false);
         setDaError(null);
+        checkDeviantArtAuth().then((ok) => {
+          if (ok && daWantsForm.current) setDaFormOpen(true);
+          daWantsForm.current = false;
+        });
+      } else if (event.data?.type === 'deviantart_auth_error') {
+        setDaConnecting(false);
+        setDaError(event.data.message || "DeviantArt connection failed");
       }
     };
     window.addEventListener('message', handleMessage);
@@ -407,81 +430,73 @@ export default function DressingRoom() {
   
   const checkDeviantArtAuth = async () => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/deviantart/auth-status`);
+      const response = await fetch(`${BACKEND_URL}/api/deviantart/auth-status`, { headers: DA_HEADERS });
       const data = await response.json();
-      setDaAuthenticated(data.authenticated);
+      setDaAuthenticated(!!data.authenticated);
+      setDaUsername(data.username || null);
+      return !!data.authenticated;
     } catch (err) {
-      console.error("Failed to check DA auth status:", err);
+      return false;
     }
   };
   
   const handleDeviantArtAuth = async () => {
+    setDaError(null);
+    daWantsForm.current = !!generatedImage;
+    // Open the popup synchronously so browsers don't block it, then point it at DeviantArt
+    const popup = window.open("", "deviantart_auth", "width=600,height=760,scrollbars=yes");
+    if (!popup) {
+      setDaError("Popup blocked! Please allow popups for this site, then press Connect again.");
+      return;
+    }
+    popup.document.write('<body style="background:#05060f;color:#05cc47;font-family:monospace;padding:40px">Opening DeviantArt…</body>');
+    setDaConnecting(true);
     try {
-      const response = await fetch(`${BACKEND_URL}/api/deviantart/auth-url`);
+      const response = await fetch(`${BACKEND_URL}/api/deviantart/auth-url`, { headers: DA_HEADERS });
+      if (!response.ok) throw new Error(await apiError(response, "Could not start DeviantArt sign-in"));
       const data = await response.json();
-      
-      if (data.auth_url) {
-        // Open OAuth popup
-        const popup = window.open(
-          data.auth_url,
-          'DeviantArt Authorization',
-          'width=600,height=700,scrollbars=yes'
-        );
-        
-        // Check if popup was blocked
-        if (!popup) {
-          setDaError("Popup blocked! Please allow popups for this site.");
-        }
-      }
+      popup.location.href = data.auth_url;
+      const timer = setInterval(() => {
+        if (popup.closed) { clearInterval(timer); setDaConnecting(false); checkDeviantArtAuth(); }
+      }, 800);
     } catch (err) {
-      setDaError("Failed to start DeviantArt authorization");
+      popup.close();
+      setDaConnecting(false);
+      setDaError(err.message || "Failed to start DeviantArt authorization");
     }
   };
-  
-  const handlePostToDeviantArt = async () => {
+
+  const handleDeviantArtDisconnect = async () => {
+    await fetch(`${BACKEND_URL}/api/deviantart/disconnect`, { method: "POST", headers: DA_HEADERS }).catch(() => {});
+    setDaAuthenticated(false);
+    setDaUsername(null);
+    setDaFormOpen(false);
+  };
+
+  const handlePostToDeviantArt = () => {
     if (!generatedImage || !selectedCharacter) return;
-    
-    setDaPosting(true);
     setDaError(null);
     setDaPostResult(null);
-    
-    try {
-      // Generate a title based on outfit
-      const outfitDesc = generateOutfitPrompt();
-      const title = `${selectedCharacter.name} - ${outfitDesc.slice(0, 50)}${outfitDesc.length > 50 ? '...' : ''}`;
-      
-      const response = await fetch(`${BACKEND_URL}/api/deviantart/post-outfit`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          image_base64: generatedImage,
-          character_name: selectedCharacter.name,
-          title: title,
-          description: `AI-generated outfit for ${selectedCharacter.name} from TSV Terminal Dressing Room.\n\nOutfit: ${outfitDesc}`,
-          tags: ['ai-art', 'digital-art', selectedCharacter.name.toLowerCase().replace(/\s+/g, '-'), 'tsv-terminal', 'character-outfit'],
-          is_mature: false
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok && data.success) {
-        setDaPostResult(data);
-      } else {
-        setDaError(data.detail || 'Failed to post to DeviantArt');
-      }
-    } catch (err) {
-      setDaError(err.message || 'Network error');
-    } finally {
-      setDaPosting(false);
-    }
+    setDaFormOpen(true);
+  };
+
+  const daDefaults = () => {
+    const outfit = (lastDetails?.outfit || generateOutfitPrompt() || "").trim();
+    const short = outfit.replace(/\s+/g, " ").slice(0, 50 - selectedCharacter.name.length - 3);
+    const items = Object.values(lastDetails?.items || {}).filter(Boolean);
+    const tags = [selectedCharacter.name, "TSV Terminal", "The Saiyan Victoria", "AI Art", "Digital Art", "Character Outfit", ...items].map(t => t.replace(/[^A-Za-z0-9 ]/g, "").trim()).filter(Boolean);
+    return {
+      title: short ? `${selectedCharacter.name} - ${short}`.slice(0, 50) : `${selectedCharacter.name} Outfit`,
+      description: `${selectedCharacter.name} in a new look from the TSV Terminal Dressing Room.\n\nOutfit: ${outfit || "custom"}${items.length ? `\nSelections: ${items.join(", ")}` : ""}`,
+      tags: [...new Set(tags)].slice(0, 30).join(", "),
+    };
   };
   
   const handleViewOnDeviantArt = async () => {
     if (!selectedCharacter) return;
     
     try {
-      const response = await fetch(`${BACKEND_URL}/api/deviantart/view-url/${encodeURIComponent(selectedCharacter.name)}`);
+      const response = await fetch(`${BACKEND_URL}/api/deviantart/view-url/${encodeURIComponent(selectedCharacter.name)}`, { headers: DA_HEADERS });
       const data = await response.json();
       
       if (data.gallery_url) {
@@ -1551,6 +1566,7 @@ export default function DressingRoom() {
               {daAuthenticated ? (
                 <button 
                   className="tsv-btn"
+                  data-testid="da-post-btn"
                   onClick={handlePostToDeviantArt}
                   disabled={daPosting}
                   style={{ 
@@ -1568,7 +1584,9 @@ export default function DressingRoom() {
               ) : (
                 <button 
                   className="tsv-btn"
+                  data-testid="da-connect-btn"
                   onClick={handleDeviantArtAuth}
+                  disabled={daConnecting}
                   style={{ 
                     fontSize: 11, 
                     padding: "8px",
@@ -1576,13 +1594,14 @@ export default function DressingRoom() {
                     borderColor: "#ff9900"
                   }}
                 >
-                  🔐 CONNECT DA
+                  {daConnecting ? "⏳ CONNECTING..." : "🔐 CONNECT DA"}
                 </button>
               )}
               
               {/* DeviantArt VIEW Button */}
               <button 
                 className="tsv-btn"
+                data-testid="da-view-btn"
                 onClick={handleViewOnDeviantArt}
                 style={{ 
                   fontSize: 11, 
@@ -1595,9 +1614,33 @@ export default function DressingRoom() {
               </button>
             </div>
             
+            {daConnecting && (
+              <div data-testid="da-connecting-notice" style={{ fontSize: 10, marginTop: 8, color: "#8fd8ff" }}>
+                Finish signing in to DeviantArt in the popup window. The posting form opens automatically.
+              </div>
+            )}
+            {daAuthenticated && (
+              <div data-testid="da-account-status" style={{ fontSize: 10, marginTop: 8, opacity: .8, display: "flex", gap: 8, alignItems: "center" }}>
+                ✓ DeviantArt: {daUsername || "connected"}
+                <button type="button" className="tsv-btn" onClick={handleDeviantArtDisconnect} data-testid="da-disconnect-btn" style={{ fontSize: 9, padding: "2px 8px" }}>Disconnect</button>
+              </div>
+            )}
+            {daFormOpen && (
+              <DeviantArtPostForm
+                backendUrl={BACKEND_URL}
+                headers={DA_HEADERS}
+                username={daUsername}
+                image={generatedImage}
+                characterName={selectedCharacter.name}
+                defaults={daDefaults()}
+                onClose={() => setDaFormOpen(false)}
+                onPosted={(data) => { setDaPostResult(data); setDaFormOpen(false); }}
+                onAuthLost={(msg) => { setDaAuthenticated(false); setDaFormOpen(false); setDaError(msg); }}
+              />
+            )}
             {/* DeviantArt Post Result/Error */}
             {daPostResult && (
-              <div style={{ 
+              <div data-testid="da-post-success" style={{ 
                 marginTop: 10, 
                 padding: 10, 
                 borderRadius: 8, 
@@ -1629,7 +1672,7 @@ export default function DressingRoom() {
                 fontSize: 11,
                 color: "#ff9900"
               }}>
-                ⚠️ {daError}
+                <span data-testid="da-error">⚠️ {daError}</span>
                 {!daAuthenticated && (
                   <div style={{ marginTop: 6 }}>
                     <button 
