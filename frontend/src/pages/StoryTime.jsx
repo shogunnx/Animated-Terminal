@@ -404,7 +404,7 @@ export default function StoryTime() {
   //   1) Try Web Speech API to read the AI-generated text aloud
   //   2) If TTS unavailable/blocked, just show the text in the video space
   //   3) Always display the text regardless
-  const triggerQAFallback = (text, character, accent, sources = []) => {
+  const triggerQAFallback = (text, character, accent, sources = [], reason = null) => {
     if (!text) return;
     setQaLoading(false);
     setGeneratedVideoUrl(null);
@@ -435,6 +435,7 @@ export default function StoryTime() {
       character: character || 'Character',
       accent: accent || '#ff69b4',
       sources: Array.isArray(sources) ? sources : [],
+      reason,
     });
   };
 
@@ -447,7 +448,7 @@ export default function StoryTime() {
 
   const replayQAFallbackAudio = () => {
     if (qaFallback?.text) {
-      triggerQAFallback(qaFallback.text, qaFallback.character, qaFallback.accent, qaFallback.sources);
+      triggerQAFallback(qaFallback.text, qaFallback.character, qaFallback.accent, qaFallback.sources, qaFallback.reason);
     }
   };
 
@@ -509,61 +510,53 @@ export default function StoryTime() {
       const characterName = data.character_name;
       const responseSources = Array.isArray(data.sources) ? data.sources : [];
 
-      // If credits already known to be 0, skip HeyGen polling and go straight to fallback
-      if (creditStatus?.credits_low) {
-        triggerQAFallback(responseText, characterName, fallbackAccent, responseSources);
+      const fallback = (reason) => triggerQAFallback(responseText, characterName, fallbackAccent, responseSources, reason);
+
+      if (!videoId) {
+        fallback(data.heygen_error || 'HeyGen did not accept the video request.');
         return;
       }
 
       // Poll for video completion and display in MAIN player
-      if (videoId) {
-        const pollInterval = setInterval(async () => {
-          try {
-            const statusResponse = await fetch(`${BACKEND_URL}/api/storytime/status/${videoId}`);
-            const statusData = await statusResponse.json();
+      let finished = false;
+      const stop = () => { finished = true; clearInterval(pollInterval); clearTimeout(giveUp); };
+      const pollInterval = setInterval(async () => {
+        if (finished) return;
+        try {
+          const statusResponse = await fetch(`${BACKEND_URL}/api/storytime/status/${videoId}`);
+          const statusData = await statusResponse.json();
+          const status = statusData.data?.status;
+          const videoUrl = statusData.data?.video_url;
 
-            const status = statusData.data?.status;
-            const videoUrl = statusData.data?.video_url;
-
-            if (status === 'completed' && videoUrl) {
-              // Set video in MAIN player
-              setGeneratedVideoUrl(videoUrl);
-              setQaVideoUrl(videoUrl);
-              setQaLoading(false);
-              clearInterval(pollInterval);
-
-              // Auto-play video when ready
-              setTimeout(() => {
-                if (videoRef.current) {
-                  videoRef.current.play().catch(err => {
-                    console.log('Auto-play prevented by browser:', err);
-                  });
-                  setIsPlaying(true);
-                }
-              }, 100);
-            } else if (status === 'failed') {
-              clearInterval(pollInterval);
-              // HeyGen failed (commonly: 0 credits). Activate TTS-or-text fallback
-              triggerQAFallback(responseText, characterName, fallbackAccent, responseSources);
-            }
-          } catch (err) {
-            console.error('Error polling Q&A video status:', err);
-            clearInterval(pollInterval);
-            triggerQAFallback(responseText, characterName, fallbackAccent, responseSources);
+          if (status === 'completed' && videoUrl) {
+            stop();
+            setGeneratedVideoUrl(videoUrl);
+            setQaVideoUrl(videoUrl);
+            setQaLoading(false);
+            setTimeout(() => {
+              if (videoRef.current) {
+                videoRef.current.play().catch(err => console.log('Auto-play prevented by browser:', err));
+                setIsPlaying(true);
+              }
+            }, 100);
+          } else if (status === 'failed') {
+            stop();
+            const err = statusData.data?.error;
+            const msg = typeof err === 'string' ? err : err?.message;
+            const credit = (err?.code || '').includes('INSUFFICIENT_CREDIT');
+            fallback(credit ? 'HeyGen API wallet is out of credit. Top up the API wallet in HeyGen to get video answers.' : `HeyGen video failed: ${msg || 'unknown error'}`);
+            fetchCreditStatus();
           }
-        }, 3000);
+        } catch (err) {
+          stop();
+          fallback('Lost connection while waiting for the video.');
+        }
+      }, 4000);
 
-        // Cleanup after 5 minutes — if still no video, fall back to text/TTS
-        setTimeout(() => {
-          clearInterval(pollInterval);
-          if (qaLoading) {
-            triggerQAFallback(responseText, characterName, fallbackAccent, responseSources);
-          }
-        }, 300000);
-      } else {
-        // No video_id returned (HeyGen rejected upfront). Go straight to fallback.
-        triggerQAFallback(responseText, characterName, fallbackAccent, responseSources);
-      }
+      // Give up after 5 minutes and show the text/voice answer instead
+      const giveUp = setTimeout(() => {
+        if (!finished) { stop(); fallback('The video is taking too long. Here is the answer in the meantime.'); }
+      }, 300000);
     } catch (error) {
       console.error('Error generating Q&A:', error);
       alert(`Failed to generate Q&A response: ${error.message}`);
@@ -605,7 +598,7 @@ export default function StoryTime() {
                 {creditStatus.message}
               </div>
               <div style={{ fontSize: 11, opacity: 0.9, marginTop: 2 }}>
-                Recent failures: {creditStatus.failed_count} / {creditStatus.total_recent_tasks} tasks
+                Video answers pause when the balance can't cover one. Top up the API wallet in HeyGen.
               </div>
             </div>
           </div>
@@ -965,9 +958,16 @@ export default function StoryTime() {
                       : '◉ TEXT TRANSCRIPT'}
                   </div>
                 </div>
-                <div style={{ fontSize: 10, opacity: 0.6 }}>
+                <div style={{ fontSize: 10, opacity: 0.6 }} data-testid="qa-fallback-label">
                   HeyGen video unavailable — graceful fallback
                 </div>
+              </div>
+              {qaFallback.reason && (
+                <div data-testid="qa-fallback-reason" style={{ fontSize: 11, color: '#ffb347', marginBottom: 12, padding: '8px 10px', borderRadius: 8, background: 'rgba(255,153,0,.08)', border: '1px solid rgba(255,153,0,.3)' }}>
+                  ⚠️ {qaFallback.reason}
+                </div>
+              )}
+              <div style={{ display: 'none' }}>
               </div>
 
               <div style={{ fontSize: 11, opacity: 0.7, marginBottom: 4 }}>QUESTION</div>

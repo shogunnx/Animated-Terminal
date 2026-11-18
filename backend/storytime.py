@@ -267,6 +267,7 @@ async def generate_qa_response(request: QARequest):
             "question": result["question"],
             "character_name": result["character_name"],
             "sources": result.get("sources", []),
+            "heygen_error": result.get("heygen_error"),
         }
         
     except Exception as e:
@@ -366,67 +367,24 @@ async def get_test_mode_status():
 
 @router.get("/credit-status")
 async def get_credit_status():
-    """
-    Check HeyGen API credit status
-    """
-    try:
-        from heygen_api import HEYGEN_API_KEY, get_headers, HEYGEN_API_BASE
-        import httpx
-        
-        if not HEYGEN_API_KEY:
-            return {
-                "status": "error",
-                "message": "HeyGen API key not configured",
-                "credits_low": True
-            }
-        
-        # Check remaining credits via HeyGen API v2
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get(
-                f"{HEYGEN_API_BASE}/v2/user/remaining_quota",
-                headers=get_headers()
-            )
-            
-            if response.status_code == 200:
-                data = response.json()
-                
-                # Check if there's an error in the response
-                if data.get("error"):
-                    # API returned error, but we know the key works
-                    return {
-                        "status": "ok",
-                        "message": "HeyGen API connected",
-                        "credits_low": False,
-                        "remaining_credits": "N/A"
-                    }
-                
-                remaining = data.get("data", {}).get("remaining_quota", 0)
-                details = data.get("data", {}).get("details", {})
-                
-                # Determine if credits are low (less than 50)
-                credits_low = remaining < 50
-                
-                return {
-                    "status": "low" if credits_low else "ok",
-                    "message": f"HeyGen credits: {remaining}" if not credits_low else f"⚠️ LOW CREDITS: {remaining}",
-                    "credits_low": credits_low,
-                    "remaining_credits": remaining,
-                    "details": details
-                }
-            else:
-                return {
-                    "status": "ok",
-                    "message": "HeyGen API connected",
-                    "credits_low": False
-                }
-                
-    except Exception as e:
-        return {
-            "status": "ok",
-            "message": "HeyGen API connected",
-            "credits_low": False
-        }
+    """HeyGen API wallet status (USD pay-as-you-go balance)."""
+    from heygen_api import HEYGEN_API_KEY, get_wallet_balance, HEYGEN_COST_PER_MINUTE_USD
 
+    if not HEYGEN_API_KEY:
+        return {"status": "error", "message": "HeyGen API key not configured", "credits_low": True}
+    balance = await get_wallet_balance()
+    if balance is None:
+        return {"status": "unknown", "message": "HeyGen balance unavailable", "credits_low": False, "remaining_credits": None}
+    low = balance < HEYGEN_COST_PER_MINUTE_USD
+    minutes = balance / HEYGEN_COST_PER_MINUTE_USD if HEYGEN_COST_PER_MINUTE_USD else 0
+    return {
+        "status": "low" if low else "ok",
+        "message": f"{'⚠️ LOW ' if low else ''}HeyGen balance: ${balance:.2f} (~{minutes:.1f} min of video)",
+        "credits_low": low,
+        "remaining_credits": round(balance, 2),
+        "remaining_usd": round(balance, 2),
+        "estimated_minutes": round(minutes, 1),
+    }
 
 
 # ---------------------- Lore wiki (RAG) admin endpoints ----------------------

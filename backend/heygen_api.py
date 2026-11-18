@@ -352,3 +352,28 @@ async def upload_talking_photo_from_url(image_url: str) -> Dict:
     except Exception as e:
         logger.exception("upload_talking_photo_from_url failed")
         return {"success": False, "error": str(e)}
+
+
+HEYGEN_COST_PER_MINUTE_USD = float(os.environ.get("HEYGEN_COST_PER_MINUTE_USD", "1.0"))
+
+
+async def get_wallet_balance() -> Optional[float]:
+    """Spendable HeyGen API wallet balance in USD (None if it can't be read)."""
+    if not HEYGEN_API_KEY:
+        return None
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            r = await client.get(f"{HEYGEN_API_BASE}/v3/users/me", headers=get_headers())
+        if r.status_code != 200:
+            return None
+        wallet = (r.json().get("data") or {}).get("wallet") or {}
+        bal = wallet.get("remaining_balance")
+        return float(bal) if bal is not None else None
+    except Exception as e:
+        logger.warning(f"HeyGen wallet lookup failed: {e}")
+        return None
+
+
+def estimate_video_cost(script_text: str) -> float:
+    minutes = max(len(script_text.split()), 1) / 150
+    return round(minutes * HEYGEN_COST_PER_MINUTE_USD, 2)

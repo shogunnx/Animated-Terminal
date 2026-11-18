@@ -347,7 +347,8 @@ async def create_qa_video(
     """
 
     # Generate character response using AI (with optional video analysis)
-    response_text = await generate_character_response(character_id, character_name, question, video_url)
+    max_words = max(40, min(200, int((duration or 20) * 2.5)))
+    response_text = await generate_character_response(character_id, character_name, question, video_url, max_words=max_words)
 
     # Capture which lore pages grounded this answer (for source attribution UI)
     try:
@@ -363,6 +364,18 @@ async def create_qa_video(
     # We used to httpx-POST to 127.0.0.1:8001 here, but Railway containers
     # don't allow loopback to the same service, which produced
     # "All connection attempts failed" in production.
+    from heygen_api import get_wallet_balance, estimate_video_cost
+    balance, cost = await get_wallet_balance(), estimate_video_cost(response_text)
+    if balance is not None and balance < cost:
+        return {
+            "video_id": None,
+            "response_text": response_text,
+            "question": question,
+            "character_name": character_name,
+            "sources": sources,
+            "heygen_error": f"HeyGen API wallet has ${balance:.2f} left; this answer needs about ${cost:.2f}. Top up the API wallet in HeyGen to get video answers.",
+        }
+
     try:
         from storytime import _generate_video_with_voice_fallback, _resolve_voice_id
         voice_id = _resolve_voice_id(avatar_id)
