@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { NexusMediaPicker } from "../components/NexusMediaPicker";
 import { SendToLibrary } from "../components/SendToLibrary";
 import { DeviantArtPostForm } from "../components/DeviantArtPostForm";
+import { useDressingRoomSeo, DressingRoomIntro, DressingRoomGuide } from "../components/DressingRoomSeo";
 import { useNavigate, useParams } from "react-router-dom";
 import { TSV_CHARACTERS } from "../content/tsvContent.js";
 import { addLike, getLikes, getCharacterRank } from "../utils/engagement.js";
@@ -294,6 +295,7 @@ export default function DressingRoom() {
   const nav = useNavigate();
   
   const [selectedCharacter, setSelectedCharacter] = useState(null);
+  useDressingRoomSeo(id ? selectedCharacter?.name || null : null);
   const [baseImage, setBaseImage] = useState(null);
   const [baseImageSource, setBaseImageSource] = useState("nexus"); // nexus, library, portrait, stored, placeholder, upload
   const [nexusAsset, setNexusAsset] = useState(null);
@@ -1142,8 +1144,9 @@ export default function DressingRoom() {
     
     return (
       <div>
+        <DressingRoomIntro />
         <div className="tsv-glass tsv-glow" style={{ padding: 14, marginBottom: 14 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
             <div>
               <div className="tsv-title" style={{ fontSize: 14 }}>DRESSING ROOM</div>
               <div style={{ fontSize: 12, opacity:.72, marginTop: 8 }}>
@@ -1204,6 +1207,7 @@ export default function DressingRoom() {
             </button>
           ))}
         </div>
+        <DressingRoomGuide backendUrl={BACKEND_URL} />
       </div>
     );
   }

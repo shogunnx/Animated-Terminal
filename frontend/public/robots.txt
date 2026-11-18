@@ -1,18 +1,10 @@
-# TSV Nexus Multiverse - Robots.txt
-# Allow all search engines to crawl the site
-
+# TheSaiyanVictoria Terminal
 User-agent: *
 Allow: /
-
-# Sitemap location
-Sitemap: https://nexus-multiverse.emergent.host/sitemap.xml
-
-# Disallow crawling of API endpoints
 Disallow: /api/
+Disallow: /admin/
+Disallow: /dressing-room-analytics
+Disallow: /terminal-analytics
+Disallow: /deviantart
 
-# Disallow crawling of base images directory
-Disallow: /base_images/
-
-# Disallow crawling of assets directory internals
-Disallow: /assets/*.js
-Disallow: /assets/*.css
+Sitemap: https://terminal.thesaiyanvictoria.com/sitemap.xml
