@@ -221,3 +221,10 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 - Q&A answers capped at duration*2.5 words (20s → 50 words); wallet guard skips HeyGen if balance < estimated cost and returns heygen_error.
 - Frontend always polls when video_id exists, shows qa-fallback-reason, 5-min give-up fixed, banner no longer overlays nav.
 - NOTE: HeyGen v1/v2 endpoints are legacy (removal date 2026-10-31 per HeyGen warning) → migrate to v3 /v3/videos (backlog P1).
+
+## 2026-06 DressingRoom SEO (tested iteration_5 + follow-up fixes)
+- Shared copy: frontend/src/content/dressingRoomSeo.mjs. Post-build prerender (package.json build → scripts/prerender-seo.mjs) writes dist/dressing-room.html + dist/dressing-room/index.html with title/description/canonical/robots/OG/Twitter/WebApplication JSON-LD + static H1/H2/H3/FAQ content (tags marked data-seo, removed by React hook on mount).
+- React: components/DressingRoomSeo.jsx (useDressingRoomSeo head manager, intro H1, guide sections, live approved examples — tag `dressingroom-example` in Nexus to curate, visible FAQ). Character rooms canonical → /dressing-room.
+- public/robots.txt + sitemap.xml (24 URLs) on terminal.thesaiyanvictoria.com; og banner public/og/dressing-room.jpg (composited from approved art).
+- FAQPage JSON-LD intentionally omitted (Google restricts FAQ rich results).
+- Pending: deploy to Railway, Search Console submit/URL inspection.

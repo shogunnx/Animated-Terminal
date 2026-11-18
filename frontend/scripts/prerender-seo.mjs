@@ -1,5 +1,5 @@
 // Post-build: writes dist/dressing-room.html with SEO tags and crawlable content in the initial HTML.
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
@@ -41,12 +41,15 @@ const body = `
         <section><h2>Frequently asked questions</h2>${DRESSING_ROOM_FAQ.map((f) => `<h3>${esc(f.q)}</h3><p>${esc(f.a)}</p>`).join("")}</section>
       </main>`;
 
+const tagged = head.replace(/<(meta|link|script)(?=[\s>])/g, '<$1 data-seo="dressing-room"');
 const index = readFileSync(join(dist, "index.html"), "utf8");
 const page = index
   .replace(/<title>[\s\S]*?<\/title>/, "")
-  .replace("</head>", `${head}  </head>`)
+  .replace("</head>", `${tagged}  </head>`)
   .replace('<div id="root"></div>', `<div id="root">${body}\n    </div>`);
 
 if (!page.includes(SEO.canonical) || !page.includes(DRESSING_ROOM_H1)) throw new Error("SEO prerender failed");
 writeFileSync(join(dist, "dressing-room.html"), page);
+mkdirSync(join(dist, "dressing-room"), { recursive: true });
+writeFileSync(join(dist, "dressing-room", "index.html"), page);
 console.log("SEO prerender: dist/dressing-room.html written");

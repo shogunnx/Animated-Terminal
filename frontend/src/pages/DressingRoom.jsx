@@ -1190,7 +1190,7 @@ export default function DressingRoom() {
               }}
             >
               <div className="tsv-title" style={{ fontSize: 14, color: c.accent }}>{c.name}</div>
-              <div style={{ fontSize: 11, opacity:.72, marginTop: 6 }}>{c.subtitle}</div>
+              <div style={{ fontSize: 11, color: "rgba(232,246,255,.82)", marginTop: 6 }}>{c.subtitle}</div>
               {c.requiresUpload && (
                 <div style={{ 
                   fontSize: 10, 

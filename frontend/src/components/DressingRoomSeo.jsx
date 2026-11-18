@@ -20,7 +20,8 @@ const meta = (key, value, content) => setTag(`meta[${key}="${value}"]`, () => {
 
 export function useDressingRoomSeo(characterName) {
   useEffect(() => {
-    const prevTitle = document.title;
+    document.head.querySelectorAll('[data-seo="dressing-room"]').forEach(el => el.remove());
+    const prevTitle = document.title === SEO.title ? "TSV Terminal" : document.title;
     const title = characterName ? `${characterName} DressingRoom | AI Outfit Generator | TheSaiyanVictoria` : SEO.title;
     document.title = title;
     const undo = [
@@ -35,14 +36,11 @@ export function useDressingRoomSeo(characterName) {
       meta("name", "twitter:description", SEO.description),
       meta("name", "twitter:image", SEO.image),
     ];
-    let ld = null;
-    if (!document.head.querySelector('script[type="application/ld+json"]')) {
-      ld = document.createElement("script");
-      ld.type = "application/ld+json";
-      ld.textContent = JSON.stringify(webApplicationJsonLd());
-      document.head.appendChild(ld);
-    }
-    return () => { document.title = prevTitle; undo.forEach(fn => fn()); ld?.remove(); };
+    const ld = document.createElement("script");
+    ld.type = "application/ld+json";
+    ld.textContent = JSON.stringify(webApplicationJsonLd());
+    document.head.appendChild(ld);
+    return () => { document.title = prevTitle; undo.forEach(fn => fn()); ld.remove(); };
   }, [characterName]);
 }
 
@@ -57,21 +55,23 @@ export function DressingRoomIntro() {
   );
 }
 
-function altFor(item) {
+function altFor(item, n) {
   const isSubmission = (item.tags || []).includes("terminal-submission");
   const who = (item.characters || [])[0];
   if (isSubmission) return `${who || "Character"} outfit created by a visitor in the AI DressingRoom`;
   if (item.description) return item.description.split("\n")[0].slice(0, 140);
-  const readable = item.title && !/^[0-9A-F-]{30,}$/i.test(item.title) ? item.title : null;
-  return `${who || readable || "TheSaiyanVictoria character"} artwork from the Nexus Media Library`;
+  const tags = (item.tags || []).slice(0, 4).join(", ");
+  if (tags) return `${who || "TheSaiyanVictoria"} artwork: ${tags}`;
+  const readable = item.title && !/^[0-9A-F-]{30,}$/i.test(item.title) ? item.title.replace(/([a-z])([A-Z0-9])/g, "$1 $2") : null;
+  return `${who || readable || "TheSaiyanVictoria character"} artwork, Nexus Media Library example ${n}`;
 }
 
-function ExampleCard({ item, backendUrl }) {
+function ExampleCard({ item, backendUrl, n }) {
   const isSubmission = (item.tags || []).includes("terminal-submission");
   return (
     <figure style={{ margin: 0 }} data-testid={`seo-example-${item.id}`}>
       <div style={{ aspectRatio: "3 / 4", borderRadius: 10, overflow: "hidden", background: "rgba(0,255,255,.06)", border: "1px solid rgba(255,255,255,.1)" }}>
-        <img src={`${backendUrl}${item.thumb_url}`} alt={altFor(item)} loading="lazy" decoding="async"
+        <img src={`${backendUrl}${item.thumb_url}`} alt={altFor(item, n)} loading="lazy" decoding="async"
           width={item.width || undefined} height={item.height || undefined}
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
       </div>
@@ -102,7 +102,7 @@ function Examples({ backendUrl }) {
       {state.error && <div style={{ fontSize: 11, opacity: .6 }} data-testid="seo-examples-error">Examples are unavailable right now.</div>}
       {!state.loading && state.items.length > 0 && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12, marginTop: 10 }}>
-          {state.items.map(i => <ExampleCard key={i.id} item={i} backendUrl={backendUrl} />)}
+          {state.items.map((i, n) => <ExampleCard key={i.id} item={i} backendUrl={backendUrl} n={n + 1} />)}
         </div>
       )}
     </section>

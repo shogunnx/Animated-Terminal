@@ -744,3 +744,7 @@ html, body {
 }
 
 }
+.tsv-btn:focus-visible, .tsv-glass:focus-visible, a:focus-visible, summary:focus-visible {
+  outline: 2px solid #7ff7ff;
+  outline-offset: 2px;
+}

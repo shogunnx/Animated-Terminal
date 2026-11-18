@@ -1,0 +1,51 @@
+{
+  "summary": "Frontend-only test of the DressingRoom SEO work. Checked the raw HTML (curl, no JS), robots.txt and sitemap.xml, and the rendered page with Playwright at 1920 and 390 widths. Also tested SPA navigation, keyboard Tab order and regressions in a character room. No paid generations ran: generate, tryon, headshot and foot-to-head were mocked with page.route and none were called. Almost everything passes. One real bug: after a direct load of /dressing-room, moving to another route in the app keeps the DressingRoom title, canonical, meta, robots and JSON-LD.",
+  "verified_passing": [
+    "Initial HTML of /dressing-room: exact title, meta description, one canonical (https://terminal.thesaiyanvictoria.com/dressing-room), robots 'index, follow, max-image-preview:large', og:title/description/url/image plus width 1200 and height 630, twitter:card summary_large_image with title/description/image. JSON-LD parses with @type WebApplication. #root contains a static <main> with 1 h1, the intro, 7 h2 and 17 h3 including all 6 FAQ questions. /dressing-room?ref=x also gets the prerendered HTML.",
+    "/og/dressing-room.jpg returns 200, image/jpeg, 1200x630",
+    "robots.txt matches the spec exactly and does not block /assets",
+    "sitemap.xml is valid XML with 24 URLs, all on terminal.thesaiyanvictoria.com, and lists exactly the required set. It has no emergent.host, admin, analytics, deviantart or /dressing-room/<id> URLs.",
+    "Desktop: exactly 1 h1 (seo-h1). seo-intro is above the character cards and seo-guide is below them. 7 examples show (the API returns only 7 approved items) and every alt text is non-empty. The ccd3fbc5 card is captioned 'Visitor creation · VixenVictoria' with alt 'VixenVictoria outfit created by a visitor in the AI DressingRoom'. 'Anonymous visitor' does not appear anywhere in the DOM, and the private asset c730bf19 is absent. All 6 FAQ answers are visible. After React mounts the title is correct and there is a single canonical.",
+    "Mobile 390: scrollWidth equals clientWidth (390), so no horizontal overflow. 1 h1, 7 examples and 6 FAQ items.",
+    "SPA navigation starting from /characters: /dressing-room gets the SEO title and canonical. Clicking the vixen_victoria card gives the title 'VixenVictoria DressingRoom | AI Outfit Generator | TheSaiyanVictoria' with canonical /dressing-room. Going back to /characters restores 'TSV Terminal' and removes canonical, description, og and ld+json with no duplicates. A direct load of /dressing-room/wargirl works (title 'Wargirl DressingRoom | ...', base image shown).",
+    "Room regressions: the Nexus Media Library modal opens; searching 'temporalposing' finds temporalvixenpose1; selecting it closes the modal and sets data-source=library. The preserve-pose toggle goes from unlocked to locked. preset-costume-maid-outfit shows '✓ Maid Outfit' with aria-pressed=true. Outfit, TryOn, Headshot and Foot to Head render; picking a Pairs second character (wargirl) works. Upload Image opens the file chooser. The Analytics button is still present.",
+    "Keyboard: Tab reaches the nav links, then Analytics, then all 10 character cards, each with an outline. The SEO guide and FAQ are plain text with nothing focusable, so Tab skips them by design. Screen readers still read the text."
+  ],
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/nexus-library/media (Railway backend)", "issue": "The public JSON includes the raw submission title 'VixenVictoria outfit by Anonymous visitor'. The UI hides it, but when a visitor gives a real credit name it will be readable in the public API response, which goes against the 'never show the visitor's name' choice. The approved item also still has the 'pending-approval' tag."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "useDressingRoomSeo (DressingRoomSeo.jsx) together with prerender-seo.mjs", "issue": "After a direct load of /dressing-room (the prerendered HTML), moving in the app to /characters keeps the title 'AI DressingRoom | ...' instead of 'TSV Terminal'. The canonical (pointing to /dressing-room), meta description, og:*, twitter:*, robots and WebApplication JSON-LD also stay on every later route until a full reload. Reproduced: goto /dressing-room, click vixen_victoria, click the Characters nav link. Result: title is still the DressingRoom title, canonical is still /dressing-room, ld=1.", "selector": "head title / link[rel=canonical]", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/dressing-room examples", "issues": ["3 untitled assets with UUID titles all get the same generic alt 'TheSaiyanVictoria character artwork from the Nexus Media Library'. Two others use slug alts ('temporalask artwork ...').", "No item has the 'dressingroom-example' tag, so the code falls back to all items. That brings in the 'Discover Artists' promo banner, which is not an outfit example."]},
+      {"screen": "/dressing-room character cards (existed before this change)", "issues": ["The subtitle text under each name (e.g. 'Goddess-tier archive profile') is very low contrast on the dark card background.", "The keyboard focus ring is a faint 1px auto outline. A stronger :focus-visible style would help."]},
+      {"screen": "/dressing-room/ (trailing slash)", "issues": ["The server returns plain index.html (title 'TSV Terminal', no SEO meta). JS fixes it after load, but crawlers that hit the trailing-slash URL get no SEO tags. Consider a 301 redirect or prerendering that path too."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix stale head tags after navigating away from a prerendered /dressing-room. Mark every tag the prerender injects (e.g. data-seo=\"dressing-room\"). On hook cleanup, remove all [data-seo] tags including the static JSON-LD and robots tags, and set the title to the app default 'TSV Terminal' rather than the captured prevTitle, which is the SEO title when the page was prerendered.",
+    "Optional: tag a few real outfit images with 'dressingroom-example' and give untitled assets descriptions so the alt texts are unique and descriptive.",
+    "Optional: remove the submitter name from the public media API title, or rename submission titles on approval.",
+    "Optional: add data-testid to the Analytics button and improve card subtitle contrast and the focus ring."
+  ],
+  "critical_code_review_comments": [
+    "DressingRoomSeo.jsx setTag: cleanup puts back a clone of the prerendered tag, so on a direct load nothing is ever cleaned up. The same applies to the static ld+json, because the hook skips creating one when it already exists and therefore never removes it.",
+    "prerender-seo.mjs removes the base <title>, so after a direct load document.title has no 'TSV Terminal' fallback anywhere.",
+    "Examples fetches limit=60 and filters on the client by tag. Filtering by tag on the server would be cheaper once the library grows.",
+    "DressingRoom.jsx is about 2400 lines and should be split (this existed before)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only)", "frontend": "95%"},
+  "seed_data_creation": "None. No data was created or changed, and no generations were triggered.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Frontend is served by vite preview from dist, which maps /dressing-room to dist/dressing-room.html. VITE_BACKEND_URL points to the Railway backend. The media API currently returns 7 approved items and none has the dressingroom-example tag. To reproduce the stale-head bug: direct load /dressing-room, then click the Characters nav link. Always mock /api/dressing-room/{generate,tryon,headshot,foot-to-head} with page.route.",
+  "rca of the issue": "The prerender strips <title>TSV Terminal</title> and injects the SEO tags. useDressingRoomSeo saves prevTitle = document.title, which is the SEO title, and saves clones of the existing prerendered tags as 'previous'. On unmount it restores those same values, and it never removes the static JSON-LD, robots or og:image:* tags. Fix: give the cleanup a known default (title 'TSV Terminal') and remove every SEO-marked tag."
+}
