@@ -1185,7 +1185,7 @@ export default function DressingRoom() {
   }
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, alignItems: "start" }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: 14, alignItems: "start" }}>
       {/* Left Panel - Character & Base Image */}
       <div className="tsv-glass tsv-glow" style={{ padding: 14 }}>
         <div className="tsv-title" style={{ fontSize: 14, color: selectedCharacter.accent }}>
@@ -1228,7 +1228,7 @@ export default function DressingRoom() {
                   padding: "6px 10px",
                   opacity: baseImageSource === "nexus" ? 1 : 0.5
                 }}
-                onClick={() => { setBaseImageSource("nexus"); fetchNexusImage(selectedCharacter.id); }}
+                onClick={() => fetchNexusImage(selectedCharacter.id)}
               >
                 Try Nexus
               </button>
@@ -1716,7 +1716,7 @@ export default function DressingRoom() {
           <div style={{ fontSize: 9, opacity: 0.7, marginBottom: 10 }}>
             Protects selected traits of your uploaded image during generation. Face, hair & skin tone are protected by default — ideal for preserving a person's identity (e.g. a Black woman keeps her exact face and hair when the outfit changes).
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 6 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(96px, 1fr))", gap: 6 }}>
             {[
               { key: "face", label: "Face" },
               { key: "hair", label: "Hair" },

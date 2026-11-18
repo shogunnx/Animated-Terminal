@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 
 const PAGE_SIZE = 24;
 
 const overlay = { position: "fixed", inset: 0, zIndex: 1000, background: "rgba(3,4,12,.82)", backdropFilter: "blur(14px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 12 };
-const panel = { width: "100%", maxWidth: 960, maxHeight: "90vh", display: "flex", flexDirection: "column", padding: 16, gap: 12 };
+const panel = { color: "#e8f6ff", width: "100%", maxWidth: 960, maxHeight: "90vh", display: "flex", flexDirection: "column", padding: 16, gap: 12 };
 const input = { flex: 1, minWidth: 160, background: "rgba(0,0,0,.45)", color: "#e8f6ff", border: "1px solid rgba(0,255,255,.25)", borderRadius: 8, padding: "8px 10px", fontSize: 12, fontFamily: "inherit" };
 
 async function readJson(res) {
@@ -16,8 +17,10 @@ function AssetCard({ asset, backendUrl, onPick }) {
   return (
     <button type="button" className="tsv-btn" data-testid={`nexus-media-item-${asset.id}`} onClick={() => onPick(asset)}
       style={{ padding: 6, display: "flex", flexDirection: "column", gap: 6, textAlign: "left", minWidth: 0 }}>
-      <div style={{ aspectRatio: "3 / 4", width: "100%", borderRadius: 8, overflow: "hidden", background: "rgba(0,0,0,.4)" }}>
-        <img src={`${backendUrl}${asset.thumb_url}`} alt={asset.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+      <div style={{ aspectRatio: "3 / 4", width: "100%", borderRadius: 8, overflow: "hidden", background: "linear-gradient(110deg, rgba(0,255,255,.05) 30%, rgba(0,255,255,.14) 50%, rgba(0,255,255,.05) 70%)" }}>
+        <img src={`${backendUrl}${asset.thumb_url}`} alt={asset.title} loading="lazy"
+          onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
       </div>
       <div style={{ fontSize: 11, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>{asset.title}</div>
       <div style={{ fontSize: 9, opacity: .6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>{asset.filename}</div>
@@ -107,9 +110,10 @@ export function NexusMediaPicker({ backendUrl, characters = [], currentCharacter
         style={{ fontSize: 10, padding: "6px 10px", opacity: active ? 1 : 0.75, whiteSpace: "nowrap" }}>
         🗂️ Nexus Media Library
       </button>
-      {open && (
+      {open && createPortal(
         <PickerModal backendUrl={backendUrl} characters={characters} defaultCharacter={currentCharacter}
-          onClose={() => setOpen(false)} onPick={(a) => { setOpen(false); onSelect(a); }} />
+          onClose={() => setOpen(false)} onPick={(a) => { setOpen(false); onSelect(a); }} />,
+        document.body
       )}
     </>
   );

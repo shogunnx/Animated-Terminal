@@ -194,3 +194,11 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 
 ## 2026-06 Verification
 - Dressing Room expansion re-verified: build OK, 6 Keep Untouched toggles render (Face/Hair/Skin on by default), all new categories present. MicroGames lint fix confirmed.
+
+## 2026-06 Nexus Media Library → DressingRoom integration (DONE, tested iteration_2)
+- Backend `nexus_media.py`: GET /api/nexus-library/media (q fuzzy search, character filter, pagination, approved images only), GET /api/nexus-library/file/{id}[?thumb=1] (server-side authed proxy; private → 403).
+- All 4 generation endpoints accept `nexus_asset_id`; backend fetches the real image bytes (session only, never saved as character base).
+- Frontend: shared `components/NexusMediaPicker.jsx` (portal modal) used by every character's DressingRoom.
+- Fixes: Try Nexus visible notices (NEXUS_BASE_URL now https://api.thesaiyanvictoria.com), warning hides when base image present, upload button via ref, preset ✓ confirmation, readable API errors (405 explained), SAVE downloads file, portrait base images now sent as base64, responsive layout.
+- Env needed on Railway: NEXUS_BASE_URL, NEXUS_MEDIA_API_URL=https://api.thesaiyanvictoria.com, NEXUS_MEDIA_TOKEN, valid FAL_KEY.
+- Preview build: `cd /app/frontend && VITE_BACKEND_URL= yarn build` (keeps .env pointing at Railway for production).

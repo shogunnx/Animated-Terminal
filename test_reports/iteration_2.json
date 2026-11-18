@@ -1,0 +1,36 @@
+{
+  "summary": "Tested the Nexus Media Library to DressingRoom integration end to end on the preview URL. Backend: 13/13 pytest pass. This covers listing (5 approved images, private 'TemporalVixen rooftop test' hidden), fuzzy search ('temporalposing' finds temporalvixenpose1 with fuzzy=true), exact title search, asset-ID search, empty search, pagination, thumb and full file proxy, private asset 403, invalid id 400, unknown id 404, and /generate rejecting private (403) and malformed (400) asset ids before any Fal call. Frontend: I found and fixed a CRITICAL bug. The picker modal was trapped in the left column's stacking context, so the right column painted over it and blocked the Search button, filter and most of the grid. After the fix every requested flow passed. Exactly 2 generate clicks were used. (1) vixen_victoria with temporalvixenpose1 and the French maid custom prompt: request carried nexus_asset_id=44c17bfd..., response 200 with image_source=nexus_media_library and base_image_saved=false. generated-image-main and variations 0-3 rendered, the output kept the face, hair and Gothic background, and save downloaded a png with save-notice shown. (2) wargirl with library asset 0632f4cb... and preset Maid Outfit: the button showed ✓ and preset-costume-selected appeared, response 200 with image_source nexus_media_library and 4 images. No 405 errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "NexusMediaPicker modal", "issue": "FIXED BY TESTER. The modal rendered inside the left DressingRoom column. Its z-index:1000 was scoped to that column's stacking context, so the right column (.tsv-glass) drew over it and intercepted clicks: the Search button, character filter, Close button and half the grid could not be reached at 1920px. Fixed by rendering the modal with createPortal(…, document.body).", "selector": "[data-testid='nexus-media-modal']", "priority": "CRITICAL"},
+      {"component": "NexusMediaPicker title", "issue": "FIXED BY TESTER. After the portal move, the 'NEXUS MEDIA LIBRARY' title and text inherited color rgb(0,0,0), which is unreadable on the dark panel. Added color:#e8f6ff to the panel style.", "selector": ".tsv-title in nexus-media-modal", "priority": "MEDIUM"},
+      {"component": "Try Nexus button state", "issue": "When Nexus has no avatar, the onClick handler still runs setBaseImageSource('nexus') before fetchNexusImage. The library or uploaded image stays in the preview but data-source becomes 'nexus'. The next generate call then skips nexus_asset_id and sends the proxy URL as reference_image_url, or for uploads sends base64 through a different branch. The warning notice itself shows correctly. Fix: set the source to 'nexus' only on success, inside fetchNexusImage.", "selector": "[data-testid='try-nexus-btn']", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Nexus Media modal", "issues": ["Thumbnails show empty dark boxes for 2-5 seconds while the proxy fetches. There is no per-image loading shimmer or onError fallback.", "Most asset titles are raw UUID filenames (e.g. 991CC3E6-7540-...). This is a data issue, but filenames that duplicate the title add noise."]},
+      {"screen": "DressingRoom mobile 390px", "issues": ["Pre-existing: the two-column layout squeezes the right column on mobile, and the KEEP UNTOUCHED toggles ('Skin Tone', 'Background') are clipped at the right edge. The document has no horizontal scroll. The 3 base-image buttons stack and are all visible."]},
+      {"screen": "DressingRoom header", "issues": ["The character name shows as 'VIXENVICTORIA' with no space (display name formatting)."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_nexus_media_library.py", "/app/test_reports/pytest/nexus_media.xml"],
+  "action_items": [
+    "Review and keep the tester fix in NexusMediaPicker.jsx (createPortal to document.body plus panel text color). The frontend dist was rebuilt with VITE_BACKEND_URL= yarn build",
+    "Try Nexus: call setBaseImageSource('nexus') only when the avatar actually loads, so a selected library or uploaded base image is not mislabelled",
+    "Add data-testids to the custom outfit textarea (e.g. custom-outfit-textarea) and the generation mode buttons (mode-outfit-btn, mode-tryon-btn, mode-headshot-btn, mode-foot-to-head-btn)",
+    "Optional: add a thumbnail loading placeholder and an onError fallback in AssetCard"
+  ],
+  "critical_code_review_comments": [
+    "DressingRoom.jsx is about 2340 lines and dressing_room.py about 1050 lines. Split them (the wardrobe data module and the panel components).",
+    "nexus_media._resolve plus _download makes 2 upstream calls on every thumbnail request and is not cached. Each modal open fires 5+ uncached resolve calls. Consider caching resolved metadata, using the 60s list cache to check visibility.",
+    "_score returns 1.0 on a substring match against the id field, so a short query like 'a' matches every asset. Acceptable, but consider a minimum query length for the fuzzy path.",
+    "The fuzzy threshold of 0.6 with SequenceMatcher against long descriptions or fields may produce surprising matches. It works for the requested case."
+  ],
+  "updated_files": ["/app/frontend/src/components/NexusMediaPicker.jsx", "/app/backend/tests/test_nexus_media_library.py"],
+  "success_rate": {"backend": "100% (13/13)", "frontend": "100% after tester fix (0% of search/filter/close interactions were usable before the fix at 1920px)"},
+  "seed_data_creation": "None. Exactly 2 paid generations were run (vixen_victoria French maid custom prompt, and wargirl preset Maid Outfit). Upload test used /tmp/TEST_upload.png, session only, with no generate and no save_as_base.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Preview URL: https://outfit-generator-42.preview.emergentagent.com. The vite preview serves dist, so rebuild after FE edits with: cd /app/frontend && VITE_BACKEND_URL= yarn build. Use domcontentloaded, not networkidle. The textarea and mode buttons have no testids: use page.locator('textarea').first and get_by_role('button', name='TryOn'|'Headshot'|'Foot to Head'|'Outfit'). Target asset 44c17bfd-e3aa-4cd9-97fc-ca6f7fdbadf8; private c730bf19-57b9-4d5b-be4f-79fb4c88a267. The character filter shows the empty state for tagged characters because assets are untagged. Do not run more paid generations unless asked; 2 were used this iteration."
+}
