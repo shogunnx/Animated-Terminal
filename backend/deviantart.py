@@ -111,10 +111,13 @@ async def auth_url(request: Request, x_da_session: str = Header("")):
     cid, _ = _creds()
     sid_hash = _hash(x_da_session)
     state = secrets.token_urlsafe(24)
+    verifier = secrets.token_urlsafe(64)
+    challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b"=").decode()
     redirect = _redirect_uri(request)
     await _states.create_index("created_at", expireAfterSeconds=STATE_TTL)
-    await _states.insert_one({"_id": state, "sid": sid_hash, "redirect_uri": redirect, "created_at": datetime.now(timezone.utc)})
-    params = {"client_id": cid, "redirect_uri": redirect, "response_type": "code", "scope": DA_SCOPES, "state": state}
+    await _states.insert_one({"_id": state, "sid": sid_hash, "redirect_uri": redirect, "verifier": verifier, "created_at": datetime.now(timezone.utc)})
+    params = {"client_id": cid, "redirect_uri": redirect, "response_type": "code", "scope": DA_SCOPES, "state": state,
+              "code_challenge": challenge, "code_challenge_method": "S256"}
     return {"auth_url": f"{DA_AUTH_URL}?{urllib.parse.urlencode(params)}", "redirect_uri": redirect}
 
 
@@ -140,7 +143,7 @@ async def callback(code: Optional[str] = None, state: Optional[str] = None, erro
     cid, secret = _creds()
     try:
         tok = await _token_request({"grant_type": "authorization_code", "client_id": cid, "client_secret": secret,
-                                    "redirect_uri": st["redirect_uri"], "code": code})
+                                    "redirect_uri": st["redirect_uri"], "code": code, "code_verifier": st["verifier"]})
         async with httpx.AsyncClient(timeout=30) as c:
             who = (await c.get(f"{DA_API}/user/whoami", headers={**UA, "Authorization": f"Bearer {tok['access_token']}"})).json()
     except HTTPException as e:

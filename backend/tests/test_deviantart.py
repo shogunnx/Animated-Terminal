@@ -75,7 +75,8 @@ def test_auth_url_valid(db):
     d = r.json()
     q = urllib.parse.parse_qs(urllib.parse.urlparse(d["auth_url"]).query)
     assert d["auth_url"].startswith("https://www.deviantart.com/oauth2/authorize")
-    assert q["client_id"] == ["55907"]
+    assert q["client_id"] == [os.environ.get("DEVIANTART_CLIENT_ID", "75268")]
+    assert q["code_challenge_method"] == ["S256"] and len(q["code_challenge"][0]) == 43
     assert q["scope"] == ["user browse stash publish gallery"]
     assert q["response_type"] == ["code"]
     assert q["redirect_uri"] == [f"{BASE_URL}/api/deviantart/callback"]
