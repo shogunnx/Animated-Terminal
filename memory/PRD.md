@@ -214,3 +214,10 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 - Endpoints: auth-url, callback, auth-status, disconnect, galleries, post-outfit (stash submit → publish, is_ai_generated, noai, mature level/classification, folder or new folder reuse), view-url.
 - Frontend `components/DeviantArtPostForm.jsx`: prefilled title/description/tags, character folder default, mature options; auto-opens after connect.
 - USER ACTION: whitelist redirect URIs in DeviantArt app 55907 (Railway + preview /api/deviantart/callback); allow scopes user browse stash publish gallery.
+
+## 2026-06 StoryTime Q&A video fix (tested iteration_4)
+- Root cause: HeyGen API wallet $0.72 → MOVIO_PAYMENT_INSUFFICIENT_CREDIT; frontend also skipped polling whenever legacy v2 quota < 50 and failed silently.
+- credit-status now uses HeyGen v3 /v3/users/me wallet (USD), HEYGEN_COST_PER_MINUTE_USD env (default 1.0).
+- Q&A answers capped at duration*2.5 words (20s → 50 words); wallet guard skips HeyGen if balance < estimated cost and returns heygen_error.
+- Frontend always polls when video_id exists, shows qa-fallback-reason, 5-min give-up fixed, banner no longer overlays nav.
+- NOTE: HeyGen v1/v2 endpoints are legacy (removal date 2026-10-31 per HeyGen warning) → migrate to v3 /v3/videos (backlog P1).

@@ -405,8 +405,11 @@ export default function StoryTime() {
   //   2) If TTS unavailable/blocked, just show the text in the video space
   //   3) Always display the text regardless
   const triggerQAFallback = (text, character, accent, sources = [], reason = null) => {
-    if (!text) return;
     setQaLoading(false);
+    if (!text) {
+      if (reason) alert(reason);
+      return;
+    }
     setGeneratedVideoUrl(null);
     setIsPlaying(false);
 
@@ -574,11 +577,11 @@ export default function StoryTime() {
       {/* Credit Warning Banner */}
       {creditStatus?.credits_low && showCreditWarning && (
         <div 
+          data-testid="credit-warning-banner"
           style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
+            position: 'relative',
+            marginBottom: 12,
+            borderRadius: 10,
             background: 'linear-gradient(135deg, rgba(255,0,0,0.95), rgba(255,100,0,0.95))',
             color: 'white',
             padding: '12px 20px',
@@ -621,7 +624,7 @@ export default function StoryTime() {
       )}
       
       {/* Header */}
-      <div className="tsv-glass tsv-glow tsv-scanlines" style={{ padding: 16, marginBottom: 14, marginTop: creditStatus?.credits_low && showCreditWarning ? 60 : 0 }}>
+      <div className="tsv-glass tsv-glow tsv-scanlines" style={{ padding: 16, marginBottom: 14, marginTop: 0 }}>
         <div className="tsv-title" style={{ fontSize: 14, position: 'relative' }}>
           📖 STORYTIME CHAMBER
           
@@ -1366,6 +1369,7 @@ export default function StoryTime() {
           <input
             type="text"
             value={qaQuestion}
+            data-testid="qa-question-input"
             onChange={(e) => setQaQuestion(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && !qaVideoLink && handleQASubmit()}
             placeholder={`e.g., "How was Binary created?" or "What's your favorite memory?"`}
@@ -1390,6 +1394,7 @@ export default function StoryTime() {
           <input
             type="text"
             value={qaVideoLink}
+            data-testid="qa-video-link-input"
             onChange={(e) => setQaVideoLink(e.target.value)}
             placeholder={`🎥 Optional: YouTube video URL (e.g., youtube.com/watch?v=...)`}
             disabled={qaLoading}
@@ -1414,6 +1419,7 @@ export default function StoryTime() {
 
         <button
           onClick={handleQASubmit}
+          data-testid="qa-submit-btn"
           disabled={qaLoading || !qaQuestion.trim()}
           className="tsv-btn"
           style={{
@@ -1509,6 +1515,7 @@ export default function StoryTime() {
 
             {/* Ask Another Button */}
             <button
+              data-testid="qa-ask-another-btn"
               onClick={() => {
                 setQaQuestion('');
                 setQaResponse(null);

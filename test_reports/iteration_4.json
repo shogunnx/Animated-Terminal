@@ -1,0 +1,38 @@
+{
+  "summary": "Tested the StoryTime Q&A fix for the HeyGen wallet problem. Backend: 6 of 6 pytest checks pass. (1) credit-status returns {status:'low', remaining_usd:0.72, estimated_minutes:0.7, credits_low:true, message:'⚠️ LOW HeyGen balance: $0.72 (~0.7 min of video)'}. (2) status/2deb5327... returns failed with error.code MOVIO_PAYMENT_INSUFFICIENT_CREDIT. (3) The main agent's video bcb3332c... is still 'processing' at 50%. (4) In-process unit tests with the LLM, wallet and HeyGen calls stubbed: duration 20 gives max_words 50. With a $0.10 wallet and a 50-word answer, nothing is sent to HeyGen; the call returns video_id None and heygen_error \"HeyGen API wallet has $0.10 left... Top up\". With a $0.72 wallet, the request is sent. (5) Exactly ONE real POST /api/storytime/qa ('Hi?', duration 20): 200, success true, answer of 60 words or fewer, heygen_error key present, and either video_id or heygen_error set (the response body was not captured). Frontend (/storytime, Playwright route mocks, no HeyGen spend): S1, status failed with MOVIO_PAYMENT_INSUFFICIENT_CREDIT, shows the fallback panel with the answer text, and qa-fallback-reason reads 'HeyGen API wallet is out of credit. Top up the API wallet in HeyGen to get video answers.' The loading state ends. S2, processing twice then completed with the mp4, plays the video in the main player (currentTime 2.35s, not paused). No fallback appears, polling stops, and the real credit-status still reported credits_low true at the time, so the old bug is fixed. S3, video_id null with heygen_error, shows the fallback with that exact reason, and the loading state ends. The banner shows the dollar message, and neither 'Recent failures' nor 'undefined' appears. Regression: the pre-recorded 'Test Story - Evil Victoria' plays from the HeyGen URL.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/storytime/video-history", "issue": "Returns 500 'Failed to fetch video history'. The external TSVAVATAR_BASE_URL /api/tasks returns non-200. This existed before and is unrelated to this fix, but it shows up as a console error on /storytime."},
+      {"endpoint": "POST /api/storytime/qa", "issue": "The wallet guard is skipped when get_wallet_balance() returns None (lookup error or timeout), so the video is sent anyway. That may be acceptable, but note the 10s extra lookup per Q&A. Also, the minimum max_words of 40 means a 20-word cap can never be set."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "triggerQAFallback", "issue": "It returns early when text is empty ('if (!text) return') before setQaLoading(false). If the backend ever returns an empty response_text with video_id null or a failed status, the 'GENERATING Q&A RESPONSE' spinner stays forever.", "selector": "n/a", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "StoryTime low-credit banner", "issues": ["The fixed red banner (zIndex 9999, top 0) sits over the TIME PATROL header and nav. Its second line ('Video answers pause when...') is cut off by the nav buttons at 1920px. Consider pushing the page down instead of overlaying it."]},
+      {"screen": "Q&A panel", "issues": ["The question input, video URL input, 🎤 ASK QUESTION button and ASK ANOTHER QUESTION button have no data-testid.", "The panel header says 'ASK EVIL VICTORIA' (the selected narrator) while the mocked response was labelled Binary. This comes from the mock only, not a bug."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_storytime_credit_qa.py", "/app/test_reports/pytest/pytest_storytime.xml"],
+  "action_items": [
+    "Optional: in triggerQAFallback, call setQaLoading(false) even when the text is empty, or use a default message",
+    "Optional: add data-testid to the Q&A input, video-link input, ask button and ask-another button",
+    "Optional: stop the fixed credit banner from covering the header",
+    "Optional: look into the /api/storytime/video-history 500 (external TSVAvatar service)"
+  ],
+  "critical_code_review_comments": [
+    "StoryTime.jsx is about 1500+ lines; it should be split (Q&A panel, player, story library).",
+    "The give-up timeout (5 min) and the polling interval are cleaned up by stop(), but not on component unmount. Navigating away mid-poll keeps fetching and calling setState.",
+    "credit-status calls HeyGen v3 users/me on every request, and the frontend refreshes it every 2 minutes. That is fine, but a short cache would help."
+  ],
+  "updated_files": ["/app/backend/tests/test_storytime_credit_qa.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "None. One real Q&A call was made as allowed (question 'Hi?', Binary avatar, duration 20). It may have sent one ~50-word HeyGen video (~$0.33).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: cd /app/backend && REACT_APP_BACKEND_URL=https://outfit-generator-42.preview.emergentagent.com python -m pytest tests/test_storytime_credit_qa.py -p no:xdist -o addopts=''. The real QA test is opt-in with RUN_REAL_QA=1 (it spends HeyGen money). Playwright: the question input is 'input[placeholder*=\"How was Binary created\"]' and the button is get_by_role('button', name='🎤 ASK QUESTION', exact=True). Don't use a regex like /ASK/ with .last, because it matches ASK ANOTHER QUESTION. Mock **/api/storytime/qa and regex .*/api/storytime/status/vidN$. Polling runs every 4s."
+}
