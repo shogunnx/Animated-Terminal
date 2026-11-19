@@ -658,8 +658,8 @@ export default function DressingRoom() {
     const outfit = [customPrompt.trim(), primary ? primary[1](selectedItems[primary[0]]) : ""].filter(Boolean).join("; ");
     return {
       outfit,
-      top: primary ? "" : selectedItems.tops,
-      bottom: primary ? "" : selectedItems.bottoms,
+      top: selectedItems.tops || "",
+      bottom: selectedItems.bottoms || "",
       footwear: selectedItems.sensualShoes || selectedItems.sneakers || selectedItems.shoes || "",
       hair: selectedItems.iconicHair ? `${selectedItems.iconicHair} hairstyle (cosplay-accurate styling of her own hair)` : selectedItems.hairstyles ? `${selectedItems.hairstyles} hair` : "",
       accessory: selectedItems.accessories || "",
@@ -668,6 +668,7 @@ export default function DressingRoom() {
       villainess_pose: selectedItems.villainessPoses || "",
       gesture: selectedItems.gestures || "",
       background: selectedItems.backgrounds || "",
+      art_style: selectedItems.artStyles || "",
     };
   };
 
@@ -2364,7 +2365,7 @@ export default function DressingRoom() {
           <div className="tsv-title" style={{ fontSize: 11, opacity:.75, marginBottom: 8 }}>
             CUSTOM OUTFIT DESCRIPTION
             {customPrompt.trim() && (
-              <span style={{ color: "#00FF88", marginLeft: 8, fontSize: 10 }}>✓ ACTIVE - Will override selections</span>
+              <span style={{ color: "#00FF88", marginLeft: 8, fontSize: 10 }}>✓ ACTIVE - Combined with your selections</span>
             )}
           </div>
           <textarea

@@ -158,6 +158,8 @@ def build_outfit_prompt(request: "OutfitRequest"):
         reqs.append(f"GESTURE: she is clearly {items['gesture']} with her hands/face.")
     if items.get("background"):
         reqs.append(f"BACKGROUND: place her in {items['background']}.")
+    if items.get("art_style"):
+        reqs.append(f"ART STYLE: render the whole image in {items['art_style']}.")
 
     if not reqs:
         prompt = f"Change the clothing/outfit to: {_clean(request.outfit_description)}."
@@ -170,7 +172,7 @@ def build_outfit_prompt(request: "OutfitRequest"):
     if keep:
         lines.append("Keep unchanged: " + ", ".join(keep) + ".")
     lines.append("Render each item literally as named (material, shape and length). The prop's color must not change the clothing color.")
-    lines.append("Photorealistic, high detail, every required item clearly visible.")
+    lines.append(("High detail" if items.get("art_style") else "Photorealistic, high detail") + ", every required item clearly visible.")
     return "\n".join(lines), 5.0 if len(reqs) >= 3 else 4.5
 
 

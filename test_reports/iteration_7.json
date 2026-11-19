@@ -1,0 +1,39 @@
+{
+  "summary": "Tested the strict outfit-items fix without any real Fal calls. Backend: 9/9 pytest unit tests of build_outfit_prompt pass. That covers the mermaid skirt + cork wedges + Zeo staff case (Apply ALL 3, BOTTOM/SHOES/PROP lines, 'fully visible', the same pose with hands free for the prop, guidance 5.0), pose/gesture/villainess pose dropping the keep-pose flag, hair overriding preserve_hair, background overriding preserve_background, and the fallback when there are no items (guidance 3.5). Frontend (generate endpoint mocked with page.route): the custom text plus the selections are both sent, all item categories land in the right outfit_items keys, the preserve_* flags are sent, a custom-text-only request works, pairs mode sends outfit_items null, and the TryOn/Headshot/Foot to Head modes render. Two real bugs: art style selections are dropped in the strict path, and the custom description label is out of date. The Nexus Media Library returns 500 because the external host fails DNS, so I used Upload as the base image instead.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/nexus/media (nexus_media.py _all_items)", "issue": "The external NEXUS_MEDIA_API_URL host fails DNS lookup (httpx.ConnectError 'No address associated with hostname'). The error is not caught, so the endpoint returns a bare 500 instead of a handled 502 with a clear message. The UI shows 'Media Library request failed (500)'. The base-image picker cannot be used in preview."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Custom Outfit Description label", "issue": "The label still says '✓ ACTIVE - Will override selections', but custom text is now combined with the selections. This misleads the user.", "selector": "textarea (CUSTOM OUTFIT DESCRIPTION title)", "priority": "LOW"}
+    ],
+    "integration_issues": [
+      {"flow": "Art Styles + any outfit selection", "issue": "buildOutfitItems has no art_style key, and the backend ignores outfit_description whenever outfit_items has any requirement. So 'rendered in Anime Style' (verified: desc 'Crop Top, rendered in Anime Style', not in outfit_items) is silently dropped from the Fal prompt. Art styles worked before this change. This is a regression.", "affected_selectors": ["ART STYLES pills"]},
+      {"flow": "Preset costume / full-look + Top/Bottom", "issue": "When any primary outfit is selected (preset, dress, anime look, etc.), top and bottom are sent as '' and silently dropped (e.g. School Uniform + Short Mermaid Skirt gives bottom ''). This is by design but goes against the 'strict' intent. Consider sending them anyway or showing a UI hint.", "affected_selectors": ["preset-costume-*", "Bottoms pills"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_outfit_prompt_strict.py", "/app/test_reports/pytest/outfit_prompt.xml"],
+  "action_items": [
+    "Add art_style to outfit_items (frontend) and a STYLE line in build_outfit_prompt (e.g. 'STYLE: render the whole image in X'), or append the art style to the prompt in the structured path",
+    "Update the custom description label text: it no longer overrides the selections",
+    "nexus_media.py: catch httpx.ConnectError/TimeoutException and return a 502 with a meaningful message; check that NEXUS_MEDIA_API_URL is reachable",
+    "Optional: keep top/bottom when a primary outfit is selected, or warn the user that they are ignored"
+  ],
+  "critical_code_review_comments": [
+    "The structured path in build_outfit_prompt ignores request.outfit_description entirely. Any category not mapped in buildOutfitItems (artStyles today, and any future one) is lost silently. Consider appending outfit_description as an 'Additional details' line.",
+    "Primary-outfit detection is duplicated between buildOutfitItems and generateOutfitPrompt (DRY). Extract it into a helper.",
+    "DressingRoom.jsx is about 2430 lines and should be split.",
+    "Leftover console.log('[DEBUG] No custom prompt, using selections') in generateOutfitPrompt.",
+    "Category pill buttons have no data-testid (only the preset costumes do)."
+  ],
+  "updated_files": ["/app/backend/tests/test_outfit_prompt_strict.py"],
+  "success_rate": {"backend": "100% (9/9 unit)", "frontend": "~85% (6/7 checks; art style dropped)"},
+  "seed_data_creation": "None. All generate calls were mocked. No DB writes.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Mock **/api/dressing-room/generate** with page.route. The Nexus Media Library returns 500 (DNS), so use set_input_files on [data-testid=base-image-upload-input] with a small PNG. Pill xpath: //div[contains(@class,'tsv-title') and contains(normalize-space(.),'<LABEL>')]/following-sibling::div//button. Art Styles/Pairs have a helper-text div between the title and the pills. Unit tests: cd /app/backend && python -m pytest tests/test_outfit_prompt_strict.py -p no:xdist."
+}

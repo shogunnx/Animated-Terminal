@@ -232,3 +232,8 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 ## 2026-06 Wardrobe expansion II (tested iteration_6)
 - src/content/dressingRoomExtras.js: costumes 120, fashionTrends 80, animeLooks 70, powerRangers 70, mechaCosplay 45, sneakers 40, sensualShoes 60 (wedges/mules/heels/boots), gamingAccessories 50, iconicHair 50; spread into CLOTHING_CATEGORIES.
 - generateOutfitPrompt rewritten: primary full-look category, cosplay phrasing ("not transformed"/"not an actual robot"), footwear/hair/prop merging.
+
+## 2026-06 Strict outfit items (tested iteration_7 + follow-ups)
+- Frontend buildOutfitItems → outfit_items {outfit, top, bottom, footwear, hair, accessory, prop, position, villainess_pose, gesture, background, art_style}; custom text now COMBINED with selections.
+- Backend build_outfit_prompt: numbered mandatory requirements, conflicting keep-flags dropped, guidance 4.5–5.0; Short Mermaid Skirt etc. added to bottoms.
+- nexus_media: network errors → 502 with clear message (cached list fallback).

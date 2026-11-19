@@ -51,6 +51,15 @@ def _public(item: dict) -> dict:
 async def _all_items() -> list:
     if time.time() - _CACHE["at"] < _CACHE_TTL:
         return _CACHE["items"]
+    try:
+        return await _fetch_all_items()
+    except httpx.HTTPError:
+        if _CACHE["items"]:
+            return _CACHE["items"]
+        raise HTTPException(status_code=502, detail="Can't reach the Nexus Media Library right now. Please try again in a moment.")
+
+
+async def _fetch_all_items() -> list:
     base, headers = _cfg()
     items, page = [], 1
     async with httpx.AsyncClient(timeout=20) as c:
@@ -121,8 +130,11 @@ async def _resolve(asset_id: str) -> dict:
     if not re.fullmatch(r"[A-Za-z0-9-]{1,64}", asset_id or ""):
         raise HTTPException(status_code=400, detail="Invalid media asset ID")
     base, headers = _cfg()
-    async with httpx.AsyncClient(timeout=20) as c:
-        r = await c.get(f"{base}/api/nexus-media/{asset_id}", headers=headers)
+    try:
+        async with httpx.AsyncClient(timeout=20) as c:
+            r = await c.get(f"{base}/api/nexus-media/{asset_id}", headers=headers)
+    except httpx.HTTPError:
+        raise HTTPException(status_code=502, detail="Can't reach the Nexus Media Library right now. Please try again in a moment.")
     if r.status_code == 404:
         raise HTTPException(status_code=404, detail="Media asset not found")
     if r.status_code != 200:
@@ -135,8 +147,11 @@ async def _resolve(asset_id: str) -> dict:
 
 async def _download(asset_id: str, thumb: bool = False) -> tuple:
     base, headers = _cfg()
-    async with httpx.AsyncClient(timeout=45, follow_redirects=True) as c:
-        r = await c.get(f"{base}/api/nexus-media/file/{asset_id}", headers=headers, params={"thumb": 1} if thumb else None)
+    try:
+        async with httpx.AsyncClient(timeout=45, follow_redirects=True) as c:
+            r = await c.get(f"{base}/api/nexus-media/file/{asset_id}", headers=headers, params={"thumb": 1} if thumb else None)
+    except httpx.HTTPError:
+        raise HTTPException(status_code=502, detail="Could not load the media file from Nexus")
     if r.status_code != 200 or len(r.content) > _MAX_BYTES:
         raise HTTPException(status_code=502, detail="Could not load the media file from Nexus")
     return r.content, r.headers.get("content-type", "image/jpeg")
