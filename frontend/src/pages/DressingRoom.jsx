@@ -2317,7 +2317,9 @@ export default function DressingRoom() {
                   key={item}
                   onClick={() => handleItemToggle(category, item)}
                   className="tsv-pill"
+                  aria-pressed={selectedItems[category] === item}
                   style={{
+                    color: "rgba(240,248,255,.92)",
                     fontSize: 10,
                     padding: "4px 10px",
                     cursor: "pointer",

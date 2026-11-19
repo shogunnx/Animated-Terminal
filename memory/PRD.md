@@ -228,3 +228,7 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 - public/robots.txt + sitemap.xml (24 URLs) on terminal.thesaiyanvictoria.com; og banner public/og/dressing-room.jpg (composited from approved art).
 - FAQPage JSON-LD intentionally omitted (Google restricts FAQ rich results).
 - Pending: deploy to Railway, Search Console submit/URL inspection.
+
+## 2026-06 Wardrobe expansion II (tested iteration_6)
+- src/content/dressingRoomExtras.js: costumes 120, fashionTrends 80, animeLooks 70, powerRangers 70, mechaCosplay 45, sneakers 40, sensualShoes 60 (wedges/mules/heels/boots), gamingAccessories 50, iconicHair 50; spread into CLOTHING_CATEGORIES.
+- generateOutfitPrompt rewritten: primary full-look category, cosplay phrasing ("not transformed"/"not an actual robot"), footwear/hair/prop merging.
