@@ -247,3 +247,7 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 ## 2026-06 YOU! tile (tested iteration_9 + follow-ups)
 - DressingRoom shows YOU! (id "you", requiresUpload, isYou) in place of Victoria Black Goddess (old /dressing-room/victoria_black_goddess link still works via DR_LOOKUP).
 - YOU! photos never saved: frontend save_as_base false, backend refuses save + no stored-base fallback for "you". Pairs hidden for YOU!. Prompts neutralized (they/their/person) for character_id "you".
+
+## 2026-06 Style Me + Selfie Camera (self-tested)
+- backend/style_me.py POST /api/dressing-room/style-me: photo + catalog → 3 suggestions validated against catalog. Uses OPENAI_API_KEY directly (OpenRouter sk-or- keys supported), falls back to Emergent key (gpt-5.4). NOTE: the OPENAI_API_KEY saved in preview is an OpenRouter key that returns "User not found" → fallback is used.
+- frontend components/StyleMe.jsx: StyleMe panel (YOU! room, after a photo), "Try this" applies picks; SelfieCamera (getUserMedia modal, mirrored, capture="user" file fallback).

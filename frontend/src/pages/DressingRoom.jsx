@@ -3,6 +3,7 @@ import { NexusMediaPicker } from "../components/NexusMediaPicker";
 import { EXTRA_CATEGORIES, EXTRA_LABELS, OUTFIT_PHRASES } from "../content/dressingRoomExtras";
 import { SendToLibrary } from "../components/SendToLibrary";
 import { ReferenceControls, ReferencesUsed, REFERENCE_CATEGORIES } from "../components/ReferenceControls";
+import { StyleMe, SelfieCamera } from "../components/StyleMe";
 import { DeviantArtPostForm } from "../components/DeviantArtPostForm";
 import { useDressingRoomSeo, DressingRoomIntro, DressingRoomGuide } from "../components/DressingRoomSeo";
 import { useNavigate, useParams } from "react-router-dom";
@@ -621,6 +622,20 @@ export default function DressingRoom() {
     items: Object.fromEntries(Object.entries(selectedItems).filter(([, v]) => v)),
     source_asset_id: baseImageSource === "library" ? nexusAsset?.id : null,
   });
+
+  const handleSelfie = (dataUrl) => {
+    setBaseImage(dataUrl);
+    setBaseImageSource("upload");
+    setNexusAsset(null);
+    setBaseNotice({ type: "ok", text: "Using your selfie." });
+    setError(null);
+  };
+
+  const applyStyleSuggestion = (items) => {
+    setSelectedItems(prev => ({ ...Object.fromEntries(Object.keys(prev).map(k => [k, ""])), ...items }));
+    setCustomPrompt("");
+    setBaseNotice({ type: "ok", text: "Style Me outfit applied. Press Generate to try it on." });
+  };
 
   const handleLibrarySelect = (asset) => {
     setNexusAsset(asset);
@@ -1297,6 +1312,11 @@ export default function DressingRoom() {
               ⚠️ You must upload a base image of {selectedCharacter.name} to generate outfits
             </div>
           ) : null}
+          {selectedCharacter.isYou && baseImage && (
+            <StyleMe backendUrl={BACKEND_URL} photo={baseImage} categories={CLOTHING_CATEGORIES}
+              labels={{ tops: "Top", bottoms: "Bottom", dresses: "Dress", shoes: "Shoes", hairstyles: "Hair", accessories: "Accessory", backgrounds: "Background", ...EXTRA_LABELS }}
+              onTry={applyStyleSuggestion} />
+          )}
           {baseNotice && (
             <div data-testid="base-image-notice" style={{ fontSize: 10, marginBottom: 8, color: { ok: "#00FF88", warn: "#ffa500", error: "#ff6b6b", info: "#8fd8ff" }[baseNotice.type] }}>
               {baseNotice.type === "ok" ? "✓ " : baseNotice.type === "info" ? "" : "⚠️ "}{baseNotice.text}
@@ -1355,6 +1375,7 @@ export default function DressingRoom() {
                 {selectedCharacter.requiresUpload ? (selectedCharacter.uploadButton || "📁 Upload Your OC Image") : "📁 Upload Image"}
               </button>
             </label>
+            {selectedCharacter.isYou && <SelfieCamera onCapture={handleSelfie} />}
           </div>
 
           {/* Base Image Display */}

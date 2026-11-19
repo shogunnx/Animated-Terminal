@@ -383,6 +383,8 @@ app.include_router(api)
 from nexus_media import router as nexus_media_router
 app.include_router(nexus_media_router)
 app.include_router(deviantart.router)
+from style_me import router as style_me_router
+app.include_router(style_me_router)
 
 # StoryTime routes
 from storytime import router as storytime_router
