@@ -12,13 +12,13 @@ export const DRESSING_ROOM_SEO = {
 export const DRESSING_ROOM_H1 = "AI DressingRoom: Create Outfits and Customize Virtual Characters";
 export const DRESSING_ROOM_INTRO = "Explore TheSaiyanVictoria AI DressingRoom, a creative character-fashion tool where you can transform outfits, experiment with clothing styles, and customize virtual characters. Choose a character, select an outfit, or describe a new look to create AI-generated fashion variations.";
 
-export const SEO_CHARACTERS = ["Victoria Black", "Victoria Black Goddess", "Wargirl", "Binary", "Vanessa", "Harmony", "Evil Victoria", "VixenVictoria", "Veronica", "Community OC (your own character)"];
+export const SEO_CHARACTERS = ["YOU (upload a photo of yourself)", "Victoria Black", "Wargirl", "Binary", "Vanessa", "Harmony", "Evil Victoria", "VixenVictoria", "Veronica", "Community OC (your own character)"];
 
 export const DRESSING_ROOM_SECTIONS = [
   {
     heading: "How the AI DressingRoom works",
     parts: [
-      { heading: "1. Choose a character", text: "Pick one of TheSaiyanVictoria characters, or choose Community OC to bring your own original character." },
+      { heading: "1. Choose a character, or yourself", text: "Pick one of TheSaiyanVictoria characters, choose YOU! to try outfits on a photo of yourself, or choose Community OC to bring your own original character." },
       { heading: "2. Set a reference image", text: "Use the character's Nexus image, pick an approved picture from the Nexus Media Library, or upload your own image. The AI works from this picture." },
       { heading: "3. Describe or pick a look", text: "Combine wardrobe pieces, choose a preset costume, or write your own outfit description, then generate. Each run creates several variations to compare." },
     ],
@@ -60,8 +60,8 @@ export const DRESSING_ROOM_SECTIONS = [
 
 export const DRESSING_ROOM_FAQ = [
   { q: "What is the TSV AI DressingRoom?", a: "It is an AI outfit generator inside TheSaiyanVictoria Terminal. You pick a character and a reference image, choose or describe an outfit, and the AI creates new fashion variations of that character." },
-  { q: "Can I change a character's clothing?", a: "Yes. Pick wardrobe items or a preset costume, or type your own outfit description, then generate. Try-On, Headshot, Foot to Head, and Pairs modes offer other kinds of changes." },
-  { q: "Can I use an existing image as a reference?", a: "Yes. Choose an approved image from the Nexus Media Library, use the character's Nexus image, or upload your own picture. Community OC always uses your uploaded image." },
+  { q: "Can I change a character's clothing?", a: "Yes, and you can try outfits on yourself with the YOU! tile. Pick wardrobe items or a preset costume, or type your own outfit description, then generate. Try-On, Headshot, Foot to Head, and Pairs modes offer other kinds of changes." },
+  { q: "Can I use an existing image as a reference?", a: "Yes. Choose an approved image from the Nexus Media Library, use the character's Nexus image, or upload your own picture. The YOU! and Community OC rooms always use your uploaded photo, which is only used for that session." },
   { q: "Can I preserve the original character's face and pose?", a: "Yes. The Keep Untouched switches ask the AI to keep the face, hair, skin tone, body shape, pose, and background. AI results can still vary, so compare the variations and keep the best one." },
   { q: "Can I save my generated outfit?", a: "Yes. Use Save to download the image. You can also send it to the Nexus Media Library for approval, or post it to your own DeviantArt account." },
   { q: "Does generating outfits require credits?", a: "Visitors do not need an account or credits. Each generation uses TheSaiyanVictoria's AI image service, so generation may be paused temporarily if that service runs out of capacity." },

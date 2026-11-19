@@ -120,7 +120,27 @@ def _clean(v) -> str:
     return re.sub(r"\s+", " ", str(v or "")).strip()[:300]
 
 
+_NEUTRAL = [
+    (r"\bthe same woman\b", "the same person"), (r"\bthe woman\b", "the person"), (r"\bwoman\b", "person"),
+    (r"\bshe remains herself\b", "they remain themselves"), (r"\bshe remains\b", "they remain"),
+    (r"\bshe wears\b", "they wear"), (r"\bshe is\b", "they are"), (r"\bshe holds\b", "they hold"),
+    (r"\bShe\b", "They"), (r"\bshe\b", "they"), (r"\bherself\b", "themselves"), (r"\bher\b", "their"), (r"\bHer\b", "Their"),
+]
+
+
+def neutralize(text: str) -> str:
+    """Gender-neutral wording for real-person uploads (YOU! tile)."""
+    for pat, rep in _NEUTRAL:
+        text = re.sub(pat, rep, text)
+    return text
+
+
 def build_outfit_prompt(request: "OutfitRequest"):
+    prompt, guidance = _build_outfit_prompt(request)
+    return (neutralize(prompt) if request.character_id == "you" else prompt), guidance
+
+
+def _build_outfit_prompt(request: "OutfitRequest"):
     """Build a FLUX Kontext edit prompt where every selected item is a mandatory, visible requirement."""
     items = {k: _clean(v) for k, v in (request.outfit_items or {}).items()}
     pose_change = bool(items.get("position") or items.get("villainess_pose") or items.get("gesture"))
@@ -647,6 +667,8 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
             ref_urls = await asyncio.gather(*(upload_image_to_fal(r["bytes"]) for r in refs))
             references_used = [{"name": r["name"], "title": r["title"], "page_url": r["page_url"], "image_url": u} for r, u in zip(refs, ref_urls)]
             prompt = build_reference_prompt(prompt, references_used)
+            if request.character_id == "you":
+                prompt = neutralize(prompt)
             print(f"[DRESSING ROOM] Prompt: {prompt}")
             results, model_used = await generate_with_references(image_url, ref_urls, prompt, request.reference_engine)
             return await _collect_outfit_results(results, prompt, image_source, request, model_used, references_used)

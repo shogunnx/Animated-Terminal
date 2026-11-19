@@ -7,6 +7,17 @@ import { DeviantArtPostForm } from "../components/DeviantArtPostForm";
 import { useDressingRoomSeo, DressingRoomIntro, DressingRoomGuide } from "../components/DressingRoomSeo";
 import { useNavigate, useParams } from "react-router-dom";
 import { TSV_CHARACTERS } from "../content/tsvContent.js";
+
+const YOU_TILE = {
+  id: "you", name: "YOU!", subtitle: "Upload a photo of yourself and try on any look",
+  accent: "#FF3DF2", glow: "#00E5FF", portrait: null, requiresUpload: true, isYou: true,
+  uploadTitle: "UPLOAD A PHOTO OF YOURSELF", uploadButton: "📸 Upload Your Photo", uploadEmpty: "Upload Your Photo",
+  uploadEmptyHint: "You will appear here after upload",
+  uploadHint: "📸 Upload a clear photo of yourself (face and outfit visible works best). It is used only in this session and is never saved on our servers.",
+};
+// The Dressing Room shows a YOU! tile in place of the second Victoria Black tile
+const DR_CHARACTERS = TSV_CHARACTERS.flatMap(c => (c.id === "victoria_black_goddess" ? [YOU_TILE] : [c]));
+const DR_LOOKUP = [...DR_CHARACTERS, ...TSV_CHARACTERS.filter(c => c.id === "victoria_black_goddess")];
 import { addLike, getLikes, getCharacterRank } from "../utils/engagement.js";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "";
@@ -385,7 +396,7 @@ export default function DressingRoom() {
   useEffect(() => {
     if (!id) return;
     
-    const char = TSV_CHARACTERS.find(c => c.id === id);
+    const char = DR_LOOKUP.find(c => c.id === id);
     if (!char || char.isSpecial) return;
     
     // Only run initialization once per character
@@ -531,7 +542,7 @@ export default function DressingRoom() {
 
   const checkAndLoadBaseImage = async (charId) => {
     // Skip for Community OC - they must upload
-    const char = TSV_CHARACTERS.find(c => c.id === charId);
+    const char = DR_LOOKUP.find(c => c.id === charId);
     if (char?.requiresUpload) return;
     
     // Priority 1: Try Nexus
@@ -849,7 +860,7 @@ export default function DressingRoom() {
         nexus_asset_id: ref.assetId,
         reference_image_url: ref.url,
         reference_image_base64: ref.base64,
-        save_as_base: isUploadedImage,
+        save_as_base: isUploadedImage && !selectedCharacter.isYou,
         preserve_face: preserveFlags.face,
         preserve_hair: preserveFlags.hair,
         preserve_skin_tone: preserveFlags.skinTone,
@@ -1173,7 +1184,7 @@ export default function DressingRoom() {
 
   if (!id) {
     // Character selection screen
-    const characters = TSV_CHARACTERS.filter(c => !c.isSpecial);
+    const characters = DR_CHARACTERS.filter(c => !c.isSpecial);
     
     return (
       <div>
@@ -1216,13 +1227,16 @@ export default function DressingRoom() {
                 padding: 14,
                 textAlign: "left",
                 cursor: "pointer",
-                border: c.requiresUpload ? "2px dashed rgba(0,255,136,.5)" : "1px solid rgba(255,255,255,.14)",
-                background: c.requiresUpload 
+                border: c.isYou ? "2px solid rgba(255,61,242,.75)" : c.requiresUpload ? "2px dashed rgba(0,255,136,.5)" : "1px solid rgba(255,255,255,.14)",
+                boxShadow: c.isYou ? "0 0 22px rgba(255,61,242,.35)" : undefined,
+                background: c.isYou
+                  ? "linear-gradient(135deg, rgba(255,61,242,.22), rgba(0,229,255,.14))"
+                  : c.requiresUpload 
                   ? "linear-gradient(180deg, rgba(0,255,136,.12), rgba(0,204,255,.08))"
                   : "linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06))"
               }}
             >
-              <div className="tsv-title" style={{ fontSize: 14, color: c.accent }}>{c.name}</div>
+              <div className="tsv-title" style={{ fontSize: c.isYou ? 22 : 14, color: c.accent, letterSpacing: c.isYou ? ".08em" : undefined }}>{c.name}</div>
               <div style={{ fontSize: 11, color: "rgba(232,246,255,.82)", marginTop: 6 }}>{c.subtitle}</div>
               {c.requiresUpload && (
                 <div style={{ 
@@ -1234,7 +1248,7 @@ export default function DressingRoom() {
                   borderRadius: 6,
                   display: "inline-block"
                 }}>
-                  📁 Upload Required
+                  {c.isYou ? "📸 Use your own photo" : "📁 Upload Required"}
                 </div>
               )}
             </button>
@@ -1270,13 +1284,13 @@ export default function DressingRoom() {
         {/* Base Image Selection */}
         <div style={{ marginTop: 14 }}>
           <div className="tsv-title" style={{ fontSize: 12, opacity:.88, marginBottom: 8 }}>
-            {selectedCharacter.requiresUpload ? "UPLOAD YOUR CHARACTER" : baseImage ? "BASE IMAGE" : "BASE IMAGE REQUIRED"}
+            {selectedCharacter.requiresUpload ? (selectedCharacter.uploadTitle || "UPLOAD YOUR CHARACTER") : baseImage ? "BASE IMAGE" : "BASE IMAGE REQUIRED"}
           </div>
           
           {/* Community OC specific messaging */}
           {selectedCharacter.requiresUpload ? (
             <div style={{ fontSize: 10, opacity: 0.9, marginBottom: 12, color: "#00FF88", padding: "8px 12px", background: "rgba(0,255,136,.1)", borderRadius: 8, border: "1px dashed rgba(0,255,136,.3)" }}>
-              📁 Upload an image of your OC to use as the base. This image will be used for all outfit generations in this session.
+              {selectedCharacter.uploadHint || "📁 Upload an image of your OC to use as the base. This image will be used for all outfit generations in this session."}
             </div>
           ) : !baseImage ? (
             <div data-testid="base-image-required-warning" style={{ fontSize: 10, opacity: 0.7, marginBottom: 8, color: "#ffa500" }}>
@@ -1307,7 +1321,7 @@ export default function DressingRoom() {
             )}
             <NexusMediaPicker
               backendUrl={BACKEND_URL}
-              characters={TSV_CHARACTERS.filter(c => !c.isSpecial && !c.requiresUpload).map(c => c.name)}
+              characters={DR_CHARACTERS.filter(c => !c.isSpecial && !c.requiresUpload).map(c => c.name)}
               currentCharacter={selectedCharacter.name}
               active={baseImageSource === "library"}
               onSelect={handleLibrarySelect}
@@ -1338,7 +1352,7 @@ export default function DressingRoom() {
                 }}
                 onClick={(e) => { e.preventDefault(); uploadInputRef.current?.click(); }}
               >
-                {selectedCharacter.requiresUpload ? "📁 Upload Your OC Image" : "📁 Upload Image"}
+                {selectedCharacter.requiresUpload ? (selectedCharacter.uploadButton || "📁 Upload Your OC Image") : "📁 Upload Image"}
               </button>
             </label>
           </div>
@@ -1377,10 +1391,10 @@ export default function DressingRoom() {
                   <>
                     <div style={{ fontSize: 48, marginBottom: 12 }}>📤</div>
                     <div className="tsv-title" style={{ fontSize: 12, color: "#00FF88" }}>
-                      Upload Your OC Image
+                      {selectedCharacter.uploadEmpty || "Upload Your OC Image"}
                     </div>
                     <div style={{ fontSize: 10, marginTop: 8, opacity: 0.6 }}>
-                      Your character will appear here after upload
+                      {selectedCharacter.uploadEmptyHint || "Your character will appear here after upload"}
                     </div>
                   </>
                 ) : (
@@ -1417,7 +1431,7 @@ export default function DressingRoom() {
                 {/* Select from existing characters */}
                 <div style={{ fontSize: 10, opacity: 0.7, marginBottom: 4 }}>Select a character:</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {TSV_CHARACTERS.filter(c => !c.isSpecial && c.id !== selectedCharacter?.id && !c.requiresUpload).map((char) => (
+                  {DR_CHARACTERS.filter(c => !c.isSpecial && c.id !== selectedCharacter?.id && !c.requiresUpload).map((char) => (
                     <button
                       key={char.id}
                       className="tsv-btn"
