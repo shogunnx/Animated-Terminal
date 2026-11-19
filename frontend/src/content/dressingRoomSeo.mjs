@@ -34,7 +34,7 @@ export const DRESSING_ROOM_SECTIONS = [
     heading: "Available characters and fashion options",
     parts: [
       { heading: "Characters", text: `${SEO_CHARACTERS.join(", ")}.` },
-      { heading: "Wardrobe", text: "Hundreds of options across tops, skirts and bottoms, dresses and gowns, heels and shoes, hairstyles, accessories, Dragon Ball-inspired outfits, preset costumes, art styles, poses, and realistic backgrounds." },
+      { heading: "Wardrobe", text: "Over a thousand options: tops, skirts and bottoms, dresses and gowns, 120 costumes, fashion trends, anime looks, Power Rangers and mecha cosplay, Dragon Ball-inspired outfits, sneakers, wedges, mules and heels, iconic anime hairstyles, gaming cosplay props, accessories, art styles, poses, and realistic backgrounds." },
     ],
   },
   {

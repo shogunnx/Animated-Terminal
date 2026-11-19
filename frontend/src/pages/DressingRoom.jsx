@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { NexusMediaPicker } from "../components/NexusMediaPicker";
+import { EXTRA_CATEGORIES, EXTRA_LABELS, OUTFIT_PHRASES } from "../content/dressingRoomExtras";
 import { SendToLibrary } from "../components/SendToLibrary";
 import { DeviantArtPostForm } from "../components/DeviantArtPostForm";
 import { useDressingRoomSeo, DressingRoomIntro, DressingRoomGuide } from "../components/DressingRoomSeo";
@@ -287,7 +288,8 @@ const CLOTHING_CATEGORIES = {
     "Yoga Partner Pose", "Acro Yoga", "Trust Fall", "Lift and Spin", "Dip Dance Move",
     "Tango Pose", "Salsa Move", "Breakdance Battle", "TikTok Dance", "Photobooth Poses",
     "Silly Faces", "Matching Outfits", "Cosplay Together", "Halloween Costumes", "Best Friends Pose"
-  ]
+  ],
+  ...EXTRA_CATEGORIES
 };
 
 export default function DressingRoom() {
@@ -655,38 +657,33 @@ export default function DressingRoom() {
     console.log("[DEBUG] No custom prompt, using selections");
     let basePrompt = "";
 
-    // If a preset costume is selected, use it as the primary description
-    if (selectedItems.presetCostumes) {
-      const parts = [selectedItems.presetCostumes];
-      // Add other selected items as modifiers
-      if (selectedItems.hairstyles) parts.push(`with ${selectedItems.hairstyles} hair`);
-      if (selectedItems.accessories) parts.push(`and ${selectedItems.accessories}`);
-      if (selectedItems.positions) parts.push(`in ${selectedItems.positions} position`);
-      basePrompt = parts.join(" ");
-    } else if (selectedItems.dragonball) {
-      // Dragonball preset takes priority similar to presetCostumes
-      const parts = [selectedItems.dragonball + " costume"];
-      if (selectedItems.hairstyles) parts.push(`with ${selectedItems.hairstyles} hair`);
-      if (selectedItems.accessories) parts.push(`and ${selectedItems.accessories}`);
-      if (selectedItems.positions) parts.push(`in ${selectedItems.positions} position`);
-      basePrompt = parts.join(" ");
-    } else if (selectedItems.dresses) {
-      // Form-fitting dress/gown as the primary garment
-      const parts = [selectedItems.dresses];
-      if (selectedItems.shoes) parts.push(`with ${selectedItems.shoes}`);
-      if (selectedItems.accessories) parts.push(`and ${selectedItems.accessories}`);
-      if (selectedItems.hairstyles) parts.push(`with ${selectedItems.hairstyles} hair`);
-      if (selectedItems.positions) parts.push(`in ${selectedItems.positions} position`);
-      basePrompt = parts.join(" ");
+    const hair = selectedItems.iconicHair
+      ? `${selectedItems.iconicHair} hairstyle (cosplay-accurate styling of her own hair)`
+      : selectedItems.hairstyles ? `${selectedItems.hairstyles} hair` : "";
+    const footwear = selectedItems.sensualShoes || selectedItems.sneakers || selectedItems.shoes || "";
+    const prop = selectedItems.gamingAccessories ? `holding a replica ${selectedItems.gamingAccessories} cosplay prop` : "";
+    const extras = (withShoes) => [
+      withShoes && footwear ? `wearing ${footwear}` : "",
+      hair ? `with ${hair}` : "",
+      selectedItems.accessories ? `and ${selectedItems.accessories}` : "",
+      prop,
+      selectedItems.positions ? `in ${selectedItems.positions} position` : "",
+    ].filter(Boolean);
+
+    // Primary outfit: the first selected full-look category wins
+    const primary = [
+      ["presetCostumes", (v) => v],
+      ["dragonball", (v) => `${v} costume`],
+      ...Object.entries(OUTFIT_PHRASES),
+      ["dresses", (v) => v],
+    ].find(([cat]) => selectedItems[cat]);
+
+    if (primary) {
+      const [cat, phrase] = primary;
+      basePrompt = [phrase(selectedItems[cat]), ...extras(true)].join(" ");
     } else {
-      // Otherwise, build from individual items
-      const parts = [];
-      if (selectedItems.tops) parts.push(selectedItems.tops);
-      if (selectedItems.bottoms) parts.push(selectedItems.bottoms);
-      if (selectedItems.shoes) parts.push(selectedItems.shoes);
-      if (selectedItems.hairstyles) parts.push(`${selectedItems.hairstyles} hair`);
-      if (selectedItems.accessories) parts.push(selectedItems.accessories);
-      if (selectedItems.positions) parts.push(`${selectedItems.positions} position`);
+      const parts = [selectedItems.tops, selectedItems.bottoms, footwear].filter(Boolean);
+      parts.push(...extras(false));
       basePrompt = parts.join(", ");
     }
 
@@ -2305,7 +2302,8 @@ export default function DressingRoom() {
             positions: "Positions",
             dresses: "Dresses & Gowns",
             dragonball: "Dragonball Outfits",
-            villainessPoses: "Villainess Poses"
+            villainessPoses: "Villainess Poses",
+            ...EXTRA_LABELS
           };
           const label = CATEGORY_LABELS[category] || category;
           return (
