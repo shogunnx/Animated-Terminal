@@ -1,0 +1,34 @@
+{
+  "summary": "Tested the 'Use real references' feature with no paid Fal calls. Backend: 7/7 pytest tests pass, using real fan-wiki lookups. The Zeo example returns 'Gold Zeo Ranger' (157KB) and 'Golden Power Staff' (65KB), both from powerrangers.fandom.com. Master Sword resolves on zelda.fandom.com, Super Saiyan Rosé on dragonball.fandom.com, and Optimus Prime (Primax) on transformers.fandom.com. More than 3 names are capped at 3. Unknown or empty names return []. build_reference_prompt labels the images correctly. The OutfitRequest defaults and REFERENCE_ENGINES are correct. Frontend (generate mocked with page.route) on /dressing-room/vixen_victoria with a Nexus Media Library base image (the Nexus endpoint now works): the checkbox is unchecked by default and the request sends use_references false. Ticking it shows the engine select (default nano-banana-pro, option kontext-max). Auto-names list the selected Gaming Props, Power Rangers, Mecha, Anime Looks, Dragonball and Iconic Hair items. The extra input adds comma-separated names, capped at 3 in total. The Zeo scenario request sends use_references true, nano-banana-pro, ['Zeo Gold Ranger Golden Power Staff','Zeo Gold Ranger']. outfit_items.prop contains the staff, with bottom 'Leather Mini Skirt' and footwear 'Velvet Stiletto Mules'. Switching to kontext-max reaches the request. The references-used strip shows reference-used-0 with the title, thumbnail, href, target=_blank and rel=noopener. A response without references_used hides the strip. With the box ticked and nothing selected, the request sends use_references false and the hint text appears. Pairs mode hides the controls. The preserve-face toggle change reaches the request. Mobile at 390px has no horizontal overflow.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/dressing-room/generate (use_references=true)", "issue": "If find_references returns no hits (e.g. every name is unknown), the code still calls generate_with_references. The request goes to the more expensive Nano Banana Pro or Kontext Max engine with zero reference images, and the prompt has no reference labels. Consider falling back to the normal kontext path when refs is empty."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "ReferencesUsed strip", "issue": "refsUsed is not cleared when a new generation starts or fails, and the single-image fallback branch never sets it. After a failed generation, the strip from the previous run stays on screen.", "selector": "[data-testid=references-used]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_reference_lookup.py", "/app/test_reports/pytest/reference_lookup.xml"],
+  "action_items": [
+    "Optional: in generate_outfit_image, fall back to the standard kontext flow when use_references is true but find_references returns []",
+    "Optional: call setRefsUsed([]) at the start of handleGenerate (and in the fallback branch)",
+    "Optional: presetCostumes is not in REFERENCE_CATEGORIES, so preset cosplay items (e.g. character presets) are never auto-looked-up"
+  ],
+  "critical_code_review_comments": [
+    "reference_lookup.find_reference runs every host and query in sequence, up to ~5 queries x 2 hosts, each with a 15s timeout. A slow wiki can add a long delay before generation starts. Consider an overall timeout (asyncio.wait_for).",
+    "The MAX_BYTES check runs after the full image download. Minor.",
+    "reference_items is sent even when use_references is false. This is harmless because the backend ignores it.",
+    "DressingRoom.jsx is still about 2450 lines and should be split."
+  ],
+  "updated_files": ["/app/backend/tests/test_reference_lookup.py"],
+  "success_rate": {"backend": "100% (7/7)", "frontend": "100% (all requested checks)"},
+  "seed_data_creation": "None. Generate was mocked and nothing was written to the DB.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run the unit tests with: cd /app/backend && python -m pytest tests/test_reference_lookup.py -p no:xdist (these make real wiki HTTP calls). For the frontend, mock **/api/dressing-room/generate. Pill xpath: //div[contains(@class,'tsv-title') and starts-with(normalize-space(.),'<Label> (')]/following-sibling::div//button[normalize-space(.)='<item>']. Mule items live in 'Wedges, Mules & Heels', e.g. 'Velvet Stiletto Mules'. The Nexus Media Library works now (/api/nexus-library/media)."
+}

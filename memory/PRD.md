@@ -237,3 +237,9 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 - Frontend buildOutfitItems → outfit_items {outfit, top, bottom, footwear, hair, accessory, prop, position, villainess_pose, gesture, background, art_style}; custom text now COMBINED with selections.
 - Backend build_outfit_prompt: numbered mandatory requirements, conflicting keep-flags dropped, guidance 4.5–5.0; Short Mermaid Skirt etc. added to bottoms.
 - nexus_media: network errors → 502 with clear message (cached list fallback).
+
+## 2026-06 Real references (tested iteration_8)
+- backend/reference_lookup.py: franchise wiki routing + Wikipedia fallback, MediaWiki pageimages, title-overlap ranking, max 3 refs.
+- Outfit generate: use_references + reference_engine (nano-banana-pro → fal-ai/nano-banana-pro/edit with enable_web_search; kontext-max → fal-ai/flux-pro/kontext/max/multi) + reference_items; falls back to normal Kontext if no refs found; returns references_used.
+- Frontend components/ReferenceControls.jsx (opt-in checkbox, engine select, auto names from prop/cosplay categories + extra names, references strip).
+- Real E2E: Vixen Zeo Gold top + black skirt + black mules + Golden Power Staff → accurate staff (memory/refs_nano.jpg).

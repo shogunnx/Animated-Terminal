@@ -793,6 +793,7 @@ export default function DressingRoom() {
   };
 
   const handleGenerate = async () => {
+    setRefsUsed([]);
     if (!selectedCharacter) {
       setError("Please select a character first");
       return;

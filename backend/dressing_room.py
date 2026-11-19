@@ -642,8 +642,8 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     try:
         import asyncio
 
-        if request.use_references:
-            refs = await find_references(request.reference_items or [])
+        refs = await find_references(request.reference_items or []) if request.use_references else []
+        if refs:
             ref_urls = await asyncio.gather(*(upload_image_to_fal(r["bytes"]) for r in refs))
             references_used = [{"name": r["name"], "title": r["title"], "page_url": r["page_url"], "image_url": u} for r, u in zip(refs, ref_urls)]
             prompt = build_reference_prompt(prompt, references_used)
