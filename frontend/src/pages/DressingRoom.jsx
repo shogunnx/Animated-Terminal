@@ -87,7 +87,8 @@ const CLOTHING_CATEGORIES = {
     "Floral Print Mini", "Polka Dot Mini Skirt", "Striped Mini Skirt", "Snake Print Mini", "Leopard Print Mini",
     "Zebra Print Mini", "Camouflage Mini Skirt", "Checkerboard Mini", "Rainbow Pride Mini", "Pastel Pink Mini",
     "Hot Pink Bodycon Mini", "Red Satin Mini Skirt", "Black Lace Overlay Mini", "White Linen Mini", "Khaki Safari Mini",
-    "Burgundy Suede Mini", "Emerald Velvet Mini", "Sapphire Satin Mini", "Champagne Sequin Mini", "Rose Gold Pleated Mini"
+    "Burgundy Suede Mini", "Emerald Velvet Mini", "Sapphire Satin Mini", "Champagne Sequin Mini", "Rose Gold Pleated Mini",
+    "Short Mermaid Skirt", "Mermaid Midi Skirt", "Sequin Mermaid Mini Skirt", "Fishtail Hem Skirt"
   ],
   dresses: [
     // Form-Fitting Dresses & Gowns (60)
@@ -647,12 +648,32 @@ export default function DressingRoom() {
     }
   };
 
+  const buildOutfitItems = () => {
+    const primary = [
+      ["presetCostumes", (v) => v],
+      ["dragonball", (v) => `${v} costume`],
+      ...Object.entries(OUTFIT_PHRASES),
+      ["dresses", (v) => v],
+    ].find(([cat]) => selectedItems[cat]);
+    const outfit = [customPrompt.trim(), primary ? primary[1](selectedItems[primary[0]]) : ""].filter(Boolean).join("; ");
+    return {
+      outfit,
+      top: primary ? "" : selectedItems.tops,
+      bottom: primary ? "" : selectedItems.bottoms,
+      footwear: selectedItems.sensualShoes || selectedItems.sneakers || selectedItems.shoes || "",
+      hair: selectedItems.iconicHair ? `${selectedItems.iconicHair} hairstyle (cosplay-accurate styling of her own hair)` : selectedItems.hairstyles ? `${selectedItems.hairstyles} hair` : "",
+      accessory: selectedItems.accessories || "",
+      prop: selectedItems.gamingAccessories ? `a replica ${selectedItems.gamingAccessories} cosplay prop` : "",
+      position: selectedItems.positions || "",
+      villainess_pose: selectedItems.villainessPoses || "",
+      gesture: selectedItems.gestures || "",
+      background: selectedItems.backgrounds || "",
+    };
+  };
+
   const generateOutfitPrompt = () => {
-    // PRIORITY 1: Custom prompt always wins if provided
-    if (customPrompt.trim()) {
-      console.log("[DEBUG] Using custom prompt:", customPrompt.trim());
-      return customPrompt.trim();
-    }
+    // Custom text no longer drops the selections: both are combined
+    if (customPrompt.trim() && !Object.values(selectedItems).some(Boolean)) return customPrompt.trim();
 
     console.log("[DEBUG] No custom prompt, using selections");
     let basePrompt = "";
@@ -810,7 +831,8 @@ export default function DressingRoom() {
         character_id: selectedCharacter.id,
         character_name: selectedCharacter.name,
         character_description: selectedCharacter.subtitle || "anime character",
-        outfit_description: outfitDesc,
+        outfit_description: customPrompt.trim() && Object.values(selectedItems).some(Boolean) ? `${customPrompt.trim()}. ${outfitDesc}` : outfitDesc,
+        outfit_items: showPairsMode ? null : buildOutfitItems(),
         nexus_asset_id: ref.assetId,
         reference_image_url: ref.url,
         reference_image_base64: ref.base64,

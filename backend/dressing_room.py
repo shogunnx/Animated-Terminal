@@ -1,4 +1,5 @@
 import os
+import re
 import base64
 import io
 from typing import Optional, List
@@ -96,6 +97,7 @@ class OutfitRequest(BaseModel):
     reference_image_url: Optional[str] = None
     reference_image_base64: Optional[str] = None
     nexus_asset_id: Optional[str] = None
+    outfit_items: Optional[dict] = None
     save_as_base: Optional[bool] = False
     # Pairs mode fields
     second_character_id: Optional[str] = None
@@ -108,6 +110,69 @@ class OutfitRequest(BaseModel):
     preserve_body: Optional[bool] = False
     preserve_pose: Optional[bool] = False
     preserve_background: Optional[bool] = False
+
+
+def _clean(v) -> str:
+    return re.sub(r"\s+", " ", str(v or "")).strip()[:300]
+
+
+def build_outfit_prompt(request: "OutfitRequest"):
+    """Build a FLUX Kontext edit prompt where every selected item is a mandatory, visible requirement."""
+    items = {k: _clean(v) for k, v in (request.outfit_items or {}).items()}
+    pose_change = bool(items.get("position") or items.get("villainess_pose") or items.get("gesture"))
+
+    keep = []
+    if request.preserve_face:
+        keep.append("the exact same face and facial features")
+    if request.preserve_hair and not items.get("hair"):
+        keep.append("the exact same hair (color, style, length, texture)")
+    if request.preserve_skin_tone:
+        keep.append("the exact same skin tone and complexion")
+    if request.preserve_body:
+        keep.append("the exact same body shape and proportions")
+    if request.preserve_pose and not pose_change:
+        keep.append("the same pose" + (" (only her hands may move to hold the prop)" if items.get("prop") else ""))
+    if request.preserve_background and not items.get("background"):
+        keep.append("the exact same background and setting")
+
+    reqs = []
+    if items.get("outfit"):
+        reqs.append(f"OUTFIT: replace her clothing with {items['outfit']}.")
+    if items.get("top"):
+        reqs.append(f"TOP: she wears {items['top']} on her upper body.")
+    if items.get("bottom"):
+        reqs.append(f"BOTTOM: she wears {items['bottom']} on her lower body, fully visible.")
+    if items.get("footwear"):
+        reqs.append(f"SHOES: she wears {items['footwear']} on both feet. Her feet and the {items['footwear']} must be fully visible in the frame; zoom out to a full-body head-to-toe view if needed.")
+    if items.get("hair"):
+        reqs.append(f"HAIR: restyle her hair into {items['hair']}.")
+    if items.get("accessory"):
+        reqs.append(f"ACCESSORY: add {items['accessory']}.")
+    if items.get("prop"):
+        reqs.append(f"PROP: she is holding {items['prop']} firmly in her hand, clearly visible and complete from end to end. It is a handheld prop, not part of her clothing.")
+    if items.get("position"):
+        reqs.append(f"POSE: change her body pose to: {items['position']}.")
+    if items.get("villainess_pose"):
+        reqs.append(f"POSE: {items['villainess_pose']}.")
+    if items.get("gesture"):
+        reqs.append(f"GESTURE: she is clearly {items['gesture']} with her hands/face.")
+    if items.get("background"):
+        reqs.append(f"BACKGROUND: place her in {items['background']}.")
+
+    if not reqs:
+        prompt = f"Change the clothing/outfit to: {_clean(request.outfit_description)}."
+        if keep:
+            prompt += "\nMust keep untouched: " + ", ".join(keep) + "."
+        return prompt + "\nOnly change the clothing/outfit. High quality, detailed clothing.", 3.5
+
+    lines = [f"Edit this photo of the same woman. Apply ALL {len(reqs)} required changes below; none may be skipped or replaced:"]
+    lines += [f"{i}. {r}" for i, r in enumerate(reqs, 1)]
+    if keep:
+        lines.append("Keep unchanged: " + ", ".join(keep) + ".")
+    lines.append("Render each item literally as named (material, shape and length). The prop's color must not change the clothing color.")
+    lines.append("Photorealistic, high detail, every required item clearly visible.")
+    return "\n".join(lines), 5.0 if len(reqs) >= 3 else 4.5
+
 
 class TryOnRequest(BaseModel):
     """Request for virtual try-on with actual garment images by category"""
@@ -537,33 +602,10 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
-    # Build dynamic "Keep Untouched" preservation clauses from request flags
-    preserve_parts = []
-    if request.preserve_face:
-        preserve_parts.append("the EXACT same face and facial features")
-    if request.preserve_hair:
-        preserve_parts.append("the EXACT same hair (color, style, length, texture)")
-    if request.preserve_skin_tone:
-        preserve_parts.append("the EXACT same skin tone and complexion")
-    if request.preserve_body:
-        preserve_parts.append("the EXACT same body shape and proportions")
-    if request.preserve_pose:
-        preserve_parts.append("the EXACT same pose and body position")
-    if request.preserve_background:
-        preserve_parts.append("the EXACT same background and setting")
+    prompt, guidance = build_outfit_prompt(request)
 
-    preserve_clause = ""
-    if preserve_parts:
-        preserve_clause = "\nMust keep untouched: " + ", ".join(preserve_parts) + "."
-
-    # Use FLUX Kontext for identity-preserving outfit changes
-    prompt = f"""Change the clothing/outfit to: {request.outfit_description}.{preserve_clause}
-Only change the clothing/outfit. High quality, detailed clothing."""
-    
     print(f"[DRESSING ROOM] Character: {request.character_id}")
-    print(f"[DRESSING ROOM] Using FLUX Kontext for identity-preserving edit")
-    print(f"[DRESSING ROOM] Generating 4 variations...")
-    print(f"[DRESSING ROOM] Prompt: {prompt[:80]}...")
+    print(f"[DRESSING ROOM] Prompt: {prompt}")
     
     try:
         # Generate 4 variations by making parallel requests
@@ -575,6 +617,7 @@ Only change the clothing/outfit. High quality, detailed clothing."""
                 arguments={
                     "image_url": image_url,
                     "prompt": prompt,
+                    "guidance_scale": guidance,
                 }
             )
             return await handler.get()
@@ -587,7 +630,7 @@ Only change the clothing/outfit. High quality, detailed clothing."""
             generate_single(),
             return_exceptions=True
         )
-        
+
         # Collect successful results
         all_images = []
         for i, result in enumerate(results):
