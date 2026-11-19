@@ -626,7 +626,7 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
         image_source = "upload"
         
         # Save uploaded image as base image for this character
-        if request.save_as_base:
+        if request.save_as_base and request.character_id != "you":
             save_base_image(request.character_id, base_image_bytes)
     
     # Priority 2: Try Nexus URL if provided
@@ -637,8 +637,8 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
         except Exception:
             pass  # Fall through to next priority
     
-    # Priority 3: Try stored base image
-    if not base_image_bytes:
+    # Priority 3: Try stored base image (never for real-person YOU! uploads)
+    if not base_image_bytes and request.character_id != "you":
         stored_image = get_base_image(request.character_id)
         if stored_image:
             base_image_bytes = stored_image
@@ -736,7 +736,7 @@ async def _collect_outfit_results(results, prompt, image_source, request, model_
             "total_generated": len(all_images),
             "prompt_used": prompt,
             "image_source": image_source,
-            "base_image_saved": request.save_as_base and image_source == "upload",
+            "base_image_saved": request.save_as_base and image_source == "upload" and request.character_id != "you",
             "model": model_used,
             "references_used": references_used,
         }

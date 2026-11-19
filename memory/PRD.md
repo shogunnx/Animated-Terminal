@@ -243,3 +243,7 @@ The TSV Terminal is a full-stack React/FastAPI application featuring multiple in
 - Outfit generate: use_references + reference_engine (nano-banana-pro → fal-ai/nano-banana-pro/edit with enable_web_search; kontext-max → fal-ai/flux-pro/kontext/max/multi) + reference_items; falls back to normal Kontext if no refs found; returns references_used.
 - Frontend components/ReferenceControls.jsx (opt-in checkbox, engine select, auto names from prop/cosplay categories + extra names, references strip).
 - Real E2E: Vixen Zeo Gold top + black skirt + black mules + Golden Power Staff → accurate staff (memory/refs_nano.jpg).
+
+## 2026-06 YOU! tile (tested iteration_9 + follow-ups)
+- DressingRoom shows YOU! (id "you", requiresUpload, isYou) in place of Victoria Black Goddess (old /dressing-room/victoria_black_goddess link still works via DR_LOOKUP).
+- YOU! photos never saved: frontend save_as_base false, backend refuses save + no stored-base fallback for "you". Pairs hidden for YOU!. Prompts neutralized (they/their/person) for character_id "you".

@@ -1406,7 +1406,8 @@ export default function DressingRoom() {
             )}
           </div>
 
-          {/* Second Image for Pairs */}
+          {/* Second Image for Pairs (not offered for YOU! photos) */}
+          {!selectedCharacter.isYou && (
           <div style={{ marginTop: 14, padding: 12, borderRadius: 12, background: "rgba(255,105,180,.08)", border: "1px solid rgba(255,105,180,.25)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
               <div className="tsv-title" style={{ fontSize: 11, opacity:.85, color: "#ff69b4" }}>
@@ -1503,6 +1504,7 @@ export default function DressingRoom() {
               </div>
             )}
           </div>
+          )}
         </div>
 
         {/* Generated Image */}
@@ -1832,7 +1834,7 @@ export default function DressingRoom() {
             🔒 KEEP UNTOUCHED
           </div>
           <div style={{ fontSize: 9, opacity: 0.7, marginBottom: 10 }}>
-            Protects selected traits of your uploaded image during generation. Face, hair & skin tone are protected by default — ideal for preserving a person's identity (e.g. a Black woman keeps her exact face and hair when the outfit changes).
+            Protects selected traits of your uploaded image during generation. Face, hair & skin tone are protected by default — ideal for preserving a person's identity (e.g. a Black woman keeps her exact face and hair when the outfit changes, or you keep looking exactly like yourself).
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(96px, 1fr))", gap: 6 }}>
             {[
