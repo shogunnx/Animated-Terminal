@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { NexusMediaPicker } from "../components/NexusMediaPicker";
 import { EXTRA_CATEGORIES, EXTRA_LABELS, OUTFIT_PHRASES } from "../content/dressingRoomExtras";
 import { SendToLibrary } from "../components/SendToLibrary";
+import { ReferenceControls, ReferencesUsed, REFERENCE_CATEGORIES } from "../components/ReferenceControls";
 import { DeviantArtPostForm } from "../components/DeviantArtPostForm";
 import { useDressingRoomSeo, DressingRoomIntro, DressingRoomGuide } from "../components/DressingRoomSeo";
 import { useNavigate, useParams } from "react-router-dom";
@@ -305,6 +306,8 @@ export default function DressingRoom() {
   const [baseNotice, setBaseNotice] = useState(null);
   const [saveNotice, setSaveNotice] = useState(null);
   const [lastDetails, setLastDetails] = useState(null);
+  const [refOpts, setRefOpts] = useState({ enabled: false, engine: "nano-banana-pro", extra: "" });
+  const [refsUsed, setRefsUsed] = useState([]);
   const uploadInputRef = useRef(null);
   const [customPrompt, setCustomPrompt] = useState("");
   const [selectedItems, setSelectedItems] = useState({
@@ -648,6 +651,11 @@ export default function DressingRoom() {
     }
   };
 
+  const referenceNames = () => [...new Set([
+    ...REFERENCE_CATEGORIES.map(c => selectedItems[c]).filter(Boolean),
+    ...refOpts.extra.split(",").map(t => t.trim()).filter(Boolean),
+  ])].slice(0, 3);
+
   const buildOutfitItems = () => {
     const primary = [
       ["presetCostumes", (v) => v],
@@ -834,6 +842,9 @@ export default function DressingRoom() {
         character_description: selectedCharacter.subtitle || "anime character",
         outfit_description: customPrompt.trim() && Object.values(selectedItems).some(Boolean) ? `${customPrompt.trim()}. ${outfitDesc}` : outfitDesc,
         outfit_items: showPairsMode ? null : buildOutfitItems(),
+        use_references: !showPairsMode && refOpts.enabled && referenceNames().length > 0,
+        reference_engine: refOpts.engine,
+        reference_items: referenceNames(),
         nexus_asset_id: ref.assetId,
         reference_image_url: ref.url,
         reference_image_base64: ref.base64,
@@ -870,6 +881,7 @@ export default function DressingRoom() {
         const results = data.images.map(img => `data:image/png;base64,${img.image_base64}`);
         setGeneratedResults(results);
         setGeneratedImage(results[0]); // Set first as main display
+        setRefsUsed(data.references_used || []);
         snapshotDetails("outfit", generateOutfitPrompt());
       } else {
         // Fallback for single image response
@@ -1563,6 +1575,7 @@ export default function DressingRoom() {
             </div>
             
             {lastDetails && <SendToLibrary backendUrl={BACKEND_URL} image={generatedImage} details={lastDetails} />}
+            <ReferencesUsed refs={refsUsed} />
             {saveNotice && <div data-testid="save-notice" style={{ fontSize: 10, color: "#00FF88", marginTop: 8 }}>✓ {saveNotice}</div>}
             {/* Action Buttons */}
             <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, alignItems: "stretch", gridAutoRows: "36px" }}>
@@ -2389,6 +2402,10 @@ export default function DressingRoom() {
             Leave blank to use selected items above, or type a custom description
           </div>
         </div>
+
+        {!showPairsMode && (
+          <ReferenceControls value={refOpts} onChange={setRefOpts} autoNames={referenceNames()} />
+        )}
 
         {/* Generate Button */}
         <button

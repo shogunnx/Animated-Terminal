@@ -11,6 +11,7 @@ import fal_client
 from PIL import Image
 from pathlib import Path
 from nexus_media import fetch_asset_bytes
+from reference_lookup import find_references
 
 load_dotenv()
 
@@ -98,6 +99,9 @@ class OutfitRequest(BaseModel):
     reference_image_base64: Optional[str] = None
     nexus_asset_id: Optional[str] = None
     outfit_items: Optional[dict] = None
+    use_references: Optional[bool] = False
+    reference_engine: Optional[str] = "nano-banana-pro"
+    reference_items: Optional[List[str]] = None
     save_as_base: Optional[bool] = False
     # Pairs mode fields
     second_character_id: Optional[str] = None
@@ -174,6 +178,31 @@ def build_outfit_prompt(request: "OutfitRequest"):
     lines.append("Render each item literally as named (material, shape and length). The prop's color must not change the clothing color.")
     lines.append(("High detail" if items.get("art_style") else "Photorealistic, high detail") + ", every required item clearly visible.")
     return "\n".join(lines), 5.0 if len(reqs) >= 3 else 4.5
+
+
+
+REFERENCE_ENGINES = {"nano-banana-pro": "fal-ai/nano-banana-pro/edit", "kontext-max": "fal-ai/flux-pro/kontext/max/multi"}
+
+
+def build_reference_prompt(prompt: str, refs: list) -> str:
+    if not refs:
+        return prompt
+    lines = ["Image 1 is the woman to edit. Keep her identity from Image 1."]
+    for i, r in enumerate(refs, 2):
+        lines.append(f"Image {i} is the official reference for \"{r['name']}\" ({r['title']}). Copy its exact design, shape, colors, emblems and proportions; for clothing, recreate it as a cosplay outfit she wears, and for an object, she holds a faithful replica of it. Use Image {i} only for that item, not for her face or the rest of her outfit.")
+    return "\n".join(lines) + "\n" + prompt
+
+
+async def generate_with_references(image_url: str, ref_urls: list, prompt: str, engine: Optional[str]):
+    endpoint = REFERENCE_ENGINES.get(engine or "", REFERENCE_ENGINES["nano-banana-pro"])
+    args = {"prompt": prompt, "image_urls": [image_url, *ref_urls], "num_images": 4, "output_format": "png"}
+    if endpoint.endswith("nano-banana-pro/edit"):
+        args.update({"enable_web_search": True, "resolution": "1K", "aspect_ratio": "auto"})
+    else:
+        args.update({"guidance_scale": 5.0})
+    handler = await fal_client.submit_async(endpoint, arguments=args)
+    result = await handler.get()
+    return [{"images": [img]} for img in (result.get("images") or [])], endpoint
 
 
 class TryOnRequest(BaseModel):
@@ -605,13 +634,23 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
         raise HTTPException(status_code=400, detail=f"Failed to upload image: {str(e)}")
     
     prompt, guidance = build_outfit_prompt(request)
+    model_used = "fal-ai/flux-pro/kontext"
+    references_used = []
 
     print(f"[DRESSING ROOM] Character: {request.character_id}")
-    print(f"[DRESSING ROOM] Prompt: {prompt}")
     
     try:
-        # Generate 4 variations by making parallel requests
         import asyncio
+
+        if request.use_references:
+            refs = await find_references(request.reference_items or [])
+            ref_urls = await asyncio.gather(*(upload_image_to_fal(r["bytes"]) for r in refs))
+            references_used = [{"name": r["name"], "title": r["title"], "page_url": r["page_url"], "image_url": u} for r, u in zip(refs, ref_urls)]
+            prompt = build_reference_prompt(prompt, references_used)
+            print(f"[DRESSING ROOM] Prompt: {prompt}")
+            results, model_used = await generate_with_references(image_url, ref_urls, prompt, request.reference_engine)
+            return await _collect_outfit_results(results, prompt, image_source, request, model_used, references_used)
+        print(f"[DRESSING ROOM] Prompt: {prompt}")
         
         async def generate_single():
             handler = await fal_client.submit_async(
@@ -633,7 +672,15 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
             return_exceptions=True
         )
 
-        # Collect successful results
+        return await _collect_outfit_results(results, prompt, image_source, request, model_used, references_used)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Image generation failed: {str(e)}")
+
+
+async def _collect_outfit_results(results, prompt, image_source, request, model_used, references_used) -> dict:
+    if True:
         all_images = []
         for i, result in enumerate(results):
             if isinstance(result, Exception):
@@ -668,13 +715,9 @@ async def generate_outfit_image(request: OutfitRequest) -> dict:
             "prompt_used": prompt,
             "image_source": image_source,
             "base_image_saved": request.save_as_base and image_source == "upload",
-            "model": "fal-ai/flux-pro/kontext"
+            "model": model_used,
+            "references_used": references_used,
         }
-            
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Image generation failed: {str(e)}")
 
 
 async def generate_tryon_images(request: TryOnRequest) -> dict:
